@@ -3,13 +3,15 @@
 #include "../../DebugLayer/Debug.h"
 #include "../../Mesh/IMesh.h"
 #include "../../Transform/Transform3D.h"
+#include "../../Utility/LevelLoader.h"
 #include <array>
 
 AABBCollider::AABBCollider(GameObject& gameObject) :
     Collider(gameObject),
     mAABB(),
     mDefaultMin(Vector3::zero),
-    mDefaultMax(Vector3::one) {
+    mDefaultMax(Vector3::one),
+    mIsRenderCollision(true) {
 }
 
 AABBCollider::~AABBCollider() = default;
@@ -30,46 +32,24 @@ void AABBCollider::start() {
     }
 }
 
-void AABBCollider::update() {
-#ifdef _DEBUG
-    //デバッグ時のみ当たり判定を表示
-    std::array<Vector3, 8> points;
-    const auto& min = mAABB.min;
-    const auto& max = mAABB.max;
-    points[0] = min;
-    points[1] = Vector3(max.x, min.y, min.z);
-    points[2] = Vector3(min.x, min.y, max.z);
-    points[3] = Vector3(max.x, min.y, max.z);
-    points[4] = Vector3(min.x, max.y, min.z);
-    points[5] = Vector3(max.x, max.y, min.z);
-    points[6] = Vector3(min.x, max.y, max.z);
-    points[7] = max;
-
-    Debug::renderLine(points[0], points[1], ColorPalette::lightGreen);
-    Debug::renderLine(points[0], points[2], ColorPalette::lightGreen);
-    Debug::renderLine(points[2], points[3], ColorPalette::lightGreen);
-    Debug::renderLine(points[1], points[3], ColorPalette::lightGreen);
-
-    Debug::renderLine(points[4], points[5], ColorPalette::lightGreen);
-    Debug::renderLine(points[4], points[6], ColorPalette::lightGreen);
-    Debug::renderLine(points[6], points[7], ColorPalette::lightGreen);
-    Debug::renderLine(points[5], points[7], ColorPalette::lightGreen);
-
-    Debug::renderLine(points[0], points[4], ColorPalette::lightGreen);
-    Debug::renderLine(points[1], points[5], ColorPalette::lightGreen);
-    Debug::renderLine(points[2], points[6], ColorPalette::lightGreen);
-    Debug::renderLine(points[3], points[7], ColorPalette::lightGreen);
-#endif // _DEBUG
-}
-
-void AABBCollider::onUpdateWorldTransform() {
-    Collider::onUpdateWorldTransform();
-
-    if (!mIsAutoUpdate) {
-        return;
+void AABBCollider::lateUpdate() {
+    //当たり判定が自動化設定されているなら
+    if (mIsAutoUpdate) {
+        updateAABB();
     }
 
-    updateAABB();
+    //当たり判定を可視化する
+    if (mIsRenderCollision) {
+        renderCollision();
+    }
+}
+
+void AABBCollider::onEnable(bool value) {
+    setRenderCollision(value);
+}
+
+void AABBCollider::loadProperties(const rapidjson::Value& inObj) {
+    JsonHelper::getBool(inObj, "isRenderCollision", &mIsRenderCollision);
 }
 
 void AABBCollider::drawDebugInfo(ComponentDebug::DebugInfoList* inspect) const {
@@ -89,6 +69,10 @@ void AABBCollider::set(const Vector3& min, const Vector3& max) {
 
 const AABB& AABBCollider::getAABB() const {
     return mAABB;
+}
+
+void AABBCollider::setRenderCollision(bool value) {
+    mIsRenderCollision = value;
 }
 
 void AABBCollider::computeBox(const std::vector<MeshVertices>& meshesVertices) {
@@ -136,4 +120,36 @@ void AABBCollider::updateAABB() {
     //既存のAABBを更新する
     mAABB.min = aabb.min * scale + pos;
     mAABB.max = aabb.max * scale + pos;
+}
+
+void AABBCollider::renderCollision() {
+#ifdef _DEBUG
+    //デバッグ時のみ当たり判定を表示
+    std::array<Vector3, 8> points;
+    const auto& min = mAABB.min;
+    const auto& max = mAABB.max;
+    points[0] = min;
+    points[1] = Vector3(max.x, min.y, min.z);
+    points[2] = Vector3(min.x, min.y, max.z);
+    points[3] = Vector3(max.x, min.y, max.z);
+    points[4] = Vector3(min.x, max.y, min.z);
+    points[5] = Vector3(max.x, max.y, min.z);
+    points[6] = Vector3(min.x, max.y, max.z);
+    points[7] = max;
+
+    Debug::renderLine(points[0], points[1], ColorPalette::lightGreen);
+    Debug::renderLine(points[0], points[2], ColorPalette::lightGreen);
+    Debug::renderLine(points[2], points[3], ColorPalette::lightGreen);
+    Debug::renderLine(points[1], points[3], ColorPalette::lightGreen);
+
+    Debug::renderLine(points[4], points[5], ColorPalette::lightGreen);
+    Debug::renderLine(points[4], points[6], ColorPalette::lightGreen);
+    Debug::renderLine(points[6], points[7], ColorPalette::lightGreen);
+    Debug::renderLine(points[5], points[7], ColorPalette::lightGreen);
+
+    Debug::renderLine(points[0], points[4], ColorPalette::lightGreen);
+    Debug::renderLine(points[1], points[5], ColorPalette::lightGreen);
+    Debug::renderLine(points[2], points[6], ColorPalette::lightGreen);
+    Debug::renderLine(points[3], points[7], ColorPalette::lightGreen);
+#endif // _DEBUG
 }

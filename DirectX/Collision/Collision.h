@@ -5,3 +5,4 @@
 #include "Intersect.h"
 #include "Ray.h"
 #include "Sphere.h"
+#include "Square.h"

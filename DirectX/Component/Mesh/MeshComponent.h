@@ -24,6 +24,7 @@ public:
     MeshComponent(GameObject& gameObject);
     virtual ~MeshComponent();
     virtual void awake() override;
+    virtual void start() override;
     virtual void onEnable(bool value) override;
     virtual void loadProperties(const rapidjson::Value& inObj) override;
     virtual void drawDebugInfo(ComponentDebug::DebugInfoList* inspect) const override;

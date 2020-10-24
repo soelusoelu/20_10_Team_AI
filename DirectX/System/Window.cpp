@@ -113,6 +113,13 @@ Vector2 Window::windowToClientSize() {
     return mWindowToClientSize;
 }
 
+Vector2 Window::getWindowCompensate() {
+    Vector2 compen;
+    compen.x = static_cast<float>(Window::width()) / static_cast<float>(Window::standardWidth());
+    compen.y = static_cast<float>(Window::height()) / static_cast<float>(Window::standardHeight());
+    return compen;
+}
+
 void Window::loadProperties(const rapidjson::Value& inObj) {
     const auto& windowObj = inObj["window"];
     if (windowObj.IsObject()) {

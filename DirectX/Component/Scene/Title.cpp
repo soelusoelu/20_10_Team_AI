@@ -14,15 +14,11 @@ Title::~Title() = default;
 void Title::start() {
     mScene = getComponent<Scene>();
     GameObjectCreater::create("Ground");
-    GameObjectCreater::create("RayTest");
+    GameObjectCreater::create("CharacterCreater");
 }
 
 void Title::update() {
-    auto isEnd = Input::joyPad().getEnter();
-    if (!isEnd) {
-        isEnd = Input::keyboard().getEnter();
-    }
-    if (isEnd) {
+    if (Input::keyboard().getEnter()) {
         mScene->next("GamePlay");
     }
 

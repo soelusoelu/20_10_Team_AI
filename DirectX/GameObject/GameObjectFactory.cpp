@@ -3,6 +3,7 @@
 #include "../Component/Component.h"
 #include "../Component/ComponentManager.h"
 #include "../Component/Camera/Camera.h"
+#include "../Component/CharacterOperation/CharacterCreater.h"
 #include "../Component/CharacterOperation/DragAndDropCharacter.h"
 #include "../Component/Collider/AABBCollider.h"
 #include "../Component/Collider/CircleCollider.h"
@@ -38,6 +39,7 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(Camera);
 
+    ADD_COMPONENT(CharacterCreater);
     ADD_COMPONENT(DragAndDropCharacter);
 
     ADD_COMPONENT(AABBCollider);

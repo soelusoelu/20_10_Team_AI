@@ -119,9 +119,7 @@
       ]
     },
     {
-      "type": "RayTest",
-      "properties": {
-      },
+      "type": "SphereTest",
       "components": [
         {
           "type": "DragAndDropCharacter",
@@ -137,6 +135,47 @@
         {
           "type": "AABBCollider",
           "properties": {
+          }
+        }
+      ]
+    },
+    {
+      "type": "BoxTest",
+      "components": [
+        {
+          "type": "DragAndDropCharacter",
+          "properties": {
+          }
+        },
+        {
+          "type": "MeshComponent",
+          "properties": {
+            "fileName": "Shape/box.fbx"
+          }
+        },
+        {
+          "type": "AABBCollider",
+          "properties": {
+          }
+        }
+      ]
+    },
+    {
+      "type": "CharacterCreater",
+      "properties": {
+      },
+      "components": [
+        {
+          "type": "CharacterCreater",
+          "properties": {
+          }
+        },
+        {
+          "type": "SpriteComponent",
+          "properties": {
+            "fileName": "cat.png",
+            "position": [ 100.0, 900.0 ],
+            "scale": [ 0.25, 0.25 ]
           }
         }
       ]

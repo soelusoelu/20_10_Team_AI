@@ -34,7 +34,6 @@ private:
 
 private:
     std::shared_ptr<Camera> mCamera;
-    std::shared_ptr<MeshComponent> mMesh;
     std::shared_ptr<AABBCollider> mAABB;
     //キャラクターを立たせたい地形メッシュ配列
     std::vector<std::shared_ptr<MeshComponent>> mGroundMeshes;

@@ -161,6 +161,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Component\CharacterOperation\CharacterCreater.cpp" />
     <ClCompile Include="Component\Collider\AABBCollider.cpp" />
     <ClCompile Include="Collision\Intersect.cpp" />
     <ClCompile Include="Collision\AABB.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="Component\Sample\RayMouse.cpp" />
     <ClCompile Include="Collision\Ray.cpp" />
     <ClCompile Include="Component\CharacterOperation\DragAndDropCharacter.cpp" />
+    <ClCompile Include="Collision\Square.cpp" />
     <ClCompile Include="System\Shader\InputElementManager.cpp" />
     <ClCompile Include="System\Shader\ConstantBufferManager.cpp" />
     <ClCompile Include="DebugLayer\LineRenderer\LineRenderer.cpp" />
@@ -321,6 +323,7 @@
     <ClCompile Include="Component\Sound\WaveformRenderSample.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Component\CharacterOperation\CharacterCreater.h" />
     <ClInclude Include="Component\Collider\AABBCollider.h" />
     <ClInclude Include="Collision\Intersect.h" />
     <ClInclude Include="Collision\AABB.h" />
@@ -331,6 +334,7 @@
     <ClInclude Include="Mesh\Vertex.h" />
     <ClInclude Include="Component\Sample\RayMouse.h" />
     <ClInclude Include="Collision\Ray.h" />
+    <ClInclude Include="Collision\Square.h" />
     <ClInclude Include="System\Shader\InputElementManager.h" />
     <ClInclude Include="System\Shader\ConstantBufferManager.h" />
     <ClInclude Include="DebugLayer\LineRenderer\LineRenderer.h" />

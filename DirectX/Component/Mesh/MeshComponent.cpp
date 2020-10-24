@@ -26,6 +26,12 @@ void MeshComponent::awake() {
     setActive(gameObject().getActive());
 }
 
+void MeshComponent::start() {
+    if (mMesh) {
+        addToManager();
+    }
+}
+
 void MeshComponent::onEnable(bool value) {
     setActive(value);
 }
@@ -34,7 +40,6 @@ void MeshComponent::loadProperties(const rapidjson::Value& inObj) {
     //ファイル名からメッシュを生成
     if (JsonHelper::getString(inObj, "fileName", &mFileName)) {
         mMesh = World::instance().assetsManager().createMesh(mFileName);
-        addToManager();
     }
 
     std::string shader;

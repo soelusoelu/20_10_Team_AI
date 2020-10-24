@@ -11,11 +11,11 @@
 DragAndDropCharacter::DragAndDropCharacter(GameObject& gameObject) :
     Component(gameObject),
     mCamera(nullptr),
-    mMesh(nullptr),
     mAABB(nullptr),
     mIntersectPoint(Vector3::zero),
     mIsIntersectRayGround(false),
-    mSelectedMesh(false) {
+    mSelectedMesh(true) {
+    //生成直後から動かしたいからmSelectedMeshはtrue
 }
 
 DragAndDropCharacter::~DragAndDropCharacter() = default;
@@ -23,7 +23,6 @@ DragAndDropCharacter::~DragAndDropCharacter() = default;
 void DragAndDropCharacter::start() {
     const auto& gameObjectManager = gameObject().getGameObjectManager();
     mCamera = gameObjectManager.find("Camera")->componentManager().getComponent<Camera>();
-    mMesh = getComponent<MeshComponent>();
     mAABB = getComponent<AABBCollider>();
 
     //指定のタグを含んでいるオブジェクトをすべて取得する
@@ -50,7 +49,7 @@ void DragAndDropCharacter::update() {
     //カメラからマウスの位置へ向かうレイを取得
     auto rayCameraToMousePos = getRayCamraToMousePos(mouse.getMousePosition());
 
-    //マウスの左ボタンが押した瞬間だったら
+    //マウスの左ボタンを押した瞬間だったら
     if (mouse.getMouseButtonDown(MouseCode::LeftButton)) {
         selectMesh(rayCameraToMousePos);
     }
