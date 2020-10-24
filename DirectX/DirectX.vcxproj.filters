@@ -171,6 +171,7 @@
     <ClCompile Include="Collision\Ray.cpp" />
     <ClCompile Include="Collision\Sphere.cpp" />
     <ClCompile Include="Component\Collider\AABBCollider.cpp" />
+    <ClCompile Include="Component\CharacterOperation\DragAndDropCharacter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -375,5 +376,6 @@
     <ClInclude Include="Collision\Ray.h" />
     <ClInclude Include="Collision\Sphere.h" />
     <ClInclude Include="Component\Collider\AABBCollider.h" />
+    <ClInclude Include="Component\CharacterOperation\DragAndDropCharacter.h" />
   </ItemGroup>
 </Project>

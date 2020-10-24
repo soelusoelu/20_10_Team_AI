@@ -6,6 +6,7 @@ struct Ray {
     Vector3 start;
     Vector3 end;
 
+    Ray();
     Ray(const Vector3& origin, const Vector3& direction, float maxDistance = FLT_MAX);
     //線分上の点を返す [0, t, 1]
     Vector3 pointOnSegment(float t) const;

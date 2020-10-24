@@ -104,7 +104,7 @@
       ]
     },
     {
-      "type": "ObjTest",
+      "type": "Ground",
       "properties": {
         "rotation": [ -90.0, 0.0, 0.0 ],
         "scale": [ 50.0, 50.0, 50.0 ]
@@ -124,7 +124,7 @@
       },
       "components": [
         {
-          "type": "RayMouse",
+          "type": "DragAndDropCharacter",
           "properties": {
           }
         },

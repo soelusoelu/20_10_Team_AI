@@ -168,6 +168,7 @@
     <ClCompile Include="Collision\Circle.cpp" />
     <ClCompile Include="Component\Sample\RayMouse.cpp" />
     <ClCompile Include="Collision\Ray.cpp" />
+    <ClCompile Include="Component\CharacterOperation\DragAndDropCharacter.cpp" />
     <ClCompile Include="System\Shader\InputElementManager.cpp" />
     <ClCompile Include="System\Shader\ConstantBufferManager.cpp" />
     <ClCompile Include="DebugLayer\LineRenderer\LineRenderer.cpp" />
@@ -325,6 +326,7 @@
     <ClInclude Include="Collision\AABB.h" />
     <ClInclude Include="Collision\Sphere.h" />
     <ClInclude Include="Collision\Circle.h" />
+    <ClInclude Include="Component\CharacterOperation\DragAndDropCharacter.h" />
     <ClInclude Include="Mesh\IMesh.h" />
     <ClInclude Include="Mesh\Vertex.h" />
     <ClInclude Include="Component\Sample\RayMouse.h" />

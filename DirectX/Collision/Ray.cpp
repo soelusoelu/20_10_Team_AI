@@ -1,5 +1,10 @@
 ﻿#include "Ray.h"
 
+Ray::Ray() :
+    start(Vector3::zero),
+    end(Vector3::zero) {
+}
+
 Ray::Ray(const Vector3& origin, const Vector3& direction, float maxDistance) :
     start(origin),
     end(direction* maxDistance) {
