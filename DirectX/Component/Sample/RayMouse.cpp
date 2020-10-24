@@ -8,6 +8,7 @@
 #include "../../GameObject/GameObjectManager.h"
 #include "../../Input/Input.h"
 #include "../../Transform/Transform3D.h"
+#include "../../System/Window.h"
 #include "../../Utility/StringUtil.h"
 
 RayMouse::RayMouse(GameObject& gameObject) :
@@ -34,7 +35,9 @@ void RayMouse::update() {
     const auto& mouse = Input::mouse();
 
     //ワールド座標におけるマウスの位置を取得
-    auto clickPos = mCamera->screenToWorldPoint(mouse.getMousePosition(), 1.f);
+    auto mousePos = mouse.getMousePosition();
+    mousePos.clamp(Vector2::zero, Vector2(Window::width(), Window::height()));
+    auto clickPos = mCamera->screenToWorldPoint(mousePos, 1.f);
 
     //計算に必要な要素を用意しておく
     const auto& cameraPos = mCamera->getPosition();

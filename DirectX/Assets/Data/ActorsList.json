@@ -131,7 +131,7 @@
         {
           "type": "MeshComponent",
           "properties": {
-            "fileName": "Shape/box.fbx"
+            "fileName": "Shape/Sphere.fbx"
           }
         },
         {
