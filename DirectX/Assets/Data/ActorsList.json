@@ -3,7 +3,8 @@
     {
       "type": "Camera",
       "properties": {
-        "position": [ 0.0, 5.0, -20.0 ]
+        "position": [ 0.0, 20.0, -20.0 ],
+        "rotation": [ 20.0, 0.0, 0.0 ]
       },
       "components": [
         {
@@ -17,6 +18,13 @@
         {
           "type": "ListenerComponent",
           "properties": {
+          }
+        },
+        {
+          "type": "CameraMove",
+          "properties": {
+            "cameraSpeed": 40.0,
+            "rotateSpeed": 40.0
           }
         }
       ]
@@ -107,7 +115,7 @@
       "type": "Ground",
       "properties": {
         "rotation": [ -90.0, 0.0, 0.0 ],
-        "scale": [ 50.0, 50.0, 50.0 ]
+        "scale": [ 100.0, 100.0, 100.0 ]
       },
       "components": [
         {

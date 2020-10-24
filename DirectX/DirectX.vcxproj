@@ -161,6 +161,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Component\Camera\CameraMove.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterCreater.cpp" />
     <ClCompile Include="Component\Collider\AABBCollider.cpp" />
     <ClCompile Include="Collision\Intersect.cpp" />
@@ -323,6 +324,7 @@
     <ClCompile Include="Component\Sound\WaveformRenderSample.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Component\Camera\CameraMove.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterCreater.h" />
     <ClInclude Include="Component\Collider\AABBCollider.h" />
     <ClInclude Include="Collision\Intersect.h" />
