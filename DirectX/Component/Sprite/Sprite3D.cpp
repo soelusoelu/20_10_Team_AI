@@ -4,12 +4,12 @@
 #include "../../DirectX/DirectX.h"
 #include "../../GameObject/GameObject.h"
 #include "../../Sprite/SpriteManager.h"
-#include "../../System/Texture.h"
-#include "../../System/TextureFromFile.h"
 #include "../../System/Window.h"
 #include "../../System/World.h"
 #include "../../System/Shader/ConstantBuffers.h"
 #include "../../System/Shader/Shader.h"
+#include "../../System/Texture/Texture.h"
+#include "../../System/Texture/TextureFromFile.h"
 #include "../../Transform/Transform3D.h"
 #include "../../Utility/LevelLoader.h"
 #include <cassert>
@@ -39,9 +39,9 @@ void Sprite3D::awake() {
     mTexture = World::instance().assetsManager().createTexture(mFileName);
     mShader = World::instance().assetsManager().createShader("Texture.hlsl");
 
-    //デスクをもとにテクスチャのアスペクト比を取得
-    const auto& desc = mTexture->desc();
-    auto v = static_cast<float>(desc.height) / static_cast<float>(desc.width);
+    //テクスチャのアスペクト比を計算
+    const auto& texSize = mTexture->getTextureSize();
+    auto v = texSize.y / texSize.x;
     mTextureAspect.set(1.f, v);
     mTransform->setScale(mTransform->getScale() * Vector3(mTextureAspect, 1.f));
 

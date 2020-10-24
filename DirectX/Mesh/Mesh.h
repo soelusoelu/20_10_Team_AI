@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "IMesh.h"
 #include "IMeshLoader.h"
 #include "Material.h"
 #include "../Math/Math.h"
@@ -11,10 +12,18 @@ class Shader;
 class VertexBuffer;
 class IndexBuffer;
 
-class Mesh {
+class Mesh : public IMesh {
 public:
     Mesh();
     ~Mesh();
+
+    //マテリアルの取得
+    virtual const Material& getMaterial(unsigned index) const override;
+    //メッシュの数を取得する
+    virtual unsigned getMeshCount() const override;
+    //すべての頂点情報を取得
+    virtual const std::vector<MeshVertices>& getMeshesVertices() const override;
+
     //ファイル名からメッシュを生成する
     void loadMesh(const std::string& fileName);
     //シェーダー名からシェーダーを作成する
@@ -23,15 +32,6 @@ public:
     void setShaderData(const void* data, unsigned size, unsigned index = 0) const;
     //メッシュを描画する
     void draw(unsigned meshIndex) const;
-
-    //マテリアルの取得
-    const Material& getMaterial(unsigned index) const;
-    //メッシュの数を取得する
-    unsigned getMeshCount() const;
-    //中心座標の取得
-    const Vector3& getCenter() const;
-    //半径の取得
-    float getRadius() const;
 
 private:
     //初期化処理
@@ -44,10 +44,6 @@ private:
     void createVertexBuffer(unsigned meshIndex);
     //インデックスバッファを生成する
     void createIndexBuffer(unsigned meshIndex);
-    //メッシュの中心を計算する
-    void computeCenter();
-    //メッシュの半径を計算する
-    void computeRadius();
 
 private:
     std::unique_ptr<IMeshLoader> mMesh;
@@ -55,7 +51,4 @@ private:
     std::unique_ptr<Shader> mShader;
     std::vector<std::unique_ptr<VertexBuffer>> mVertexBuffers;
     std::vector<std::unique_ptr<IndexBuffer>> mIndexBuffers;
-
-    Vector3 mCenter;
-    float mRadius;
 };

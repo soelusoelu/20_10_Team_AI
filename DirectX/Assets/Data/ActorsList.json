@@ -3,7 +3,7 @@
     {
       "type": "Camera",
       "properties": {
-        "position": [ 0.0, 3.0, -10.0 ]
+        "position": [ 0.0, 5.0, -20.0 ]
       },
       "components": [
         {
@@ -106,14 +106,37 @@
     {
       "type": "ObjTest",
       "properties": {
-        "rotation": [ -90.0, 180.0, 0.0 ],
-        "scale": [ 0.5, 0.5, 0.5 ]
+        "rotation": [ -90.0, 0.0, 0.0 ],
+        "scale": [ 50.0, 50.0, 50.0 ]
       },
       "components": [
         {
           "type": "MeshComponent",
           "properties": {
-            "fileName": "zunko_model_data/TouhokuZunko_FromBlender_20140620_3.fbx"
+            "fileName": "Shape/Plane.fbx"
+          }
+        }
+      ]
+    },
+    {
+      "type": "RayTest",
+      "properties": {
+      },
+      "components": [
+        {
+          "type": "RayMouse",
+          "properties": {
+          }
+        },
+        {
+          "type": "MeshComponent",
+          "properties": {
+            "fileName": "Shape/box.fbx"
+          }
+        },
+        {
+          "type": "AABBCollider",
+          "properties": {
           }
         }
       ]

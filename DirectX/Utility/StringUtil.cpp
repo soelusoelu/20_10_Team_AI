@@ -1,5 +1,6 @@
 ﻿#include "StringUtil.h"
 #include "../DebugLayer/Debug.h"
+#include "../System/SystemInclude.h"
 #include <locale.h>
 #include <iomanip>
 #include <sstream>
@@ -19,11 +20,13 @@ std::vector<std::string> StringUtil::split(const std::string& src, const char de
     return temp;
 }
 
-wchar_t* StringUtil::charToWchar(const char* src) {
-    size_t len = 0;
+const wchar_t* StringUtil::charToWchar(const char* src) {
     wchar_t dst[256];
-    setlocale(LC_ALL, "japanese");
-    mbstowcs_s(&len, dst, 256, src, _TRUNCATE);
+    //size_t len = 0;
+    //setlocale(LC_ALL, "japanese");
+    //mbstowcs_s(&len, dst, 256, src, _TRUNCATE);
+
+    MultiByteToWideChar(CP_ACP, 0, src, -1, dst, _countof(dst));
 
     return dst;
 }

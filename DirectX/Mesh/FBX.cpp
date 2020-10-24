@@ -69,7 +69,6 @@ unsigned FBX::getMeshCount() const {
 
 void FBX::createMesh(MeshVertices& meshVertices, FbxMesh* mesh, unsigned meshIndex) {
     loadFace(meshVertices, mesh, meshIndex);
-    computeIndices(mesh, meshIndex);
     loadMaterial(mesh, meshIndex);
 }
 
@@ -237,7 +236,7 @@ void FBX::loadFace(MeshVertices& meshVertices, FbxMesh* mesh, unsigned meshIndex
     //頂点数
     auto polygonVertexCount = mesh->GetPolygonVertexCount();
     //インデックスバッファの取得
-    int* indices = mesh->GetPolygonVertices();
+    int* polygonVertices = mesh->GetPolygonVertices();
     //頂点座標配列
     FbxVector4* src = mesh->GetControlPoints();
 
@@ -261,10 +260,15 @@ void FBX::loadFace(MeshVertices& meshVertices, FbxMesh* mesh, unsigned meshIndex
     //事前に拡張しとく
     meshVertices.resize(polygonVertexCount);
 
+    //インデックス配列の取得
+    auto& indices = mIndices[meshIndex];
+    //indicesは頂点数の3倍
+    indices.resize(polygonVertexCount * 3);
+
     for (size_t i = 0; i < polygonVertexCount; ++i) {
         MeshVertex vertex;
 
-        int index = indices[i];
+        int index = polygonVertices[i];
         vertex.pos.x = static_cast<float>(-src[index][0]);
         vertex.pos.y = static_cast<float>(src[index][1]);
         vertex.pos.z = static_cast<float>(src[index][2]);
@@ -289,6 +293,11 @@ void FBX::loadFace(MeshVertices& meshVertices, FbxMesh* mesh, unsigned meshIndex
 
         //頂点情報を格納
         meshVertices[i] = vertex;
+
+        //fbxは右手系なので、DirectXの左手系に直すために2->1->0の順にインデックスを格納していく
+        indices[i * 3 + 0] = i * 3 + 2;
+        indices[i * 3 + 1] = i * 3 + 1;
+        indices[i * 3 + 2] = i * 3;
     }
 }
 

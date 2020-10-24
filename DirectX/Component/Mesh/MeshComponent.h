@@ -2,6 +2,7 @@
 
 #include "../Component.h"
 #include "../../Math/Math.h"
+#include "../../Mesh/IMesh.h"
 #include "../../Mesh/Material.h"
 #include <memory>
 #include <string>
@@ -35,10 +36,8 @@ public:
     void setActive(bool value);
     bool getActive() const;
     bool isDead() const;
-    //中心座標の取得
-    const Vector3& getCenter() const;
-    //半径の取得
-    float getRadius() const;
+    //メッシュインターフェースを取得する
+    const IMesh& getMesh() const;
     //アルファ値を設定する
     void setAlpha(float alpha);
     //アルファ値を取得する

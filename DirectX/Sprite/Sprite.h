@@ -54,7 +54,6 @@ private:
     std::unique_ptr<Transform2D> mTransform;
     std::shared_ptr<Texture> mTexture;
     std::unique_ptr<Shader> mShader;
-    Vector2 mTextureSize;
     Vector4 mColor;
     Vector4 mUV;
     std::string mFileName;

@@ -6,10 +6,12 @@
 #include "Texture2D.h"
 #include "../System/GlobalFunction.h"
 #include "../System/Window.h"
+#include <vector>
 
 DirectX::DirectX() :
     mDevice(nullptr),
     mDeviceContext(nullptr),
+    mDXGIFactory(nullptr),
     mSwapChain(nullptr),
     mDepthStencilView(nullptr),
     mRenderTargetView(nullptr),
@@ -29,7 +31,8 @@ DirectX& DirectX::instance() {
 }
 
 void DirectX::initialize(const HWND& hWnd) {
-    createDeviceAndSwapChain(hWnd);
+    createDevice();
+    createSwapChain(hWnd);
     createDepthStencilView();
     createRenderTargetView();
     setRenderTarget();
@@ -122,40 +125,91 @@ void DirectX::present() {
     mSwapChain->Present(0, 0);
 }
 
-void DirectX::createDeviceAndSwapChain(const HWND& hWnd) {
-    // デバイスとスワップチェーンの作成
-    DXGI_SWAP_CHAIN_DESC sd;
-    ZeroMemory(&sd, sizeof(sd));
-    sd.BufferCount = 1;
+void DirectX::createDevice() {
+    //DXGIファクトリーの生成
+    CreateDXGIFactory1(IID_PPV_ARGS(&mDXGIFactory));
+    //アダプターの列挙用
+    std::vector<Microsoft::WRL::ComPtr<IDXGIAdapter>> adapters;
+    //ここに特定の名前を持つアダプターオブジェクトが入る
+    Microsoft::WRL::ComPtr<IDXGIAdapter> tmpAdapter = nullptr;
+    for (int i = 0; mDXGIFactory->EnumAdapters(i, &tmpAdapter) != DXGI_ERROR_NOT_FOUND; i++) {
+        adapters.emplace_back(tmpAdapter);
+    }
+
+    //使用するアダプターを決定する
+    for (int i = 0; i < adapters.size(); i++) {
+        DXGI_ADAPTER_DESC adesc{};
+        adapters[i]->GetDesc(&adesc); //アダプターの情報を取得
+        std::wstring strDesc = adesc.Description; //アダプター名
+        // Microsoft Basic Render Driver を回避
+        if (strDesc.find(L"Microsoft") == std::wstring::npos && strDesc.find(L"Intel") == std::string::npos) {
+            tmpAdapter = adapters[i]; //採用
+            break;
+        }
+    }
+
+    //対応レベルの配列
+    D3D_FEATURE_LEVEL levels[] = {
+        D3D_FEATURE_LEVEL_11_1,
+        D3D_FEATURE_LEVEL_11_0,
+    };
+
+    unsigned flags = 0;
 #ifdef _DEBUG
-    sd.BufferDesc.Width = Window::debugWidth();
-    sd.BufferDesc.Height = Window::debugHeight();
+    //デバッグ時はフラグを立てる
+    flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif // _DEBUG
+
+    //採用したアダプターでデバイスを生成
+    //D3D11CreateDevice(tmpAdapter.Get(), D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, levels, _countof(levels), D3D11_SDK_VERSION, &mDevice, nullptr, &mDeviceContext);
+    D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, levels, _countof(levels), D3D11_SDK_VERSION, &mDevice, nullptr, &mDeviceContext);
+}
+
+void DirectX::createSwapChain(const HWND& hWnd) {
+    //使用可能なMSAAを取得
+    DXGI_SAMPLE_DESC MSAA = { 0 };
+    for (int i = 1; i <= D3D11_MAX_MULTISAMPLE_SAMPLE_COUNT; i <<= 1) {
+        UINT quality = 0;
+        if (SUCCEEDED(mDevice->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, i, &quality))) {
+            if (quality > 0) {
+                MSAA.Count = i;
+                MSAA.Quality = quality - 1;
+            }
+        }
+    }
+
+    // デバイスとスワップチェーンの作成
+    DXGI_SWAP_CHAIN_DESC swapChainDesc;
+    ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
+    swapChainDesc.BufferCount = 1;
+#ifdef _DEBUG
+    swapChainDesc.BufferDesc.Width = Window::debugWidth();
+    swapChainDesc.BufferDesc.Height = Window::debugHeight();
 #else
     sd.BufferDesc.Width = Window::width();
     sd.BufferDesc.Height = Window::height();
 #endif // _DEBUG
-    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    sd.BufferDesc.RefreshRate.Numerator = 60;
-    sd.BufferDesc.RefreshRate.Denominator = 1;
-    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    sd.OutputWindow = hWnd;
-    sd.SampleDesc.Count = 1;
-    sd.SampleDesc.Quality = 0;
-    sd.Windowed = TRUE;
+    swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
+    swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    swapChainDesc.OutputWindow = hWnd;
+    swapChainDesc.SampleDesc.Count = 1;
+    swapChainDesc.SampleDesc.Quality = 0;
+    //swapChainDesc.SampleDesc = MSAA;
+    swapChainDesc.Windowed = TRUE;
+    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+    swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-    D3D_FEATURE_LEVEL featureLevels = D3D_FEATURE_LEVEL_11_0;
-    D3D_FEATURE_LEVEL* featureLevel = NULL;
-    unsigned flags = 0;
-#ifdef _DEBUG
-    flags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif // _DEBUG
-
-    D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, flags, &featureLevels, 1, D3D11_SDK_VERSION, &sd, &mSwapChain, &mDevice, featureLevel, &mDeviceContext);
+    Microsoft::WRL::ComPtr<IDXGISwapChain> swapchain = nullptr;
+    mDXGIFactory->CreateSwapChain(mDevice.Get(), &swapChainDesc, &swapchain);
+    //生成したIDXGISwapChainのオブジェクトをIDXGISwapChain4に変換する
+    swapchain.As(&mSwapChain);
 }
 
 void DirectX::createRenderTargetView() {
     ID3D11Texture2D* backBuffer;
-    mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer);
+    mSwapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer));
     auto tex = std::make_unique<Texture2D>(backBuffer);
     mRenderTargetView = std::make_unique<RenderTargetView>(*tex);
 

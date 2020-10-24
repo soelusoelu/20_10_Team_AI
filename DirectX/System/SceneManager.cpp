@@ -147,12 +147,12 @@ void SceneManager::draw() const {
     DebugUtility::draw(proj);
 #endif // _DEBUG
 
-    //2Dライン
-    mRenderer->renderLine2D(&proj);
-    DebugUtility::lineRenderer2D().draw(proj);
     //3Dライン
     mRenderer->renderLine3D();
     DebugUtility::lineRenderer3D().draw(mCamera->getViewProjection());
+    //2Dライン
+    mRenderer->renderLine2D(&proj);
+    DebugUtility::lineRenderer2D().draw(proj);
 }
 
 void SceneManager::change(const StringSet& tags) {

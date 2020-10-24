@@ -1,5 +1,4 @@
 ﻿#include "Mesh.h"
-#include "../DebugLayer/Debug.h"
 #include "../Device/AssetsManager.h"
 #include "../DirectX/DirectXInclude.h"
 #include "../System/World.h"
@@ -7,12 +6,22 @@
 
 Mesh::Mesh() :
     mMesh(nullptr),
-    mShader(nullptr),
-    mCenter(Vector3::zero),
-    mRadius(0.f) {
+    mShader(nullptr) {
 }
 
 Mesh::~Mesh() = default;
+
+const Material& Mesh::getMaterial(unsigned index) const {
+    return mMesh->getMaterial(index);
+}
+
+unsigned Mesh::getMeshCount() const {
+    return mMesh->getMeshCount();
+}
+
+const std::vector<MeshVertices>& Mesh::getMeshesVertices() const {
+    return mMeshesVertices;
+}
 
 void Mesh::loadMesh(const std::string& fileName) {
     //すでに生成済みなら終了する
@@ -44,30 +53,12 @@ void Mesh::draw(unsigned meshIndex) const {
     DirectX::instance().drawIndexed(mMesh->getIndices(meshIndex).size());
 }
 
-const Material& Mesh::getMaterial(unsigned index) const {
-    return mMesh->getMaterial(index);
-}
-
-unsigned Mesh::getMeshCount() const {
-    return mMesh->getMeshCount();
-}
-
-const Vector3& Mesh::getCenter() const {
-    return mCenter;
-}
-
-float Mesh::getRadius() const {
-    return mRadius;
-}
-
 void Mesh::initialize(const std::string& fileName) {
     createMesh(fileName);
     for (size_t i = 0; i < mMesh->getMeshCount(); i++) {
         createVertexBuffer(i);
         createIndexBuffer(i);
     }
-    computeCenter();
-    computeRadius();
 }
 
 void Mesh::createMesh(const std::string& fileName) {
@@ -103,69 +94,4 @@ void Mesh::createIndexBuffer(unsigned meshIndex) {
     sub.data = indices.data();
 
     mIndexBuffers.emplace_back(std::make_unique<IndexBuffer>(bd, sub));
-}
-
-void Mesh::computeCenter() {
-    auto min = Vector3::one * Math::infinity;
-    auto max = Vector3::one * Math::negInfinity;
-
-    //すべてのメッシュ情報から中心位置を割り出す
-    for (size_t i = 0; i < mMeshesVertices.size(); ++i) {
-        const auto& vertices = mMeshesVertices[i];
-        for (size_t j = 0; j < vertices.size(); ++j) {
-            const auto& p = vertices[j].pos;
-            if (p.x < min.x) {
-                min.x = p.x;
-            }
-            if (p.x > max.x) {
-                max.x = p.x;
-            }
-            if (p.y < min.y) {
-                min.y = p.y;
-            }
-            if (p.y > max.y) {
-                max.y = p.y;
-            }
-            if (p.z < min.z) {
-                min.z = p.z;
-            }
-            if (p.z > max.z) {
-                max.z = p.z;
-            }
-        }
-    }
-
-    mCenter = (max + min) / 2.f;
-}
-
-void Mesh::computeRadius() {
-    float min = Math::infinity;
-    float max = Math::negInfinity;
-
-    //すべてのメッシュ情報から半径を割り出す
-    for (size_t i = 0; i < mMeshesVertices.size(); ++i) {
-        const auto& vertices = mMeshesVertices[i];
-        for (size_t j = 0; j < vertices.size(); ++j) {
-            const auto& p = vertices[j].pos;
-            if (p.x < min) {
-                min = p.x;
-            }
-            if (p.x > max) {
-                max = p.x;
-            }
-            if (p.y < min) {
-                min = p.y;
-            }
-            if (p.y > max) {
-                max = p.y;
-            }
-            if (p.z < min) {
-                min = p.z;
-            }
-            if (p.z > max) {
-                max = p.z;
-            }
-        }
-    }
-    mRadius = (max - min) / 2.f;
 }

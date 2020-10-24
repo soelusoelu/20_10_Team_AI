@@ -93,6 +93,10 @@ Vector3& Vector3::operator-=(const Vector3& right) {
     return *this;
 }
 
+bool Vector3::equal(const Vector3& right) const {
+    return (Math::equal(x, right.x) && Math::equal(y, right.y) && Math::equal(z, right.z));
+}
+
 float Vector3::lengthSq() const {
     return (x * x + y * y + z * z);
 }

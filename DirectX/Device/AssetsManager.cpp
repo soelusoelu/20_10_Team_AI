@@ -3,9 +3,9 @@
 #include "../Mesh/FBX.h"
 #include "../Mesh/Mesh.h"
 #include "../Mesh/OBJ.h"
-#include "../System/TextureFromFile.h"
 #include "../System/World.h"
 #include "../System/Shader/Shader.h"
+#include "../System/Texture/TextureFromFile.h"
 #include "../Utility/Directory.h"
 #include "../Utility/FileUtil.h"
 #include <cassert>

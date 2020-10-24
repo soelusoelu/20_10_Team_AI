@@ -22,7 +22,6 @@
     <ClCompile Include="Device\Time.cpp" />
     <ClCompile Include="Sprite\Sprite.cpp" />
     <ClCompile Include="Sprite\SpriteManager.cpp" />
-    <ClCompile Include="Utility\Collision.cpp" />
     <ClCompile Include="System\Entry.cpp" />
     <ClCompile Include="System\Game.cpp" />
     <ClCompile Include="System\Window.cpp" />
@@ -30,7 +29,6 @@
     <ClCompile Include="System\GBuffer.cpp" />
     <ClCompile Include="Utility\StringUtil.cpp" />
     <ClCompile Include="Light\PointLight.cpp" />
-    <ClCompile Include="System\Texture.cpp" />
     <ClCompile Include="Device\DrawString.cpp" />
     <ClCompile Include="Device\AssetsManager.cpp" />
     <ClCompile Include="Utility\LevelLoader.cpp" />
@@ -156,8 +154,6 @@
     <ClCompile Include="Sound\Effects\FourierTransform\WindowFunction.cpp" />
     <ClCompile Include="Sound\Effects\FourierTransform\FourierTransform.cpp" />
     <ClCompile Include="Component\Sound\WaveformRenderSample.cpp" />
-    <ClCompile Include="System\TextureFromMemory.cpp" />
-    <ClCompile Include="System\TextureFromFile.cpp" />
     <ClCompile Include="DebugLayer\LineRenderer\LineRenderer.cpp" />
     <ClCompile Include="DebugLayer\LineRenderer\LineRenderer2D.cpp" />
     <ClCompile Include="DebugLayer\LineRenderer\LineRenderer3D.cpp" />
@@ -165,6 +161,16 @@
     <ClCompile Include="System\Shader\ConstantBufferManager.cpp" />
     <ClCompile Include="System\Shader\Shader.cpp" />
     <ClCompile Include="System\Shader\InputElementManager.cpp" />
+    <ClCompile Include="System\Texture\Texture.cpp" />
+    <ClCompile Include="System\Texture\TextureFromFile.cpp" />
+    <ClCompile Include="System\Texture\TextureFromMemory.cpp" />
+    <ClCompile Include="Component\Sample\RayMouse.cpp" />
+    <ClCompile Include="Collision\AABB.cpp" />
+    <ClCompile Include="Collision\Circle.cpp" />
+    <ClCompile Include="Collision\Intersect.cpp" />
+    <ClCompile Include="Collision\Ray.cpp" />
+    <ClCompile Include="Collision\Sphere.cpp" />
+    <ClCompile Include="Component\Collider\AABBCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -175,7 +181,6 @@
     <ClInclude Include="Device\Time.h" />
     <ClInclude Include="Sprite\Sprite.h" />
     <ClInclude Include="Sprite\SpriteManager.h" />
-    <ClInclude Include="Utility\Collision.h" />
     <ClInclude Include="System\Game.h" />
     <ClInclude Include="System\Window.h" />
     <ClInclude Include="Mesh\MeshManager.h" />
@@ -183,7 +188,6 @@
     <ClInclude Include="Mesh\Material.h" />
     <ClInclude Include="Utility\StringUtil.h" />
     <ClInclude Include="Light\PointLight.h" />
-    <ClInclude Include="System\Texture.h" />
     <ClInclude Include="Device\DrawString.h" />
     <ClInclude Include="Device\AssetsManager.h" />
     <ClInclude Include="Utility\LevelLoader.h" />
@@ -249,7 +253,6 @@
     <ClInclude Include="DirectX\SubResourceDesc.h" />
     <ClInclude Include="DirectX\Texture2D.h" />
     <ClInclude Include="DirectX\Texture2DDesc.h" />
-    <ClInclude Include="DirectX\TextureDesc.h" />
     <ClInclude Include="DirectX\Usage.h" />
     <ClInclude Include="DirectX\VertexBuffer.h" />
     <ClInclude Include="System\SceneManager.h" />
@@ -351,8 +354,6 @@
     <ClInclude Include="Sound\Effects\FourierTransform\WindowFunction.h" />
     <ClInclude Include="Sound\Effects\FourierTransform\FourierTransform.h" />
     <ClInclude Include="Component\Sound\WaveformRenderSample.h" />
-    <ClInclude Include="System\TextureFromMemory.h" />
-    <ClInclude Include="System\TextureFromFile.h" />
     <ClInclude Include="DebugLayer\LineRenderer\LineRenderer.h" />
     <ClInclude Include="DebugLayer\LineRenderer\LineRenderer2D.h" />
     <ClInclude Include="DebugLayer\LineRenderer\LineRenderer3D.h" />
@@ -362,5 +363,17 @@
     <ClInclude Include="System\Shader\Shader.h" />
     <ClInclude Include="System\Shader\InputElementManager.h" />
     <ClInclude Include="Mesh\Vertex.h" />
+    <ClInclude Include="System\Texture\Texture.h" />
+    <ClInclude Include="System\Texture\TextureFromFile.h" />
+    <ClInclude Include="System\Texture\TextureFromMemory.h" />
+    <ClInclude Include="Component\Sample\RayMouse.h" />
+    <ClInclude Include="Mesh\IMesh.h" />
+    <ClInclude Include="Collision\AABB.h" />
+    <ClInclude Include="Collision\Circle.h" />
+    <ClInclude Include="Collision\Collision.h" />
+    <ClInclude Include="Collision\Intersect.h" />
+    <ClInclude Include="Collision\Ray.h" />
+    <ClInclude Include="Collision\Sphere.h" />
+    <ClInclude Include="Component\Collider\AABBCollider.h" />
   </ItemGroup>
 </Project>

@@ -1,8 +1,8 @@
 ﻿#include "Renderer.h"
 #include "../DirectX/DirectXInclude.h"
 #include "../System/GBuffer.h"
-#include "../System/Texture.h"
 #include "../System/Window.h"
+#include "../System/Texture/Texture.h"
 #include "../Utility/LevelLoader.h"
 
 Renderer::Renderer() :
@@ -47,6 +47,11 @@ void Renderer::renderLine2D(Matrix4* proj) const {
     proj->m[0][0] = 2.f / Window::width();
     proj->m[1][1] = -2.f / Window::height();
 
+    //デプステスト無効化
+    DirectX::instance().depthStencilState()->depthTest(false);
+}
+
+void Renderer::renderLine3D() const {
     auto& dx = DirectX::instance();
     //ビューポートの設定
     dx.setViewport(Window::width(), Window::height());
@@ -54,13 +59,7 @@ void Renderer::renderLine2D(Matrix4* proj) const {
     dx.setPrimitive(PrimitiveType::LINE_LIST);
     //半透明合成
     dx.blendState()->translucent();
-    //デプステスト無効化
-    DirectX::instance().depthStencilState()->depthTest(false);
-}
-
-void Renderer::renderLine3D() const {
     //デプステスト有効化
-    auto& dx = DirectX::instance();
     dx.depthStencilState()->depthTest(true);
     dx.depthStencilState()->depthMask(true);
 }

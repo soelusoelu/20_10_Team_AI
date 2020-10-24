@@ -41,6 +41,8 @@ private:
     //シェーダの生成
     void createVertexShader(const std::string& fileName);
     void createPixelShader(const std::string& fileName);
+    //シェーダーをコンパイルする
+    bool compileShader(Microsoft::WRL::ComPtr<ID3DBlob>* out, const std::string& fileName, const std::string& entryPoint, const std::string& target);
     //インプットレイアウトの生成
     void createInputLayout(const std::vector<InputElementDesc>& layout);
     //シェーダーに値を渡すための開始・終了処理
@@ -48,7 +50,7 @@ private:
     void unmap(unsigned index = 0, unsigned sub = 0) const;
 
 private:
-    Microsoft::WRL::ComPtr<ID3DBlob> mCompileShader;
+    Microsoft::WRL::ComPtr<ID3DBlob> mVSBlob;
     Microsoft::WRL::ComPtr<ID3D11VertexShader> mVertexShader;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> mPixelShader;
     BufferPtrArray mConstantBuffers;

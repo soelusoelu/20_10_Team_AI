@@ -87,13 +87,13 @@ void GBuffer::renderToTexture() {
     for (size_t i = 0; i < numGBuffer; i++) {
         views[i] = mRenderTargets[i]->getRenderTarget();
     }
-    dx.setRenderTargets(views->GetAddressOf(), numGBuffer);
+    //dx.setRenderTargets(views->GetAddressOf(), numGBuffer);
 
     //クリア
     for (size_t i = 0; i < numGBuffer; i++) {
         mRenderTargets[i]->clearRenderTarget();
     }
-    dx.clearDepthStencilView();
+    //dx.clearDepthStencilView();
 
     //デプステスト有効化
     dx.depthStencilState()->depthTest(true);

@@ -1,12 +1,11 @@
 ﻿#include "CircleCollider.h"
 #include "../Sprite/SpriteComponent.h"
-#include "../../GameObject/GameObject.h"
 #include "../../Transform/Transform2D.h"
 
 CircleCollider::CircleCollider(GameObject& gameObject) :
     Collider(gameObject),
     mSprite(nullptr),
-    mCircle(std::make_unique<Circle>()) {
+    mCircle() {
 }
 
 CircleCollider::~CircleCollider() = default;
@@ -31,19 +30,20 @@ void CircleCollider::update() {
 void CircleCollider::drawDebugInfo(ComponentDebug::DebugInfoList* inspect) const {
     Collider::drawDebugInfo(inspect);
 
-    inspect->emplace_back("Center", mCircle->center);
-    inspect->emplace_back("Radius", mCircle->radius);
+    inspect->emplace_back("Center", mCircle.center);
+    inspect->emplace_back("Radius", mCircle.radius);
 }
 
 void CircleCollider::set(const Vector2& center, float radius) {
-    mCircle->set(center, radius);
+    mCircle.center = center;
+    mCircle.radius = radius;
     if (mIsAutoUpdate) {
         mIsAutoUpdate = false;
     }
 }
 
 const Circle& CircleCollider::getCircle() const {
-    return *mCircle;
+    return mCircle;
 }
 
 void CircleCollider::circleUpdate() {
@@ -58,5 +58,6 @@ void CircleCollider::circleUpdate() {
     auto maxScale = Math::Max<float>(scale.x, scale.y);
     auto radius = maxSize / 2.f * maxScale;
 
-    mCircle->set(t.getPosition(), radius);
+    mCircle.center = t.getPosition();
+    mCircle.radius = radius;
 }

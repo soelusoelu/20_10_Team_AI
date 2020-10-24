@@ -3,6 +3,7 @@
 #include "../Component/Component.h"
 #include "../Component/ComponentManager.h"
 #include "../Component/Camera/Camera.h"
+#include "../Component/Collider/AABBCollider.h"
 #include "../Component/Collider/CircleCollider.h"
 #include "../Component/Collider/SphereCollider.h"
 #include "../Component/Light/DirectionalLight.h"
@@ -10,6 +11,7 @@
 #include "../Component/Mesh/MeshComponent.h"
 #include "../Component/Other/Fade.h"
 #include "../Component/Other/HitPointComponent.h"
+#include "../Component/Sample/RayMouse.h"
 #include "../Component/Scene/GamePlay.h"
 #include "../Component/Scene/Scene.h"
 #include "../Component/Scene/Title.h"
@@ -35,6 +37,7 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(Camera);
 
+    ADD_COMPONENT(AABBCollider);
     ADD_COMPONENT(CircleCollider);
     ADD_COMPONENT(SphereCollider);
 
@@ -45,6 +48,8 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(Fade);
     ADD_COMPONENT(HitPointComponent);
+
+    ADD_COMPONENT(RayMouse);
 
     ADD_COMPONENT(GamePlay);
     ADD_COMPONENT(Scene);

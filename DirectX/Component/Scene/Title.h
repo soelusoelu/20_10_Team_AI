@@ -4,8 +4,6 @@
 #include <memory>
 
 class Scene;
-class SoundComponent;
-class SubmixVoice;
 
 class Title : public Component {
 public:
@@ -16,7 +14,4 @@ public:
 
 private:
     std::shared_ptr<Scene> mScene;
-    std::shared_ptr<SoundComponent> mSound;
-    std::unique_ptr<SubmixVoice> mWetSubmix;
-    std::unique_ptr<SubmixVoice> mDrySubmix;
 };

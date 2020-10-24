@@ -6,8 +6,8 @@
 #include "../../GameObject/GameObject.h"
 #include "../../Mesh/Mesh.h"
 #include "../../Mesh/MeshManager.h"
-#include "../../System/TextureFromFile.h"
 #include "../../System/Shader/ConstantBuffers.h"
+#include "../../System/Texture/TextureFromFile.h"
 #include "../../Transform/Transform3D.h"
 #include "../../System/World.h"
 #include "../../Utility/LevelLoader.h"
@@ -113,12 +113,8 @@ bool MeshComponent::isDead() const {
     return mState == State::DEAD;
 }
 
-const Vector3& MeshComponent::getCenter() const {
-    return mMesh->getCenter();
-}
-
-float MeshComponent::getRadius() const {
-    return mMesh->getRadius();
+const IMesh& MeshComponent::getMesh() const {
+    return *mMesh;
 }
 
 void MeshComponent::setAlpha(float alpha) {

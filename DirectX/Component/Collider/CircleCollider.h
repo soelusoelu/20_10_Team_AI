@@ -1,8 +1,8 @@
 ﻿#pragma once
 
 #include "Collider.h"
+#include "../../Collision/Collision.h"
 #include "../../Math/Math.h"
-#include "../../Utility/Collision.h"
 #include <memory>
 
 class SpriteComponent;
@@ -21,6 +21,6 @@ private:
     void circleUpdate();
 
 private:
+    Circle mCircle;
     std::shared_ptr<SpriteComponent> mSprite;
-    std::unique_ptr<Circle> mCircle;
 };
