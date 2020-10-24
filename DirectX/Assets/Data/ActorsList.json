@@ -161,21 +161,61 @@
       ]
     },
     {
-      "type": "CharacterCreater",
-      "properties": {
+      "type": "PLightTest",
+      "propeties": {
+        "scale": [ 0.75, 0.75, 0.75 ]
       },
+      "components": [
+        {
+          "type": "DragAndDropCharacter",
+          "properties": {
+          }
+        },
+        {
+          "type": "MeshComponent",
+          "properties": {
+            "fileName": "Light/PLight.obj"
+          }
+        },
+        {
+          "type": "AABBCollider",
+          "properties": {
+          }
+        }
+      ]
+    },
+    {
+      "type": "CharacterCreater",
       "components": [
         {
           "type": "CharacterCreater",
           "properties": {
+            "characterNames": [
+              "SphereTest",
+              "BoxTest",
+              "PLightTest"
+            ],
+            "spriteStartPosition": [ 64.0, 850.0 ],
+            "spriteScale": [ 0.7, 0.7 ],
+            "spriteSpace": 48.0
           }
         },
         {
           "type": "SpriteComponent",
           "properties": {
-            "fileName": "cat.png",
-            "position": [ 100.0, 900.0 ],
-            "scale": [ 0.25, 0.25 ]
+            "fileName": "Character/red.png"
+          }
+        },
+        {
+          "type": "SpriteComponent",
+          "properties": {
+            "fileName": "Character/green.png"
+          }
+        },
+        {
+          "type": "SpriteComponent",
+          "properties": {
+            "fileName": "Character/blue.png"
           }
         }
       ]
