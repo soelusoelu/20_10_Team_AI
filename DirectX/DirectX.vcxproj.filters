@@ -36,7 +36,6 @@
     <ClCompile Include="Utility\FileUtil.cpp" />
     <ClCompile Include="Mesh\OBJ.cpp" />
     <ClCompile Include="Device\FPSCounter.cpp" />
-    <ClCompile Include="Utility\Directory.cpp" />
     <ClCompile Include="DebugLayer\Debug.cpp" />
     <ClCompile Include="DebugLayer\Log.cpp" />
     <ClCompile Include="DebugLayer\FixedDebugInformation.cpp" />
@@ -200,7 +199,6 @@
     <ClInclude Include="Utility\FileUtil.h" />
     <ClInclude Include="Mesh\OBJ.h" />
     <ClInclude Include="Device\FPSCounter.h" />
-    <ClInclude Include="Utility\Directory.h" />
     <ClInclude Include="DebugLayer\Debug.h" />
     <ClInclude Include="DebugLayer\Log.h" />
     <ClInclude Include="DebugLayer\FixedDebugInformation.h" />

@@ -260,7 +260,6 @@
     <ClCompile Include="Sound\Player\SoundPlayer.cpp" />
     <ClCompile Include="Sound\Volume\SoundVolume.cpp" />
     <ClCompile Include="Sound\Voice\SourceVoice\SourceVoice.cpp" />
-    <ClCompile Include="Utility\Directory.cpp" />
     <ClCompile Include="Input\JoyPad.cpp" />
     <ClCompile Include="Input\Keyboard.cpp" />
     <ClCompile Include="Mesh\FBX.cpp" />
@@ -457,7 +456,6 @@
     <ClInclude Include="Component\Text\TextNumber.h" />
     <ClInclude Include="Component\Text\TextFloat.h" />
     <ClInclude Include="Component\Text\TextBase.h" />
-    <ClInclude Include="Utility\Directory.h" />
     <ClInclude Include="Input\JoyPad.h" />
     <ClInclude Include="Input\Keyboard.h" />
     <ClInclude Include="Mesh\FBX.h" />

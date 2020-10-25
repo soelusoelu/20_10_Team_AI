@@ -3,7 +3,6 @@
 #include <memory>
 
 class AssetsManager;
-class Directory;
 
 //グローバルアクセス専用クラス
 class World {
@@ -14,7 +13,6 @@ public:
     static World& instance();
     void finalize();
     AssetsManager& assetsManager() const;
-    const Directory& directory() const;
 
 private:
     World(const World&) = delete;
@@ -23,5 +21,4 @@ private:
 private:
     static inline World* mInstance = nullptr;
     std::unique_ptr<AssetsManager> mAssetsManager;
-    std::unique_ptr<Directory> mDirectory;
 };
