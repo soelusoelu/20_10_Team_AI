@@ -1,4 +1,5 @@
 ﻿#include "Game.h"
+#include "AssetsManager.h"
 #include "GlobalFunction.h"
 #include "SceneManager.h"
 #include "Window.h"
@@ -30,6 +31,7 @@ Game::~Game() {
     InputUtility::finalize();
     DebugUtility::finalize();
     SoundEngine::instance().finalize();
+    AssetsManager::instance().finalize();
     MyDirectX::DirectX::instance().finalize();
 }
 

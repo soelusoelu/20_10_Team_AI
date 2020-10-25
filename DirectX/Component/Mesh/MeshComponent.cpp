@@ -2,14 +2,13 @@
 #include "../Camera/Camera.h"
 #include "../Light/DirectionalLight.h"
 #include "../../DebugLayer/Debug.h"
-#include "../../Device/AssetsManager.h"
 #include "../../GameObject/GameObject.h"
 #include "../../Mesh/Mesh.h"
 #include "../../Mesh/MeshManager.h"
+#include "../../System/AssetsManager.h"
 #include "../../System/Shader/ConstantBuffers.h"
 #include "../../System/Texture/TextureFromFile.h"
 #include "../../Transform/Transform3D.h"
-#include "../../System/World.h"
 #include "../../Utility/LevelLoader.h"
 
 MeshComponent::MeshComponent(GameObject& gameObject) :
@@ -39,7 +38,7 @@ void MeshComponent::onEnable(bool value) {
 void MeshComponent::loadProperties(const rapidjson::Value& inObj) {
     //ファイル名からメッシュを生成
     if (JsonHelper::getString(inObj, "fileName", &mFileName)) {
-        mMesh = World::instance().assetsManager().createMesh(mFileName);
+        mMesh = AssetsManager::instance().createMesh(mFileName);
     }
 
     std::string shader;

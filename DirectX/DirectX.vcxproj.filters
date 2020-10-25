@@ -30,7 +30,6 @@
     <ClCompile Include="Utility\StringUtil.cpp" />
     <ClCompile Include="Light\PointLight.cpp" />
     <ClCompile Include="Device\DrawString.cpp" />
-    <ClCompile Include="Device\AssetsManager.cpp" />
     <ClCompile Include="Utility\LevelLoader.cpp" />
     <ClCompile Include="Mesh\FBX.cpp" />
     <ClCompile Include="Utility\FileUtil.cpp" />
@@ -98,7 +97,6 @@
     <ClCompile Include="Component\Sound\SoundComponent.cpp" />
     <ClCompile Include="Light\LightManager.cpp" />
     <ClCompile Include="Component\Text\TextBase.cpp" />
-    <ClCompile Include="System\World.cpp" />
     <ClCompile Include="Utility\Easing.cpp" />
     <ClCompile Include="Utility\Random.cpp" />
     <ClCompile Include="Transform\Pivot.cpp" />
@@ -174,6 +172,7 @@
     <ClCompile Include="Component\CharacterOperation\CharacterCreater.cpp" />
     <ClCompile Include="Collision\Square.cpp" />
     <ClCompile Include="Component\Camera\CameraMove.cpp" />
+    <ClCompile Include="System\AssetsManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -192,7 +191,6 @@
     <ClInclude Include="Utility\StringUtil.h" />
     <ClInclude Include="Light\PointLight.h" />
     <ClInclude Include="Device\DrawString.h" />
-    <ClInclude Include="Device\AssetsManager.h" />
     <ClInclude Include="Utility\LevelLoader.h" />
     <ClInclude Include="Mesh\FBX.h" />
     <ClInclude Include="Mesh\IMeshLoader.h" />
@@ -278,7 +276,6 @@
     <ClInclude Include="Light\LightManager.h" />
     <ClInclude Include="DirectX\DirectXInclude.h" />
     <ClInclude Include="Component\Text\TextBase.h" />
-    <ClInclude Include="System\World.h" />
     <ClInclude Include="Utility\Easing.h" />
     <ClInclude Include="Utility\Random.h" />
     <ClInclude Include="Transform\Transform3D.h" />
@@ -381,5 +378,6 @@
     <ClInclude Include="Component\CharacterOperation\CharacterCreater.h" />
     <ClInclude Include="Collision\Square.h" />
     <ClInclude Include="Component\Camera\CameraMove.h" />
+    <ClInclude Include="System\AssetsManager.h" />
   </ItemGroup>
 </Project>

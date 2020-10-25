@@ -1,7 +1,4 @@
 ﻿#include "CSVReader.h"
-#include "AssetsManager.h"
-#include "../System/World.h"
-#include "../Utility/FileUtil.h"
 #include <cassert>
 #include <fstream>
 #include <sstream>

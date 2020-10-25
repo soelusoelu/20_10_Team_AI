@@ -1,7 +1,6 @@
 ﻿#include "OBJ.h"
 #include "../DebugLayer/Debug.h"
-#include "../Device/AssetsManager.h"
-#include "../System/World.h"
+#include "../System/AssetsManager.h"
 #include "../Utility/FileUtil.h"
 #include <sstream>
 
@@ -225,7 +224,7 @@ void OBJ::loadTexture(std::istringstream& iss, const std::string& directoryPath)
     std::string textureName;
     iss >> textureName;
     //テクスチャ読み込み
-    mat.texture = World::instance().assetsManager().createTexture(textureName, directoryPath);
+    mat.texture = AssetsManager::instance().createTexture(textureName, directoryPath);
 }
 
 bool OBJ::isSkip(const std::string& line) {

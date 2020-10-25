@@ -233,7 +233,7 @@
     <ClCompile Include="Component\Camera\Camera.cpp" />
     <ClCompile Include="Component\Other\HitPointComponent.cpp" />
     <ClCompile Include="DebugLayer\Hierarchy.cpp" />
-    <ClCompile Include="Device\AssetsManager.cpp" />
+    <ClCompile Include="System\AssetsManager.cpp" />
     <ClCompile Include="DebugLayer\FixedDebugInformation.cpp" />
     <ClCompile Include="DebugLayer\Log.cpp" />
     <ClCompile Include="Device\FPSCounter.cpp" />
@@ -318,7 +318,6 @@
     <ClCompile Include="DirectX\VertexBuffer.cpp" />
     <ClCompile Include="Math\Vector3.cpp" />
     <ClCompile Include="Math\Vector4.cpp" />
-    <ClCompile Include="System\World.cpp" />
     <ClCompile Include="Sound\Loader\WAV.cpp" />
     <ClCompile Include="Sound\XAudio2\XAudio2.cpp" />
     <ClCompile Include="Sound\Effects\VolumeMeter\VolumeMeter.cpp" />
@@ -422,7 +421,7 @@
     <ClInclude Include="Component\Camera\Camera.h" />
     <ClInclude Include="Component\Other\HitPointComponent.h" />
     <ClInclude Include="DebugLayer\Hierarchy.h" />
-    <ClInclude Include="Device\AssetsManager.h" />
+    <ClInclude Include="System\AssetsManager.h" />
     <ClInclude Include="DebugLayer\FixedDebugInformation.h" />
     <ClInclude Include="DebugLayer\Log.h" />
     <ClInclude Include="Device\FPSCounter.h" />
@@ -525,7 +524,6 @@
     <ClInclude Include="DirectX\VertexBuffer.h" />
     <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="Math\Vector4.h" />
-    <ClInclude Include="System\World.h" />
     <ClInclude Include="Sound\Loader\WAV.h" />
     <ClInclude Include="Sound\XAudio2\XAudio2.h" />
     <ClInclude Include="Sound\Effects\VolumeMeter\VolumeMeter.h" />

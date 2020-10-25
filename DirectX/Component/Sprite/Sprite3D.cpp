@@ -1,11 +1,10 @@
 ﻿#include "Sprite3D.h"
 #include "../../DebugLayer/Debug.h"
-#include "../../Device/AssetsManager.h"
 #include "../../DirectX/DirectX.h"
 #include "../../GameObject/GameObject.h"
 #include "../../Sprite/SpriteManager.h"
+#include "../../System/AssetsManager.h"
 #include "../../System/Window.h"
-#include "../../System/World.h"
 #include "../../System/Shader/ConstantBuffers.h"
 #include "../../System/Shader/Shader.h"
 #include "../../System/Texture/Texture.h"
@@ -36,7 +35,7 @@ void Sprite3D::awake() {
         return;
     }
 
-    mTexture = World::instance().assetsManager().createTexture(mFileName);
+    mTexture = AssetsManager::instance().createTexture(mFileName);
     mShader = std::make_unique<Shader>("Texture.hlsl");
 
     //テクスチャのアスペクト比を計算

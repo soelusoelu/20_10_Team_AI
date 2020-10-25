@@ -1,8 +1,7 @@
 ﻿#include "FBX.h"
 #include "Material.h"
 #include "../DebugLayer/Debug.h"
-#include "../Device/AssetsManager.h"
-#include "../System/World.h"
+#include "../System/AssetsManager.h"
 #include "../Utility/FileUtil.h"
 
 FBX::FBX() :
@@ -467,7 +466,7 @@ void FBX::createTexture(const FbxSurfaceMaterial* material, const std::string& d
     const auto& textureName = FileUtil::getFileNameFromDirectry(filePath);
 
     //ファイル名からテクスチャを作成する
-    const auto& tex = World::instance().assetsManager().createTexture(textureName, directoryPath);
+    const auto& tex = AssetsManager::instance().createTexture(textureName, directoryPath);
 
     //指定されたテクスチャに渡す
     if (type == FbxSurfaceMaterial::sDiffuse) {

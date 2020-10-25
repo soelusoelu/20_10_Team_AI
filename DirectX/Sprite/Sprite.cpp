@@ -1,8 +1,7 @@
 ﻿#include "Sprite.h"
 #include "SpriteManager.h"
-#include "../Device/AssetsManager.h"
 #include "../DirectX/DirectXInclude.h"
-#include "../System/World.h"
+#include "../System/AssetsManager.h"
 #include "../System/shader/ConstantBuffers.h"
 #include "../System/shader/Shader.h"
 #include "../System/Texture/TextureFromFile.h"
@@ -122,7 +121,7 @@ void Sprite::setTextureFromFileName(const std::string& fileName) {
     if (mTexture) {
         mTexture.reset();
     }
-    mTexture = World::instance().assetsManager().createTexture(fileName);
+    mTexture = AssetsManager::instance().createTexture(fileName);
 
     //Transformに通知
     mTransform->setSize(mTexture->getTextureSize());

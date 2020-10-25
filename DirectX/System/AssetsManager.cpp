@@ -1,15 +1,21 @@
 ﻿#include "AssetsManager.h"
 #include "../Mesh/Mesh.h"
+#include "../System/GlobalFunction.h"
 #include "../System/Texture/TextureFromFile.h"
-#include <cassert>
 
-AssetsManager::AssetsManager() {
-    assert(!mInstantiated);
-    mInstantiated = true;
+AssetsManager::AssetsManager() = default;
+
+AssetsManager::~AssetsManager() = default;
+
+AssetsManager& AssetsManager::instance() {
+    if (!mInstance) {
+        mInstance = new AssetsManager();
+    }
+    return *mInstance;
 }
 
-AssetsManager::~AssetsManager() {
-    mInstantiated = false;
+void AssetsManager::finalize() {
+    safeDelete(mInstance);
 }
 
 std::shared_ptr<TextureFromFile> AssetsManager::createTexture(const std::string & fileName, const std::string& directoryPath) {
