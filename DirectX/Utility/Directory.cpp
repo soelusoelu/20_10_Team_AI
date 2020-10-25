@@ -9,8 +9,8 @@ Directory::Directory() :
     mInstantiated = true;
 
     char dir[1024];
-    GetCurrentDirectoryA(sizeof(dir), dir);
-    mRootPath = dir;
+    //GetCurrentDirectoryA(sizeof(dir), dir);
+    //mRootPath = dir;
 }
 
 Directory::~Directory() {
@@ -60,5 +60,5 @@ void Directory::setModelDirectory(const std::string& filePath) const {
 }
 
 void Directory::setCurrentDirectory(const std::string& path) const {
-    SetCurrentDirectoryA(path.c_str());
+    //SetCurrentDirectoryA(path.c_str());
 }

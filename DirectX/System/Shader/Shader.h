@@ -16,7 +16,7 @@ class Shader {
     using BufferPtrArray = std::vector<BufferPtr>;
 
 public:
-    Shader(const std::string& fileName);
+    Shader(const std::string& filePath);
     ~Shader();
 
     //プログラムの終わりの終了処理

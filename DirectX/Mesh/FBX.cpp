@@ -11,7 +11,7 @@ FBX::FBX() :
 
 FBX::~FBX() = default;
 
-void FBX::perse(const std::string& fileName, std::vector<MeshVertices>& meshes) {
+void FBX::perse(const std::string& filePath, std::vector<MeshVertices>& meshes) {
     //マネージャーを生成
     auto manager = FbxManager::Create();
 
@@ -21,8 +21,8 @@ void FBX::perse(const std::string& fileName, std::vector<MeshVertices>& meshes) 
 
     //Importerを生成
     FbxImporter* importer = FbxImporter::Create(manager, "");
-    if (!importer->Initialize(fileName.c_str(), -1, manager->GetIOSettings())) {
-        Debug::windowMessage(fileName + ": ファイルは存在しません");
+    if (!importer->Initialize(filePath.c_str(), -1, manager->GetIOSettings())) {
+        Debug::windowMessage(filePath + ": ファイルは存在しません");
         return;
     }
 
@@ -45,10 +45,13 @@ void FBX::perse(const std::string& fileName, std::vector<MeshVertices>& meshes) 
     meshes.resize(mNumMeshes);
     mIndices.resize(mNumMeshes);
 
+    //ファイルパスからディレクトリパスを抜き出す
+    auto directoryPath = FileUtil::getDirectryFromFilePath(filePath);
+
     //FbxMeshの数だけメッシュを作成する
     for (size_t i = 0; i < mNumMeshes; ++i) {
         auto mesh = scene->GetSrcObject<FbxMesh>(i);
-        createMesh(meshes[i], mesh, i);
+        createMesh(meshes[i], mesh, directoryPath, i);
     }
 
     //マネージャー解放
@@ -67,9 +70,9 @@ unsigned FBX::getMeshCount() const {
     return mNumMeshes;
 }
 
-void FBX::createMesh(MeshVertices& meshVertices, FbxMesh* mesh, unsigned meshIndex) {
+void FBX::createMesh(MeshVertices& meshVertices, FbxMesh* mesh, const std::string& directoryPath, unsigned meshIndex) {
     loadFace(meshVertices, mesh, meshIndex);
-    loadMaterial(mesh, meshIndex);
+    loadMaterial(mesh, directoryPath, meshIndex);
 }
 
 void FBX::loadPosition(FbxMesh* mesh, unsigned meshIndex) {
@@ -316,7 +319,7 @@ void FBX::computeIndices(FbxMesh* mesh, unsigned meshIndex) {
     }
 }
 
-void FBX::loadMaterial(FbxMesh* mesh, unsigned meshIndex) {
+void FBX::loadMaterial(FbxMesh* mesh, const std::string& directoryPath, unsigned meshIndex) {
     //すべてのメッシュにマテリアルを持たせるため
     mMaterials.emplace_back();
 
@@ -342,7 +345,7 @@ void FBX::loadMaterial(FbxMesh* mesh, unsigned meshIndex) {
         loadMaterialAttribute(surfaceMaterial, meshIndex);
 
         //テクスチャを取得
-        loadTextures(surfaceMaterial, meshIndex);
+        loadTextures(surfaceMaterial, directoryPath, meshIndex);
     }
 }
 
@@ -437,13 +440,13 @@ void FBX::loadPhong(const FbxSurfacePhong* phong, unsigned meshIndex) {
     }
 }
 
-void FBX::loadTextures(FbxSurfaceMaterial* material, unsigned meshIndex) {
+void FBX::loadTextures(FbxSurfaceMaterial* material, const std::string& directoryPath, unsigned meshIndex) {
     //テクスチャ作成
-    createTexture(material, FbxSurfaceMaterial::sDiffuse, meshIndex);
-    createTexture(material, FbxSurfaceMaterial::sNormalMap, meshIndex);
+    createTexture(material, directoryPath, FbxSurfaceMaterial::sDiffuse, meshIndex);
+    createTexture(material, directoryPath, FbxSurfaceMaterial::sNormalMap, meshIndex);
 }
 
-void FBX::createTexture(const FbxSurfaceMaterial* material, const char* type, unsigned meshIndex) {
+void FBX::createTexture(const FbxSurfaceMaterial* material, const std::string& directoryPath, const char* type, unsigned meshIndex) {
     //プロパティを取得する
     const auto& prop = material->FindProperty(type);
 
@@ -464,7 +467,7 @@ void FBX::createTexture(const FbxSurfaceMaterial* material, const char* type, un
     const auto& textureName = FileUtil::getFileNameFromDirectry(filePath);
 
     //ファイル名からテクスチャを作成する
-    const auto& tex = World::instance().assetsManager().createTextureFromModel(textureName);
+    const auto& tex = World::instance().assetsManager().createTexture(textureName, directoryPath);
 
     //指定されたテクスチャに渡す
     if (type == FbxSurfaceMaterial::sDiffuse) {

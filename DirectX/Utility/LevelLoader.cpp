@@ -1,23 +1,15 @@
 ﻿#include "LevelLoader.h"
 #include "FileUtil.h"
 #include "../DebugLayer/Debug.h"
-#include "../Device/AssetsManager.h"
 #include "../GameObject/GameObject.h"
 #include "../System/Game.h"
-#include "../System/World.h"
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/prettywriter.h>
 #include <fstream>
 
 bool LevelLoader::loadJSON(const std::string & filePath, rapidjson::Document * outDoc) {
-    //フォルダ階層の移動
-    World::instance().assetsManager().setDataDirectory(filePath);
-
-    //ファイル名の取得
-    auto fileName = FileUtil::getFileNameFromDirectry(filePath);
-
     //バイナリモードで開き、末尾に移動
-    std::ifstream file(fileName, std::ios::in | std::ios::binary | std::ios::ate);
+    std::ifstream file(filePath, std::ios::in | std::ios::binary | std::ios::ate);
     if (!file.is_open()) {
         Debug::windowMessage(filePath + "ファイルが見つかりません");
         return false;
@@ -126,9 +118,7 @@ void LevelLoader::saveUI(std::list<std::shared_ptr<GameObject>> uiList, const st
     const char* output = buffer.GetString();
 
     //文字列をファイルに書き込む
-    World::instance().assetsManager().setDataDirectory(filePath);
-    auto fileName = FileUtil::getFileNameFromDirectry(filePath);
-    std::ofstream outFile(fileName);
+    std::ofstream outFile(filePath);
     if (outFile.is_open()) {
         outFile << output;
     }

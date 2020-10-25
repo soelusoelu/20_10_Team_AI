@@ -6,7 +6,6 @@
 #include "../System/World.h"
 #include "../System/Shader/Shader.h"
 #include "../System/Texture/TextureFromFile.h"
-#include "../Utility/Directory.h"
 #include "../Utility/FileUtil.h"
 #include <cassert>
 
@@ -19,40 +18,26 @@ AssetsManager::~AssetsManager() {
     mInstantiated = false;
 }
 
-std::unique_ptr<Shader> AssetsManager::createShader(const std::string & fileName) {
-    World::instance().directory().setShaderDirectory();
-    return std::make_unique<Shader>(fileName);
+std::unique_ptr<Shader> AssetsManager::createShader(const std::string & fileName, const std::string& directoryPath) {
+    return std::make_unique<Shader>(directoryPath + fileName);
 }
 
-std::shared_ptr<TextureFromFile> AssetsManager::createTexture(const std::string & filePath) {
+std::shared_ptr<TextureFromFile> AssetsManager::createTexture(const std::string & fileName, const std::string& directoryPath) {
     std::shared_ptr<TextureFromFile> texture = nullptr;
+    auto filePath = directoryPath + fileName;
     auto itr = mTextures.find(filePath);
     if (itr != mTextures.end()) { //既に読み込まれている
         texture = itr->second;
     } else { //初読み込み
-        World::instance().directory().setTextureDirectory(filePath);
-        auto fileName = FileUtil::getFileNameFromDirectry(filePath);
-        texture = std::make_shared<TextureFromFile>(fileName);
+        texture = std::make_shared<TextureFromFile>(filePath);
         mTextures.emplace(filePath, texture);
     }
     return texture;
 }
 
-std::shared_ptr<TextureFromFile> AssetsManager::createTextureFromModel(const std::string& fileName) {
-    std::shared_ptr<TextureFromFile> texture = nullptr;
-    auto itr = mTextures.find(fileName);
-    if (itr != mTextures.end()) { //既に読み込まれている
-        texture = itr->second;
-    } else { //初読み込み
-        //モデルからテクスチャを生成したい場合、事前にディレクトリを移動させている必要がある
-        texture = std::make_shared<TextureFromFile>(fileName);
-        mTextures.emplace(fileName, texture);
-    }
-    return texture;
-}
-
-std::shared_ptr<Mesh> AssetsManager::createMesh(const std::string& filePath) {
+std::shared_ptr<Mesh> AssetsManager::createMesh(const std::string& fileName, const std::string& directoryPath) {
     std::shared_ptr<Mesh> mesh = nullptr;
+    auto filePath = directoryPath + fileName;
     auto itr = mMeshes.find(filePath);
     if (itr != mMeshes.end()) { //既に読み込まれている
         mesh = itr->second;
@@ -77,13 +62,6 @@ std::unique_ptr<IMeshLoader> AssetsManager::createMeshLoader(const std::string &
         Debug::windowMessage(filePath + ": 対応していない拡張子です");
     }
 
-    World::instance().directory().setModelDirectory(filePath);
-    auto fileName = FileUtil::getFileNameFromDirectry(filePath);
-    mesh->perse(fileName, vertices);
+    mesh->perse(filePath, vertices);
     return mesh;
-}
-
-void AssetsManager::setDataDirectory(const std::string& filePath) const {
-    const auto& dir = World::instance().directory();
-    dir.setDataDirectory(filePath);
 }

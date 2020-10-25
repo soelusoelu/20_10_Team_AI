@@ -70,7 +70,7 @@ void Game::initialize() {
     mSceneManager = new SceneManager();
 
     //ファイルから値を読み込む
-    LevelLoader::loadGlobal(this, "Global.json");
+    LevelLoader::loadGlobal(this, "Assets\\Data\\Global.json");
 
     mWindow->createWindow(mInstance);
     mhWnd = mWindow->gethWnd();

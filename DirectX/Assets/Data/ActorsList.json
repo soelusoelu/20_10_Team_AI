@@ -63,13 +63,6 @@
           "type": "Title",
           "properties": {
           }
-        },
-        {
-          "type": "SoundComponent",
-          "properties": {
-            "fileName": "çgò@âÿ.wav",
-            "use3D": false
-          }
         }
       ]
     },

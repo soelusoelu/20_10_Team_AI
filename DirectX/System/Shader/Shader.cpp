@@ -4,11 +4,12 @@
 #include "../GlobalFunction.h"
 #include "../../DebugLayer/Debug.h"
 #include "../../DirectX/DirectXInclude.h"
+#include "../../Utility/FileUtil.h"
 #include <d3dcompiler.h>
 
 #pragma comment(lib, "d3dcompiler.lib")
 
-Shader::Shader(const std::string& fileName) :
+Shader::Shader(const std::string& filePath) :
     mVSBlob(nullptr),
     mVertexShader(nullptr),
     mPixelShader(nullptr),
@@ -17,8 +18,11 @@ Shader::Shader(const std::string& fileName) :
         constantBufferManager = new ConstantBufferManager();
         inputElementManager = new InputElementManager();
     }
-    createVertexShader(fileName);
-    createPixelShader(fileName);
+    createVertexShader(filePath);
+    createPixelShader(filePath);
+
+    //ファイルパスからファイル名を抜き出す
+    auto fileName = FileUtil::getFileNameFromDirectry(filePath);
     mConstantBuffers = constantBufferManager->createConstantBuffer(fileName);
     createInputLayout(inputElementManager->createInputLayout(fileName));
 }

@@ -2,19 +2,23 @@
 #include "../DebugLayer/Debug.h"
 #include "../Device/AssetsManager.h"
 #include "../System/World.h"
+#include "../Utility/FileUtil.h"
 #include <sstream>
 
 OBJ::OBJ() = default;
 
 OBJ::~OBJ() = default;
 
-void OBJ::perse(const std::string& fileName, std::vector<MeshVertices>& meshes) {
+void OBJ::perse(const std::string& filePath, std::vector<MeshVertices>& meshes) {
     //OBJファイルを開いて内容を読み込む
-    std::ifstream ifs(fileName);
+    std::ifstream ifs(filePath);
     if (ifs.fail()) {
-        Debug::windowMessage(fileName + ": ファイルが存在しません");
+        Debug::windowMessage(filePath + ": ファイルが存在しません");
         return;
     }
+
+    //ディレクトリパスを抜き出しておく
+    auto directoryPath = FileUtil::getDirectryFromFilePath(filePath);
 
     //現状1つ
     meshes.resize(1);
@@ -46,7 +50,7 @@ void OBJ::perse(const std::string& fileName, std::vector<MeshVertices>& meshes) 
         } else if (key == "f") { //先頭文字列がfならポリゴン
             loadFace(lineStream, meshes.back());
         } else if (key == "mtllib") {
-            loadMaterial(lineStream);
+            loadMaterial(lineStream, directoryPath);
         }
     }
 }
@@ -135,15 +139,18 @@ void OBJ::loadFace(std::istringstream& iss, MeshVertices& meshVertices) {
     }
 }
 
-void OBJ::loadMaterial(std::istringstream& iss) {
+void OBJ::loadMaterial(std::istringstream& iss, const std::string& directoryPath) {
     //マテリアルのファイル名読み込み
     std::string fileName;
     iss >> fileName;
 
+    //取得したファイル名とディレクトリパスを結合する
+    auto filePath = directoryPath + fileName;
+
     //マテリアルファイルを開く
-    std::ifstream ifs(fileName);
+    std::ifstream ifs(filePath);
     if (ifs.fail()) {
-        Debug::windowMessage(fileName + ": ファイルが存在しません");
+        Debug::windowMessage(filePath + ": ファイルが存在しません");
         return;
     }
 
@@ -181,7 +188,7 @@ void OBJ::loadMaterial(std::istringstream& iss) {
         } else if (key == "Ks") {
             loadSpecular(lineStream);
         } else if (key == "map_Kd") {
-            loadTexture(lineStream);
+            loadTexture(lineStream, directoryPath);
         }
     }
 }
@@ -212,13 +219,13 @@ void OBJ::loadSpecular(std::istringstream& iss) {
     iss >> mat.specular.z;
 }
 
-void OBJ::loadTexture(std::istringstream& iss) {
+void OBJ::loadTexture(std::istringstream& iss, const std::string& directoryPath) {
     auto& mat = mMaterials.back();
     //テクスチャ名読み込み
     std::string textureName;
     iss >> textureName;
     //テクスチャ読み込み
-    mat.texture = World::instance().assetsManager().createTextureFromModel(textureName);
+    mat.texture = World::instance().assetsManager().createTexture(textureName, directoryPath);
 }
 
 bool OBJ::isSkip(const std::string& line) {

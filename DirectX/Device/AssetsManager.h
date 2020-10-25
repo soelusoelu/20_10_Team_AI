@@ -14,12 +14,10 @@ class AssetsManager {
 public:
     AssetsManager();
     ~AssetsManager();
-    std::unique_ptr<Shader> createShader(const std::string& fileName);
-    std::shared_ptr<TextureFromFile> createTexture(const std::string& filePath);
-    std::shared_ptr<TextureFromFile> createTextureFromModel(const std::string& fileName);
-    std::shared_ptr<Mesh> createMesh(const std::string& filePath);
+    std::unique_ptr<Shader> createShader(const std::string& fileName, const std::string& directoryPath = "Shader\\");
+    std::shared_ptr<TextureFromFile> createTexture(const std::string& fileName, const std::string& directoryPath = "Assets\\Texture\\");
+    std::shared_ptr<Mesh> createMesh(const std::string& fileName, const std::string& directoryPath = "Assets\\Model\\");
     std::unique_ptr<IMeshLoader> createMeshLoader(const std::string& filePath, std::vector<MeshVertices>& vertices);
-    void setDataDirectory(const std::string& filePath) const;
 
 private:
     AssetsManager(const AssetsManager&) = delete;

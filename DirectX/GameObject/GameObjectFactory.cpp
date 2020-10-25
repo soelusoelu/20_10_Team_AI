@@ -73,7 +73,7 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(TextFloat);
     ADD_COMPONENT(TextNumber);
 
-    const std::string& fileName = "ActorsList.json";
+    const std::string& fileName = "Assets\\Data\\ActorsList.json";
     if (!LevelLoader::loadJSON(fileName, &mDocument)) {
         Debug::windowMessage(fileName + ": レベルファイルのロードに失敗しました");
     }

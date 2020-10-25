@@ -21,6 +21,7 @@ std::string FileUtil::getFileNameFromDirectry(const std::string& filePath) {
             return filePath;
         }
     }
+
     return filePath.substr(pos + 1);
 }
 
@@ -32,5 +33,6 @@ std::string FileUtil::getDirectryFromFilePath(const std::string& filePath) {
             return "";
         }
     }
-    return filePath.substr(0, pos);
+
+    return filePath.substr(0, pos + 1);
 }

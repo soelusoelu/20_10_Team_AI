@@ -11,7 +11,7 @@ class OBJ : public IMeshLoader {
 public:
     OBJ();
     ~OBJ();
-    virtual void perse(const std::string& fileName, std::vector<MeshVertices>& meshes) override;
+    virtual void perse(const std::string& filePath, std::vector<MeshVertices>& meshes) override;
     virtual const std::vector<unsigned short>& getIndices(unsigned meshIndex) const override;
     virtual const Material& getMaterial(unsigned index) const override;
     virtual unsigned getMeshCount() const override;
@@ -24,12 +24,12 @@ private:
     void loadFace(std::istringstream& iss, MeshVertices& meshVertices);
 
     //マテリアル関連
-    void loadMaterial(std::istringstream& iss);
+    void loadMaterial(std::istringstream& iss, const std::string& directoryPath);
     void loadMaterialName(std::istringstream& iss);
     void loadAmbient(std::istringstream& iss);
     void loadDiffuse(std::istringstream& iss);
     void loadSpecular(std::istringstream& iss);
-    void loadTexture(std::istringstream& iss);
+    void loadTexture(std::istringstream& iss, const std::string& directoryPath);
 
     //不要な行をスキップする
     bool isSkip(const std::string& line);
