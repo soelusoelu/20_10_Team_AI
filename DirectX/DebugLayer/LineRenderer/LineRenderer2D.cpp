@@ -65,5 +65,5 @@ void LineRenderer2D::drawLine(const Line2DParam& param, const Matrix4& proj) con
     mShader->transferData(&cb, sizeof(cb));
 
     //描画
-    DirectX::instance().drawIndexed(2);
+    MyDirectX::DirectX::instance().drawIndexed(2);
 }

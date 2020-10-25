@@ -112,7 +112,7 @@ void Sprite3D::draw(const Matrix4& viewProj) const {
     mShader->transferData(&cb, sizeof(cb));
 
     //プリミティブをレンダリング
-    DirectX::instance().drawIndexed(6);
+    MyDirectX::DirectX::instance().drawIndexed(6);
 }
 
 void Sprite3D::drawBillboard(const Matrix4& invView, const Matrix4& viewProj) {
@@ -132,7 +132,7 @@ void Sprite3D::drawBillboard(const Matrix4& invView, const Matrix4& viewProj) {
     mShader->transferData(&cb, sizeof(cb));
 
     //プリミティブをレンダリング
-    DirectX::instance().drawIndexed(6);
+    MyDirectX::DirectX::instance().drawIndexed(6);
 }
 
 Transform3D& Sprite3D::transform() const {

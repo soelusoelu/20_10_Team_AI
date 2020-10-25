@@ -55,25 +55,25 @@ void Shader::transferData(const void* data, unsigned size, unsigned constantBuff
 }
 
 void Shader::setVSShader(ID3D11ClassInstance* classInstances, unsigned numClassInstances) const {
-    DirectX::instance().deviceContext()->VSSetShader(mVertexShader.Get(), &classInstances, numClassInstances);
+    MyDirectX::DirectX::instance().deviceContext()->VSSetShader(mVertexShader.Get(), &classInstances, numClassInstances);
 }
 
 void Shader::setPSShader(ID3D11ClassInstance* classInstances, unsigned numClassInstances) const {
-    DirectX::instance().deviceContext()->PSSetShader(mPixelShader.Get(), &classInstances, numClassInstances);
+    MyDirectX::DirectX::instance().deviceContext()->PSSetShader(mPixelShader.Get(), &classInstances, numClassInstances);
 }
 
 void Shader::setVSConstantBuffers(unsigned index, unsigned numBuffers) const {
     auto buf = mConstantBuffers[index]->buffer();
-    DirectX::instance().deviceContext()->VSSetConstantBuffers(index, numBuffers, &buf);
+    MyDirectX::DirectX::instance().deviceContext()->VSSetConstantBuffers(index, numBuffers, &buf);
 }
 
 void Shader::setPSConstantBuffers(unsigned index, unsigned numBuffers) const {
     auto buf = mConstantBuffers[index]->buffer();
-    DirectX::instance().deviceContext()->PSSetConstantBuffers(index, numBuffers, &buf);
+    MyDirectX::DirectX::instance().deviceContext()->PSSetConstantBuffers(index, numBuffers, &buf);
 }
 
 void Shader::setInputLayout() const {
-    DirectX::instance().deviceContext()->IASetInputLayout(mVertexLayout->layout());
+    MyDirectX::DirectX::instance().deviceContext()->IASetInputLayout(mVertexLayout->layout());
 }
 
 void Shader::createVertexShader(const std::string& fileName) {
@@ -83,7 +83,7 @@ void Shader::createVertexShader(const std::string& fileName) {
     }
 
     //ピクセルシェーダー作成
-    auto res = DirectX::instance().device()->CreateVertexShader(
+    auto res = MyDirectX::DirectX::instance().device()->CreateVertexShader(
         mVSBlob->GetBufferPointer(),
         mVSBlob->GetBufferSize(),
         nullptr,
@@ -105,7 +105,7 @@ void Shader::createPixelShader(const std::string& fileName) {
     }
 
     //ピクセルシェーダー作成
-    auto res = DirectX::instance().device()->CreatePixelShader(
+    auto res = MyDirectX::DirectX::instance().device()->CreatePixelShader(
         psBlob->GetBufferPointer(),
         psBlob->GetBufferSize(),
         nullptr,
@@ -154,9 +154,9 @@ void Shader::createInputLayout(const std::vector<InputElementDesc>& layout) {
 }
 
 void Shader::map(D3D11_MAPPED_SUBRESOURCE* mapRes, unsigned index, unsigned sub, D3D11_MAP type, unsigned flag) const {
-    DirectX::instance().deviceContext()->Map(mConstantBuffers[index]->buffer(), sub, type, flag, mapRes);
+    MyDirectX::DirectX::instance().deviceContext()->Map(mConstantBuffers[index]->buffer(), sub, type, flag, mapRes);
 }
 
 void Shader::unmap(unsigned index, unsigned sub) const {
-    DirectX::instance().deviceContext()->Unmap(mConstantBuffers[index]->buffer(), sub);
+    MyDirectX::DirectX::instance().deviceContext()->Unmap(mConstantBuffers[index]->buffer(), sub);
 }

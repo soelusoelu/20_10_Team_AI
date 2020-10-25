@@ -8,6 +8,8 @@
 #include "../System/Window.h"
 #include <vector>
 
+namespace MyDirectX {
+
 DirectX::DirectX() :
     mDevice(nullptr),
     mDeviceContext(nullptr),
@@ -241,4 +243,6 @@ D3D11_PRIMITIVE_TOPOLOGY DirectX::toPrimitiveMode(PrimitiveType primitive) const
         D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP //PRIMITIVE_TYPE_TRIANGLE_STRIP = 4
     };
     return primitiveModes[static_cast<int>(primitive)];
+}
+
 }

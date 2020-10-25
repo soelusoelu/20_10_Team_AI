@@ -56,7 +56,7 @@ void Sprite::draw(const Matrix4& proj) const {
     mShader->transferData(&cb, sizeof(cb));
 
     //プリミティブをレンダリング
-    DirectX::instance().drawIndexed(6);
+    MyDirectX::DirectX::instance().drawIndexed(6);
 }
 
 Transform2D& Sprite::transform() const {

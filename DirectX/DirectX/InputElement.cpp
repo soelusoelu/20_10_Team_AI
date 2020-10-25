@@ -9,7 +9,7 @@ InputElement::InputElement(const std::vector<InputElementDesc>& desc, ID3DBlob* 
         mElements[i] = toElement(mDesc[i]);
     }
     //頂点インプットレイアウトを作成
-    DirectX::instance().device()->CreateInputLayout(mElements.data(), mDesc.size(), compile->GetBufferPointer(), compile->GetBufferSize(), &mInputLayout);
+    MyDirectX::DirectX::instance().device()->CreateInputLayout(mElements.data(), mDesc.size(), compile->GetBufferPointer(), compile->GetBufferSize(), &mInputLayout);
 }
 
 InputElement::~InputElement() = default;

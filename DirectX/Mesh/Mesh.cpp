@@ -50,7 +50,7 @@ void Mesh::draw(unsigned meshIndex) const {
     mIndexBuffers[meshIndex]->setIndexBuffer();
 
     //プリミティブをレンダリング
-    DirectX::instance().drawIndexed(mMesh->getIndices(meshIndex).size());
+    MyDirectX::DirectX::instance().drawIndexed(mMesh->getIndices(meshIndex).size());
 }
 
 void Mesh::initialize(const std::string& fileName) {

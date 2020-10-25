@@ -23,6 +23,8 @@ class DepthStencilState;
 class RasterizerState;
 class RenderTargetView;
 
+namespace MyDirectX {
+
 class DirectX {
 private:
     DirectX();
@@ -76,3 +78,5 @@ private:
     std::shared_ptr<DepthStencilState> mDepthStencilState;
     std::shared_ptr<RasterizerState> mRasterizerState;
 };
+
+}

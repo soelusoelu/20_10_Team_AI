@@ -79,7 +79,7 @@ void GBuffer::create() {
 }
 
 void GBuffer::renderToTexture() {
-    auto& dx = DirectX::instance();
+    auto& dx = MyDirectX::DirectX::instance();
 
     //各テクスチャをレンダーターゲットに設定
     static constexpr unsigned numGBuffer = static_cast<unsigned>(Type::NUM_GBUFFER_TEXTURES);
@@ -104,7 +104,7 @@ void GBuffer::renderToTexture() {
 }
 
 void GBuffer::renderFromTexture(const Camera& camera, const LightManager& lightManager) {
-    auto& dx = DirectX::instance();
+    auto& dx = MyDirectX::DirectX::instance();
 
     //レンダーターゲットを通常に戻す
     dx.setRenderTarget();

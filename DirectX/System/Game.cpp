@@ -30,7 +30,7 @@ Game::~Game() {
     InputUtility::finalize();
     DebugUtility::finalize();
     SoundEngine::instance().finalize();
-    DirectX::instance().finalize();
+    MyDirectX::DirectX::instance().finalize();
 }
 
 void Game::run(HINSTANCE hInstance) {
@@ -75,7 +75,7 @@ void Game::initialize() {
     mWindow->createWindow(mInstance);
     mhWnd = mWindow->gethWnd();
 
-    DirectX::instance().initialize(mhWnd);
+    MyDirectX::DirectX::instance().initialize(mhWnd);
 
     Random::initialize();
     DebugUtility::initialize();
@@ -85,7 +85,7 @@ void Game::initialize() {
 }
 
 void Game::mainLoop() {
-    auto& dx = DirectX::instance();
+    auto& dx = MyDirectX::DirectX::instance();
     dx.clearRenderTarget();
     dx.clearDepthStencilView();
 
