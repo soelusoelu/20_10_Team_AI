@@ -1,8 +1,10 @@
 ﻿#include "Mesh.h"
-#include "../Device/AssetsManager.h"
+#include "FBX.h"
+#include "OBJ.h"
+#include "../DebugLayer/Debug.h"
 #include "../DirectX/DirectXInclude.h"
-#include "../System/World.h"
 #include "../System/Shader/Shader.h"
+#include "../Utility/FileUtil.h"
 
 Mesh::Mesh() :
     mMesh(nullptr),
@@ -23,13 +25,13 @@ const std::vector<MeshVertices>& Mesh::getMeshesVertices() const {
     return mMeshesVertices;
 }
 
-void Mesh::loadMesh(const std::string& fileName) {
+void Mesh::loadMesh(const std::string& filePath) {
     //すでに生成済みなら終了する
     if (mMesh) {
         return;
     }
 
-    initialize(fileName);
+    initialize(filePath);
 }
 
 void Mesh::loadShader(const std::string& shaderName) {
@@ -53,22 +55,31 @@ void Mesh::draw(unsigned meshIndex) const {
     MyDirectX::DirectX::instance().drawIndexed(mMesh->getIndices(meshIndex).size());
 }
 
-void Mesh::initialize(const std::string& fileName) {
-    createMesh(fileName);
+void Mesh::initialize(const std::string& filePath) {
+    createMesh(filePath);
     for (size_t i = 0; i < mMesh->getMeshCount(); i++) {
         createVertexBuffer(i);
         createIndexBuffer(i);
     }
 }
 
-void Mesh::createMesh(const std::string& fileName) {
-    //アセットマネージャーからメッシュを作成する
-    mMesh = World::instance().assetsManager().createMeshLoader(fileName, mMeshesVertices);
+void Mesh::createMesh(const std::string& filePath) {
+    //拡張子によって処理を分ける
+    auto ext = FileUtil::getFileExtension(filePath);
+    if (ext == ".obj") {
+        mMesh = std::make_unique<OBJ>();
+    } else if (ext == ".fbx") {
+        mMesh = std::make_unique<FBX>();
+    } else {
+        Debug::windowMessage(filePath + ": 対応していない拡張子です");
+    }
+
+    //メッシュを解析する
+    mMesh->perse(filePath, mMeshesVertices);
 }
 
 void Mesh::createShader(const std::string& fileName) {
-    //アセットマネージャーからシェーダーを作成する
-    mShader = World::instance().assetsManager().createShader(fileName);
+    mShader = std::make_unique<Shader>(fileName);
 }
 
 void Mesh::createVertexBuffer(unsigned meshIndex) {

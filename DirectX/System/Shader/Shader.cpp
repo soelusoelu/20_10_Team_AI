@@ -9,7 +9,7 @@
 
 #pragma comment(lib, "d3dcompiler.lib")
 
-Shader::Shader(const std::string& filePath) :
+Shader::Shader(const std::string& fileName, const std::string& directoryPath) :
     mVSBlob(nullptr),
     mVertexShader(nullptr),
     mPixelShader(nullptr),
@@ -18,11 +18,12 @@ Shader::Shader(const std::string& filePath) :
         constantBufferManager = new ConstantBufferManager();
         inputElementManager = new InputElementManager();
     }
+
+    //ディレクトパスとファイル名を結合する
+    auto filePath = directoryPath + fileName;
+
     createVertexShader(filePath);
     createPixelShader(filePath);
-
-    //ファイルパスからファイル名を抜き出す
-    auto fileName = FileUtil::getFileNameFromDirectry(filePath);
     mConstantBuffers = constantBufferManager->createConstantBuffer(fileName);
     createInputLayout(inputElementManager->createInputLayout(fileName));
 }

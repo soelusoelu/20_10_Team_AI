@@ -13,7 +13,7 @@
 Sprite::Sprite() :
     mTransform(std::make_unique<Transform2D>()),
     mTexture(nullptr),
-    mShader(World::instance().assetsManager().createShader("Texture.hlsl")),
+    mShader(std::make_unique<Shader>("Texture.hlsl")),
     mColor(ColorPalette::white, 1.f),
     mUV(0.f, 0.f, 1.f, 1.f),
     mFileName(),

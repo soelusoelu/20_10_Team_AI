@@ -25,7 +25,7 @@ public:
     virtual const std::vector<MeshVertices>& getMeshesVertices() const override;
 
     //ファイル名からメッシュを生成する
-    void loadMesh(const std::string& fileName);
+    void loadMesh(const std::string& filePath);
     //シェーダー名からシェーダーを作成する
     void loadShader(const std::string& shaderName);
     //コンスタントバッファを設定する
@@ -35,9 +35,9 @@ public:
 
 private:
     //初期化処理
-    void initialize(const std::string& fileName);
+    void initialize(const std::string& filePath);
     //メッシュを生成する
-    void createMesh(const std::string& fileName);
+    void createMesh(const std::string& filePath);
     //シェーダーを生成する
     void createShader(const std::string& fileName);
     //バーテックスバッファを生成する

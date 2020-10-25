@@ -4,12 +4,10 @@
 #include "Shader/Shader.h"
 #include "../Component/Camera/Camera.h"
 #include "../Component/Light/DirectionalLight.h"
-#include "../Device/AssetsManager.h"
 #include "../DirectX/DirectXInclude.h"
 #include "../Light/LightManager.h"
 #include "../Mesh/Vertex.h"
 #include "../System/SystemInclude.h"
-#include "../System/World.h"
 
 GBuffer::GBuffer() :
     mSampler(nullptr),
@@ -156,7 +154,7 @@ void GBuffer::createSampler() {
 
 void GBuffer::createShader() {
     //シェーダー生成
-    mShader = World::instance().assetsManager().createShader("Deferred.hlsl");
+    mShader = std::make_unique<Shader>("Deferred.hlsl");
 }
 
 void GBuffer::createVertexBuffer() {

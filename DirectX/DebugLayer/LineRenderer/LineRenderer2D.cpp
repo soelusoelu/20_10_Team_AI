@@ -1,7 +1,5 @@
 ﻿#include "LineRenderer2D.h"
-#include "../../Device/AssetsManager.h"
 #include "../../DirectX/DirectXInclude.h"
-#include "../../System/World.h"
 #include "../../System/Shader/ConstantBuffers.h"
 #include "../../System/Shader/Shader.h"
 #include "../../Transform/Transform2D.h"
@@ -38,7 +36,7 @@ const void* LineRenderer2D::getVertexData() const {
 
 void LineRenderer2D::createShader() {
     //シェーダー作成
-    mShader = World::instance().assetsManager().createShader("Line2D.hlsl");
+    mShader = std::make_unique<Shader>("Line2D.hlsl");
 }
 
 void LineRenderer2D::drawLines(const Matrix4& proj) const {
