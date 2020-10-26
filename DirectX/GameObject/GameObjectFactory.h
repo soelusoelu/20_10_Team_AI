@@ -23,8 +23,8 @@ private:
 
     //ゲームオブジェクトを生成する
     std::shared_ptr<GameObject> createGameObject(const rapidjson::Document& inDocument, const std::string& type);
-    //ゲームオブジェクトのタグを設定する
-    void loadTag(GameObject& gameObject, const rapidjson::Document& inDocument, const std::string& type);
+    //ゲームオブジェクトのタグを取得する
+    std::string loadTag(const rapidjson::Document& inDocument);
     //ゲームオブジェクトプロパティの読み込み
     void loadGameObjectProperties(GameObject& gameObject, const rapidjson::Document& inDocument);
     //コンポーネントの読み込み

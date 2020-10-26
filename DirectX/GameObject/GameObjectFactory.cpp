@@ -92,10 +92,10 @@ std::shared_ptr<GameObject> GameObjectFactory::createGameObjectFromFile(const st
 }
 
 std::shared_ptr<GameObject> GameObjectFactory::createGameObject(const rapidjson::Document& inDocument, const std::string& type) {
-    //ゲームオブジェクトを生成
-    auto gameObject = GameObject::create();
     //タグを読み込む
-    loadTag(*gameObject, inDocument, type);
+    const auto& tag = loadTag(inDocument);
+    //ゲームオブジェクトを生成
+    auto gameObject = GameObject::create(type, tag);
     //プロパティを読み込む
     loadGameObjectProperties(*gameObject, inDocument);
 
@@ -105,13 +105,13 @@ std::shared_ptr<GameObject> GameObjectFactory::createGameObject(const rapidjson:
     return gameObject;
 }
 
-void GameObjectFactory::loadTag(GameObject& gameObject, const rapidjson::Document& inDocument, const std::string& type) {
-    //初期タグをタイプ名と一緒にする
-    std::string tag = type;
+std::string GameObjectFactory::loadTag(const rapidjson::Document& inDocument) {
+    //初期タグをNoneにする
+    std::string tag = "None";
     //タグ属性があれば読み込む
     JsonHelper::getString(inDocument, "tag", &tag);
-    //タグを設定する
-    gameObject.setTag(tag);
+
+    return tag;
 }
 
 void GameObjectFactory::loadGameObjectProperties(GameObject& gameObject, const rapidjson::Document& inDocument) {

@@ -64,7 +64,7 @@ void DebugUtility::windowMessage(const std::string& message) {
 void DebugUtility::draw(const Matrix4& proj) {
     mLog->drawLogs(mDrawString);
     mFixedDebugInfo->draw();
-    mHierarchy->drawActors();
+    mHierarchy->drawGameObjects();
     mInspector->drawInspect();
     mPause->drawButton(proj);
     mDrawString->drawAll(proj);

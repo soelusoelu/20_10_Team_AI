@@ -1,4 +1,5 @@
 {
+  "tag": "Light",
   "properties": {
     "position": [ 0.0, 15.0, 0.0 ],
     "scale": [ 0.5, 0.5, 0.5 ]

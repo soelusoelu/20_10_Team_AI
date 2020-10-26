@@ -13,7 +13,7 @@ Title::~Title() = default;
 
 void Title::start() {
     mScene = getComponent<Scene>();
-    GameObjectCreater::create("Ground");
+    GameObjectCreater::create("Plane");
     GameObjectCreater::create("CharacterCreater");
 }
 
