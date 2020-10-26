@@ -18,29 +18,57 @@ void AssetsManager::finalize() {
     safeDelete(mInstance);
 }
 
-std::shared_ptr<TextureFromFile> AssetsManager::createTexture(const std::string & fileName, const std::string& directoryPath) {
-    std::shared_ptr<TextureFromFile> texture = nullptr;
+void AssetsManager::loadTexture(const std::string& fileName, const std::string& directoryPath) {
+    //ディレクトパスとファイル名を結合する
     auto filePath = directoryPath + fileName;
-    auto itr = mTextures.find(filePath);
-    if (itr != mTextures.end()) { //既に読み込まれている
-        texture = itr->second;
-    } else { //初読み込み
-        texture = std::make_shared<TextureFromFile>(filePath);
-        mTextures.emplace(filePath, texture);
+
+    //読み込み済みなら何もしない
+    if (loadedTexture(filePath)) {
+        return;
     }
-    return texture;
+
+    //テクスチャを生成し格納
+    auto texture = std::make_shared<TextureFromFile>(filePath);
+    mTextures.emplace(filePath, texture);
+}
+
+std::shared_ptr<TextureFromFile> AssetsManager::createTexture(const std::string & fileName, const std::string& directoryPath) {
+    //テクスチャを読み込む
+    loadTexture(fileName, directoryPath);
+
+    //読み込んだテクスチャを返す
+    return mTextures[directoryPath + fileName];
+}
+
+void AssetsManager::loadMesh(const std::string& fileName, const std::string& directoryPath) {
+    //ディレクトパスとファイル名を結合する
+    auto filePath = directoryPath + fileName;
+
+    //読み込み済みなら何もしない
+    if (loadedMesh(filePath)) {
+        return;
+    }
+
+    //メッシュを生成し格納
+    auto mesh = std::make_shared<Mesh>();
+    mesh->loadMesh(filePath);
+    mMeshes.emplace(filePath, mesh);
 }
 
 std::shared_ptr<Mesh> AssetsManager::createMesh(const std::string& fileName, const std::string& directoryPath) {
-    std::shared_ptr<Mesh> mesh = nullptr;
-    auto filePath = directoryPath + fileName;
+    //メッシュを読み込む
+    loadMesh(fileName, directoryPath);
+
+    //読み込んだメッシュを返す
+    return mMeshes[directoryPath + fileName];
+}
+
+bool AssetsManager::loadedTexture(const std::string& filePath) const {
+    auto itr = mTextures.find(filePath);
+    return (itr != mTextures.end());
+}
+
+bool AssetsManager::loadedMesh(const std::string& filePath) const {
     auto itr = mMeshes.find(filePath);
-    if (itr != mMeshes.end()) { //既に読み込まれている
-        mesh = itr->second;
-    } else { //初読み込み
-        mesh = std::make_shared<Mesh>();
-        mesh->loadMesh(filePath);
-        mMeshes.emplace(filePath, mesh);
-    }
-    return mesh;
+    return (itr != mMeshes.end());
 }
