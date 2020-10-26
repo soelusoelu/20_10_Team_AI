@@ -72,88 +72,97 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(Text);
     ADD_COMPONENT(TextFloat);
     ADD_COMPONENT(TextNumber);
-
-    const std::string& fileName = "Assets\\Data\\ActorsList.json";
-    if (!LevelLoader::loadJSON(fileName, &mDocument)) {
-        Debug::windowMessage(fileName + ": レベルファイルのロードに失敗しました");
-    }
 }
 
 GameObjectFactory::~GameObjectFactory() {
     mInstantiated = false;
 }
 
-std::shared_ptr<GameObject> GameObjectFactory::loadGameObjectFromFile(const std::string& type) const {
-    GameObjectPtr obj = nullptr;
-    const auto& objs = mDocument["gameObjects"];
-    if (objs.IsArray()) {
-        obj = loadGameObjectProperties(objs, type);
+std::shared_ptr<GameObject> GameObjectFactory::createGameObjectFromFile(const std::string& type, const std::string& directoryPath) {
+    //ディレクトパスとタイプからファイルパスを作成
+    auto filePath = directoryPath + type + ".json";
+
+    rapidjson::Document document;
+    if (!LevelLoader::loadJSON(filePath, &document)) {
+        Debug::windowMessage(filePath + ": レベルファイルのロードに失敗しました");
+        return nullptr;
     }
 
-    return obj;
+    return createGameObject(document, type);
 }
 
-std::shared_ptr<GameObject> GameObjectFactory::loadGameObjectProperties(const rapidjson::Value& inArray, const std::string& type) const {
-    GameObjectPtr gameObj = nullptr;
-    //アクターの配列をループ
-    for (rapidjson::SizeType i = 0; i < inArray.Size(); i++) {
-        //有効なオブジェクトか
-        const auto& obj = inArray[i];
-        if (!obj.IsObject()) {
-            continue;
-        }
-        //有効な型名か
-        std::string t;
-        if (!JsonHelper::getString(obj, "type", &t)) {
-            continue;
-        }
-        //指定のタイプと一致するか
-        if (t != type) {
-            continue;
-        }
-        //mapからゲームオブジェクトを生成
-        gameObj = GameObject::create();
-        gameObj->setTag(type);
-        if (obj.HasMember("properties")) {
-            gameObj->loadProperties(obj["properties"]);
-        }
-        //コンポーネントプロパティがあれば取得
-        if (!obj.HasMember("components")) {
-            break;
-        }
-        const auto& components = obj["components"];
-        if (components.IsArray()) {
-            loadComponents(*gameObj, components);
-            break;
-        }
-    }
+std::shared_ptr<GameObject> GameObjectFactory::createGameObject(const rapidjson::Document& inDocument, const std::string& type) {
+    //ゲームオブジェクトを生成
+    auto gameObject = GameObject::create();
+    //タグを読み込む
+    loadTag(*gameObject, inDocument, type);
+    //プロパティを読み込む
+    loadGameObjectProperties(*gameObject, inDocument);
 
-    return gameObj;
+    //コンポーネントがあれば取得
+    loadComponents(*gameObject, inDocument);
+
+    return gameObject;
 }
 
-void GameObjectFactory::loadComponents(GameObject& gameObject, const rapidjson::Value& inArray) const {
-    //コンポーネントの配列をループ
-    for (rapidjson::SizeType i = 0; i < inArray.Size(); i++) {
-        //有効なオブジェクトか
-        const auto& compObj = inArray[i];
-        if (!compObj.IsObject()) {
-            continue;
-        }
-        //有効な型名か
-        std::string type;
-        if (!JsonHelper::getString(compObj, "type", &type)) {
-            continue;
-        }
-        //mapに存在するか
-        auto itr = mComponents.find(type);
-        if (itr == mComponents.end()) {
-            Debug::windowMessage(type + "は有効な型ではありません");
-            continue;
-        }
-        //新規コンポーネントを生成
-        itr->second(gameObject, type, compObj["properties"]);
+void GameObjectFactory::loadTag(GameObject& gameObject, const rapidjson::Document& inDocument, const std::string& type) {
+    //初期タグをタイプ名と一緒にする
+    std::string tag = type;
+    //タグ属性があれば読み込む
+    JsonHelper::getString(inDocument, "tag", &tag);
+    //タグを設定する
+    gameObject.setTag(tag);
+}
+
+void GameObjectFactory::loadGameObjectProperties(GameObject& gameObject, const rapidjson::Document& inDocument) {
+    if (inDocument.HasMember("properties")) {
+        gameObject.loadProperties(inDocument["properties"]);
     }
 }
+
+void GameObjectFactory::loadComponents(GameObject& gameObject, const rapidjson::Document& inDocument) const {
+    //ファイルにcomponentsメンバがなければ終了
+    if (!inDocument.HasMember("components")) {
+        return;
+    }
+
+    const auto& components = inDocument["components"];
+    //componentsメンバが配列じゃなければなければ終了
+    if (!components.IsArray()) {
+        return;
+    }
+
+    for (rapidjson::SizeType i = 0; i < components.Size(); ++i) {
+        //各コンポーネントを読み込んでいく
+        loadComponent(gameObject, components[i]);
+    }
+}
+
+void GameObjectFactory::loadComponent(GameObject& gameObject, const rapidjson::Value& component) const {
+    //有効なオブジェクトか
+    if (!component.IsObject()) {
+        return;
+    }
+    //有効な型名か
+    std::string type;
+    if (!isValidType(type, component)) {
+        return;
+    }
+    //mapに存在するか
+    auto itr = mComponents.find(type);
+    if (itr == mComponents.end()) {
+        Debug::windowMessage(type + "は有効な型ではありません");
+        return;
+    }
+    //新規コンポーネントを生成
+    itr->second(gameObject, type, component["properties"]);
+}
+
+bool GameObjectFactory::isValidType(std::string& outType, const rapidjson::Value& inObj) const {
+    return (JsonHelper::getString(inObj, "type", &outType));
+}
+
+
 
 void GameObjectCreater::initialize() {
     mFactory = new GameObjectFactory();
@@ -164,5 +173,5 @@ void GameObjectCreater::finalize() {
 }
 
 std::shared_ptr<GameObject> GameObjectCreater::create(const std::string& type) {
-    return mFactory->loadGameObjectFromFile(type);
+    return mFactory->createGameObjectFromFile(type);
 }
