@@ -5,6 +5,7 @@
 #include "../DirectX/DirectXInclude.h"
 #include "../System/Shader/Shader.h"
 #include "../Utility/FileUtil.h"
+#include <cassert>
 
 Mesh::Mesh() :
     mMesh(nullptr),
@@ -14,11 +15,11 @@ Mesh::Mesh() :
 Mesh::~Mesh() = default;
 
 const Material& Mesh::getMaterial(unsigned index) const {
-    return mMesh->getMaterial(index);
+    return mMaterials[index];
 }
 
 unsigned Mesh::getMeshCount() const {
-    return mMesh->getMeshCount();
+    return mMeshesVertices.size();
 }
 
 const std::vector<MeshVertices>& Mesh::getMeshesVertices() const {
@@ -52,12 +53,18 @@ void Mesh::draw(unsigned meshIndex) const {
     mIndexBuffers[meshIndex]->setIndexBuffer();
 
     //プリミティブをレンダリング
-    MyDirectX::DirectX::instance().drawIndexed(mMesh->getIndices(meshIndex).size());
+    MyDirectX::DirectX::instance().drawIndexed(mMeshesIndices[meshIndex].size());
 }
 
 void Mesh::initialize(const std::string& filePath) {
+    //ファイルパスからメッシュを作成
     createMesh(filePath);
-    for (size_t i = 0; i < mMesh->getMeshCount(); i++) {
+
+    //それぞれは同じサイズのはず
+    assert(mMeshesVertices.size() == mMeshesIndices.size() == mMaterials.size());
+
+    //メッシュの数だけバッファを作る
+    for (size_t i = 0; i < mMeshesVertices.size(); i++) {
         createVertexBuffer(i);
         createIndexBuffer(i);
     }
@@ -75,7 +82,7 @@ void Mesh::createMesh(const std::string& filePath) {
     }
 
     //メッシュを解析する
-    mMesh->perse(filePath, mMeshesVertices);
+    mMesh->perse(filePath, mMeshesVertices, mMeshesIndices, mMaterials);
 }
 
 void Mesh::createShader(const std::string& fileName) {
@@ -96,7 +103,7 @@ void Mesh::createVertexBuffer(unsigned meshIndex) {
 }
 
 void Mesh::createIndexBuffer(unsigned meshIndex) {
-    const auto& indices = mMesh->getIndices(meshIndex);
+    const auto& indices = mMeshesIndices[meshIndex];
     BufferDesc bd;
     bd.size = sizeof(indices[0]) * indices.size();
     bd.usage = Usage::USAGE_DEFAULT;

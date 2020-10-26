@@ -48,6 +48,8 @@ private:
 private:
     std::unique_ptr<IMeshLoader> mMesh;
     std::vector<MeshVertices> mMeshesVertices;
+    std::vector<Indices> mMeshesIndices;
+    std::vector<Material> mMaterials;
     std::unique_ptr<Shader> mShader;
     std::vector<std::unique_ptr<VertexBuffer>> mVertexBuffers;
     std::vector<std::unique_ptr<IndexBuffer>> mIndexBuffers;

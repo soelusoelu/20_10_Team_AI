@@ -4,13 +4,16 @@
 #include "../System/AssetsManager.h"
 #include "../Utility/FileUtil.h"
 
-FBX::FBX() :
-    mNumMeshes(0) {
-}
+FBX::FBX() = default;
 
 FBX::~FBX() = default;
 
-void FBX::perse(const std::string& filePath, std::vector<MeshVertices>& meshes) {
+void FBX::perse(
+    const std::string& filePath,
+    std::vector<MeshVertices>& meshesVertices,
+    std::vector<Indices>& meshesIndices,
+    std::vector<Material>& materials
+) {
     //マネージャーを生成
     auto manager = FbxManager::Create();
 
@@ -38,63 +41,44 @@ void FBX::perse(const std::string& filePath, std::vector<MeshVertices>& meshes) 
     geometryConverter.SplitMeshesPerMaterial(scene, true);
 
     //FbxMeshの数を取得
-    mNumMeshes = scene->GetSrcObjectCount<FbxMesh>();
+    auto numMeshes = scene->GetSrcObjectCount<FbxMesh>();
 
     //メッシュの数に合わせて拡張する
-    meshes.resize(mNumMeshes);
-    mIndices.resize(mNumMeshes);
+    meshesVertices.resize(numMeshes);
+    meshesIndices.resize(numMeshes);
+    materials.resize(numMeshes);
 
     //ファイルパスからディレクトリパスを抜き出す
     auto directoryPath = FileUtil::getDirectryFromFilePath(filePath);
 
     //FbxMeshの数だけメッシュを作成する
-    for (size_t i = 0; i < mNumMeshes; ++i) {
+    for (size_t i = 0; i < numMeshes; ++i) {
         auto mesh = scene->GetSrcObject<FbxMesh>(i);
-        createMesh(meshes[i], mesh, directoryPath, i);
+        createMesh(
+            meshesVertices[i],
+            meshesIndices[i],
+            materials[i],
+            mesh,
+            directoryPath
+        );
     }
 
     //マネージャー解放
     manager->Destroy();
 }
 
-const std::vector<unsigned short>& FBX::getIndices(unsigned meshIndex) const {
-    return mIndices[meshIndex];
+void FBX::createMesh(
+    MeshVertices& meshVertices,
+    Indices& indices,
+    Material& material,
+    FbxMesh* fbxMesh,
+    const std::string& directoryPath
+) {
+    loadFace(meshVertices, indices, fbxMesh);
+    loadMaterial(material, fbxMesh, directoryPath);
 }
 
-const Material& FBX::getMaterial(unsigned index) const {
-    return mMaterials[index];
-}
-
-unsigned FBX::getMeshCount() const {
-    return mNumMeshes;
-}
-
-void FBX::createMesh(MeshVertices& meshVertices, FbxMesh* mesh, const std::string& directoryPath, unsigned meshIndex) {
-    loadFace(meshVertices, mesh, meshIndex);
-    loadMaterial(mesh, directoryPath, meshIndex);
-}
-
-void FBX::loadPosition(FbxMesh* mesh, unsigned meshIndex) {
-    //auto& positions = mPositions[meshIndex];
-
-    ////頂点数
-    //auto polygonVertexCount = mesh->GetPolygonVertexCount();
-    //positions.resize(polygonVertexCount);
-    //auto indices = mesh->GetPolygonVertices();
-
-    ////頂点座標配列
-    //FbxVector4* src = mesh->GetControlPoints();
-    //for (size_t i = 0; i < positions.size(); i++) {
-    //    int index = indices[i];
-
-    //    //xはマイナスのはずだけど背面カリングがうまくいかないから
-    //    positions[i].x = static_cast<float>(src[index][0]);
-    //    positions[i].y = static_cast<float>(src[index][1]);
-    //    positions[i].z = static_cast<float>(src[index][2]);
-    //}
-}
-
-void FBX::loadNormal(FbxMesh* mesh, unsigned meshIndex) {
+void FBX::loadNormal(FbxMesh* mesh) {
     //auto& normals = mNormals[meshIndex];
 
     ////法線配列を取得する
@@ -103,8 +87,7 @@ void FBX::loadNormal(FbxMesh* mesh, unsigned meshIndex) {
     //normals.resize(normalArray.Size());
 
     //for (size_t i = 0; i < normals.size(); i++) {
-    //    //xはマイナスのはずだけど背面カリングがうまくいかないから
-    //    normals[i].x = static_cast<float>(normalArray[i][0]);
+    //    normals[i].x = -static_cast<float>(normalArray[i][0]);
     //    normals[i].y = static_cast<float>(normalArray[i][1]);
     //    normals[i].z = static_cast<float>(normalArray[i][2]);
     //}
@@ -155,7 +138,7 @@ void FBX::loadNormal(FbxMesh* mesh, unsigned meshIndex) {
 #pragma endregion
 }
 
-void FBX::loadUV(FbxMesh* mesh, unsigned meshIndex) {
+void FBX::loadUV(FbxMesh* mesh) {
     //auto& uvs = mUVs[meshIndex];
 
     ////UVSetの名前リストを取得
@@ -168,8 +151,7 @@ void FBX::loadUV(FbxMesh* mesh, unsigned meshIndex) {
     //uvs.resize(uvArray.Size());
 
     //for (size_t i = 0; i < uvs.size(); i++) {
-    //    //xは1から引かないはずだけど背面カリングがうまくいかないから
-    //    uvs[i].x = 1.f - static_cast<float>(uvArray[i][0]);
+    //    uvs[i].x = static_cast<float>(uvArray[i][0]);
     //    uvs[i].y = 1.f - static_cast<float>(uvArray[i][1]);
     //}
 
@@ -234,36 +216,38 @@ void FBX::loadUV(FbxMesh* mesh, unsigned meshIndex) {
 #pragma endregion
 }
 
-void FBX::loadFace(MeshVertices& meshVertices, FbxMesh* mesh, unsigned meshIndex) {
+void FBX::loadFace(
+    MeshVertices& meshVertices,
+    Indices& indices,
+    FbxMesh* fbxMesh
+) {
     //頂点数
-    auto polygonVertexCount = mesh->GetPolygonVertexCount();
+    auto polygonVertexCount = fbxMesh->GetPolygonVertexCount();
     //インデックスバッファの取得
-    int* polygonVertices = mesh->GetPolygonVertices();
+    int* polygonVertices = fbxMesh->GetPolygonVertices();
     //頂点座標配列
-    FbxVector4* src = mesh->GetControlPoints();
+    FbxVector4* src = fbxMesh->GetControlPoints();
 
     //法線配列を取得する
     FbxArray<FbxVector4> normalArray;
-    mesh->GetPolygonVertexNormals(normalArray);
+    fbxMesh->GetPolygonVertexNormals(normalArray);
 
     //UVSetの名前リストを取得
     FbxStringList uvSetNameList;
-    mesh->GetUVSetNames(uvSetNameList);
+    fbxMesh->GetUVSetNames(uvSetNameList);
     //UVSetの名前からUVSetを取得する
     FbxArray<FbxVector2> uvArray;
-    mesh->GetPolygonVertexUVs(uvSetNameList.GetStringAt(0), uvArray);
+    fbxMesh->GetPolygonVertexUVs(uvSetNameList.GetStringAt(0), uvArray);
 
     //UVSetの名前からTangent(接線)を生成する
-    mesh->GenerateTangentsData(uvSetNameList.GetStringAt(0));
+    fbxMesh->GenerateTangentsData(uvSetNameList.GetStringAt(0));
     FbxLayerElementArrayTemplate<FbxVector4>* tangents;
     //生成後、取得する
-    mesh->GetTangents(&tangents);
+    fbxMesh->GetTangents(&tangents);
 
     //事前に拡張しとく
     meshVertices.resize(polygonVertexCount);
 
-    //インデックス配列の取得
-    auto& indices = mIndices[meshIndex];
     //indicesは頂点数の3倍
     indices.resize(polygonVertexCount * 3);
 
@@ -303,11 +287,9 @@ void FBX::loadFace(MeshVertices& meshVertices, FbxMesh* mesh, unsigned meshIndex
     }
 }
 
-void FBX::computeIndices(FbxMesh* mesh, unsigned meshIndex) {
-    auto& indices = mIndices[meshIndex];
-
+void FBX::computeIndices(Indices& indices, FbxMesh* fbxMesh) {
     //indicesはポリゴン数の3倍
-    auto polygonCount = mesh->GetPolygonCount();
+    auto polygonCount = fbxMesh->GetPolygonCount();
     indices.resize(polygonCount * 3);
 
     //Fbxは右手系なので、DirectXの左手系に直すために2->1->0の順にインデックスを格納していく
@@ -318,49 +300,50 @@ void FBX::computeIndices(FbxMesh* mesh, unsigned meshIndex) {
     }
 }
 
-void FBX::loadMaterial(FbxMesh* mesh, const std::string& directoryPath, unsigned meshIndex) {
-    //すべてのメッシュにマテリアルを持たせるため
-    mMaterials.emplace_back();
-
+void FBX::loadMaterial(
+    Material& material,
+    FbxMesh* fbxMesh,
+    const std::string& directoryPath
+) {
     //マテリアルがなければ終了
-    if (mesh->GetElementMaterialCount() == 0) {
+    if (fbxMesh->GetElementMaterialCount() == 0) {
         return;
     }
 
     //Mesh側のマテリアル情報を取得
-    FbxLayerElementMaterial* material = mesh->GetElementMaterial(0);
+    FbxLayerElementMaterial* fbxMaterial = fbxMesh->GetElementMaterial(0);
 
     //インデックスバッファからインデックスを取得
-    int index = material->GetIndexArray().GetAt(0);
+    int index = fbxMaterial->GetIndexArray().GetAt(0);
     //マテリアル取得
-    FbxSurfaceMaterial* surfaceMaterial = mesh->GetNode()->GetSrcObject<FbxSurfaceMaterial>(index);
+    FbxSurfaceMaterial* surfaceMaterial = fbxMesh->GetNode()->GetSrcObject<FbxSurfaceMaterial>(index);
 
     //マテリアル名の保存
     if (surfaceMaterial) {
         //マテリアル名を取得
-        mMaterials[meshIndex].materialName = surfaceMaterial->GetName();
+        material.materialName = surfaceMaterial->GetName();
 
         //テクスチャ以外の情報を取得
-        loadMaterialAttribute(surfaceMaterial, meshIndex);
+        loadMaterialAttribute(material, surfaceMaterial);
 
         //テクスチャを取得
-        loadTextures(surfaceMaterial, directoryPath, meshIndex);
+        loadTextures(material, surfaceMaterial, directoryPath);
     }
 }
 
-void FBX::loadMaterialAttribute(FbxSurfaceMaterial* material, unsigned meshIndex) {
+void FBX::loadMaterialAttribute(Material& material, FbxSurfaceMaterial* fbxSurfaceMaterial) {
     //継承関係にあるか調べる
-    if (!material->GetClassId().Is(FbxSurfaceLambert::ClassId)) {
+    if (!fbxSurfaceMaterial->GetClassId().Is(FbxSurfaceLambert::ClassId)) {
         return;
     }
 
-    FbxSurfaceLambert* lambert = static_cast<FbxSurfaceLambert*>(material);
+    FbxSurfaceLambert* lambert = static_cast<FbxSurfaceLambert*>(fbxSurfaceMaterial);
     if (!lambert) {
         return;
     }
 
     //まずはランバート分読み込む
-    loadLambert(lambert, meshIndex);
+    loadLambert(material, lambert);
 
     //継承関係にあるか調べる
     if (lambert->GetClassId().Is(FbxSurfacePhong::ClassId)) {
@@ -373,81 +356,88 @@ void FBX::loadMaterialAttribute(FbxSurfaceMaterial* material, unsigned meshIndex
     }
 
     //Phongだったら追加読み込み
-    loadPhong(phong, meshIndex);
+    loadPhong(material, phong);
 }
 
-void FBX::loadLambert(const FbxSurfaceLambert* lambert, unsigned meshIndex) {
-    auto& mat = mMaterials[meshIndex];
+void FBX::loadLambert(Material& material, const FbxSurfaceLambert* fbxSurfaceLambert) {
     //アンビエント
-    auto prop = lambert->FindProperty(FbxSurfaceMaterial::sAmbient);
+    auto prop = fbxSurfaceLambert->FindProperty(FbxSurfaceMaterial::sAmbient);
     if (prop.IsValid()) {
-        const auto& ambient = lambert->Ambient.Get();
-        mat.ambient.x = static_cast<float>(ambient[0]);
-        mat.ambient.y = static_cast<float>(ambient[1]);
-        mat.ambient.z = static_cast<float>(ambient[2]);
+        const auto& ambient = fbxSurfaceLambert->Ambient.Get();
+        material.ambient.x = static_cast<float>(ambient[0]);
+        material.ambient.y = static_cast<float>(ambient[1]);
+        material.ambient.z = static_cast<float>(ambient[2]);
     }
 
     //ディヒューズ
-    prop = lambert->FindProperty(FbxSurfaceMaterial::sDiffuse);
+    prop = fbxSurfaceLambert->FindProperty(FbxSurfaceMaterial::sDiffuse);
     if (prop.IsValid()) {
-        const auto& diffuse = lambert->Diffuse.Get();
-        mat.diffuse.x = static_cast<float>(diffuse[0]);
-        mat.diffuse.y = static_cast<float>(diffuse[1]);
-        mat.diffuse.z = static_cast<float>(diffuse[2]);
+        const auto& diffuse = fbxSurfaceLambert->Diffuse.Get();
+        material.diffuse.x = static_cast<float>(diffuse[0]);
+        material.diffuse.y = static_cast<float>(diffuse[1]);
+        material.diffuse.z = static_cast<float>(diffuse[2]);
     }
 
     //エミッシブ
-    prop = lambert->FindProperty(FbxSurfaceMaterial::sEmissive);
+    prop = fbxSurfaceLambert->FindProperty(FbxSurfaceMaterial::sEmissive);
     if (prop.IsValid()) {
-        const auto& emissive = lambert->Emissive.Get();
-        mat.emissive.x = static_cast<float>(emissive[0]);
-        mat.emissive.y = static_cast<float>(emissive[1]);
-        mat.emissive.z = static_cast<float>(emissive[2]);
+        const auto& emissive = fbxSurfaceLambert->Emissive.Get();
+        material.emissive.x = static_cast<float>(emissive[0]);
+        material.emissive.y = static_cast<float>(emissive[1]);
+        material.emissive.z = static_cast<float>(emissive[2]);
     }
 
     //バンプ
-    prop = lambert->FindProperty(FbxSurfaceMaterial::sBump);
+    prop = fbxSurfaceLambert->FindProperty(FbxSurfaceMaterial::sBump);
     if (prop.IsValid()) {
-        const auto& bump = lambert->Bump.Get();
-        mat.bump.x = static_cast<float>(bump[0]);
-        mat.bump.y = static_cast<float>(bump[1]);
-        mat.bump.z = static_cast<float>(bump[2]);
+        const auto& bump = fbxSurfaceLambert->Bump.Get();
+        material.bump.x = static_cast<float>(bump[0]);
+        material.bump.y = static_cast<float>(bump[1]);
+        material.bump.z = static_cast<float>(bump[2]);
     }
 
     //透過度
-    prop = lambert->FindProperty(FbxSurfaceMaterial::sTransparencyFactor);
+    prop = fbxSurfaceLambert->FindProperty(FbxSurfaceMaterial::sTransparencyFactor);
     if (prop.IsValid()) {
-        mat.transparency = static_cast<float>(lambert->TransparencyFactor.Get());
+        material.transparency = static_cast<float>(fbxSurfaceLambert->TransparencyFactor.Get());
     }
 }
 
-void FBX::loadPhong(const FbxSurfacePhong* phong, unsigned meshIndex) {
-    auto& mat = mMaterials[meshIndex];
+void FBX::loadPhong(Material& material, const FbxSurfacePhong* fbxSurfacePhong) {
     //スペキュラ
-    auto prop = phong->FindProperty(FbxSurfaceMaterial::sSpecular);
+    auto prop = fbxSurfacePhong->FindProperty(FbxSurfaceMaterial::sSpecular);
     if (prop.IsValid()) {
-        const auto& specular = phong->Specular.Get();
-        mat.specular.x = static_cast<float>(specular[0]);
-        mat.specular.y = static_cast<float>(specular[1]);
-        mat.specular.z = static_cast<float>(specular[2]);
+        const auto& specular = fbxSurfacePhong->Specular.Get();
+        material.specular.x = static_cast<float>(specular[0]);
+        material.specular.y = static_cast<float>(specular[1]);
+        material.specular.z = static_cast<float>(specular[2]);
     }
 
     //光沢
-    prop = phong->FindProperty(FbxSurfaceMaterial::sShininess);
+    prop = fbxSurfacePhong->FindProperty(FbxSurfaceMaterial::sShininess);
     if (prop.IsValid()) {
-        mat.shininess = static_cast<float>(phong->Shininess.Get());
+        material.shininess = static_cast<float>(fbxSurfacePhong->Shininess.Get());
     }
 }
 
-void FBX::loadTextures(FbxSurfaceMaterial* material, const std::string& directoryPath, unsigned meshIndex) {
+void FBX::loadTextures(
+    Material& material,
+    FbxSurfaceMaterial* fbxSurfaceMaterial,
+    const std::string& directoryPath
+) {
     //テクスチャ作成
-    createTexture(material, directoryPath, FbxSurfaceMaterial::sDiffuse, meshIndex);
-    createTexture(material, directoryPath, FbxSurfaceMaterial::sNormalMap, meshIndex);
+    createTexture(material, fbxSurfaceMaterial, directoryPath, FbxSurfaceMaterial::sDiffuse);
+    createTexture(material, fbxSurfaceMaterial, directoryPath, FbxSurfaceMaterial::sNormalMap);
 }
 
-void FBX::createTexture(const FbxSurfaceMaterial* material, const std::string& directoryPath, const char* type, unsigned meshIndex) {
+void FBX::createTexture(
+    Material& material,
+    const FbxSurfaceMaterial* fbxSurfaceMaterial,
+    const std::string& directoryPath,
+    const char* type
+) {
     //プロパティを取得する
-    const auto& prop = material->FindProperty(type);
+    const auto& prop = fbxSurfaceMaterial->FindProperty(type);
 
     //テクスチャを取得する
     auto fbxTexture = getFbxTexture(prop);
@@ -456,9 +446,6 @@ void FBX::createTexture(const FbxSurfaceMaterial* material, const std::string& d
     if (!fbxTexture) {
         return;
     }
-
-    //適用したいマテリアル
-    auto& mat = mMaterials[meshIndex];
 
     //ファイルパスを相対パスで取得
     auto filePath = fbxTexture->GetRelativeFileName();
@@ -470,9 +457,9 @@ void FBX::createTexture(const FbxSurfaceMaterial* material, const std::string& d
 
     //指定されたテクスチャに渡す
     if (type == FbxSurfaceMaterial::sDiffuse) {
-        mat.texture = tex;
+        material.texture = tex;
     } else if (type == FbxSurfaceMaterial::sNormalMap) {
-        mat.mapTexture = tex;
+        material.mapTexture = tex;
     }
 }
 
