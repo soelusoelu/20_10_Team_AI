@@ -173,9 +173,8 @@ bool Intersect::intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transf
     const auto& world = transform.getWorldTransform();
 
     //すべてのメッシュとレイによる判定を行う
-    const auto& meshesVertices = mesh.getMeshesVertices();
     for (size_t i = 0; i < mesh.getMeshCount(); ++i) {
-        const auto& meshVertices = meshesVertices[i];
+        const auto& meshVertices = mesh.getMeshVertices(i);
         const auto polygonCount = meshVertices.size() / 3;
         for (size_t j = 0; j < polygonCount; ++j) {
             //それぞれの頂点にワールド行列を掛ける

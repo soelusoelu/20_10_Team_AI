@@ -2,8 +2,8 @@
 #include <array>
 
 AABB::AABB() :
-    min(Vector3::zero),
-    max(Vector3::one) {
+    min(Vector3::one * Math::infinity),
+    max(Vector3::one * Math::negInfinity) {
 }
 
 AABB::AABB(const Vector3& min, const Vector3& max) :

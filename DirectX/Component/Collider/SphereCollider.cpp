@@ -1,6 +1,5 @@
 ﻿#include "SphereCollider.h"
 #include "../Mesh/MeshComponent.h"
-#include "../../Mesh/IMesh.h"
 #include "../../Transform/Transform3D.h"
 
 SphereCollider::SphereCollider(GameObject& gameObject) :
@@ -18,11 +17,8 @@ void SphereCollider::start() {
     auto meshComponent = getComponent<MeshComponent>();
     if (meshComponent) {
         const auto& mesh = meshComponent->getMesh();
-        const auto& meshesVertices = mesh.getMeshesVertices();
-        computeCenter(meshesVertices);
-        computeRadius(meshesVertices);
-        mSphere.center = mDefaultCenter;
-        mSphere.radius = mDefaultRadius;
+        //メッシュ情報から球を作成する
+        createSphere(mesh);
     }
 }
 
@@ -61,67 +57,48 @@ const Sphere& SphereCollider::getSphere() const {
     return mSphere;
 }
 
-void SphereCollider::computeCenter(const std::vector<MeshVertices>& meshesVertices) {
+void SphereCollider::createSphere(const IMesh& mesh) {
+    //すべてのメッシュから球を作成する
     auto min = Vector3::one * Math::infinity;
     auto max = Vector3::one * Math::negInfinity;
-
-    //すべてのメッシュ情報から中心位置を割り出す
-    for (size_t i = 0; i < meshesVertices.size(); ++i) {
-        const auto& vertices = meshesVertices[i];
-        for (size_t j = 0; j < vertices.size(); ++j) {
-            const auto& p = vertices[j].pos;
-            if (p.x < min.x) {
-                min.x = p.x;
-            }
-            if (p.x > max.x) {
-                max.x = p.x;
-            }
-            if (p.y < min.y) {
-                min.y = p.y;
-            }
-            if (p.y > max.y) {
-                max.y = p.y;
-            }
-            if (p.z < min.z) {
-                min.z = p.z;
-            }
-            if (p.z > max.z) {
-                max.z = p.z;
-            }
-        }
+    for (size_t i = 0; i < mesh.getMeshCount(); i++) {
+        computeCenterRadius(min, max, mesh.getMeshVertices(i));
     }
-
-    mDefaultCenter = (max + min) / 2.f;
+    mDefaultCenter = (min + max) / 2.f;
+    mDefaultRadius = (max - min).length() / 2.f;
+    mSphere.center = mDefaultCenter;
+    mSphere.radius = mDefaultRadius;
 }
 
-void SphereCollider::computeRadius(const std::vector<MeshVertices>& meshesVertices) {
-    float min = Math::infinity;
-    float max = Math::negInfinity;
+void SphereCollider::computeCenterRadius(Vector3& outMin, Vector3& outMax, const MeshVertices& meshVertices) {
+    //中心位置計算のための最小、最大位置
+    auto min = outMin;
+    auto max = outMax;
 
-    //すべてのメッシュ情報から半径を割り出す
-    for (size_t i = 0; i < meshesVertices.size(); ++i) {
-        const auto& vertices = meshesVertices[i];
-        for (size_t j = 0; j < vertices.size(); ++j) {
-            const auto& p = vertices[j].pos;
-            if (p.x < min) {
-                min = p.x;
-            }
-            if (p.x > max) {
-                max = p.x;
-            }
-            if (p.y < min) {
-                min = p.y;
-            }
-            if (p.y > max) {
-                max = p.y;
-            }
-            if (p.z < min) {
-                min = p.z;
-            }
-            if (p.z > max) {
-                max = p.z;
-            }
+    //メッシュ情報から最小、最大点を割り出す
+    for (size_t i = 0; i < meshVertices.size(); ++i) {
+        const auto& vertices = meshVertices[i];
+        const auto& p = vertices.pos;
+        if (p.x < min.x) {
+            min.x = p.x;
+        }
+        if (p.x > max.x) {
+            max.x = p.x;
+        }
+        if (p.y < min.y) {
+            min.y = p.y;
+        }
+        if (p.y > max.y) {
+            max.y = p.y;
+        }
+        if (p.z < min.z) {
+            min.z = p.z;
+        }
+        if (p.z > max.z) {
+            max.z = p.z;
         }
     }
-    mDefaultRadius = (max - min) / 2.f;
+
+    outMin = min;
+    outMax = max;
 }

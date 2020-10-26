@@ -3,6 +3,7 @@
 #include "Collider.h"
 #include "../../Collision/Collision.h"
 #include "../../Math/Math.h"
+#include "../../Mesh/IMesh.h"
 #include "../../Mesh/IMeshLoader.h"
 
 class AABBCollider : public Collider {
@@ -22,8 +23,10 @@ public:
     void setRenderCollision(bool value);
 
 private:
+    //AABBを作成する
+    void createAABB(const IMesh& mesh);
     //メッシュから最小、最大点を割り出す
-    void computeBox(const std::vector<MeshVertices>& meshesVertices);
+    void computeMinMax(Vector3& outMin, Vector3& outMax, const MeshVertices& meshVertices);
     //AABBを更新する
     void updateAABB();
     //当たり判定を可視化する

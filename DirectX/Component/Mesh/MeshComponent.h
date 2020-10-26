@@ -10,6 +10,7 @@
 
 class Mesh;
 class MeshManager;
+class Shader;
 class Camera;
 class DirectionalLight;
 
@@ -52,6 +53,7 @@ private:
 
 protected:
     std::shared_ptr<Mesh> mMesh;
+    std::unique_ptr<Shader> mShader;
     std::string mFileName;
     State mState;
     float mAlpha;

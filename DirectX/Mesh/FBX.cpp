@@ -459,7 +459,7 @@ void FBX::createTexture(
     if (type == FbxSurfaceMaterial::sDiffuse) {
         material.texture = tex;
     } else if (type == FbxSurfaceMaterial::sNormalMap) {
-        material.mapTexture = tex;
+        material.normalMapTexture = tex;
     }
 }
 

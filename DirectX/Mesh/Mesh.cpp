@@ -3,13 +3,11 @@
 #include "OBJ.h"
 #include "../DebugLayer/Debug.h"
 #include "../DirectX/DirectXInclude.h"
-#include "../System/Shader/Shader.h"
 #include "../Utility/FileUtil.h"
 #include <cassert>
 
 Mesh::Mesh() :
-    mMesh(nullptr),
-    mShader(nullptr) {
+    mMesh(nullptr) {
 }
 
 Mesh::~Mesh() = default;
@@ -22,8 +20,8 @@ unsigned Mesh::getMeshCount() const {
     return mMeshesVertices.size();
 }
 
-const std::vector<MeshVertices>& Mesh::getMeshesVertices() const {
-    return mMeshesVertices;
+const MeshVertices& Mesh::getMeshVertices(unsigned index) const {
+    return mMeshesVertices[index];
 }
 
 void Mesh::loadMesh(const std::string& filePath) {
@@ -35,18 +33,7 @@ void Mesh::loadMesh(const std::string& filePath) {
     initialize(filePath);
 }
 
-void Mesh::loadShader(const std::string& shaderName) {
-    createShader(shaderName);
-}
-
-void Mesh::setShaderData(const void* data, unsigned size, unsigned index) const {
-    //シェーダーにデータを転送する
-    mShader->transferData(data, size, index);
-}
-
 void Mesh::draw(unsigned meshIndex) const {
-    //使用するシェーダーの登録
-    mShader->setShaderInfo();
     //バーテックスバッファーをセット
     mVertexBuffers[meshIndex]->setVertexBuffer();
     //インデックスバッファーをセット
@@ -61,7 +48,8 @@ void Mesh::initialize(const std::string& filePath) {
     createMesh(filePath);
 
     //それぞれは同じサイズのはず
-    assert(mMeshesVertices.size() == mMeshesIndices.size() == mMaterials.size());
+    assert(mMeshesVertices.size() == mMeshesIndices.size());
+    assert(mMeshesVertices.size() == mMaterials.size());
 
     //メッシュの数だけバッファを作る
     for (size_t i = 0; i < mMeshesVertices.size(); i++) {
@@ -79,14 +67,11 @@ void Mesh::createMesh(const std::string& filePath) {
         mMesh = std::make_unique<FBX>();
     } else {
         Debug::windowMessage(filePath + ": 対応していない拡張子です");
+        return;
     }
 
     //メッシュを解析する
     mMesh->perse(filePath, mMeshesVertices, mMeshesIndices, mMaterials);
-}
-
-void Mesh::createShader(const std::string& fileName) {
-    mShader = std::make_unique<Shader>(fileName);
 }
 
 void Mesh::createVertexBuffer(unsigned meshIndex) {

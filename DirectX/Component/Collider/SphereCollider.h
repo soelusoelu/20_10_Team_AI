@@ -3,6 +3,7 @@
 #include "Collider.h"
 #include "../../Collision/Collision.h"
 #include "../../Math/Math.h"
+#include "../../Mesh/IMesh.h"
 #include "../../Mesh/IMeshLoader.h"
 
 class SphereCollider : public Collider {
@@ -18,10 +19,10 @@ public:
     const Sphere& getSphere() const;
 
 private:
-    //メッシュから中心位置を割り出す
-    void computeCenter(const std::vector<MeshVertices>& meshesVertices);
-    //メッシュから半径を割り出す
-    void computeRadius(const std::vector<MeshVertices>& meshesVertices);
+    //メッシュから球を作る
+    void createSphere(const IMesh& mesh);
+    //メッシュから最小、最大点を割り出す
+    void computeCenterRadius(Vector3& outMin, Vector3& outMax, const MeshVertices& meshVertices);
 
 private:
     Sphere mSphere;

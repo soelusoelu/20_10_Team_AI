@@ -7,6 +7,7 @@
 #include "../../Mesh/MeshManager.h"
 #include "../../System/AssetsManager.h"
 #include "../../System/Shader/ConstantBuffers.h"
+#include "../../System/Shader/Shader.h"
 #include "../../System/Texture/TextureFromFile.h"
 #include "../../Transform/Transform3D.h"
 #include "../../Utility/LevelLoader.h"
@@ -14,6 +15,7 @@
 MeshComponent::MeshComponent(GameObject& gameObject) :
     Component(gameObject),
     mMesh(nullptr),
+    mShader(nullptr),
     mFileName(),
     mState(State::ACTIVE),
     mAlpha(1.f) {
@@ -51,12 +53,12 @@ void MeshComponent::loadProperties(const rapidjson::Value& inObj) {
             shader = "MeshTexture.hlsl";
         }
         //ノーマルマップが有るなら
-        if (mMesh->getMaterial(0).mapTexture) {
+        if (mMesh->getMaterial(0).normalMapTexture) {
             shader = "NormalMap.hlsl";
         }
     }
     //シェーダーを生成する
-    mMesh->loadShader(shader);
+    mShader = std::make_unique<Shader>(shader);
 
     //アルファ値を取得する
     JsonHelper::getFloat(inObj, "alpha", &mAlpha);
@@ -68,6 +70,9 @@ void MeshComponent::drawDebugInfo(ComponentDebug::DebugInfoList* inspect) const 
 }
 
 void MeshComponent::draw(const Camera& camera, const DirectionalLight& dirLight) const {
+    //使用するシェーダーの登録
+    mShader->setShaderInfo();
+
     //シェーダーのコンスタントバッファーに各種データを渡す
     TransparentConstantBuffer meshcb;
     const auto& world = transform().getWorldTransform();
@@ -75,7 +80,7 @@ void MeshComponent::draw(const Camera& camera, const DirectionalLight& dirLight)
     meshcb.wvp = world * camera.getViewProjection();
     meshcb.lightDir = dirLight.getDirection();
     meshcb.cameraPos = camera.getPosition();
-    mMesh->setShaderData(&meshcb, sizeof(meshcb), 0);
+    mShader->transferData(&meshcb, sizeof(meshcb), 0);
 
     for (size_t i = 0; i < mMesh->getMeshCount(); ++i) {
         MaterialConstantBuffer matcb;
@@ -89,7 +94,7 @@ void MeshComponent::draw(const Camera& camera, const DirectionalLight& dirLight)
         matcb.diffuse = Vector4(mat.diffuse, alpha);
         matcb.specular = mat.specular;
         //データ転送
-        mMesh->setShaderData(&matcb, sizeof(matcb), 1);
+        mShader->transferData(&matcb, sizeof(matcb), 1);
 
         //テクスチャが有るなら登録
         if (mat.texture) {

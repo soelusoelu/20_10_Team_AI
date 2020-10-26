@@ -8,10 +8,10 @@
 class IMesh {
 public:
     virtual ~IMesh() = default;
-    //マテリアルの取得
+    //指定のマテリアルの取得
     virtual const Material& getMaterial(unsigned index) const = 0;
     //メッシュの数を取得する
     virtual unsigned getMeshCount() const = 0;
-    //すべての頂点情報を取得
-    virtual const std::vector<MeshVertices>& getMeshesVertices() const = 0;
+    //指定の頂点情報を取得
+    virtual const MeshVertices& getMeshVertices(unsigned index) const = 0;
 };

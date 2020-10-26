@@ -1,7 +1,6 @@
 ﻿#include "AABBCollider.h"
 #include "../Mesh/MeshComponent.h"
 #include "../../DebugLayer/Debug.h"
-#include "../../Mesh/IMesh.h"
 #include "../../Transform/Transform3D.h"
 #include "../../Utility/LevelLoader.h"
 #include <array>
@@ -10,7 +9,7 @@ AABBCollider::AABBCollider(GameObject& gameObject) :
     Collider(gameObject),
     mAABB(),
     mDefaultMin(Vector3::zero),
-    mDefaultMax(Vector3::one),
+    mDefaultMax(Vector3::zero),
     mIsRenderCollision(true) {
 }
 
@@ -22,10 +21,8 @@ void AABBCollider::start() {
     auto meshComponent = getComponent<MeshComponent>();
     if (meshComponent) {
         const auto& mesh = meshComponent->getMesh();
-        const auto& meshesVertices = mesh.getMeshesVertices();
-        computeBox(meshesVertices);
-        mAABB.min = mDefaultMin;
-        mAABB.max = mDefaultMax;
+        //メッシュ情報からAABBを作成する
+        createAABB(mesh);
 
         //早速transformが変わっているかもしれないから更新する
         updateAABB();
@@ -75,38 +72,50 @@ void AABBCollider::setRenderCollision(bool value) {
     mIsRenderCollision = value;
 }
 
-void AABBCollider::computeBox(const std::vector<MeshVertices>& meshesVertices) {
+void AABBCollider::createAABB(const IMesh& mesh) {
+    //すべてのメッシュからAABBを作成する
+    for (size_t i = 0; i < mesh.getMeshCount(); i++) {
+        Vector3 min, max;
+        computeMinMax(min, max, mesh.getMeshVertices(i));
+
+        //当たり判定更新
+        mAABB.updateMinMax(min);
+        mAABB.updateMinMax(max);
+    }
+    mDefaultMin = mAABB.min;
+    mDefaultMax = mAABB.max;
+}
+
+void AABBCollider::computeMinMax(Vector3& outMin, Vector3& outMax, const MeshVertices& meshVertices) {
     auto min = Vector3::one * Math::infinity;
     auto max = Vector3::one * Math::negInfinity;
 
-    //すべてのメッシュ情報から最小、最大点を割り出す
-    for (size_t i = 0; i < meshesVertices.size(); ++i) {
-        const auto& vertices = meshesVertices[i];
-        for (size_t j = 0; j < vertices.size(); ++j) {
-            const auto& p = vertices[j].pos;
-            if (p.x < min.x) {
-                min.x = p.x;
-            }
-            if (p.x > max.x) {
-                max.x = p.x;
-            }
-            if (p.y < min.y) {
-                min.y = p.y;
-            }
-            if (p.y > max.y) {
-                max.y = p.y;
-            }
-            if (p.z < min.z) {
-                min.z = p.z;
-            }
-            if (p.z > max.z) {
-                max.z = p.z;
-            }
+    //メッシュ情報から最小、最大点を割り出す
+    for (size_t i = 0; i < meshVertices.size(); ++i) {
+        const auto& vertices = meshVertices[i];
+        const auto& p = vertices.pos;
+        if (p.x < min.x) {
+            min.x = p.x;
+        }
+        if (p.x > max.x) {
+            max.x = p.x;
+        }
+        if (p.y < min.y) {
+            min.y = p.y;
+        }
+        if (p.y > max.y) {
+            max.y = p.y;
+        }
+        if (p.z < min.z) {
+            min.z = p.z;
+        }
+        if (p.z > max.z) {
+            max.z = p.z;
         }
     }
 
-    mDefaultMin = min;
-    mDefaultMax = max;
+    outMin = min;
+    outMax = max;
 }
 
 void AABBCollider::updateAABB() {

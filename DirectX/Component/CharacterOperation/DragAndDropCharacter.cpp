@@ -40,6 +40,7 @@ void DragAndDropCharacter::start() {
 }
 
 void DragAndDropCharacter::update() {
+    transform().rotate(Vector3::up);
     //フラグ初期化
     mIsIntersectRayGround = false;
 
