@@ -89,7 +89,7 @@ void GameObject::initialize() {
         mGameObjectManager->add(shared_from_this());
     }
 
-    mTransform = std::make_unique<Transform3D>(shared_from_this());
+    mTransform = std::make_unique<Transform3D>();
     mComponentManager = std::make_unique<ComponentManager>();
 }
 

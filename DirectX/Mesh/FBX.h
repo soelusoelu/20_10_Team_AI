@@ -7,6 +7,20 @@
 #include <string>
 #include <vector>
 
+//ボーン構造体
+struct Bone {
+    std::string name;
+    Vector3 startPos;
+    Vector3 endPos;
+    std::vector<Bone> children;
+};
+
+//アニメーション
+struct Motion {
+    unsigned numFrame; //フレーム数
+    std::vector<Matrix4> key; //キーフレーム
+};
+
 class FBX : public IMeshLoader {
 public:
     FBX();
@@ -31,6 +45,7 @@ private:
     //現状使用してない(サンプル確認用)
     void loadNormal(FbxMesh* mesh);
     void loadUV(FbxMesh* mesh);
+    void computeIndices(Indices& indices, FbxMesh* fbxMesh);
 
     //頂点情報 & 添字読み込み
     void loadFace(
@@ -38,9 +53,6 @@ private:
         Indices& indices,
         FbxMesh* fbxMesh
     );
-
-    //添字計算
-    void computeIndices(Indices& indices, FbxMesh* fbxMesh);
 
     //マテリアル読み込み
     void loadMaterial(
@@ -65,4 +77,23 @@ private:
         const char* type
     );
     FbxFileTexture* getFbxTexture(const FbxProperty& prop) const;
+
+    //ボーン読み込み
+    void loadBone(MeshVertices& meshVertices, FbxMesh* fbxMesh);
+    //ウェイト読み込み
+    void loadWeight(MeshVertices& meshVertices, const FbxMesh* fbxMesh, const FbxCluster* bone, unsigned boneIndex);
+    //頂点ウェイトを正規化する
+    void normalizeWeight(MeshVertices& meshVertices);
+    //キーフレーム読み込み
+    void loadKeyFrames(const std::string& name, int boneIndex, FbxNode* fbxBoneNode);
+
+    void time(FbxMesh* fbxMesh);
+
+private:
+    //ボーン情報
+    std::vector<Bone> mBones;
+    std::vector<std::string> mAnimationNames;
+    Motion mMotion;
+    int mStartFrame;
+    int mEndFrame;
 };

@@ -76,22 +76,10 @@ void FBX::createMesh(
 ) {
     loadFace(meshVertices, indices, fbxMesh);
     loadMaterial(material, fbxMesh, directoryPath);
+    //loadBone(meshVertices, fbxMesh);
 }
 
 void FBX::loadNormal(FbxMesh* mesh) {
-    //auto& normals = mNormals[meshIndex];
-
-    ////法線配列を取得する
-    //FbxArray<FbxVector4> normalArray;
-    //mesh->GetPolygonVertexNormals(normalArray);
-    //normals.resize(normalArray.Size());
-
-    //for (size_t i = 0; i < normals.size(); i++) {
-    //    normals[i].x = -static_cast<float>(normalArray[i][0]);
-    //    normals[i].y = static_cast<float>(normalArray[i][1]);
-    //    normals[i].z = static_cast<float>(normalArray[i][2]);
-    //}
-
 #pragma region 公式サンプル
     //FbxGeometryElementNormal* normalElement = mesh->GetElementNormal();
     //if (!normalElement) {
@@ -139,22 +127,6 @@ void FBX::loadNormal(FbxMesh* mesh) {
 }
 
 void FBX::loadUV(FbxMesh* mesh) {
-    //auto& uvs = mUVs[meshIndex];
-
-    ////UVSetの名前リストを取得
-    //FbxStringList uvSetNameList;
-    //mesh->GetUVSetNames(uvSetNameList);
-
-    ////UVSetの名前からUVSetを取得する
-    //FbxArray<FbxVector2> uvArray;
-    //mesh->GetPolygonVertexUVs(uvSetNameList.GetStringAt(0), uvArray);
-    //uvs.resize(uvArray.Size());
-
-    //for (size_t i = 0; i < uvs.size(); i++) {
-    //    uvs[i].x = static_cast<float>(uvArray[i][0]);
-    //    uvs[i].y = 1.f - static_cast<float>(uvArray[i][1]);
-    //}
-
 #pragma region 公式サンプル
     //すべてのUVセットを反復処理する
     //for (int uvSetIndex = 0; uvSetIndex < uvSetNameList.GetCount(); uvSetIndex++) {
@@ -214,6 +186,19 @@ void FBX::loadUV(FbxMesh* mesh) {
     //    }
     //}
 #pragma endregion
+}
+
+void FBX::computeIndices(Indices& indices, FbxMesh* fbxMesh) {
+    //indicesはポリゴン数の3倍
+    auto polygonCount = fbxMesh->GetPolygonCount();
+    indices.resize(polygonCount * 3);
+
+    //Fbxは右手系なので、DirectXの左手系に直すために2->1->0の順にインデックスを格納していく
+    for (int i = 0; i < polygonCount; ++i) {
+        indices[i * 3 + 0] = i * 3 + 2;
+        indices[i * 3 + 1] = i * 3 + 1;
+        indices[i * 3 + 2] = i * 3;
+    }
 }
 
 void FBX::loadFace(
@@ -281,19 +266,6 @@ void FBX::loadFace(
         meshVertices[i] = vertex;
 
         //fbxは右手系なので、DirectXの左手系に直すために2->1->0の順にインデックスを格納していく
-        indices[i * 3 + 0] = i * 3 + 2;
-        indices[i * 3 + 1] = i * 3 + 1;
-        indices[i * 3 + 2] = i * 3;
-    }
-}
-
-void FBX::computeIndices(Indices& indices, FbxMesh* fbxMesh) {
-    //indicesはポリゴン数の3倍
-    auto polygonCount = fbxMesh->GetPolygonCount();
-    indices.resize(polygonCount * 3);
-
-    //Fbxは右手系なので、DirectXの左手系に直すために2->1->0の順にインデックスを格納していく
-    for (int i = 0; i < polygonCount; ++i) {
         indices[i * 3 + 0] = i * 3 + 2;
         indices[i * 3 + 1] = i * 3 + 1;
         indices[i * 3 + 2] = i * 3;
@@ -479,4 +451,215 @@ FbxFileTexture* FBX::getFbxTexture(const FbxProperty& prop) const {
     }
 
     return out;
+}
+
+void FBX::loadBone(MeshVertices& meshVertices, FbxMesh* fbxMesh) {
+    //スキン情報の有無
+    int skinCount = fbxMesh->GetDeformerCount(FbxDeformer::eSkin);
+    if (skinCount <= 0) {
+        return;
+    }
+
+    for (int i = 0; i < skinCount; ++i) {
+        //i番目のスキンを取得
+        FbxDeformer* fbxDeformer = fbxMesh->GetDeformer(i, FbxDeformer::eSkin);
+        FbxSkin* fbxSkin = static_cast<FbxSkin*>(fbxDeformer);
+
+        //ボーンの数を取得
+        int boneCount = fbxSkin->GetClusterCount();
+
+        //クラスターの数に合わせて拡張
+        mBones.resize(boneCount);
+
+        for (int j = 0; j < boneCount; ++j) {
+            //j番目のボーンを取得
+            FbxCluster* bone = fbxSkin->GetCluster(j);
+
+            //ボーンのインデックスを格納
+            //mBones[j].index = j;
+
+            //ボーン名取得
+            mBones[j].name = bone->GetLink()->GetName();
+
+            //ウェイト読み込み
+            loadWeight(meshVertices, fbxMesh, bone, j);
+
+            //モデルの初期姿勢を取得する
+            FbxAMatrix linkMatrix;
+            bone->GetTransformLinkMatrix(linkMatrix);
+        }
+    }
+
+    //ウェイト正規化
+    normalizeWeight(meshVertices);
+    time(fbxMesh);
+
+
+
+    //全ボーン情報取得
+    //for (int bone = 0; bone < boneCount; ++bone) {
+    //    //ボーン情報取得
+    //    FbxCluster* fbxCluster = fbxSkin->GetCluster(bone);
+    //    FbxAMatrix trans;
+    //    fbxCluster->GetTransformMatrix(trans);
+    //    trans.mData[0][1] *= -1;
+    //    trans.mData[0][2] *= -1;
+    //    trans.mData[1][0] *= -1;
+    //    trans.mData[2][0] *= -1;
+    //    trans.mData[3][0] *= -1;
+
+    //    //ボーン名取得
+    //    const char* pName = fbxCluster->GetLink()->GetName();
+    //    mBones[bone].name = pName;
+
+    //    //Bone* pBone;
+    //    ////ボーン検索
+    //    //int boneNo = findBone(pName);
+    //    //if (boneNo != -1) {
+    //    //    pBone = &mBones[boneNo];
+    //    //} else {
+    //    //    boneNo = mBones.size();
+    //    //    pBone = &mBones[boneNo];
+    //    //    ++mNumBone;
+
+    //    //    pBone->name = pName;
+    //    //    //オフセット行列作成
+    //    //    FbxAMatrix linkMatrix;
+    //    //    fbxCluster->GetTransformLinkMatrix(linkMatrix);
+    //    //    linkMatrix.mData[0][1] *= -1;
+    //    //    linkMatrix.mData[0][2] *= -1;
+    //    //    linkMatrix.mData[1][0] *= -1;
+    //    //    linkMatrix.mData[2][0] *= -1;
+    //    //    linkMatrix.mData[3][0] *= -1;
+
+    //    //    FbxAMatrix offset = linkMatrix.Inverse() * trans;
+
+    //    //    //オフセット行列保存
+    //    //    //FbxAMatrixがDouble型だからmemcpyできない
+    //    //    for (int i = 0; i < 4; ++i) {
+    //    //        for (int j = 0; j < 4; ++j) {
+    //    //            pBone->offset.m[i][j] = static_cast<float>(offset[i][j]);
+    //    //        }
+    //    //    }
+    //    //    //キーフレーム読み込み
+    //    //    loadKeyFrames("default", boneNo, pCluster->GetLink());
+    //    //}
+    //}
+}
+
+void FBX::loadWeight(MeshVertices& meshVertices, const FbxMesh* fbxMesh, const FbxCluster* bone, unsigned boneIndex) {
+    //影響する頂点の数
+    //int weightCount = bone->GetControlPointIndicesCount();
+    ////ウェイト側の頂点のインデックス
+    //int* weightIndices = bone->GetControlPointIndices();
+    ////重み
+    //double* weights = bone->GetControlPointWeights();
+    ////頂点のインデックス
+    //int* polygonVertices = fbxMesh->GetPolygonVertices();
+
+    //for (int i = 0; i < weightCount; ++i) {
+    //    int index = weightIndices[i];
+    //    //全ポリゴンからindex2番目の頂点検索
+    //    for (int j = 0; j < meshVertices.size(); ++j) {
+    //        //頂点番号と一致するのを探す
+    //        if (polygonVertices[j] != index) {
+    //            continue;
+    //        }
+
+    //        //頂点にウェイト保存
+    //        int weightCount;
+    //        for (weightCount = 0; weightCount < 4; ++weightCount) {
+    //            //ウェイトが0なら格納できる
+    //            if (Math::nearZero(meshVertices[j].weight[weightCount])) {
+    //                break;
+    //            }
+    //        }
+
+    //        //格納できる数を超えていたら
+    //        if (weightCount >= 4) {
+    //            continue;
+    //        }
+
+    //        //頂点情報にウェイトを追加
+    //        meshVertices[j].index[weightCount] = boneIndex;
+    //        meshVertices[j].weight[weightCount] = static_cast<float>(weights[i]);
+    //    }
+    //}
+}
+
+void FBX::normalizeWeight(MeshVertices& meshVertices) {
+    //5本以上にまたっがてる場合のため
+    //for (int i = 0; i < meshVertices.size(); ++i) {
+    //    auto& meshVertex = meshVertices[i];
+    //    float sumWeight = 0.f;
+    //    //頂点のウェイトの合計を求める
+    //    for (int j = 0; j < 4; ++j) {
+    //        if (meshVertex.weight[j] <= 0.f) {
+    //            break;
+    //        }
+    //        sumWeight += meshVertex.weight[j];
+    //    }
+    //    //正規化
+    //    for (int j = 0; j < 4; ++j) {
+    //        meshVertex.weight[j] /= sumWeight;
+    //    }
+    //}
+}
+
+void FBX::loadKeyFrames(const std::string& name, int boneIndex, FbxNode* fbxBoneNode) {
+    //double time = (double)m_startFrame * (1.0 / 60);
+    //FbxTime T;
+    //for (unsigned f = 0; f < pMotion->numFrame; ++f) {
+    //    T.SetSecondDouble(time);
+    //    //T秒の姿勢行列をGet
+    //    FbxMatrix m = pBoneNode->EvaluateGlobalTransform(T);
+    //    m.mData[0][1] *= -1;
+    //    m.mData[0][2] *= -1;
+    //    m.mData[1][0] *= -1;
+    //    m.mData[2][0] *= -1;
+    //    m.mData[3][0] *= -1;
+
+    //    FbxDouble* mat = (FbxDouble*)m;
+    //    for (int i = 0; i < 16; i++) {
+    //        pMotion->key[boneIndex][f].m[i / 4][i % 4] = (float)mat[i];
+    //    }
+
+    //    time += 1.0 / 60.0;
+    //}
+}
+
+void FBX::time(FbxMesh* fbxMesh) {
+    //auto scene = fbxMesh->GetScene();
+    //FbxGlobalSettings& globalSettings = scene->GetGlobalSettings();
+    //FbxTime::EMode timeMode = globalSettings.GetTimeMode();
+
+    //FbxTime period;
+    //period.SetTime(0, 0, 0, 1, 0, timeMode);
+
+    //FbxNode* node = fbxMesh->GetNode();
+
+    ////auto pos = node->GetGlobalFromCurrentTake(period * 10);
+
+    ////モーション情報取得
+    //FbxArray<FbxString*> animationNames;
+    //scene->FillAnimStackNameArray(animationNames);
+
+    //for (int i = 0; i < animationNames.Size(); i++) {
+    //    mAnimationNames.emplace_back(*animationNames[i]);
+    //}
+
+    //FbxTime start;
+    //FbxTime stop;
+    //for (int i = 0; i < animationNames.Size(); ++i) {
+    //    FbxTakeInfo* currentTakeInfo = scene->GetTakeInfo(*animationNames[i]);
+    //    if (currentTakeInfo) {
+    //        start = currentTakeInfo->mLocalTimeSpan.GetStart();
+    //        stop = currentTakeInfo->mLocalTimeSpan.GetStop();
+    //        break;
+    //    }
+    //}
+
+    ////フレーム数を求める
+    //mStartFrame = static_cast<int>((start.Get() / period.Get()));
+    //mEndFrame = static_cast<int>((stop.Get() / period.Get()));
 }
