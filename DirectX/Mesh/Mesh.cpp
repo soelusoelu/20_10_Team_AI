@@ -1,6 +1,6 @@
 ﻿#include "Mesh.h"
-#include "FBX.h"
 #include "OBJ.h"
+#include "FBX/FBX.h"
 #include "../DebugLayer/Debug.h"
 #include "../DirectX/DirectXInclude.h"
 #include "../Utility/FileUtil.h"

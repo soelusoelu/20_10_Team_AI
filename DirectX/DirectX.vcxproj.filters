@@ -31,7 +31,6 @@
     <ClCompile Include="Light\PointLight.cpp" />
     <ClCompile Include="Device\DrawString.cpp" />
     <ClCompile Include="Utility\LevelLoader.cpp" />
-    <ClCompile Include="Mesh\FBX.cpp" />
     <ClCompile Include="Utility\FileUtil.cpp" />
     <ClCompile Include="Mesh\OBJ.cpp" />
     <ClCompile Include="Device\FPSCounter.cpp" />
@@ -173,6 +172,8 @@
     <ClCompile Include="Collision\Square.cpp" />
     <ClCompile Include="Component\Camera\CameraMove.cpp" />
     <ClCompile Include="System\AssetsManager.cpp" />
+    <ClCompile Include="Mesh\Fbx\FbxMaterialParser.cpp" />
+    <ClCompile Include="Mesh\Fbx\FBX.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -192,7 +193,6 @@
     <ClInclude Include="Light\PointLight.h" />
     <ClInclude Include="Device\DrawString.h" />
     <ClInclude Include="Utility\LevelLoader.h" />
-    <ClInclude Include="Mesh\FBX.h" />
     <ClInclude Include="Mesh\IMeshLoader.h" />
     <ClInclude Include="Utility\FileUtil.h" />
     <ClInclude Include="Mesh\OBJ.h" />
@@ -379,5 +379,7 @@
     <ClInclude Include="Collision\Square.h" />
     <ClInclude Include="Component\Camera\CameraMove.h" />
     <ClInclude Include="System\AssetsManager.h" />
+    <ClInclude Include="Mesh\Fbx\FbxMaterialParser.h" />
+    <ClInclude Include="Mesh\Fbx\FBX.h" />
   </ItemGroup>
 </Project>

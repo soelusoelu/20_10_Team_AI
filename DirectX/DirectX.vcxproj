@@ -176,6 +176,7 @@
     <ClCompile Include="Collision\Ray.cpp" />
     <ClCompile Include="Component\CharacterOperation\DragAndDropCharacter.cpp" />
     <ClCompile Include="Collision\Square.cpp" />
+    <ClCompile Include="Mesh\Fbx\FbxMaterialParser.cpp" />
     <ClCompile Include="System\Shader\InputElementManager.cpp" />
     <ClCompile Include="System\Shader\ConstantBufferManager.cpp" />
     <ClCompile Include="DebugLayer\LineRenderer\LineRenderer.cpp" />
@@ -266,7 +267,7 @@
     <ClCompile Include="Sound\Voice\SourceVoice\SourceVoice.cpp" />
     <ClCompile Include="Input\JoyPad.cpp" />
     <ClCompile Include="Input\Keyboard.cpp" />
-    <ClCompile Include="Mesh\FBX.cpp" />
+    <ClCompile Include="Mesh\Fbx\FBX.cpp" />
     <ClCompile Include="DirectX\DirectX.cpp" />
     <ClCompile Include="DebugLayer\Debug.cpp" />
     <ClCompile Include="Utility\Easing.cpp" />
@@ -334,6 +335,7 @@
     <ClInclude Include="Collision\Sphere.h" />
     <ClInclude Include="Collision\Circle.h" />
     <ClInclude Include="Component\CharacterOperation\DragAndDropCharacter.h" />
+    <ClInclude Include="Mesh\Fbx\FbxMaterialParser.h" />
     <ClInclude Include="Mesh\IMesh.h" />
     <ClInclude Include="Mesh\Vertex.h" />
     <ClInclude Include="Component\Sample\RayMouse.h" />
@@ -461,7 +463,7 @@
     <ClInclude Include="Component\Text\TextBase.h" />
     <ClInclude Include="Input\JoyPad.h" />
     <ClInclude Include="Input\Keyboard.h" />
-    <ClInclude Include="Mesh\FBX.h" />
+    <ClInclude Include="Mesh\Fbx\FBX.h" />
     <ClInclude Include="Mesh\IMeshLoader.h" />
     <ClInclude Include="DirectX\DirectX.h" />
     <ClInclude Include="DebugLayer\Debug.h" />

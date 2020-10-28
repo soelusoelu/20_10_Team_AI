@@ -1,7 +1,7 @@
 ﻿#pragma once
 
-#include "IMeshLoader.h"
-#include "../Math/Math.h"
+#include "../IMeshLoader.h"
+#include "../../Math/Math.h"
 #include <fbxsdk.h>
 #include <memory>
 #include <string>
@@ -24,6 +24,8 @@ struct Motion {
     //[ボーンのインデックス][フレーム数]
     std::vector<Matrix4> key[512]; //キーフレーム
 };
+
+class FbxMaterialParser;
 
 class FBX : public IMeshLoader {
 public:
@@ -58,30 +60,6 @@ private:
         FbxMesh* fbxMesh
     );
 
-    //マテリアル読み込み
-    void loadMaterial(
-        Material& material,
-        FbxMesh* fbxMesh,
-        const std::string& directoryPath
-    );
-    void loadMaterialAttribute(Material& material, FbxSurfaceMaterial* fbxSurfaceMaterial);
-    void loadLambert(Material& material, const FbxSurfaceLambert* fbxSurfaceLambert);
-    void loadPhong(Material& material, const FbxSurfacePhong* fbxSurfacePhong);
-
-    //テクスチャ読み込み
-    void loadTextures(
-        Material& material,
-        FbxSurfaceMaterial* fbxSurfaceMaterial,
-        const std::string& directoryPath
-    );
-    void createTexture(
-        Material& material,
-        const FbxSurfaceMaterial* fbxSurfaceMaterial,
-        const std::string& directoryPath,
-        const char* type
-    );
-    FbxFileTexture* getFbxTexture(const FbxProperty& prop) const;
-
     //ボーン読み込み
     void loadBone(MeshVertices& meshVertices, FbxMesh* fbxMesh);
     //ウェイト読み込み
@@ -96,6 +74,7 @@ private:
     int getMotionFromName(const std::string& motionName) const;
 
 private:
+    std::unique_ptr<FbxMaterialParser> mMaterialParser;
     //ボーン情報
     std::vector<Bone> mBones;
     std::vector<Motion> mMotions;
