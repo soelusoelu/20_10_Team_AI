@@ -6,7 +6,7 @@ FbxMaterialParser::FbxMaterialParser() = default;
 
 FbxMaterialParser::~FbxMaterialParser() = default;
 
-void FbxMaterialParser::parse(Material& material, FbxMesh* fbxMesh, const std::string& directoryPath) {
+void FbxMaterialParser::parse(Material& material, FbxMesh* fbxMesh, const std::string& directoryPath) const {
     //マテリアルがなければ終了
     if (fbxMesh->GetElementMaterialCount() == 0) {
         return;
@@ -33,7 +33,7 @@ void FbxMaterialParser::parse(Material& material, FbxMesh* fbxMesh, const std::s
     }
 }
 
-void FbxMaterialParser::loadMaterialAttribute(Material& material, FbxSurfaceMaterial* fbxSurfaceMaterial) {
+void FbxMaterialParser::loadMaterialAttribute(Material& material, FbxSurfaceMaterial* fbxSurfaceMaterial) const {
     //継承関係にあるか調べる
     if (!fbxSurfaceMaterial->GetClassId().Is(FbxSurfaceLambert::ClassId)) {
         return;
@@ -61,7 +61,7 @@ void FbxMaterialParser::loadMaterialAttribute(Material& material, FbxSurfaceMate
     loadPhong(material, phong);
 }
 
-void FbxMaterialParser::loadLambert(Material& material, const FbxSurfaceLambert* fbxSurfaceLambert) {
+void FbxMaterialParser::loadLambert(Material& material, const FbxSurfaceLambert* fbxSurfaceLambert) const {
     //アンビエント
     auto prop = fbxSurfaceLambert->FindProperty(FbxSurfaceMaterial::sAmbient);
     if (prop.IsValid()) {
@@ -105,7 +105,7 @@ void FbxMaterialParser::loadLambert(Material& material, const FbxSurfaceLambert*
     }
 }
 
-void FbxMaterialParser::loadPhong(Material& material, const FbxSurfacePhong* fbxSurfacePhong) {
+void FbxMaterialParser::loadPhong(Material& material, const FbxSurfacePhong* fbxSurfacePhong) const {
     //スペキュラ
     auto prop = fbxSurfacePhong->FindProperty(FbxSurfaceMaterial::sSpecular);
     if (prop.IsValid()) {
@@ -122,13 +122,13 @@ void FbxMaterialParser::loadPhong(Material& material, const FbxSurfacePhong* fbx
     }
 }
 
-void FbxMaterialParser::loadTextures(Material& material, FbxSurfaceMaterial* fbxSurfaceMaterial, const std::string& directoryPath) {
+void FbxMaterialParser::loadTextures(Material& material, FbxSurfaceMaterial* fbxSurfaceMaterial, const std::string& directoryPath) const {
     //テクスチャ作成
     createTexture(material, fbxSurfaceMaterial, directoryPath, FbxSurfaceMaterial::sDiffuse);
     createTexture(material, fbxSurfaceMaterial, directoryPath, FbxSurfaceMaterial::sNormalMap);
 }
 
-void FbxMaterialParser::createTexture(Material& material, const FbxSurfaceMaterial* fbxSurfaceMaterial, const std::string& directoryPath, const char* type) {
+void FbxMaterialParser::createTexture(Material& material, const FbxSurfaceMaterial* fbxSurfaceMaterial, const std::string& directoryPath, const char* type) const {
     //プロパティを取得する
     const auto& prop = fbxSurfaceMaterial->FindProperty(type);
 

@@ -1,31 +1,13 @@
 ﻿#pragma once
 
 #include "../IMeshLoader.h"
-#include "../../Math/Math.h"
 #include <fbxsdk.h>
 #include <memory>
 #include <string>
-#include <vector>
 
-//ボーン構造体
-struct Bone {
-    std::string name;
-    Vector3 startPos;
-    Vector3 endPos;
-    std::vector<Bone> children;
-};
-
-//アニメーション
-struct Motion {
-    std::string name;
-    long long numFrame; //フレーム数
-    long long startFrame;
-    long long endFrame;
-    //[ボーンのインデックス][フレーム数]
-    std::vector<Matrix4> key[512]; //キーフレーム
-};
-
+class FbxMeshParser;
 class FbxMaterialParser;
+class FbxBoneParser;
 
 class FBX : public IMeshLoader {
 public:
@@ -39,6 +21,15 @@ public:
     ) override;
 
 private:
+    //すべてのメッシュを作成する
+    void createMeshes(
+        std::vector<MeshVertices>& meshesVertices,
+        std::vector<Indices>& meshesIndices,
+        std::vector<Material>& materials,
+        const FbxScene* fbxScene,
+        const std::string& filePath
+    );
+
     //メッシュ作成
     void createMesh(
         MeshVertices& meshVertices,
@@ -48,34 +39,8 @@ private:
         const std::string& directoryPath
     );
 
-    //現状使用してない(サンプル確認用)
-    void loadNormal(FbxMesh* mesh);
-    void loadUV(FbxMesh* mesh);
-    void computeIndices(Indices& indices, FbxMesh* fbxMesh);
-
-    //頂点情報 & 添字読み込み
-    void loadFace(
-        MeshVertices& meshVertices,
-        Indices& indices,
-        FbxMesh* fbxMesh
-    );
-
-    //ボーン読み込み
-    void loadBone(MeshVertices& meshVertices, FbxMesh* fbxMesh);
-    //ウェイト読み込み
-    void loadWeight(MeshVertices& meshVertices, const FbxMesh* fbxMesh, const FbxCluster* bone, unsigned boneIndex);
-    //頂点ウェイトを正規化する
-    void normalizeWeight(MeshVertices& meshVertices);
-    //キーフレーム読み込み
-    void loadKeyFrames(const std::string& name, int boneIndex, FbxNode* fbxBoneNode);
-    //モーション読み込み
-    void loadMotion(FbxScene* fbxScene);
-    //モーション名からモーションを検索する
-    int getMotionFromName(const std::string& motionName) const;
-
 private:
+    std::unique_ptr<FbxMeshParser> mMeshParser;
     std::unique_ptr<FbxMaterialParser> mMaterialParser;
-    //ボーン情報
-    std::vector<Bone> mBones;
-    std::vector<Motion> mMotions;
+    std::unique_ptr<FbxBoneParser> mBoneParser;
 };
