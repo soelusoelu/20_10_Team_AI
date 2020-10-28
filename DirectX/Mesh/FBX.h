@@ -17,8 +17,12 @@ struct Bone {
 
 //アニメーション
 struct Motion {
-    unsigned numFrame; //フレーム数
-    std::vector<Matrix4> key; //キーフレーム
+    std::string name;
+    long long numFrame; //フレーム数
+    long long startFrame;
+    long long endFrame;
+    //[ボーンのインデックス][フレーム数]
+    std::vector<Matrix4> key[512]; //キーフレーム
 };
 
 class FBX : public IMeshLoader {
@@ -86,14 +90,13 @@ private:
     void normalizeWeight(MeshVertices& meshVertices);
     //キーフレーム読み込み
     void loadKeyFrames(const std::string& name, int boneIndex, FbxNode* fbxBoneNode);
-
-    void time(FbxMesh* fbxMesh);
+    //モーション読み込み
+    void loadMotion(FbxScene* fbxScene);
+    //モーション名からモーションを検索する
+    int getMotionFromName(const std::string& motionName) const;
 
 private:
     //ボーン情報
     std::vector<Bone> mBones;
-    std::vector<std::string> mAnimationNames;
-    Motion mMotion;
-    int mStartFrame;
-    int mEndFrame;
+    std::vector<Motion> mMotions;
 };

@@ -111,7 +111,7 @@ void Mouse::clampMousePosition() {
         Vector2(static_cast<float>(Window::debugWidth()), static_cast<float>(Window::debugHeight()))
     );
 #else
-    mMousePosition.clamp(
+    mCurrentMousePosition.clamp(
         Vector2::zero,
         Vector2(static_cast<float>(Window::width()), static_cast<float>(Window::height()))
     );

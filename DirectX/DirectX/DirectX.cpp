@@ -188,8 +188,8 @@ void DirectX::createSwapChain(const HWND& hWnd) {
     swapChainDesc.BufferDesc.Width = Window::debugWidth();
     swapChainDesc.BufferDesc.Height = Window::debugHeight();
 #else
-    sd.BufferDesc.Width = Window::width();
-    sd.BufferDesc.Height = Window::height();
+    swapChainDesc.BufferDesc.Width = Window::width();
+    swapChainDesc.BufferDesc.Height = Window::height();
 #endif // _DEBUG
     swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
