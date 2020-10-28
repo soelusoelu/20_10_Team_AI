@@ -71,7 +71,7 @@ void Mesh::createMesh(const std::string& filePath) {
     }
 
     //メッシュを解析する
-    mMesh->perse(filePath, mMeshesVertices, mMeshesIndices, mMaterials);
+    mMesh->parse(filePath, mMeshesVertices, mMeshesIndices, mMaterials);
 }
 
 void Mesh::createVertexBuffer(unsigned meshIndex) {

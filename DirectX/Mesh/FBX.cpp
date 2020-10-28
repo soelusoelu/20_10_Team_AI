@@ -8,7 +8,7 @@ FBX::FBX() = default;
 
 FBX::~FBX() = default;
 
-void FBX::perse(
+void FBX::parse(
     const std::string& filePath,
     std::vector<MeshVertices>& meshesVertices,
     std::vector<Indices>& meshesIndices,
@@ -495,8 +495,8 @@ void FBX::loadBone(MeshVertices& meshVertices, FbxMesh* fbxMesh) {
             bone->GetTransformLinkMatrix(linkMatrix);
 
             //キーフレーム読み込み
-            mMotions[0].key[j].resize(boneCount);
-            loadKeyFrames(mMotions[0].name, j, fbxNode);
+            //mMotions[0].key[j].resize(boneCount);
+            //loadKeyFrames(mMotions[0].name, j, fbxNode);
         }
     }
 

@@ -11,7 +11,7 @@ class OBJ : public IMeshLoader {
 public:
     OBJ();
     ~OBJ();
-    virtual void perse(
+    virtual void parse(
         const std::string& filePath,
         std::vector<MeshVertices>& meshesVertices,
         std::vector<Indices>& meshesIndices,

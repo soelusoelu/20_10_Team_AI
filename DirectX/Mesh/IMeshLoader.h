@@ -14,7 +14,7 @@ using Indices = std::vector<unsigned short>;
 class IMeshLoader {
 public:
     virtual ~IMeshLoader() = default;
-    virtual void perse(
+    virtual void parse(
         const std::string& filePath,
         std::vector<MeshVertices>& meshesVertices,
         std::vector<Indices>& meshesIndices,

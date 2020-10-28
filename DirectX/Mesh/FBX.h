@@ -29,7 +29,7 @@ class FBX : public IMeshLoader {
 public:
     FBX();
     ~FBX();
-    virtual void perse(
+    virtual void parse(
         const std::string& filePath,
         std::vector<MeshVertices>& meshesVertices,
         std::vector<Indices>& meshesIndices,

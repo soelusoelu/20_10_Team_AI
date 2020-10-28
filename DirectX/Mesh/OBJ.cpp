@@ -8,7 +8,7 @@ OBJ::OBJ() = default;
 
 OBJ::~OBJ() = default;
 
-void OBJ::perse(
+void OBJ::parse(
     const std::string& filePath,
     std::vector<MeshVertices>& meshesVertices,
     std::vector<Indices>& meshesIndices,
