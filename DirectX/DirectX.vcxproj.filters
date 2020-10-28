@@ -176,6 +176,7 @@
     <ClCompile Include="Mesh\Fbx\FBX.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMeshParser.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxBoneParser.cpp" />
+    <ClCompile Include="Mesh\Fbx\FbxAnimationTime.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -385,5 +386,6 @@
     <ClInclude Include="Mesh\Fbx\FBX.h" />
     <ClInclude Include="Mesh\Fbx\FbxMeshParser.h" />
     <ClInclude Include="Mesh\Fbx\FbxBoneParser.h" />
+    <ClInclude Include="Mesh\Fbx\FbxAnimationTime.h" />
   </ItemGroup>
 </Project>

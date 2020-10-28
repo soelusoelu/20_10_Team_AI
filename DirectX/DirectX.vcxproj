@@ -176,6 +176,7 @@
     <ClCompile Include="Collision\Ray.cpp" />
     <ClCompile Include="Component\CharacterOperation\DragAndDropCharacter.cpp" />
     <ClCompile Include="Collision\Square.cpp" />
+    <ClCompile Include="Mesh\Fbx\FbxAnimationTime.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxBoneParser.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMeshParser.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMaterialParser.cpp" />
@@ -337,6 +338,7 @@
     <ClInclude Include="Collision\Sphere.h" />
     <ClInclude Include="Collision\Circle.h" />
     <ClInclude Include="Component\CharacterOperation\DragAndDropCharacter.h" />
+    <ClInclude Include="Mesh\Fbx\FbxAnimationTime.h" />
     <ClInclude Include="Mesh\Fbx\FbxBoneParser.h" />
     <ClInclude Include="Mesh\Fbx\FbxMeshParser.h" />
     <ClInclude Include="Mesh\Fbx\FbxMaterialParser.h" />
