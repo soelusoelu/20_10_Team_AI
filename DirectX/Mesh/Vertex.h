@@ -9,15 +9,15 @@ struct MeshVertex {
     Vector2 uv;
 
     //スキンメッシュ用
-    unsigned short index[4];
     float weight[4];
+    unsigned short index[4];
 
     MeshVertex() :
         pos(Vector3::zero),
         normal(Vector3::zero),
         uv(Vector2::zero),
-        index{ 0, 0, 0, 0 },
-        weight{ 0.f, 0.f, 0.f, 0.f }{
+        weight{ 0.f, 0.f, 0.f, 0.f },
+        index{ 0, 0, 0, 0 } {
     }
 };
 

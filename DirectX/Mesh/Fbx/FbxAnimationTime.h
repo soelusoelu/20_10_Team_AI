@@ -15,7 +15,7 @@ public:
     //指定フレームの時間を取得する
     FbxTime getTime(int frame) const;
 
-public:
+private:
     //単位時間
     FbxTime mPeriod;
     //スタート時間

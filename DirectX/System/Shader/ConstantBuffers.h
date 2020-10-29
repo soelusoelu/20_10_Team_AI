@@ -17,6 +17,13 @@ struct MeshConstantBuffer {
     Matrix4 wvp;
 };
 
+//スキンメッシュ
+struct SkinMeshConstantBuffer {
+    Matrix4 view;
+    Matrix4 proj;
+    Matrix4 world[12];
+};
+
 //マテリアル
 struct MaterialConstantBuffer {
     ALIGN16 Vector3 ambient;

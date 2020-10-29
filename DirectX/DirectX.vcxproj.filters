@@ -12,6 +12,7 @@
     <FxCompile Include="Shader\SimpleMesh.hlsl" />
     <FxCompile Include="Shader\MeshTexture.hlsl" />
     <FxCompile Include="Shader\NormalMap.hlsl" />
+    <FxCompile Include="Shader\SkinMesh.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Component\ComponentManager.cpp" />
@@ -387,5 +388,6 @@
     <ClInclude Include="Mesh\Fbx\FbxMeshParser.h" />
     <ClInclude Include="Mesh\Fbx\FbxBoneParser.h" />
     <ClInclude Include="Mesh\Fbx\FbxAnimationTime.h" />
+    <ClInclude Include="Mesh\Bone.h" />
   </ItemGroup>
 </Project>

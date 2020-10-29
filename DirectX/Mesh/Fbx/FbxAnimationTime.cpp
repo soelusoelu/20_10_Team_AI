@@ -6,8 +6,7 @@ FbxAnimationTime::FbxAnimationTime() :
     mStop(),
     mStartFrame(0),
     mStopFrame(0),
-    mFramePerSec(0)
-{
+    mFramePerSec(0) {
 }
 
 FbxAnimationTime::~FbxAnimationTime() = default;

@@ -73,6 +73,7 @@ void FBX::createMeshes(
     meshesVertices.resize(numMeshes);
     meshesIndices.resize(numMeshes);
     materials.resize(numMeshes);
+    mBones.resize(numMeshes);
 
     //ファイルパスからディレクトリパスを抜き出す
     auto directoryPath = FileUtil::getDirectryFromFilePath(filePath);
@@ -84,6 +85,7 @@ void FBX::createMeshes(
             meshesVertices[i],
             meshesIndices[i],
             materials[i],
+            mBones[i],
             mesh,
             directoryPath
         );
@@ -94,6 +96,7 @@ void FBX::createMesh(
     MeshVertices& meshVertices,
     Indices& indices,
     Material& material,
+    std::vector<Bone>& bones,
     FbxMesh* fbxMesh,
     const std::string& directoryPath
 ) {
@@ -102,5 +105,5 @@ void FBX::createMesh(
     //マテリアルの読み込み
     mMaterialParser->parse(material, fbxMesh, directoryPath);
     //ボーンの読み込み
-    mBoneParser->parse(meshVertices, fbxMesh);
+    mBoneParser->parse(meshVertices, bones, fbxMesh);
 }
