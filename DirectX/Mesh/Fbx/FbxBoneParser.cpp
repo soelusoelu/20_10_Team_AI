@@ -40,25 +40,30 @@ void FbxBoneParser::loadBone(MeshVertices& meshVertices, std::vector<Bone>& bone
         return;
     }
 
+    //前までのボーン数を記憶しておく
+    size_t previousBoneCount = bones.size();
     //ボーンの数に合わせて拡張
-    bones.resize(boneCount);
+    bones.resize(previousBoneCount + boneCount);
 
     //ボーンを詰め込んでいく
     std::unordered_map<std::string, Bone*> boneMap;
 
     //ボーンの数だけ読み込んでいく
     for (int i = 0; i < boneCount; ++i) {
+        //最新のボーンインデックス
+        int currentBoneIndex = previousBoneCount + i;
+
         //i番目のボーンを取得
-        FbxCluster* bone = fbxSkin->GetCluster(i);
+        FbxCluster* bone = fbxSkin->GetCluster(currentBoneIndex);
 
         //ウェイト読み込み
-        loadWeight(meshVertices, fbxMesh, bone, i);
+        loadWeight(meshVertices, fbxMesh, bone, currentBoneIndex);
 
         //キーフレーム読み込み
-        loadKeyFrames(bones[i], bone);
+        loadKeyFrames(bones[currentBoneIndex], bone);
 
         //セットに登録
-        boneMap.emplace(bones[i].name, &bones[i]);
+        boneMap.emplace(bones[currentBoneIndex].name, &bones[currentBoneIndex]);
     }
 
     //親子付け
@@ -89,6 +94,15 @@ void FbxBoneParser::loadBone(MeshVertices& meshVertices, std::vector<Bone>& bone
             itr->second->children.emplace_back(&bones[i]);
         }
     }
+
+    Bone* root = nullptr;
+    for (size_t i = 0; i < bones.size(); i++) {
+        if (!bones[i].parent) {
+            root = &bones[i];
+            break;
+        }
+    }
+    calcRelativeMatrix(*root, nullptr);
 }
 
 void FbxBoneParser::loadWeight(MeshVertices& meshVertices, const FbxMesh* fbxMesh, const FbxCluster* bone, unsigned boneIndex) {
@@ -165,6 +179,9 @@ void FbxBoneParser::loadKeyFrames(Bone& bone, FbxCluster* fbxCluster) {
     fbxCluster->GetTransformLinkMatrix(linkMatrix);
     bone.initMat = substitutionMatrix(linkMatrix);
 
+    //初期姿勢からオフセット行列を計算する
+    bone.offsetMat = Matrix4::inverse(bone.initMat);
+
     //フレーム数分拡張しとく
     bone.frameMat.resize(bone.numFrame);
 
@@ -186,4 +203,13 @@ Matrix4 FbxBoneParser::substitutionMatrix(const FbxMatrix& src) const {
     }
 
     return dst;
+}
+
+void FbxBoneParser::calcRelativeMatrix(Bone& me, const Matrix4* parentOffset) {
+    for (size_t i = 0; i < me.children.size(); i++) {
+        calcRelativeMatrix(*me.children[i], &me.offsetMat);
+    }
+    if (parentOffset) {
+        me.initMat *= *parentOffset;
+    }
 }

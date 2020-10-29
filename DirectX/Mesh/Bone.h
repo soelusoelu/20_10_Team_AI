@@ -12,6 +12,8 @@ struct Bone {
     unsigned numFrame;
     //初期姿勢
     Matrix4 initMat;
+    //オフセット行列
+    Matrix4 offsetMat;
     //フレーム時姿勢
     std::vector<Matrix4> frameMat;
 

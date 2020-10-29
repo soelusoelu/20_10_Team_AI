@@ -29,6 +29,8 @@ private:
     void loadKeyFrames(Bone& bone, FbxCluster* fbxCluster);
     //FbxMatirxからMatrix4へ変換する
     Matrix4 substitutionMatrix(const FbxMatrix& src) const;
+    //初期姿勢を親の姿勢からの相対姿勢に直す
+    void calcRelativeMatrix(Bone& me, const Matrix4* parentOffset);
 
 private:
     std::unique_ptr<FbxAnimationTime> mAnimationTime;

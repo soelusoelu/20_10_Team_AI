@@ -12,7 +12,8 @@ void OBJ::parse(
     const std::string& filePath,
     std::vector<MeshVertices>& meshesVertices,
     std::vector<Indices>& meshesIndices,
-    std::vector<Material>& materials
+    std::vector<Material>& materials,
+    std::vector<Bone> bones
 ) {
     //OBJファイルを開いて内容を読み込む
     std::ifstream ifs(filePath);

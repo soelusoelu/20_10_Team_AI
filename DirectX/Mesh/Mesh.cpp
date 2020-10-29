@@ -24,6 +24,10 @@ const MeshVertices& Mesh::getMeshVertices(unsigned index) const {
     return mMeshesVertices[index];
 }
 
+const std::vector<Bone>& Mesh::getBones() const {
+    return mBones;
+}
+
 void Mesh::loadMesh(const std::string& filePath) {
     //すでに生成済みなら終了する
     if (mMesh) {
@@ -71,7 +75,7 @@ void Mesh::createMesh(const std::string& filePath) {
     }
 
     //メッシュを解析する
-    mMesh->parse(filePath, mMeshesVertices, mMeshesIndices, mMaterials);
+    mMesh->parse(filePath, mMeshesVertices, mMeshesIndices, mMaterials, mBones);
 }
 
 void Mesh::createVertexBuffer(unsigned meshIndex) {

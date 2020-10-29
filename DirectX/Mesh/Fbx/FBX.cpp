@@ -18,7 +18,8 @@ void FBX::parse(
     const std::string& filePath,
     std::vector<MeshVertices>& meshesVertices,
     std::vector<Indices>& meshesIndices,
-    std::vector<Material>& materials
+    std::vector<Material>& materials,
+    std::vector<Bone> bones
 ) {
     //マネージャーを生成
     auto manager = FbxManager::Create();
@@ -51,6 +52,7 @@ void FBX::parse(
         meshesVertices,
         meshesIndices,
         materials,
+        bones,
         scene,
         filePath
     );
@@ -63,6 +65,7 @@ void FBX::createMeshes(
     std::vector<MeshVertices>& meshesVertices,
     std::vector<Indices>& meshesIndices,
     std::vector<Material>& materials,
+    std::vector<Bone> bones,
     const FbxScene* fbxScene,
     const std::string& filePath
 ) {
@@ -73,7 +76,6 @@ void FBX::createMeshes(
     meshesVertices.resize(numMeshes);
     meshesIndices.resize(numMeshes);
     materials.resize(numMeshes);
-    mBones.resize(numMeshes);
 
     //ファイルパスからディレクトリパスを抜き出す
     auto directoryPath = FileUtil::getDirectryFromFilePath(filePath);
@@ -85,7 +87,7 @@ void FBX::createMeshes(
             meshesVertices[i],
             meshesIndices[i],
             materials[i],
-            mBones[i],
+            bones,
             mesh,
             directoryPath
         );

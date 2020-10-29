@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "Bone.h"
 #include "Material.h"
 #include "Vertex.h"
 #include "../Math/Math.h"
@@ -18,6 +19,7 @@ public:
         const std::string& filePath,
         std::vector<MeshVertices>& meshesVertices,
         std::vector<Indices>& meshesIndices,
-        std::vector<Material>& materials
+        std::vector<Material>& materials,
+        std::vector<Bone> bones
     ) = 0;
 };

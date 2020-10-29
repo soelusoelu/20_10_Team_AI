@@ -18,7 +18,8 @@ public:
         const std::string& filePath,
         std::vector<MeshVertices>& meshesVertices,
         std::vector<Indices>& meshesIndices,
-        std::vector<Material>& materials
+        std::vector<Material>& materials,
+        std::vector<Bone> bones
     ) override;
 
 private:
@@ -27,6 +28,7 @@ private:
         std::vector<MeshVertices>& meshesVertices,
         std::vector<Indices>& meshesIndices,
         std::vector<Material>& materials,
+        std::vector<Bone> bones,
         const FbxScene* fbxScene,
         const std::string& filePath
     );
@@ -45,6 +47,4 @@ private:
     std::unique_ptr<FbxMeshParser> mMeshParser;
     std::unique_ptr<FbxMaterialParser> mMaterialParser;
     std::unique_ptr<FbxBoneParser> mBoneParser;
-
-    std::vector<std::vector<Bone>> mBones;
 };

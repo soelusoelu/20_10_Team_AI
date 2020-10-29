@@ -31,7 +31,7 @@ public:
     virtual void drawDebugInfo(ComponentDebug::DebugInfoList* inspect) const override;
 
     //描画
-    void draw(const Camera& camera, const DirectionalLight& dirLight) const;
+    virtual void draw(const Camera& camera, const DirectionalLight& dirLight) const;
 
     //状態
     void destroy();

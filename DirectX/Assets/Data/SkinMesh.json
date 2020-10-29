@@ -3,9 +3,10 @@
   },
   "components": [
     {
-      "type": "MeshComponent",
+      "type": "SkinMeshComponent",
       "properties": {
-        "fileName": "cylinderSkel02_Anim.fbx"
+        "fileName": "cylinderSkel02_Anim.fbx",
+        "shaderName": "SkinMesh.hlsl"
       }
     }
   ]

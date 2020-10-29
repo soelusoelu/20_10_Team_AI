@@ -12,6 +12,7 @@
 #include "../Component/Light/DirectionalLight.h"
 #include "../Component/Light/PointLightComponent.h"
 #include "../Component/Mesh/MeshComponent.h"
+#include "../Component/Mesh/SkinMeshComponent.h"
 #include "../Component/Other/Fade.h"
 #include "../Component/Other/HitPointComponent.h"
 #include "../Component/Sample/RayMouse.h"
@@ -52,6 +53,7 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(PointLightComponent);
 
     ADD_COMPONENT(MeshComponent);
+    ADD_COMPONENT(SkinMeshComponent);
 
     ADD_COMPONENT(Fade);
     ADD_COMPONENT(HitPointComponent);
