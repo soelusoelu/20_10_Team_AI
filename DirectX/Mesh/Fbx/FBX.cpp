@@ -46,9 +46,6 @@ void FBX::parse(
     //マテリアル単位でメッシュを分割する
     geometryConverter.SplitMeshesPerMaterial(scene, true);
 
-    //モーションを読み込む
-    mBoneParser->loadMotion(scene);
-
     //全メッシュの作成
     createMeshes(
         meshesVertices,
@@ -105,5 +102,5 @@ void FBX::createMesh(
     //マテリアルの読み込み
     mMaterialParser->parse(material, fbxMesh, directoryPath);
     //ボーンの読み込み
-    //mBoneParser->parse(meshVertices, fbxMesh);
+    mBoneParser->parse(meshVertices, fbxMesh);
 }

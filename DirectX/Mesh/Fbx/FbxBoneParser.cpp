@@ -1,10 +1,15 @@
 ﻿#include "FbxBoneParser.h"
+#include "FbxAnimationTime.h"
 
-FbxBoneParser::FbxBoneParser() = default;
+FbxBoneParser::FbxBoneParser() :
+    mAnimationTime(std::make_unique<FbxAnimationTime>()) {
+}
 
 FbxBoneParser::~FbxBoneParser() = default;
 
 void FbxBoneParser::parse(MeshVertices& meshVertices, FbxMesh* fbxMesh) {
+    mAnimationTime->parse(fbxMesh->GetScene());
+
     //スキン情報の有無
     int skinCount = fbxMesh->GetDeformerCount(FbxDeformer::eSkin);
     if (skinCount <= 0) {
@@ -13,125 +18,38 @@ void FbxBoneParser::parse(MeshVertices& meshVertices, FbxMesh* fbxMesh) {
 
     for (int i = 0; i < skinCount; ++i) {
         //i番目のスキンを取得
-        FbxDeformer* fbxDeformer = fbxMesh->GetDeformer(i, FbxDeformer::eSkin);
+        FbxDeformer* fbxDeformer = fbxMesh->GetDeformer(i);
+        //FbxDeformer* fbxDeformer = fbxMesh->GetDeformer(i, FbxDeformer::eSkin);
         FbxSkin* fbxSkin = static_cast<FbxSkin*>(fbxDeformer);
 
-        //ボーンの数を取得
-        int boneCount = fbxSkin->GetClusterCount();
-
-        //ボーンの数に合わせて拡張
-        mBones.resize(boneCount);
-
-        for (int j = 0; j < boneCount; ++j) {
-            //j番目のボーンを取得
-            FbxCluster* bone = fbxSkin->GetCluster(j);
-
-            //ボーンのインデックスを格納
-            //mBones[j].index = j;
-
-            //ノードを取得
-            FbxNode* fbxNode = bone->GetLink();
-
-            //ボーン名取得
-            mBones[j].name = fbxNode->GetName();
-
-            //ウェイト読み込み
-            loadWeight(meshVertices, fbxMesh, bone, j);
-
-            //モデルの初期姿勢を取得する
-            FbxAMatrix linkMatrix;
-            bone->GetTransformLinkMatrix(linkMatrix);
-
-            //キーフレーム読み込み
-            //mMotions[0].key[j].resize(boneCount);
-            //loadKeyFrames(mMotions[0].name, j, fbxNode);
-        }
+        //ボーンを読み込んでいく
+        loadBone(meshVertices, fbxMesh, fbxSkin);
     }
 
     //ウェイト正規化
     normalizeWeight(meshVertices);
-
-
-
-    //全ボーン情報取得
-    //for (int bone = 0; bone < boneCount; ++bone) {
-    //    //ボーン情報取得
-    //    FbxCluster* fbxCluster = fbxSkin->GetCluster(bone);
-    //    FbxAMatrix trans;
-    //    fbxCluster->GetTransformMatrix(trans);
-    //    trans.mData[0][1] *= -1;
-    //    trans.mData[0][2] *= -1;
-    //    trans.mData[1][0] *= -1;
-    //    trans.mData[2][0] *= -1;
-    //    trans.mData[3][0] *= -1;
-
-    //    //ボーン名取得
-    //    const char* pName = fbxCluster->GetLink()->GetName();
-    //    mBones[bone].name = pName;
-
-    //    //Bone* pBone;
-    //    ////ボーン検索
-    //    //int boneNo = findBone(pName);
-    //    //if (boneNo != -1) {
-    //    //    pBone = &mBones[boneNo];
-    //    //} else {
-    //    //    boneNo = mBones.size();
-    //    //    pBone = &mBones[boneNo];
-    //    //    ++mNumBone;
-
-    //    //    pBone->name = pName;
-    //    //    //オフセット行列作成
-    //    //    FbxAMatrix linkMatrix;
-    //    //    fbxCluster->GetTransformLinkMatrix(linkMatrix);
-    //    //    linkMatrix.mData[0][1] *= -1;
-    //    //    linkMatrix.mData[0][2] *= -1;
-    //    //    linkMatrix.mData[1][0] *= -1;
-    //    //    linkMatrix.mData[2][0] *= -1;
-    //    //    linkMatrix.mData[3][0] *= -1;
-
-    //    //    FbxAMatrix offset = linkMatrix.Inverse() * trans;
-
-    //    //    //オフセット行列保存
-    //    //    //FbxAMatrixがDouble型だからmemcpyできない
-    //    //    for (int i = 0; i < 4; ++i) {
-    //    //        for (int j = 0; j < 4; ++j) {
-    //    //            pBone->offset.m[i][j] = static_cast<float>(offset[i][j]);
-    //    //        }
-    //    //    }
-    //    //    //キーフレーム読み込み
-    //    //    loadKeyFrames("default", boneNo, pCluster->GetLink());
-    //    //}
-    //}
 }
 
-void FbxBoneParser::loadMotion(FbxScene* fbxScene) {
-    //モーション情報取得
-    FbxArray<FbxString*> animationNames;
-    fbxScene->FillAnimStackNameArray(animationNames);
-
-    mMotions.resize(animationNames.Size());
-    for (int i = 0; i < animationNames.Size(); i++) {
-        mMotions[i].name = (*animationNames[i]);
+void FbxBoneParser::loadBone(MeshVertices& meshVertices, const FbxMesh* fbxMesh, FbxSkin* fbxSkin) {
+    //ボーンの数を取得
+    int boneCount = fbxSkin->GetClusterCount();
+    if (boneCount <= 0) {
+        return;
     }
 
-    FbxLongLong start;
-    FbxLongLong stop;
-    for (int i = 0; i < animationNames.Size(); ++i) {
-        FbxTakeInfo* currentTakeInfo = fbxScene->GetTakeInfo(*animationNames[i]);
-        if (currentTakeInfo) {
-            start = currentTakeInfo->mLocalTimeSpan.GetStart().Get();
-            stop = currentTakeInfo->mLocalTimeSpan.GetStop().Get();
+    //ボーンの数に合わせて拡張
+    mBones.resize(boneCount);
 
-            //アニメーションの開始と終了の時間
-            mMotions[i].startFrame = static_cast<long long>(start);
-            mMotions[i].endFrame = static_cast<long long>(stop);
-            //フレーム数を求める
-            mMotions[i].numFrame = static_cast<long long>((stop - start) / FbxTime::GetOneFrameValue(FbxTime::EMode::eFrames60));
-        }
+    for (int i = 0; i < boneCount; ++i) {
+        //j番目のボーンを取得
+        FbxCluster* bone = fbxSkin->GetCluster(i);
+
+        //ウェイト読み込み
+        loadWeight(meshVertices, fbxMesh, bone, i);
+
+        //キーフレーム読み込み
+        loadKeyFrames(mBones[i], bone);
     }
-
-    //FbxArrayを削除する
-    FbxArrayDelete(animationNames);
 }
 
 void FbxBoneParser::loadWeight(MeshVertices& meshVertices, const FbxMesh* fbxMesh, const FbxCluster* bone, unsigned boneIndex) {
@@ -193,44 +111,40 @@ void FbxBoneParser::normalizeWeight(MeshVertices& meshVertices) {
     }
 }
 
-void FbxBoneParser::loadKeyFrames(const std::string& name, int boneIndex, FbxNode* fbxBoneNode) {
-    //モーション名からモーションのインデックスを取得する
-    int motionID = getMotionFromName(name);
-    if (motionID < 0) {
-        return;
-    }
+void FbxBoneParser::loadKeyFrames(Bone& bone, FbxCluster* fbxCluster) {
+    //ノードを取得
+    FbxNode* fbxNode = fbxCluster->GetLink();
 
-    auto& motion = mMotions[motionID];
-    double time = motion.startFrame * (1.0 / 60.0);
-    const unsigned numFrame = static_cast<unsigned>(motion.numFrame);
-    FbxTime fbxTime;
-    for (unsigned f = 0; f < numFrame; ++f) {
-        fbxTime.SetSecondDouble(time);
-        //T秒の姿勢行列をGet
-        FbxMatrix m = fbxBoneNode->EvaluateGlobalTransform(fbxTime);
-        m.mData[0][1] *= -1;
-        m.mData[0][2] *= -1;
-        m.mData[1][0] *= -1;
-        m.mData[2][0] *= -1;
-        m.mData[3][0] *= -1;
+    //ボーン名取得
+    bone.name = fbxNode->GetName();
 
-        for (int i = 0; i < 4; ++i) {
-            for (int j = 0; j < 4; ++j) {
-                motion.key[boneIndex][f].m[i][j] = static_cast<float>(m[i][j]);
-            }
-        }
+    //フレーム数を取得
+    bone.numFrame = mAnimationTime->mStopFrame;
 
-        time += 1.0 / 60.0;
+    //モデルの初期姿勢を取得する
+    FbxAMatrix linkMatrix;
+    fbxCluster->GetTransformLinkMatrix(linkMatrix);
+    bone.initMat = substitutionMatrix(linkMatrix);
+
+    //フレーム数分拡張しとく
+    bone.frameMat.resize(bone.numFrame);
+
+    //フレーム数分フレーム時姿勢を取得する
+    for (int j = 0; j < bone.numFrame; ++j) {
+        //指定フレームでの時間を取得する
+        auto time = mAnimationTime->getTime(j);
+        //指定フレームでの姿勢
+        bone.frameMat[j] = substitutionMatrix(fbxNode->EvaluateGlobalTransform(time));
     }
 }
 
-int FbxBoneParser::getMotionFromName(const std::string& motionName) const {
-    for (int i = 0; i < mMotions.size(); ++i) {
-        if (mMotions[i].name == motionName) {
-            return i;
+Matrix4 FbxBoneParser::substitutionMatrix(const FbxMatrix& src) const {
+    Matrix4 dst;
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            dst.m[i][j] = static_cast<float>(src.mData[i][j]);
         }
     }
 
-    //名前に一致するモーションが見つからない
-    return -1;
+    return dst;
 }
