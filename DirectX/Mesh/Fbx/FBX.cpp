@@ -57,6 +57,9 @@ void FBX::parse(
         filePath
     );
 
+    //ボーンの読み込み
+    mBoneParser->parse(meshesVertices, bones, scene);
+
     //マネージャー解放
     manager->Destroy();
 }
@@ -106,6 +109,4 @@ void FBX::createMesh(
     mMeshParser->parse(meshVertices, indices, fbxMesh);
     //マテリアルの読み込み
     mMaterialParser->parse(material, fbxMesh, directoryPath);
-    //ボーンの読み込み
-    mBoneParser->parse(meshVertices, bones, fbxMesh);
 }

@@ -17,8 +17,6 @@ struct Bone {
     //フレーム時姿勢
     std::vector<Matrix4> frameMat;
 
-    Matrix4 boneMat;
-
     //親ノード
     Bone* parent;
     //小ボーンたち

@@ -1,7 +1,5 @@
 ﻿#include "FbxBoneParser.h"
 #include "FbxAnimationTime.h"
-#include <string>
-#include <unordered_map>
 
 FbxBoneParser::FbxBoneParser() :
     mAnimationTime(std::make_unique<FbxAnimationTime>()) {
@@ -9,9 +7,16 @@ FbxBoneParser::FbxBoneParser() :
 
 FbxBoneParser::~FbxBoneParser() = default;
 
-void FbxBoneParser::parse(MeshVertices& meshVertices, std::vector<Bone>& bones, FbxMesh* fbxMesh) {
+void FbxBoneParser::parse(
+    std::vector<MeshVertices>& meshesVertices,
+    std::vector<Bone>& bones,
+    FbxScene* fbxScene
+) {
     //アニメーション時間を取得する
-    mAnimationTime->parse(fbxMesh->GetScene());
+    mAnimationTime->parse(fbxScene);
+
+    //シーンからメッシュを取得する
+    FbxMesh* fbxMesh = fbxScene->GetSrcObject<FbxMesh>();
 
     //スキン情報の有無
     int skinCount = fbxMesh->GetDeformerCount(FbxDeformer::eSkin);
@@ -26,86 +31,53 @@ void FbxBoneParser::parse(MeshVertices& meshVertices, std::vector<Bone>& bones, 
         FbxSkin* fbxSkin = static_cast<FbxSkin*>(fbxDeformer);
 
         //ボーンを読み込んでいく
-        loadBone(meshVertices, bones, fbxMesh, fbxSkin);
-    }
+        loadBone(meshesVertices, bones, fbxMesh, fbxSkin);
 
-    //ウェイト正規化
-    normalizeWeight(meshVertices);
+        //ウェイト正規化
+        normalizeWeight(meshesVertices);
+
+        //親子付け
+        setParentChildren(bones, fbxSkin);
+    }
 }
 
-void FbxBoneParser::loadBone(MeshVertices& meshVertices, std::vector<Bone>& bones, const FbxMesh* fbxMesh, FbxSkin* fbxSkin) {
+void FbxBoneParser::loadBone(
+    std::vector<MeshVertices>& meshesVertices,
+    std::vector<Bone>& bones,
+    const FbxMesh* fbxMesh,
+    FbxSkin* fbxSkin
+) {
     //ボーンの数を取得
     int boneCount = fbxSkin->GetClusterCount();
     if (boneCount <= 0) {
         return;
     }
 
-    //前までのボーン数を記憶しておく
-    size_t previousBoneCount = bones.size();
     //ボーンの数に合わせて拡張
-    bones.resize(previousBoneCount + boneCount);
-
-    //ボーンを詰め込んでいく
-    std::unordered_map<std::string, Bone*> boneMap;
+    bones.resize(boneCount);
 
     //ボーンの数だけ読み込んでいく
     for (int i = 0; i < boneCount; ++i) {
-        //最新のボーンインデックス
-        int currentBoneIndex = previousBoneCount + i;
-
         //i番目のボーンを取得
         FbxCluster* bone = fbxSkin->GetCluster(i);
 
         //ウェイト読み込み
-        loadWeight(meshVertices, fbxMesh, bone, currentBoneIndex);
+        loadWeight(meshesVertices, fbxMesh, bone, i);
 
         //キーフレーム読み込み
-        loadKeyFrames(bones[currentBoneIndex], bone);
+        loadKeyFrames(bones[i], bone);
 
         //セットに登録
-        boneMap.emplace(bones[currentBoneIndex].name, &bones[currentBoneIndex]);
+        mBoneMap.emplace(bones[i].name, &bones[i]);
     }
-
-    //親子付け
-    for (size_t i = 0; i < boneMap.size(); i++) {
-        //i番目のボーンを取得
-        FbxNode* node = fbxSkin->GetCluster(i)->GetLink();
-
-        //スケルトンを取得
-        FbxSkeleton* skeleton = node->GetSkeleton();
-        //スケルトンタイプを取得
-        FbxSkeleton::EType type = skeleton->GetSkeletonType();
-
-        //ノードじゃなければ終了
-        if (type != FbxSkeleton::eLimbNode) {
-            return;
-        }
-
-        //親ノードを取得
-        FbxNode* parentNode = node->GetParent();
-        //親の名前を取得
-        std::string parentName = parentNode->GetName();
-
-        //親の名前が登録されてなかったらルート
-        auto itr = boneMap.find(parentName);
-        //親がいるなら登録
-        if (itr != boneMap.end()) {
-            bones[i].parent = itr->second;
-            itr->second->children.emplace_back(&bones[i]);
-        }
-    }
-
-    Bone* root = nullptr;
-    for (size_t i = 0; i < bones.size(); i++) {
-        if (!bones[i].parent) {
-            root = &bones[i];
-            break;
-        }
-    }
-    calcRelativeMatrix(*root, nullptr);
 }
 
-void FbxBoneParser::loadWeight(MeshVertices& meshVertices, const FbxMesh* fbxMesh, const FbxCluster* bone, unsigned boneIndex) {
+void FbxBoneParser::loadWeight(
+    std::vector<MeshVertices>& meshesVertices,
+    const FbxMesh* fbxMesh,
+    const FbxCluster* bone,
+    unsigned boneIndex
+) {
     //影響する頂点の数
     int weightCount = bone->GetControlPointIndicesCount();
     //このボーンによって移動する頂点のインデックスの配列
@@ -117,54 +89,65 @@ void FbxBoneParser::loadWeight(MeshVertices& meshVertices, const FbxMesh* fbxMes
 
     for (int i = 0; i < weightCount; ++i) {
         int index = weightIndices[i];
-        //全ポリゴンからindex2番目の頂点検索
-        for (int j = 0; j < meshVertices.size(); ++j) {
-            //頂点番号と一致するのを探す
-            if (polygonVertices[j] != index) {
-                continue;
-            }
+        for (size_t j = 0; j < meshesVertices.size(); j++) {
+            auto& meshVertices = meshesVertices[j];
+            //全ポリゴンからindex2番目の頂点検索
+            for (int k = 0; k < meshVertices.size(); ++k) {
+                //頂点番号と一致するのを探す
+                if (polygonVertices[k] != index) {
+                    continue;
+                }
 
-            //頂点にウェイト保存
-            int weightCount;
-            for (weightCount = 0; weightCount < 4; ++weightCount) {
-                //ウェイトが0なら格納できる
-                if (Math::nearZero(meshVertices[j].weight[weightCount])) {
+                //頂点にウェイト保存
+                int weightCount;
+                for (weightCount = 0; weightCount < 4; ++weightCount) {
+                    //ウェイトが0なら格納できる
+                    if (Math::nearZero(meshVertices[k].weight[weightCount])) {
+                        break;
+                    }
+                }
+
+                //格納できる数を超えていたら
+                if (weightCount >= 4) {
+                    continue;
+                }
+
+                //頂点情報にウェイトを追加
+                meshVertices[k].index[weightCount] = boneIndex;
+                meshVertices[k].weight[weightCount] = static_cast<float>(weights[i]);
+            }
+        }
+    }
+}
+
+void FbxBoneParser::normalizeWeight(
+    std::vector<MeshVertices>& meshesVertice
+) {
+    //5本以上にまたっがてる場合のため
+    for (size_t i = 0; i < meshesVertice.size(); i++) {
+        auto& meshVertices = meshesVertice[i];
+        for (size_t j = 0; j < meshVertices.size(); ++j) {
+            auto& meshVertex = meshVertices[j];
+            float sumWeight = 0.f;
+            //頂点のウェイトの合計を求める
+            for (int j = 0; j < 4; ++j) {
+                if (meshVertex.weight[j] <= 0.f) {
                     break;
                 }
+                sumWeight += meshVertex.weight[j];
             }
-
-            //格納できる数を超えていたら
-            if (weightCount >= 4) {
-                continue;
+            //正規化
+            for (int j = 0; j < 4; ++j) {
+                meshVertex.weight[j] /= sumWeight;
             }
-
-            //頂点情報にウェイトを追加
-            meshVertices[j].index[weightCount] = boneIndex;
-            meshVertices[j].weight[weightCount] = static_cast<float>(weights[i]);
         }
     }
 }
 
-void FbxBoneParser::normalizeWeight(MeshVertices& meshVertices) {
-    //5本以上にまたっがてる場合のため
-    for (int i = 0; i < meshVertices.size(); ++i) {
-        auto& meshVertex = meshVertices[i];
-        float sumWeight = 0.f;
-        //頂点のウェイトの合計を求める
-        for (int j = 0; j < 4; ++j) {
-            if (meshVertex.weight[j] <= 0.f) {
-                break;
-            }
-            sumWeight += meshVertex.weight[j];
-        }
-        //正規化
-        for (int j = 0; j < 4; ++j) {
-            meshVertex.weight[j] /= sumWeight;
-        }
-    }
-}
-
-void FbxBoneParser::loadKeyFrames(Bone& bone, FbxCluster* fbxCluster) {
+void FbxBoneParser::loadKeyFrames(
+    Bone& bone,
+    FbxCluster* fbxCluster
+) {
     //ノードを取得
     FbxNode* fbxNode = fbxCluster->GetLink();
 
@@ -194,7 +177,9 @@ void FbxBoneParser::loadKeyFrames(Bone& bone, FbxCluster* fbxCluster) {
     }
 }
 
-Matrix4 FbxBoneParser::substitutionMatrix(const FbxMatrix& src) const {
+Matrix4 FbxBoneParser::substitutionMatrix(
+    const FbxMatrix& src
+) const {
     Matrix4 dst;
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
@@ -205,7 +190,53 @@ Matrix4 FbxBoneParser::substitutionMatrix(const FbxMatrix& src) const {
     return dst;
 }
 
-void FbxBoneParser::calcRelativeMatrix(Bone& me, const Matrix4* parentOffset) {
+void FbxBoneParser::setParentChildren(
+    std::vector<Bone>& bones,
+    FbxSkin* fbxSkin
+) {
+    //親子付け
+    for (size_t i = 0; i < mBoneMap.size(); i++) {
+        //i番目のボーンを取得
+        FbxNode* node = fbxSkin->GetCluster(i)->GetLink();
+
+        //スケルトンを取得
+        //FbxSkeleton* skeleton = node->GetSkeleton();
+        ////スケルトンタイプを取得
+        //FbxSkeleton::EType type = skeleton->GetSkeletonType();
+
+        ////ノードじゃなければ終了
+        //if (type != FbxSkeleton::eLimbNode) {
+        //    return;
+        //}
+
+        //親ノードを取得
+        FbxNode* parentNode = node->GetParent();
+        //親の名前を取得
+        std::string parentName = parentNode->GetName();
+
+        //親の名前が登録されてなかったらルート
+        auto itr = mBoneMap.find(parentName);
+        //親がいるなら登録
+        if (itr != mBoneMap.end()) {
+            bones[i].parent = itr->second;
+            itr->second->children.emplace_back(&bones[i]);
+        }
+    }
+
+    Bone* root = nullptr;
+    for (size_t i = 0; i < bones.size(); i++) {
+        if (!bones[i].parent) {
+            root = &bones[i];
+            break;
+        }
+    }
+    calcRelativeMatrix(*root, nullptr);
+}
+
+void FbxBoneParser::calcRelativeMatrix(
+    Bone& me,
+    const Matrix4* parentOffset
+) {
     for (size_t i = 0; i < me.children.size(); i++) {
         calcRelativeMatrix(*me.children[i], &me.offsetMat);
     }

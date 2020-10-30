@@ -31,6 +31,12 @@ void CameraMove::update() {
     if (Input::keyboard().getKey(KeyCode::A)) {
         transform().translate(-transform().right() * mCameraSpeed * Time::deltaTime);
     }
+    if (Input::keyboard().getKey(KeyCode::Z)) {
+        transform().translate(-transform().up() * mCameraSpeed * Time::deltaTime);
+    }
+    if (Input::keyboard().getKey(KeyCode::C)) {
+        transform().translate(transform().up() * mCameraSpeed * Time::deltaTime);
+    }
     if (Input::keyboard().getKey(KeyCode::E)) {
         transform().rotate(Vector3::up, mRotateSpeed * Time::deltaTime);
     }

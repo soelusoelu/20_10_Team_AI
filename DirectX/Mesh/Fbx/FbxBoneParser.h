@@ -5,6 +5,8 @@
 #include "../../Math/Math.h"
 #include <fbxsdk.h>
 #include <memory>
+#include <string>
+#include <unordered_map>
 #include <vector>
 
 class FbxAnimationTime;
@@ -16,22 +18,59 @@ public:
     ~FbxBoneParser();
 
     //ボーンを解析する
-    void parse(MeshVertices& meshVertices, std::vector<Bone>& bones, FbxMesh* fbxMesh);
+    void parse(
+        std::vector<MeshVertices>& meshesVertices,
+        std::vector<Bone>& bones,
+        FbxScene* fbxScene
+    );
 
 private:
     //ボーン読み込み
-    void loadBone(MeshVertices& meshVertices, std::vector<Bone>& bones, const FbxMesh* fbxMesh, FbxSkin* fbxSkin);
+    void loadBone(
+        std::vector<MeshVertices>& meshesVertices,
+        std::vector<Bone>& bones,
+        const FbxMesh* fbxMesh,
+        FbxSkin* fbxSkin
+    );
+
     //ウェイト読み込み
-    void loadWeight(MeshVertices& meshVertices, const FbxMesh* fbxMesh, const FbxCluster* bone, unsigned boneIndex);
+    void loadWeight(
+        std::vector<MeshVertices>& meshesVertices,
+        const FbxMesh* fbxMesh,
+        const FbxCluster* bone,
+        unsigned boneIndex
+    );
+
     //頂点ウェイトを正規化する
-    void normalizeWeight(MeshVertices& meshVertices);
+    void normalizeWeight(
+        std::vector<MeshVertices>& meshesVertice
+    );
+
     //キーフレーム読み込み
-    void loadKeyFrames(Bone& bone, FbxCluster* fbxCluster);
+    void loadKeyFrames(
+        Bone& bone,
+        FbxCluster* fbxCluster
+    );
+
     //FbxMatirxからMatrix4へ変換する
-    Matrix4 substitutionMatrix(const FbxMatrix& src) const;
+    Matrix4 substitutionMatrix(
+        const FbxMatrix& src
+    ) const;
+
+    //ボーンの親子付け
+    void setParentChildren(
+        std::vector<Bone>& bones,
+        FbxSkin* fbxSkin
+    );
+
     //初期姿勢を親の姿勢からの相対姿勢に直す
-    void calcRelativeMatrix(Bone& me, const Matrix4* parentOffset);
+    void calcRelativeMatrix(
+        Bone& me,
+        const Matrix4* parentOffset
+    );
 
 private:
     std::unique_ptr<FbxAnimationTime> mAnimationTime;
+    //ボーンの名前から検索できるように
+    std::unordered_map<std::string, Bone*> mBoneMap;
 };

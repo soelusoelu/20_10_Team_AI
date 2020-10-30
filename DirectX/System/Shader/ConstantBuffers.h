@@ -19,9 +19,11 @@ struct MeshConstantBuffer {
 
 //スキンメッシュ
 struct SkinMeshConstantBuffer {
-    Matrix4 view;
-    Matrix4 proj;
-    Matrix4 world[256];
+    ALIGN16 Vector3 lightDir; //ワールド行列
+    ALIGN16 Vector3 cameraPos; //カメラ位置
+    ALIGN16 Matrix4 world;
+    ALIGN16 Matrix4 wvp;
+    ALIGN16 Matrix4 bones[256];
 };
 
 //マテリアル
