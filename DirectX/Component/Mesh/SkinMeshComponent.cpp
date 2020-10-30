@@ -9,16 +9,18 @@
 #include "../../Transform/Transform3D.h"
 
 SkinMeshComponent::SkinMeshComponent(GameObject& gameObject) :
-    MeshComponent(gameObject) {
+    MeshComponent(gameObject),
+    mCurrentFrame(0)
+{
 }
 
 SkinMeshComponent::~SkinMeshComponent() = default;
 
 void SkinMeshComponent::update() {
     auto& bones = mMesh->getBones();
-    //差分姿勢 * 初期姿勢（共に親空間ベース）です。
-    for (int i = 0; i < mMesh->getBones().size(); ++i) {
-        //bones[i].boneMat = bones[i].frameMat * bones[i].initMat;
+    ++mCurrentFrame;
+    if (mCurrentFrame >= bones[0].numFrame) {
+        mCurrentFrame = 0;
     }
 }
 
@@ -30,8 +32,8 @@ void SkinMeshComponent::draw(const Camera& camera, const DirectionalLight& dirLi
     SkinMeshConstantBuffer meshcb;
     const auto& world = transform().getWorldTransform();
     auto& bones = mMesh->getBones();
-    for (size_t i = 0; i < 12; i++) {
-        meshcb.world[i] = world;
+    for (size_t i = 0; i < bones.size(); i++) {
+        meshcb.world[i] = bones[i].frameMat[mCurrentFrame] * world;
     }
     meshcb.view = camera.getView();
     meshcb.proj = camera.getProjection();

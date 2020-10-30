@@ -54,7 +54,7 @@ void FbxBoneParser::loadBone(MeshVertices& meshVertices, std::vector<Bone>& bone
         int currentBoneIndex = previousBoneCount + i;
 
         //i番目のボーンを取得
-        FbxCluster* bone = fbxSkin->GetCluster(currentBoneIndex);
+        FbxCluster* bone = fbxSkin->GetCluster(i);
 
         //ウェイト読み込み
         loadWeight(meshVertices, fbxMesh, bone, currentBoneIndex);

@@ -19,7 +19,7 @@ void FBX::parse(
     std::vector<MeshVertices>& meshesVertices,
     std::vector<Indices>& meshesIndices,
     std::vector<Material>& materials,
-    std::vector<Bone> bones
+    std::vector<Bone>& bones
 ) {
     //マネージャーを生成
     auto manager = FbxManager::Create();
@@ -65,7 +65,7 @@ void FBX::createMeshes(
     std::vector<MeshVertices>& meshesVertices,
     std::vector<Indices>& meshesIndices,
     std::vector<Material>& materials,
-    std::vector<Bone> bones,
+    std::vector<Bone>& bones,
     const FbxScene* fbxScene,
     const std::string& filePath
 ) {

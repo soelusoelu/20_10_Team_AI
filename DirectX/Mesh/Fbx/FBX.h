@@ -19,7 +19,7 @@ public:
         std::vector<MeshVertices>& meshesVertices,
         std::vector<Indices>& meshesIndices,
         std::vector<Material>& materials,
-        std::vector<Bone> bones
+        std::vector<Bone>& bones
     ) override;
 
 private:
@@ -28,7 +28,7 @@ private:
         std::vector<MeshVertices>& meshesVertices,
         std::vector<Indices>& meshesIndices,
         std::vector<Material>& materials,
-        std::vector<Bone> bones,
+        std::vector<Bone>& bones,
         const FbxScene* fbxScene,
         const std::string& filePath
     );

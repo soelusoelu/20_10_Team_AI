@@ -21,7 +21,7 @@ struct MeshConstantBuffer {
 struct SkinMeshConstantBuffer {
     Matrix4 view;
     Matrix4 proj;
-    Matrix4 world[12];
+    Matrix4 world[256];
 };
 
 //マテリアル

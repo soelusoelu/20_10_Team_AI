@@ -2,7 +2,7 @@ cbuffer global_0 : register(b0)
 {
     matrix view : packoffset(c0);
     matrix proj : packoffset(c4);
-    matrix world[12] : packoffset(c8);
+    matrix world[256] : packoffset(c8);
 };
 
 cbuffer global_1 : register(b1)
@@ -23,10 +23,10 @@ VS_OUTPUT VS(float3 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD
     float4x4 comb = (float4x4) 0;
     for (int i = 0; i < 4; i++)
     {
-        //comb += world[index[i]] * weight[i];
+        comb += world[index[i]] * weight[i];
     }
 
-    output.Pos = mul(world[0], float4(pos, 1));
+    output.Pos = mul(comb, float4(pos, 1));
     output.Pos = mul(view, output.Pos);
     output.Pos = mul(proj, output.Pos);
 
