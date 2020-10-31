@@ -15,6 +15,9 @@ void FbxBoneParser::parse(
     //アニメーション時間を取得する
     mAnimationTime->parse(fbxScene);
 
+    //FbxMeshの数を取得
+    auto numMeshes = fbxScene->GetSrcObjectCount<FbxMesh>();
+
     //シーンからメッシュを取得する
     FbxMesh* fbxMesh = fbxScene->GetSrcObject<FbxMesh>();
 
@@ -31,20 +34,29 @@ void FbxBoneParser::parse(
         FbxSkin* fbxSkin = static_cast<FbxSkin*>(fbxDeformer);
 
         //ボーンを読み込んでいく
-        loadBone(meshesVertices, bones, fbxMesh, fbxSkin);
-
-        //ウェイト正規化
-        normalizeWeight(meshesVertices);
+        loadBone(bones, fbxSkin);
 
         //親子付け
         setParentChildren(bones, fbxSkin);
+
+
+
+        for (int j = 0; j < numMeshes; ++j) {
+            auto mesh = fbxScene->GetSrcObject<FbxMesh>(j);
+            for (int k = 0; k < mBoneMap.size(); ++k) {
+                FbxCluster* bone = fbxSkin->GetCluster(k);
+                //ウェイト読み込み
+                loadWeight(meshesVertices, mesh, bone, k);
+            }
+        }
     }
+
+    //ウェイト正規化
+    normalizeWeight(meshesVertices);
 }
 
 void FbxBoneParser::loadBone(
-    std::vector<MeshVertices>& meshesVertices,
     std::vector<Bone>& bones,
-    const FbxMesh* fbxMesh,
     FbxSkin* fbxSkin
 ) {
     //ボーンの数を取得
@@ -61,86 +73,11 @@ void FbxBoneParser::loadBone(
         //i番目のボーンを取得
         FbxCluster* bone = fbxSkin->GetCluster(i);
 
-        //ウェイト読み込み
-        loadWeight(meshesVertices, fbxMesh, bone, i);
-
         //キーフレーム読み込み
         loadKeyFrames(bones[i], bone);
 
         //セットに登録
         mBoneMap.emplace(bones[i].name, &bones[i]);
-    }
-}
-
-void FbxBoneParser::loadWeight(
-    std::vector<MeshVertices>& meshesVertices,
-    const FbxMesh* fbxMesh,
-    const FbxCluster* bone,
-    unsigned boneIndex
-) {
-    //影響する頂点の数
-    int weightCount = bone->GetControlPointIndicesCount();
-    //このボーンによって移動する頂点のインデックスの配列
-    int* weightIndices = bone->GetControlPointIndices();
-    //重み
-    double* weights = bone->GetControlPointWeights();
-    //頂点のインデックス
-    int* polygonVertices = fbxMesh->GetPolygonVertices();
-
-    for (int i = 0; i < weightCount; ++i) {
-        int index = weightIndices[i];
-        for (size_t j = 0; j < meshesVertices.size(); j++) {
-            auto& meshVertices = meshesVertices[j];
-            //全ポリゴンからindex2番目の頂点検索
-            for (int k = 0; k < meshVertices.size(); ++k) {
-                //頂点番号と一致するのを探す
-                if (polygonVertices[k] != index) {
-                    continue;
-                }
-
-                //頂点にウェイト保存
-                int weightCount;
-                for (weightCount = 0; weightCount < 4; ++weightCount) {
-                    //ウェイトが0なら格納できる
-                    if (Math::nearZero(meshVertices[k].weight[weightCount])) {
-                        break;
-                    }
-                }
-
-                //格納できる数を超えていたら
-                if (weightCount >= 4) {
-                    continue;
-                }
-
-                //頂点情報にウェイトを追加
-                meshVertices[k].index[weightCount] = boneIndex;
-                meshVertices[k].weight[weightCount] = static_cast<float>(weights[i]);
-            }
-        }
-    }
-}
-
-void FbxBoneParser::normalizeWeight(
-    std::vector<MeshVertices>& meshesVertice
-) {
-    //5本以上にまたっがてる場合のため
-    for (size_t i = 0; i < meshesVertice.size(); i++) {
-        auto& meshVertices = meshesVertice[i];
-        for (size_t j = 0; j < meshVertices.size(); ++j) {
-            auto& meshVertex = meshVertices[j];
-            float sumWeight = 0.f;
-            //頂点のウェイトの合計を求める
-            for (int j = 0; j < 4; ++j) {
-                if (meshVertex.weight[j] <= 0.f) {
-                    break;
-                }
-                sumWeight += meshVertex.weight[j];
-            }
-            //正規化
-            for (int j = 0; j < 4; ++j) {
-                meshVertex.weight[j] /= sumWeight;
-            }
-        }
     }
 }
 
@@ -242,5 +179,76 @@ void FbxBoneParser::calcRelativeMatrix(
     }
     if (parentOffset) {
         me.initMat *= *parentOffset;
+    }
+}
+
+void FbxBoneParser::loadWeight(
+    std::vector<MeshVertices>& meshesVertices,
+    const FbxMesh* fbxMesh,
+    const FbxCluster* bone,
+    unsigned boneIndex
+) {
+    //影響する頂点の数
+    int weightCount = bone->GetControlPointIndicesCount();
+    //このボーンによって移動する頂点のインデックスの配列
+    int* weightIndices = bone->GetControlPointIndices();
+    //重み
+    double* weights = bone->GetControlPointWeights();
+    //頂点のインデックス
+    int* polygonVertices = fbxMesh->GetPolygonVertices();
+
+    for (int i = 0; i < weightCount; ++i) {
+        int index = weightIndices[i];
+        for (int j = 0; j < meshesVertices.size(); j++) {
+            auto& meshVertices = meshesVertices[j];
+            for (int k = 0; k < meshVertices.size(); ++k) {
+                //頂点番号と一致するのを探す
+                if (polygonVertices[k] != index) {
+                    continue;
+                }
+
+                //頂点にウェイト保存
+                int weightCount;
+                for (weightCount = 0; weightCount < 4; ++weightCount) {
+                    //ウェイトが0なら格納できる
+                    if (Math::nearZero(meshVertices[k].weight[weightCount])) {
+                        break;
+                    }
+                }
+
+                //格納できる数を超えていたら
+                if (weightCount >= 4) {
+                    continue;
+                }
+
+                //頂点情報にウェイトを追加
+                meshVertices[k].index[weightCount] = boneIndex;
+                meshVertices[k].weight[weightCount] = static_cast<float>(weights[i]);
+            }
+        }
+    }
+}
+
+void FbxBoneParser::normalizeWeight(
+    std::vector<MeshVertices>& meshesVertice
+) {
+    //5本以上にまたっがてる場合のため
+    for (size_t i = 0; i < meshesVertice.size(); i++) {
+        auto& meshVertices = meshesVertice[i];
+        for (size_t j = 0; j < meshVertices.size(); ++j) {
+            auto& meshVertex = meshVertices[j];
+            float sumWeight = 0.f;
+            //頂点のウェイトの合計を求める
+            for (int j = 0; j < 4; ++j) {
+                if (meshVertex.weight[j] <= 0.f) {
+                    break;
+                }
+                sumWeight += meshVertex.weight[j];
+            }
+            //正規化
+            for (int j = 0; j < 4; ++j) {
+                meshVertex.weight[j] /= sumWeight;
+            }
+        }
     }
 }

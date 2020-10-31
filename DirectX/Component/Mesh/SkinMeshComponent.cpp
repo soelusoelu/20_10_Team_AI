@@ -1,6 +1,7 @@
 ﻿#include "SkinMeshComponent.h"
 #include "../Camera/Camera.h"
 #include "../Light/DirectionalLight.h"
+#include "../../Device/Time.h"
 #include "../../Mesh/Material.h"
 #include "../../Mesh/Mesh.h"
 #include "../../System/Shader/ConstantBuffers.h"
@@ -24,7 +25,7 @@ void SkinMeshComponent::update() {
         mBones[i].initMat = bones[i].frameMat[mCurrentFrame];
     }
     test(mBones[0], nullptr);
-    ++mCurrentFrame;
+    ++mCurrentFrame;;
     if (mCurrentFrame >= bones[0].numFrame) {
         mCurrentFrame = 0;
     }
@@ -38,11 +39,13 @@ void SkinMeshComponent::draw(const Camera& camera, const DirectionalLight& dirLi
     SkinMeshConstantBuffer meshcb;
     auto& bones = mMesh->getBones();
     for (size_t i = 0; i < bones.size(); i++) {
-        meshcb.bones[i] = Matrix4::identity;
+        //meshcb.bones[i] = Matrix4::identity;
         //meshcb.bones[i] = bones[i].initMat;
         //meshcb.bones[i] = bones[i].offsetMat * bones[i].initMat;
         //meshcb.bones[i] = bones[i].offsetMat * Matrix4::inverse(bones[i].offsetMat);
+        meshcb.bones[i] = bones[i].offsetMat * bones[i].frameMat[mCurrentFrame];
         //meshcb.bones[i] = bones[i].offsetMat * bones[i].frameMat[mCurrentFrame] * Matrix4::inverse(bones[i].offsetMat);
+        //meshcb.bones[i] = Matrix4::inverse(bones[i].initMat) * bones[i].frameMat[mCurrentFrame] * bones[i].initMat;
         //meshcb.bones[i] = bones[i].offsetMat * bones[i].frameMat[mCurrentFrame] * bones[i].initMat;
         //meshcb.bones[i] = bones[i].offsetMat * mBones[i].initMat;
         //meshcb.bones[i] = bones[i].offsetMat * bones[i].frameMat[mCurrentFrame] * mBones[i].initMat;

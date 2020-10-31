@@ -27,23 +27,8 @@ public:
 private:
     //ボーン読み込み
     void loadBone(
-        std::vector<MeshVertices>& meshesVertices,
         std::vector<Bone>& bones,
-        const FbxMesh* fbxMesh,
         FbxSkin* fbxSkin
-    );
-
-    //ウェイト読み込み
-    void loadWeight(
-        std::vector<MeshVertices>& meshesVertices,
-        const FbxMesh* fbxMesh,
-        const FbxCluster* bone,
-        unsigned boneIndex
-    );
-
-    //頂点ウェイトを正規化する
-    void normalizeWeight(
-        std::vector<MeshVertices>& meshesVertice
     );
 
     //キーフレーム読み込み
@@ -67,6 +52,19 @@ private:
     void calcRelativeMatrix(
         Bone& me,
         const Matrix4* parentOffset
+    );
+
+    //ウェイト読み込み
+    void loadWeight(
+        std::vector<MeshVertices>& meshesVertices,
+        const FbxMesh* fbxMesh,
+        const FbxCluster* bone,
+        unsigned boneIndex
+    );
+
+    //頂点ウェイトを正規化する
+    void normalizeWeight(
+        std::vector<MeshVertices>& meshesVertice
     );
 
 private:
