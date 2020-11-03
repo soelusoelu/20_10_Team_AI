@@ -77,33 +77,55 @@ bool Intersect::intersectRayPolygon(const Ray& ray, const Vector3& p1, const Vec
     return !(dotAB < 0.f || dotBC < 0.f || dotCA < 0.f);
 }
 
-bool Intersect::intersectRaySphere(const Ray& r, const Sphere& s, float* outT) {
+bool Intersect::intersectRaySphere(const Ray& ray, const Sphere& sphere, Vector3& intersectPoint) {
     //方程式のX, Y, a, b, cを計算
-    Vector3 X = r.start - s.center;
-    Vector3 Y = r.end - r.start;
+    Vector3 X = ray.start - sphere.center;
+    Vector3 Y = ray.end - ray.start;
     float a = Vector3::dot(Y, Y);
-    float b = 2.0f * Vector3::dot(X, Y);
-    float c = Vector3::dot(X, X) - s.radius * s.radius;
+    float b = 2.f * Vector3::dot(X, Y);
+    float c = Vector3::dot(X, X) - sphere.radius * sphere.radius;
     //判別式を計算
-    float disc = b * b - 4.0f * a * c;
-    if (disc < 0.0f) {
+    float disc = b * b - 4.f * a * c;
+    if (disc < 0.f) {
         return false;
-    } else {
-        disc = Math::sqrt(disc);
-        //tの解(minとmax)を求める
-        float tMin = (-b - disc) / (2.0f * a);
-        float tMax = (-b + disc) / (2.0f * a);
-        //tが線分の領域にあるのかチェック
-        if (0.f <= tMin && tMin <= 1.0f) {
-            *outT = tMin;
+    }
+
+    disc = Math::sqrt(disc);
+    //tの解(minとmax)を求める
+    float tMin = (-b - disc) / (2.f * a);
+    float tMax = (-b + disc) / (2.f * a);
+    //tが線分の領域にあるのかチェック
+    if (tMin >= 0.f && tMin <= 1.f) {
+        intersectPoint = ray.pointOnSegment(tMin);
+        return true;
+    } else if (tMax >= 0.f && tMax <= 1.f) {
+        intersectPoint = ray.pointOnSegment(tMax);
+        return true;
+    }
+
+    return false;
+}
+
+bool Intersect::intersectRaySphere(const Ray& ray, const Sphere& sphere, int numDivision) {
+    Vector3 intersectPoint;
+
+    //分割数が0以下なら1回で終了
+    if (numDivision <= 0) {
+        return intersectRaySphere(ray, sphere, intersectPoint);
+    }
+
+    Ray r;
+    //レイを分割する
+    auto rayDiv = (ray.end - ray.start) / numDivision;
+    for (int i = 0; i < numDivision; ++i) {
+        r.start = ray.start + rayDiv * i;
+        r.end = r.start + rayDiv;
+        if (intersectRaySphere(r, sphere, intersectPoint)) {
             return true;
-        } else if (0.f <= tMax && tMax <= 1.0f) {
-            *outT = tMax;
-            return true;
-        } else {
-            return false;
         }
     }
+
+    return false;
 }
 
 bool testSidePlane(float start, float end, float negd, std::vector<float>& out) {
@@ -143,12 +165,12 @@ bool Intersect::intersectRayAABB(const Ray& ray, const AABB& aabb, Vector3& inte
     testSidePlane(ray.start.z, ray.end.z, aabb.max.z, tValues);
 
     //t値を昇順で並べ替える
-    //std::sort(tValues.begin(), tValues.end(), [](
-    //    float a,
-    //    float b
-    //    ) {
-    //        return a < b;
-    //    });
+    std::sort(tValues.begin(), tValues.end(), [](
+        float a,
+        float b
+        ) {
+            return a < b;
+        });
 
     //ボックスに交点が含まれているか調べる
     for (const auto& t : tValues) {

@@ -10,6 +10,7 @@
 #pragma comment(lib, "d3dcompiler.lib")
 
 Shader::Shader(const std::string& fileName, const std::string& directoryPath) :
+    mShaderName(fileName),
     mVSBlob(nullptr),
     mVertexShader(nullptr),
     mPixelShader(nullptr),
@@ -75,6 +76,10 @@ void Shader::setPSConstantBuffers(unsigned index, unsigned numBuffers) const {
 
 void Shader::setInputLayout() const {
     MyDirectX::DirectX::instance().deviceContext()->IASetInputLayout(mVertexLayout->layout());
+}
+
+const std::string& Shader::getShaderName() const {
+    return mShaderName;
 }
 
 void Shader::createVertexShader(const std::string& fileName) {

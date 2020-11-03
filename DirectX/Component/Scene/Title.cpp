@@ -1,21 +1,25 @@
 ﻿#include "Title.h"
 #include "Scene.h"
 #include "../../DebugLayer/Debug.h"
+#include "../../GameObject/GameObject.h"
 #include "../../GameObject/GameObjectFactory.h"
 #include "../../Input/Input.h"
+#include "../../Transform/Transform3D.h"
+#include "../../Utility/LevelLoader.h"
 
 Title::Title(GameObject& gameObject) :
     Component(gameObject),
-    mScene(nullptr) {
+    mScene(nullptr)
+{
 }
 
 Title::~Title() = default;
 
 void Title::start() {
     mScene = getComponent<Scene>();
-    //GameObjectCreater::create("Plane");
-    //GameObjectCreater::create("CharacterCreater");
-    GameObjectCreater::create("SkinMesh");
+    GameObjectCreater::create("Plane");
+    GameObjectCreater::create("CharacterCreater");
+    //GameObjectCreater::create("SkinMesh");
 }
 
 void Title::update() {

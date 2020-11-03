@@ -1,4 +1,5 @@
 ﻿#include "Camera.h"
+#include "../../Imgui/imgui.h"
 #include "../../System/Window.h"
 #include "../../Transform/Transform3D.h"
 #include "../../Utility/LevelLoader.h"
@@ -30,10 +31,16 @@ void Camera::loadProperties(const rapidjson::Value & inObj) {
     JsonHelper::getFloat(inObj, "farClip", &mFarClip);
 }
 
-void Camera::drawDebugInfo(ComponentDebug::DebugInfoList* inspect) const {
-    inspect->emplace_back("FOV", mFOV);
-    inspect->emplace_back("NearClip", mNearClip);
-    inspect->emplace_back("FarClip", mFarClip);
+void Camera::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const {
+    JsonHelper::setFloat(alloc, inObj, "fov", mFOV);
+    JsonHelper::setFloat(alloc, inObj, "nearClip", mNearClip);
+    JsonHelper::setFloat(alloc, inObj, "farClip", mFarClip);
+}
+
+void Camera::drawInspector() {
+    ImGui::SliderFloat("FOV", &mFOV, 45.f, 120.f);
+    ImGui::SliderFloat("NearClip", &mNearClip, 0.001f, 1.f);
+    ImGui::SliderFloat("FarClip", &mFarClip, 100.f, 1000.f);
 }
 
 const Matrix4& Camera::getView() const {
@@ -77,6 +84,14 @@ Vector3 Camera::screenToWorldPoint(const Vector2 & position, float z) {
 
     //スクリーン座標をワールド座標に変換
     return Vector3::transformWithPerspDiv(Vector3(position, z), m);
+}
+
+Ray Camera::screenToRay(const Vector2& position, float z) {
+    Ray ray;
+    ray.start = getPosition();
+    ray.end = screenToWorldPoint(position, z);
+
+    return ray;
 }
 
 bool Camera::viewFrustumCulling(const Vector3& pos, float radius) const {

@@ -3,6 +3,7 @@
 #include "../Light/DirectionalLight.h"
 #include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObject.h"
+#include "../../Imgui/imgui.h"
 #include "../../Mesh/Mesh.h"
 #include "../../Mesh/MeshManager.h"
 #include "../../System/AssetsManager.h"
@@ -17,6 +18,7 @@ MeshComponent::MeshComponent(GameObject& gameObject) :
     mMesh(nullptr),
     mShader(nullptr),
     mFileName(),
+    mDirectoryPath(),
     mState(State::ACTIVE),
     mAlpha(1.f) {
 }
@@ -40,33 +42,36 @@ void MeshComponent::onEnable(bool value) {
 void MeshComponent::loadProperties(const rapidjson::Value& inObj) {
     //ファイル名からメッシュを生成
     if (JsonHelper::getString(inObj, "fileName", &mFileName)) {
-        mMesh = AssetsManager::instance().createMesh(mFileName);
+        if (!JsonHelper::getString(inObj, "directoryPath", &mDirectoryPath)) {
+            mDirectoryPath = "Assets\\Model\\";
+        }
+        createMesh(mFileName, mDirectoryPath);
     }
 
     std::string shader;
     //シェーダー名が取得できたら読み込む
-    if (!JsonHelper::getString(inObj, "shaderName", &shader)) {
+    if (JsonHelper::getString(inObj, "shaderName", &shader)) {
+        //シェーダーを生成する
+        mShader = std::make_unique<Shader>(shader);
+    } else {
         //できなかったらデフォルトを使う
-        shader = "Mesh.hlsl";
-        //テクスチャが有るなら
-        if (mMesh->getMaterial(0).texture) {
-            shader = "MeshTexture.hlsl";
-        }
-        //ノーマルマップが有るなら
-        if (mMesh->getMaterial(0).normalMapTexture) {
-            shader = "NormalMap.hlsl";
-        }
+        setDefaultShader();
     }
-    //シェーダーを生成する
-    mShader = std::make_unique<Shader>(shader);
 
     //アルファ値を取得する
     JsonHelper::getFloat(inObj, "alpha", &mAlpha);
 }
 
-void MeshComponent::drawDebugInfo(ComponentDebug::DebugInfoList* inspect) const {
-    inspect->emplace_back("FileName", mFileName);
-    inspect->emplace_back("Alpha", mAlpha);
+void MeshComponent::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const {
+    JsonHelper::setString(alloc, inObj, "fileName", mFileName);
+    JsonHelper::setString(alloc, inObj, "directoryPath", mDirectoryPath);
+    JsonHelper::setString(alloc, inObj, "shaderName", mShader->getShaderName());
+    JsonHelper::setFloat(alloc, inObj, "alpha", mAlpha);
+}
+
+void MeshComponent::drawInspector() {
+    ImGui::Text("FileName: %s", (mDirectoryPath + mFileName).c_str());
+    ImGui::SliderFloat("Alpha", &mAlpha, 0.f, 1.f);
 }
 
 void MeshComponent::draw(const Camera& camera, const DirectionalLight& dirLight) const {
@@ -104,6 +109,26 @@ void MeshComponent::draw(const Camera& camera, const DirectionalLight& dirLight)
         //描画
         mMesh->draw(i);
     }
+}
+
+void MeshComponent::createMesh(const std::string& fileName, const std::string& directoryPath) {
+    mMesh = AssetsManager::instance().createMesh(fileName, directoryPath);
+    mFileName = fileName;
+    mDirectoryPath = directoryPath;
+}
+
+void MeshComponent::setDefaultShader() {
+    std::string shader = "Mesh.hlsl";
+    //テクスチャが有るなら
+    if (mMesh->getMaterial(0).texture) {
+        shader = "MeshTexture.hlsl";
+    }
+    //ノーマルマップが有るなら
+    if (mMesh->getMaterial(0).normalMapTexture) {
+        shader = "NormalMap.hlsl";
+    }
+    //シェーダーを生成する
+    mShader = std::make_unique<Shader>(shader);
 }
 
 void MeshComponent::destroy() {

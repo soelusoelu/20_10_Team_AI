@@ -6,6 +6,11 @@
 #include "../Component/Camera/CameraMove.h"
 #include "../Component/CharacterOperation/CharacterCreater.h"
 #include "../Component/CharacterOperation/DragAndDropCharacter.h"
+#include "../Component/CollideOperation/AABBMouseScaler.h"
+#include "../Component/CollideOperation/AABBSelector.h"
+#include "../Component/CollideOperation/CollideAdder.h"
+#include "../Component/CollideOperation/CollideMouseOperator.h"
+#include "../Component/CollideOperation/MeshAdder.h"
 #include "../Component/Collider/AABBCollider.h"
 #include "../Component/Collider/CircleCollider.h"
 #include "../Component/Collider/SphereCollider.h"
@@ -13,7 +18,6 @@
 #include "../Component/Light/PointLightComponent.h"
 #include "../Component/Mesh/MeshComponent.h"
 #include "../Component/Mesh/SkinMeshComponent.h"
-#include "../Component/Other/Fade.h"
 #include "../Component/Other/HitPointComponent.h"
 #include "../Component/Sample/RayMouse.h"
 #include "../Component/Scene/GamePlay.h"
@@ -45,6 +49,12 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(CharacterCreater);
     ADD_COMPONENT(DragAndDropCharacter);
 
+    ADD_COMPONENT(AABBMouseScaler);
+    ADD_COMPONENT(AABBSelector);
+    ADD_COMPONENT(CollideAdder);
+    ADD_COMPONENT(CollideMouseOperator);
+    ADD_COMPONENT(MeshAdder);
+
     ADD_COMPONENT(AABBCollider);
     ADD_COMPONENT(CircleCollider);
     ADD_COMPONENT(SphereCollider);
@@ -55,7 +65,6 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(MeshComponent);
     ADD_COMPONENT(SkinMeshComponent);
 
-    ADD_COMPONENT(Fade);
     ADD_COMPONENT(HitPointComponent);
 
     ADD_COMPONENT(RayMouse);
