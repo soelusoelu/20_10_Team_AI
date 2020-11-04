@@ -7,14 +7,10 @@
 #include <string>
 #include <vector>
 
-class SpriteComponent;
 class CharacterCost;
 
 //キャラクターを生成するクラス
 class CharacterCreater : public Component {
-    using SpriteCompPtr = std::shared_ptr<SpriteComponent>;
-    using SpriteCompPtrArray = std::vector<SpriteCompPtr>;
-
 public:
     CharacterCreater(GameObject& gameObject);
     ~CharacterCreater();
@@ -30,10 +26,11 @@ private:
     bool selectSprite(const Vector2& mousePos);
     //対応するキャラクターを作成する
     void createCharacter(int id);
+    //コストオーバーしてるスプライトの操作
+    void spriteCostOver();
 
 private:
     std::shared_ptr<CharacterCost> mCost;
-    SpriteCompPtrArray mSprites;
     //キャラクター配列
     std::vector<CharacterCreateInfo> mCharactersInfo;
     //スプライトをクリックしている状態か

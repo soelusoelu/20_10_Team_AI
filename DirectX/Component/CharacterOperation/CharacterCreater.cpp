@@ -25,17 +25,9 @@ CharacterCreater::~CharacterCreater() = default;
 void CharacterCreater::start() {
     mCost = getComponent<CharacterCost>();
 
-    //キャラクターの数だけスプライト配列を拡張
-    mSprites.resize(mCharactersInfo.size());
-    for (size_t i = 0; i < mCharactersInfo.size(); i++) {
-        //キャラクター情報からスプライトコンポーネントを追加する
-        mSprites[i] = addComponent<SpriteComponent>("SpriteComponent");
-        mSprites[i]->setTextureFromFileName(mCharactersInfo[i].spriteFileName);
-    }
-
     //スプライトの位置を調整する
-    for (int i = 0; i < mSprites.size(); ++i) {
-        auto& s = mSprites[i];
+    for (int i = 0; i < mCharactersInfo.size(); ++i) {
+        auto& s = mCharactersInfo[i].sprite;
         auto& st = s->transform();
         auto texSize = s->getTextureSize() * mSpriteScale;
         st.setScale(mSpriteScale);
@@ -65,6 +57,9 @@ void CharacterCreater::update() {
             //対応するIDのキャラクターを生成
             createCharacter(mClickedSpriteID);
 
+            //コストオーバーしたスプライトの操作
+            spriteCostOver();
+
             //多重生成を阻止するため
             mClickedSprite = false;
         }
@@ -72,12 +67,6 @@ void CharacterCreater::update() {
     //マウスの左ボタンを離した瞬間だったら
     if (mouse.getMouseButtonUp(MouseCode::LeftButton)) {
         mClickedSprite = false;
-    }
-
-    for (size_t i = 0; i < mCharactersInfo.size(); i++) {
-        if (mCharactersInfo[i].cost > mCost->getCost()) {
-            mSprites[i]->setAlpha(0.2f);
-        }
     }
 }
 
@@ -94,9 +83,13 @@ void CharacterCreater::loadProperties(const rapidjson::Value& inObj) {
             const auto& characterObj = characterArray[i];
             //オブジェクト構造になっているかチェック
             if (characterObj.IsObject()) {
-                JsonHelper::getString(characterObj, "fileName", &mCharactersInfo[i].fileName);
-                JsonHelper::getString(characterObj, "sprite", &mCharactersInfo[i].spriteFileName);
-                JsonHelper::getInt(characterObj, "cost", &mCharactersInfo[i].cost);
+                auto& chara = mCharactersInfo[i];
+                JsonHelper::getString(characterObj, "fileName", &chara.fileName);
+                JsonHelper::getString(characterObj, "sprite", &chara.spriteFileName);
+                JsonHelper::getInt(characterObj, "cost", &chara.cost);
+                chara.sprite = addComponent<SpriteComponent>("SpriteComponent");
+                chara.sprite->setTextureFromFileName(chara.spriteFileName);
+                chara.isActive = true;
             }
         }
     }
@@ -109,12 +102,19 @@ bool CharacterCreater::selectSprite(const Vector2& mousePos) {
     //ウィンドウ補正値を取得する
     auto compen = Window::getWindowCompensate();
     //すべてのスプライトで検証する
-    for (int i = 0; i < mSprites.size(); ++i) {
+    for (int i = 0; i < mCharactersInfo.size(); ++i) {
+        auto& chara = mCharactersInfo[i];
+        //非アクティブならスキップ
+        if (!chara.isActive) {
+            continue;
+        }
+
         //計算に必要な要素を取得する
-        const auto& st = mSprites[i]->transform();
+        auto& s = chara.sprite;
+        const auto& st = s->transform();
         auto sPos = st.getPosition() * compen;
         auto sScale = st.getScale() * compen;
-        auto texSize = mSprites[i]->getTextureSize() * sScale;
+        auto texSize = s->getTextureSize() * sScale;
 
         //スプライトをもとに矩形作成
         Square square(sPos, sPos + texSize);
@@ -132,6 +132,21 @@ bool CharacterCreater::selectSprite(const Vector2& mousePos) {
 
 void CharacterCreater::createCharacter(int id) {
     //IDに対応するメッシュを作成
-    GameObjectCreater::create(mCharactersInfo[id].fileName);
-    mCost->useCost(mCharactersInfo[id].cost);
+    const auto& chara = mCharactersInfo[id];
+    GameObjectCreater::create(chara.fileName);
+    //キャラ分のコストを減らす
+    mCost->useCost(chara.cost);
+}
+
+void CharacterCreater::spriteCostOver() {
+    for (auto&& chara : mCharactersInfo) {
+        //キャラのコストが現在のコストより多ければ使用不可にする
+        if (chara.cost > mCost->getCost()) {
+            chara.sprite->setAlpha(0.2f);
+            chara.isActive = false;
+        } else {
+            chara.sprite->setAlpha(1.f);
+            chara.isActive = true;
+        }
+    }
 }
