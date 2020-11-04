@@ -4,6 +4,7 @@
 #include "../Component/ComponentManager.h"
 #include "../Component/Camera/Camera.h"
 #include "../Component/Camera/CameraMove.h"
+#include "../Component/CharacterOperation/CharacterCost.h"
 #include "../Component/CharacterOperation/CharacterCreater.h"
 #include "../Component/CharacterOperation/DragAndDropCharacter.h"
 #include "../Component/CollideOperation/AABBMouseScaler.h"
@@ -46,6 +47,7 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(Camera);
     ADD_COMPONENT(CameraMove);
 
+    ADD_COMPONENT(CharacterCost);
     ADD_COMPONENT(CharacterCreater);
     ADD_COMPONENT(DragAndDropCharacter);
 

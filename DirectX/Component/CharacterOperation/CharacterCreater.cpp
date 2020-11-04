@@ -21,7 +21,13 @@ CharacterCreater::CharacterCreater(GameObject& gameObject) :
 CharacterCreater::~CharacterCreater() = default;
 
 void CharacterCreater::start() {
-    mSprites = getComponents<SpriteComponent>();
+    //キャラクターの数だけスプライト配列を拡張
+    mSprites.resize(mCharactersInfo.size());
+    for (size_t i = 0; i < mCharactersInfo.size(); i++) {
+        //キャラクター情報からスプライトコンポーネントを追加する
+        mSprites[i] = addComponent<SpriteComponent>("SpriteComponent");
+        mSprites[i]->setTextureFromFileName(mCharactersInfo[i].spriteFileName);
+    }
 
     //スプライトの位置を調整する
     for (int i = 0; i < mSprites.size(); ++i) {
@@ -66,7 +72,24 @@ void CharacterCreater::update() {
 }
 
 void CharacterCreater::loadProperties(const rapidjson::Value& inObj) {
-    JsonHelper::getStringArray(inObj, "characterNames", &mCharacterNames);
+    //キャラクター配列を取得
+    const auto& characterArray = inObj["characters"];
+    //配列構造になっているかチェック
+    if (characterArray.IsArray()) {
+        //配列の要素数分拡張
+        mCharactersInfo.resize(characterArray.Size());
+        //要素数分ファイルから値を読み込んでいく
+        for (size_t i = 0; i < mCharactersInfo.size(); i++) {
+            //キャラクターオブジェクトを取得
+            const auto& characterObj = characterArray[i];
+            //オブジェクト構造になっているかチェック
+            if (characterObj.IsObject()) {
+                JsonHelper::getString(characterObj, "fileName", &mCharactersInfo[i].fileName);
+                JsonHelper::getString(characterObj, "sprite", &mCharactersInfo[i].spriteFileName);
+                JsonHelper::getInt(characterObj, "cost", &mCharactersInfo[i].cost);
+            }
+        }
+    }
     JsonHelper::getVector2(inObj, "spriteStartPosition", &mSpriteStartPos);
     JsonHelper::getVector2(inObj, "spriteScale", &mSpriteScale);
     JsonHelper::getFloat(inObj, "spriteSpace", &mSpriteSpace);
@@ -99,5 +122,5 @@ bool CharacterCreater::selectSprite(const Vector2& mousePos) {
 
 void CharacterCreater::createCharacter(int id) {
     //IDに対応するメッシュを作成
-    GameObjectCreater::create(mCharacterNames[id]);
+    GameObjectCreater::create(mCharactersInfo[id].fileName);
 }

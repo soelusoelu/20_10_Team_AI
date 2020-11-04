@@ -1,5 +1,6 @@
-﻿#pragma once
+﻿ #pragma once
 
+#include "CharacterCreateInfo.h"
 #include "../Component.h"
 #include "../../Math/Math.h"
 #include <memory>
@@ -10,6 +11,9 @@ class SpriteComponent;
 
 //キャラクターを生成するクラス
 class CharacterCreater : public Component {
+    using SpriteCompPtr = std::shared_ptr<SpriteComponent>;
+    using SpriteCompPtrArray = std::vector<SpriteCompPtr>;
+
 public:
     CharacterCreater(GameObject& gameObject);
     ~CharacterCreater();
@@ -27,9 +31,9 @@ private:
     void createCharacter(int id);
 
 private:
-    std::vector<std::shared_ptr<SpriteComponent>> mSprites;
-    //キャラクター名配列
-    std::vector<std::string> mCharacterNames;
+    SpriteCompPtrArray mSprites;
+    //キャラクター配列
+    std::vector<CharacterCreateInfo> mCharactersInfo;
     //スプライトをクリックしている状態か
     bool mClickedSprite;
     //スプライトのID
