@@ -37,7 +37,7 @@
     },
     "inspector": {
       "inspectorPositionX": 1400.0,
-      "tagScale": [ 0.5, 0.5 ],
+      "nameScale": [ 0.5, 0.5 ],
       "elementScale": [ 0.3, 0.3 ],
       "offsetCharCountX": 2
     },

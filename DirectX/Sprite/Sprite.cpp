@@ -1,11 +1,10 @@
 ﻿#include "Sprite.h"
 #include "SpriteManager.h"
-#include "../Device/AssetsManager.h"
 #include "../DirectX/DirectXInclude.h"
-#include "../System/TextureFromFile.h"
-#include "../System/World.h"
+#include "../System/AssetsManager.h"
 #include "../System/shader/ConstantBuffers.h"
 #include "../System/shader/Shader.h"
+#include "../System/Texture/TextureFromFile.h"
 #include "../Transform/Transform2D.h"
 #include <cassert>
 #include <vector>
@@ -13,8 +12,7 @@
 Sprite::Sprite() :
     mTransform(std::make_unique<Transform2D>()),
     mTexture(nullptr),
-    mShader(World::instance().assetsManager().createShader("Texture.hlsl")),
-    mTextureSize(Vector2::zero),
+    mShader(std::make_unique<Shader>("Texture.hlsl")),
     mColor(ColorPalette::white, 1.f),
     mUV(0.f, 0.f, 1.f, 1.f),
     mFileName(),
@@ -57,7 +55,7 @@ void Sprite::draw(const Matrix4& proj) const {
     mShader->transferData(&cb, sizeof(cb));
 
     //プリミティブをレンダリング
-    DirectX::instance().drawIndexed(6);
+    MyDirectX::DirectX::instance().drawIndexed(6);
 }
 
 Transform2D& Sprite::transform() const {
@@ -96,9 +94,8 @@ void Sprite::setUV(float l, float t, float r, float b) {
     mUV.w = b;
 
     //サイズ修正
-    Vector2 size;
-    size.x = mTextureSize.x * (r - l);
-    size.y = mTextureSize.y * (b - t);
+    const auto& texSize = mTexture->getTextureSize();
+    Vector2 size = Vector2(texSize.x * (r - l), texSize.y * (b - t));
 
     //テクスチャサイズを変更したことを通知
     mTransform->setSize(size);
@@ -109,7 +106,7 @@ const Vector4& Sprite::getUV() const {
 }
 
 const Vector2& Sprite::getTextureSize() const {
-    return mTextureSize;
+    return mTexture->getTextureSize();
 }
 
 void Sprite::setActive(bool value) {
@@ -124,14 +121,10 @@ void Sprite::setTextureFromFileName(const std::string& fileName) {
     if (mTexture) {
         mTexture.reset();
     }
-    mTexture = World::instance().assetsManager().createTexture(fileName);
-
-    //デスクをもとにサイズ取得
-    const auto& desc = mTexture->desc();
-    mTextureSize = Vector2(desc.width, desc.height);
+    mTexture = AssetsManager::instance().createTexture(fileName);
 
     //Transformに通知
-    mTransform->setSize(mTextureSize);
+    mTransform->setSize(mTexture->getTextureSize());
 
     //ファイル名変更
     mFileName = fileName;
@@ -143,12 +136,8 @@ void Sprite::setTexture(const std::shared_ptr<Texture>& texture) {
     }
     mTexture = texture;
 
-    //デスクをもとにサイズ取得
-    const auto& desc = mTexture->desc();
-    mTextureSize = Vector2(desc.width, desc.height);
-
     //Transformに通知
-    mTransform->setSize(mTextureSize);
+    mTransform->setSize(mTexture->getTextureSize());
 
     //ファイル名変更
     mFileName.clear();

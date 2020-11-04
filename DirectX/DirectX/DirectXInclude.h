@@ -23,6 +23,5 @@
 #include "../DirectX/SubResourceDesc.h"
 #include "../DirectX/Texture2D.h"
 #include "../DirectX/Texture2DDesc.h"
-#include "../DirectX/TextureDesc.h"
 #include "../DirectX/Usage.h"
 #include "../DirectX/VertexBuffer.h"
