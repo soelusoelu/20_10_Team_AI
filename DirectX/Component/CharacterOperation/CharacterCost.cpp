@@ -36,6 +36,10 @@ int CharacterCost::getCost() const {
     return mCurrentCost;
 }
 
+int CharacterCost::getMaxCost() const {
+    return mMaxCost;
+}
+
 void CharacterCost::clampCost() {
     mCurrentCost = Math::clamp<int>(mCurrentCost, 0, mMaxCost);
 }

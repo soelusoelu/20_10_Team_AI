@@ -8,6 +8,7 @@
 #include <vector>
 
 class SpriteComponent;
+class CharacterCost;
 
 //キャラクターを生成するクラス
 class CharacterCreater : public Component {
@@ -31,6 +32,7 @@ private:
     void createCharacter(int id);
 
 private:
+    std::shared_ptr<CharacterCost> mCost;
     SpriteCompPtrArray mSprites;
     //キャラクター配列
     std::vector<CharacterCreateInfo> mCharactersInfo;

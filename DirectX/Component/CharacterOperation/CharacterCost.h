@@ -15,8 +15,13 @@ public:
     void returnCost(int amount);
     //残りのコストを取得する
     int getCost() const;
+    //最大コストを取得する
+    int getMaxCost() const;
 
 private:
+    CharacterCost(const CharacterCost&) = delete;
+    CharacterCost& operator=(const CharacterCost&) = delete;
+
     //コストを適正範囲にクランプする
     void clampCost();
 

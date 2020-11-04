@@ -193,6 +193,7 @@
     <ClCompile Include="Imgui\imgui_widgets.cpp" />
     <ClCompile Include="DebugLayer\ImGuiInspector.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterCost.cpp" />
+    <ClCompile Include="Component\CharacterOperation\CostRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -421,5 +422,6 @@
     <ClInclude Include="DebugLayer\ImGuiInspector.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterCost.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterCreateInfo.h" />
+    <ClInclude Include="Component\CharacterOperation\CostRenderer.h" />
   </ItemGroup>
 </Project>

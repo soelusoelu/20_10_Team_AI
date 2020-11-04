@@ -1,4 +1,5 @@
 ﻿#include "CharacterCreater.h"
+#include "CharacterCost.h"
 #include "../Mesh/MeshComponent.h"
 #include "../Sprite/SpriteComponent.h"
 #include "../../Collision/Collision.h"
@@ -8,19 +9,22 @@
 #include "../../System/Window.h"
 #include "../../Utility/LevelLoader.h"
 
-CharacterCreater::CharacterCreater(GameObject& gameObject) :
-    Component(gameObject),
-    mClickedSprite(false),
-    mClickedSpriteID(0),
-    mSpriteStartPos(Vector2::zero),
-    mSpriteScale(Vector2::zero),
-    mSpriteSpace(0.f)
+CharacterCreater::CharacterCreater(GameObject& gameObject)
+    : Component(gameObject)
+    , mCost(nullptr)
+    , mClickedSprite(false)
+    , mClickedSpriteID(0)
+    , mSpriteStartPos(Vector2::zero)
+    , mSpriteScale(Vector2::zero)
+    , mSpriteSpace(0.f)
 {
 }
 
 CharacterCreater::~CharacterCreater() = default;
 
 void CharacterCreater::start() {
+    mCost = getComponent<CharacterCost>();
+
     //キャラクターの数だけスプライト配列を拡張
     mSprites.resize(mCharactersInfo.size());
     for (size_t i = 0; i < mCharactersInfo.size(); i++) {
@@ -68,6 +72,12 @@ void CharacterCreater::update() {
     //マウスの左ボタンを離した瞬間だったら
     if (mouse.getMouseButtonUp(MouseCode::LeftButton)) {
         mClickedSprite = false;
+    }
+
+    for (size_t i = 0; i < mCharactersInfo.size(); i++) {
+        if (mCharactersInfo[i].cost > mCost->getCost()) {
+            mSprites[i]->setAlpha(0.2f);
+        }
     }
 }
 
@@ -123,4 +133,5 @@ bool CharacterCreater::selectSprite(const Vector2& mousePos) {
 void CharacterCreater::createCharacter(int id) {
     //IDに対応するメッシュを作成
     GameObjectCreater::create(mCharactersInfo[id].fileName);
+    mCost->useCost(mCharactersInfo[id].cost);
 }

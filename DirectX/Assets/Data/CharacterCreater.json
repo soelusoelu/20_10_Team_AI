@@ -30,6 +30,18 @@
       "properties": {
         "maxCost": 100
       }
+    },
+    {
+      "type": "CostRenderer",
+      "properties": {
+
+      }
+    },
+    {
+      "type": "Text",
+      "properties": {
+        "position": [ 80.0, 750.0 ]
+      }
     }
   ]
 }
