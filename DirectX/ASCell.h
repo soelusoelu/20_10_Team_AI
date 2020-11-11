@@ -1,0 +1,16 @@
+#pragma once
+#include <vector>
+enum E_State { NONE, OPEN, CLOSE };
+struct Position {
+	int x=0; int y=0;
+};
+struct ASCell
+{
+	E_State state = NONE;
+	Position position;
+	int cost=1, scoreE=0,scoreR=0,score=0;
+	bool canMove = true;
+	std::vector<ASCell*> neighCells;
+	ASCell* parent;
+};
+
