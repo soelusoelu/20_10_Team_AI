@@ -1,13 +1,12 @@
-﻿ #pragma once
+﻿#pragma once
 
-#include "CharacterCreateInfo.h"
 #include "../Component.h"
 #include "../../Math/Math.h"
 #include <memory>
 #include <string>
 #include <vector>
 
-class CharacterCost;
+class SpriteComponent;
 
 //キャラクターを生成するクラス
 class CharacterCreater : public Component {
@@ -26,13 +25,11 @@ private:
     bool selectSprite(const Vector2& mousePos);
     //対応するキャラクターを作成する
     void createCharacter(int id);
-    //コストオーバーしてるスプライトの操作
-    void spriteCostOver();
 
 private:
-    std::shared_ptr<CharacterCost> mCost;
-    //キャラクター配列
-    std::vector<CharacterCreateInfo> mCharactersInfo;
+    std::vector<std::shared_ptr<SpriteComponent>> mSprites;
+    //キャラクター名配列
+    std::vector<std::string> mCharacterNames;
     //スプライトをクリックしている状態か
     bool mClickedSprite;
     //スプライトのID

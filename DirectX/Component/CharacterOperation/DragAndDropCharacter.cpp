@@ -121,13 +121,6 @@ void DragAndDropCharacter::moveToIntersectPoint() {
         return;
     }
 
-    //X軸を基準に移動制限を設ける
-    auto movePoint = mIntersectPoint;
-    auto offset = mAABB->getAABB().max.x - transform().getPosition().x;
-    if (movePoint.x + offset > 0.f) {
-        movePoint.x = -offset;
-    }
-
     //衝突点まで移動
-    transform().setPosition(movePoint);
+    transform().setPosition(mIntersectPoint);
 }

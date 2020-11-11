@@ -3,22 +3,10 @@
     {
       "type": "CharacterCreater",
       "properties": {
-        "characters": [
-          {
-            "fileName": "SphereTest",
-            "sprite": "Character/red.png",
-            "cost": 10
-          },
-          {
-            "fileName": "BoxTest",
-            "sprite": "Character/green.png",
-            "cost": 20
-          },
-          {
-            "fileName": "PLightTest",
-            "sprite": "Character/blue.png",
-            "cost": 30
-          }
+        "characterNames": [
+          "SphereTest",
+          "BoxTest",
+          "PLightTest"
         ],
         "spriteStartPosition": [ 64.0, 850.0 ],
         "spriteScale": [ 0.7, 0.7 ],
@@ -26,21 +14,21 @@
       }
     },
     {
-      "type": "CharacterCost",
+      "type": "SpriteComponent",
       "properties": {
-        "maxCost": 100
+        "fileName": "Character/red.png"
       }
     },
     {
-      "type": "CostRenderer",
+      "type": "SpriteComponent",
       "properties": {
-
+        "fileName": "Character/green.png"
       }
     },
     {
-      "type": "Text",
+      "type": "SpriteComponent",
       "properties": {
-        "position": [ 80.0, 750.0 ]
+        "fileName": "Character/blue.png"
       }
     }
   ]
