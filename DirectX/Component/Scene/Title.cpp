@@ -19,7 +19,6 @@ void Title::start() {
     mScene = getComponent<Scene>();
     GameObjectCreater::create("Plane");
     GameObjectCreater::create("CharacterCreater");
-    //GameObjectCreater::create("SkinMesh");
 }
 
 void Title::update() {
