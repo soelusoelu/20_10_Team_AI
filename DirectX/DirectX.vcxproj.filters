@@ -192,11 +192,12 @@
     <ClCompile Include="Imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="Imgui\imgui_widgets.cpp" />
     <ClCompile Include="DebugLayer\ImGuiInspector.cpp" />
-    <ClCompile Include="DebugLayer\ImGuiWrapper.cpp" />
-    <ClCompile Include="Component\Other\GameObjectSaveAndLoader.cpp" />
-    <ClCompile Include="Component\Other\SaveThis.cpp" />
+<<<<<<< HEAD
+    <ClCompile Include="ASCellManager.cpp" />
+=======
     <ClCompile Include="Component\CharacterOperation\CharacterCost.cpp" />
     <ClCompile Include="Component\CharacterOperation\CostRenderer.cpp" />
+>>>>>>> 2fd1d09f3416a217f16da021a057ea69ee1a0b42
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -423,11 +424,13 @@
     <ClInclude Include="Imgui\imstb_textedit.h" />
     <ClInclude Include="Imgui\imstb_truetype.h" />
     <ClInclude Include="DebugLayer\ImGuiInspector.h" />
-    <ClInclude Include="DebugLayer\ImGuiWrapper.h" />
-    <ClInclude Include="Component\Other\GameObjectSaveAndLoader.h" />
-    <ClInclude Include="Component\Other\SaveThis.h" />
+<<<<<<< HEAD
+    <ClInclude Include="ASCell.h" />
+    <ClInclude Include="ASCellManager.h" />
+=======
     <ClInclude Include="Component\CharacterOperation\CharacterCost.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterCreateInfo.h" />
     <ClInclude Include="Component\CharacterOperation\CostRenderer.h" />
+>>>>>>> 2fd1d09f3416a217f16da021a057ea69ee1a0b42
   </ItemGroup>
 </Project>
