@@ -165,15 +165,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClCompile Include="ASCellManager.cpp" />
-=======
     <ClCompile Include="Component\CharacterOperation\CharacterCost.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="Component\CharacterOperation\CostRenderer.cpp" />
-=======
->>>>>>> 2fd1d09f3416a217f16da021a057ea69ee1a0b42
->>>>>>> origin/master
     <ClCompile Include="Component\CollideOperation\AABBSelector.cpp" />
     <ClCompile Include="Component\CollideOperation\AABBMouseScaler.cpp" />
     <ClCompile Include="Component\CollideOperation\CollideAdder.cpp" />
@@ -355,17 +349,11 @@
     <ClCompile Include="Component\Sound\WaveformRenderSample.cpp" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClInclude Include="ASCell.h" />
     <ClInclude Include="ASCellManager.h" />
-=======
     <ClInclude Include="Component\CharacterOperation\CharacterCost.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterCreateInfo.h" />
-<<<<<<< HEAD
     <ClInclude Include="Component\CharacterOperation\CostRenderer.h" />
-=======
->>>>>>> 2fd1d09f3416a217f16da021a057ea69ee1a0b42
->>>>>>> origin/master
     <ClInclude Include="Component\CollideOperation\AABBSelector.h" />
     <ClInclude Include="Component\CollideOperation\AABBMouseScaler.h" />
     <ClInclude Include="Component\CollideOperation\CollideAdder.h" />
