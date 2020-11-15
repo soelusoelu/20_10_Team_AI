@@ -1,11 +1,16 @@
 ﻿#include "FbxMeshParser.h"
+#include "FbxUtility.h"
 
 FbxMeshParser::FbxMeshParser() = default;
 
 FbxMeshParser::~FbxMeshParser() = default;
 
 //長いけど無駄にfor文を回さなくて済む
-void FbxMeshParser::parse(MeshVertices& meshVertices, Indices& indices, FbxMesh* fbxMesh) const {
+void FbxMeshParser::parse(
+    MeshVertices& meshVertices,
+    Indices& indices,
+    FbxMesh* fbxMesh
+) const {
     //頂点数
     int polygonVertexCount = fbxMesh->GetPolygonVertexCount();
     //インデックスバッファの取得
@@ -27,6 +32,16 @@ void FbxMeshParser::parse(MeshVertices& meshVertices, Indices& indices, FbxMesh*
     //indicesは頂点数の3倍
     indices.resize(polygonVertexCount * 3);
 
+    //メッシュごとのトランスフォームを計算
+    FbxNode* node = fbxMesh->GetNode();
+    auto t = FbxUtility::fbxDouble3ToVector3(node->LclTranslation.Get());
+    t.x *= -1.f;
+    auto r = FbxUtility::fbxDouble3ToVector3(node->LclRotation.Get());
+    r.y *= -1.f;
+    Quaternion q(r);
+    auto s = FbxUtility::fbxDouble3ToVector3(node->LclScaling.Get());
+    auto mat = Matrix4::createScale(s) * Matrix4::createFromQuaternion(q) * Matrix4::createTranslation(t);
+
     for (size_t i = 0; i < polygonVertexCount; ++i) {
         MeshVertex vertex;
 
@@ -34,10 +49,12 @@ void FbxMeshParser::parse(MeshVertices& meshVertices, Indices& indices, FbxMesh*
         vertex.pos.x = static_cast<float>(-src[index][0]);
         vertex.pos.y = static_cast<float>(src[index][1]);
         vertex.pos.z = static_cast<float>(src[index][2]);
+        vertex.pos = Vector3::transform(vertex.pos, mat);
 
         vertex.normal.x = static_cast<float>(-normalArray[i][0]);
         vertex.normal.y = static_cast<float>(normalArray[i][1]);
         vertex.normal.z = static_cast<float>(normalArray[i][2]);
+        vertex.normal = Vector3::transform(vertex.normal, mat);
 
         //UVは使用している場合のみ
         if (uvArray.Size() > 0) {

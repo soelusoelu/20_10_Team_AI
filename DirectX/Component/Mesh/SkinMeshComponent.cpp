@@ -2,6 +2,7 @@
 #include "../Camera/Camera.h"
 #include "../Light/DirectionalLight.h"
 #include "../../Device/Time.h"
+#include "../../Input/Input.h"
 #include "../../Mesh/Material.h"
 #include "../../Mesh/Mesh.h"
 #include "../../System/Shader/ConstantBuffers.h"
@@ -9,24 +10,23 @@
 #include "../../System/Texture/TextureFromFile.h"
 #include "../../Transform/Transform3D.h"
 
-SkinMeshComponent::SkinMeshComponent(GameObject& gameObject) :
-    MeshComponent(gameObject),
-    mCurrentFrame(0)
+SkinMeshComponent::SkinMeshComponent(GameObject& gameObject)
+    : MeshComponent(gameObject)
+    , mCurrentMotionNo(0)
+    , mCurrentFrame(0)
 {
 }
 
 SkinMeshComponent::~SkinMeshComponent() = default;
 
 void SkinMeshComponent::update() {
-    auto& bones = mMesh->getBones();
-    mBones.resize(bones.size());
-    for (size_t i = 0; i < bones.size(); i++) {
-        mBones[i].offsetMat = bones[i].frameMat[mCurrentFrame];
-        mBones[i].initMat = bones[i].frameMat[mCurrentFrame];
+    if (Input::keyboard().getKeyDown(KeyCode::Space)) {
+        mCurrentMotionNo = ++mCurrentMotionNo % mMesh->getMotionCount();
+        mCurrentFrame = 0;
     }
-    test(mBones[0], nullptr);
-    ++mCurrentFrame;;
-    if (mCurrentFrame >= bones[0].numFrame) {
+    auto& motion = mMesh->getMotion(mCurrentMotionNo);
+    ++mCurrentFrame;
+    if (mCurrentFrame >= motion.numFrame) {
         mCurrentFrame = 0;
     }
 }
@@ -37,18 +37,9 @@ void SkinMeshComponent::draw(const Camera& camera, const DirectionalLight& dirLi
 
     //シェーダーのコンスタントバッファーに各種データを渡す
     SkinMeshConstantBuffer meshcb;
-    auto& bones = mMesh->getBones();
-    for (size_t i = 0; i < bones.size(); i++) {
-        //meshcb.bones[i] = Matrix4::identity;
-        //meshcb.bones[i] = bones[i].initMat;
-        //meshcb.bones[i] = bones[i].offsetMat * bones[i].initMat;
-        //meshcb.bones[i] = bones[i].offsetMat * Matrix4::inverse(bones[i].offsetMat);
-        meshcb.bones[i] = bones[i].offsetMat * bones[i].frameMat[mCurrentFrame];
-        //meshcb.bones[i] = bones[i].offsetMat * bones[i].frameMat[mCurrentFrame] * Matrix4::inverse(bones[i].offsetMat);
-        //meshcb.bones[i] = Matrix4::inverse(bones[i].initMat) * bones[i].frameMat[mCurrentFrame] * bones[i].initMat;
-        //meshcb.bones[i] = bones[i].offsetMat * bones[i].frameMat[mCurrentFrame] * bones[i].initMat;
-        //meshcb.bones[i] = bones[i].offsetMat * mBones[i].initMat;
-        //meshcb.bones[i] = bones[i].offsetMat * bones[i].frameMat[mCurrentFrame] * mBones[i].initMat;
+    auto& motion = mMesh->getMotion(mCurrentMotionNo);
+    for (size_t i = 0; i < mMesh->getBoneCount(); i++) {
+        meshcb.bones[i] = mMesh->getBone(i).offsetMat * motion.frameMat[i][mCurrentFrame];
     }
     const auto& world = transform().getWorldTransform();
     meshcb.world = world;
@@ -78,14 +69,5 @@ void SkinMeshComponent::draw(const Camera& camera, const DirectionalLight& dirLi
 
         //描画
         mMesh->draw(i);
-    }
-}
-
-void SkinMeshComponent::test(Bone& me, const Matrix4* parentWorld) const {
-    if (parentWorld) {
-        me.initMat *= *parentWorld;
-    }
-    for (size_t i = 0; i < me.children.size(); i++) {
-        test(*me.children[i], &me.offsetMat);
     }
 }

@@ -2,6 +2,7 @@
 
 #include "../IMeshLoader.h"
 #include <fbxsdk.h>
+#include <vector>
 
 //FBXメッシュ解析クラス
 class FbxMeshParser {

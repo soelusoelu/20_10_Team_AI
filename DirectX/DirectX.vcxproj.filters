@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <FxCompile Include="Shader\Texture.hlsl" />
-    <FxCompile Include="Shader\Mesh.hlsl" />
     <FxCompile Include="Shader\Deferred.hlsl" />
     <FxCompile Include="Shader\GBuffer.hlsl" />
     <FxCompile Include="Shader\PointLight.hlsl" />
@@ -10,10 +9,10 @@
     <FxCompile Include="Shader\Line2D.hlsl" />
     <FxCompile Include="Shader\Line3D.hlsl" />
     <FxCompile Include="Shader\SimpleMesh.hlsl" />
-    <FxCompile Include="Shader\MeshTexture.hlsl" />
     <FxCompile Include="Shader\NormalMap.hlsl" />
     <FxCompile Include="Shader\SkinMesh.hlsl" />
     <FxCompile Include="Shader\Point3D.hlsl" />
+    <FxCompile Include="Shader\Mesh.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Component\ComponentManager.cpp" />
@@ -192,9 +191,15 @@
     <ClCompile Include="Imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="Imgui\imgui_widgets.cpp" />
     <ClCompile Include="DebugLayer\ImGuiInspector.cpp" />
-    <ClCompile Include="ASCellManager.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterCost.cpp" />
     <ClCompile Include="Component\CharacterOperation\CostRenderer.cpp" />
+    <ClCompile Include="DebugLayer\ImGuiWrapper.cpp" />
+    <ClCompile Include="Component\Other\GameObjectSaveAndLoader.cpp" />
+    <ClCompile Include="Component\Other\SaveThis.cpp" />
+    <ClCompile Include="Mesh\Fbx\FbxBoneWeightParser.cpp" />
+    <ClCompile Include="Mesh\Fbx\FbxMotionParser.cpp" />
+    <ClCompile Include="Mesh\Fbx\FbxUtility.cpp" />
+    <ClCompile Include="ASCellManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -421,10 +426,18 @@
     <ClInclude Include="Imgui\imstb_textedit.h" />
     <ClInclude Include="Imgui\imstb_truetype.h" />
     <ClInclude Include="DebugLayer\ImGuiInspector.h" />
-    <ClInclude Include="ASCell.h" />
-    <ClInclude Include="ASCellManager.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterCost.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterCreateInfo.h" />
     <ClInclude Include="Component\CharacterOperation\CostRenderer.h" />
+    <ClInclude Include="DebugLayer\ImGuiWrapper.h" />
+    <ClInclude Include="Component\Other\GameObjectSaveAndLoader.h" />
+    <ClInclude Include="Component\Other\SaveThis.h" />
+    <ClInclude Include="Mesh\Fbx\FbxBoneWeightParser.h" />
+    <ClInclude Include="Mesh\Motion.h" />
+    <ClInclude Include="Mesh\Fbx\FbxMotionParser.h" />
+    <ClInclude Include="Mesh\Fbx\FbxMotionTime.h" />
+    <ClInclude Include="Mesh\Fbx\FbxUtility.h" />
+    <ClInclude Include="ASCell.h" />
+    <ClInclude Include="ASCellManager.h" />
   </ItemGroup>
 </Project>
