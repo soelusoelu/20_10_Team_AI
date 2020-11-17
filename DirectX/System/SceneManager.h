@@ -3,7 +3,6 @@
 #include <rapidjson/document.h>
 #include <memory>
 #include <string>
-#include <unordered_set>
 
 class Scene;
 class Renderer;
@@ -16,8 +15,6 @@ class LightManager;
 class DrawString;
 
 class SceneManager {
-    using StringSet = std::unordered_set<std::string>;
-
 public:
     SceneManager();
     ~SceneManager();
@@ -27,7 +24,7 @@ public:
     void draw() const;
 
 private:
-    void change(const StringSet& tags);
+    void change();
     void createScene(const std::string& name);
 
 private:

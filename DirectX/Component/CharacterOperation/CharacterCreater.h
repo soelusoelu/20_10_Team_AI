@@ -17,6 +17,7 @@ public:
     virtual void start() override;
     virtual void update() override;
     virtual void loadProperties(const rapidjson::Value& inObj) override;
+    void loadCharacter(const rapidjson::Value& inObj);
 
 private:
     CharacterCreater(const CharacterCreater&) = delete;

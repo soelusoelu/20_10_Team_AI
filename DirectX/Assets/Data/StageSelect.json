@@ -1,0 +1,21 @@
+{
+  "components": [
+    {
+      "type": "Scene",
+      "properties": {
+      }
+    },
+    {
+      "type": "StageSelect",
+      "properties": {
+      }
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "fileName": "StageSelect.png",
+        "scale": [ 1.875, 1.875 ]
+      }
+    }
+  ]
+}

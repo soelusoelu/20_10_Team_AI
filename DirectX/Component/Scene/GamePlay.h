@@ -4,6 +4,7 @@
 #include <memory>
 
 class Scene;
+class CharacterCreater;
 
 class GamePlay : public Component {
 public:
@@ -13,5 +14,13 @@ public:
     virtual void update() override;
 
 private:
+    //前のシーンからステージ番号をもらう
+    void getStageNo();
+    //ステージ番号からステージをロードする
+    void loadStage();
+
+private:
     std::shared_ptr<Scene> mScene;
+    std::shared_ptr<CharacterCreater> mCharaCreater;
+    int mStageNo;
 };

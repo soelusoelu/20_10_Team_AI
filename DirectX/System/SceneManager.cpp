@@ -100,8 +100,14 @@ void SceneManager::update() {
     //シーン移行
     const auto& next = mCurrentScene->getNext();
     if (!next.empty()) {
-        change(mCurrentScene->getObjectToNext());
+        change();
+        //次のシーンに渡す値を避難させとく
+        const auto& toNextValues = mCurrentScene->getValuePassToNextScene();
+        //シーン遷移
         createScene(next);
+        //新しいシーンに前のシーンの値を渡す
+        mCurrentScene->initialize(toNextValues);
+        //このフレームは描画しない
         mShouldDraw = false;
     }
 }
@@ -160,13 +166,15 @@ void SceneManager::draw() const {
     DebugUtility::lineRenderer2D().draw(proj);
 }
 
-void SceneManager::change(const StringSet& tags) {
-    mGameObjectManager->clearExceptSpecified(tags);
+void SceneManager::change() {
+    mGameObjectManager->clear();
     mMeshManager->clear();
     mSpriteManager->clear();
 }
 
 void SceneManager::createScene(const std::string& name) {
+    //シーン作成
     auto scene = GameObjectCreater::create(name);
+    //シーンコンポーネント取得
     mCurrentScene = scene->componentManager().getComponent<Scene>();
 }

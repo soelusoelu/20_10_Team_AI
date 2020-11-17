@@ -26,6 +26,7 @@
 #include "../Component/Sample/RayMouse.h"
 #include "../Component/Scene/GamePlay.h"
 #include "../Component/Scene/Scene.h"
+#include "../Component/Scene/StageSelect.h"
 #include "../Component/Scene/Title.h"
 #include "../Component/Sound/ListenerComponent.h"
 #include "../Component/Sound/SoundComponent.h"
@@ -79,6 +80,7 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(GamePlay);
     ADD_COMPONENT(Scene);
+    ADD_COMPONENT(StageSelect);
     ADD_COMPONENT(Title);
 
     ADD_COMPONENT(ListenerComponent);
@@ -98,12 +100,10 @@ GameObjectFactory::~GameObjectFactory() {
 }
 
 std::shared_ptr<GameObject> GameObjectFactory::createGameObjectFromFile(const std::string& type, const std::string& directoryPath) {
-    //ディレクトパスとタイプからファイルパスを作成
-    auto filePath = directoryPath + type + ".json";
-
     rapidjson::Document document;
-    if (!LevelLoader::loadJSON(filePath, &document)) {
-        Debug::windowMessage(filePath + ": レベルファイルのロードに失敗しました");
+    const auto& fileName = type + ".json";
+    if (!LevelLoader::loadJSON(document, fileName, directoryPath)) {
+        Debug::windowMessage(directoryPath + fileName + ": ファイルのロードに失敗しました");
         return nullptr;
     }
 

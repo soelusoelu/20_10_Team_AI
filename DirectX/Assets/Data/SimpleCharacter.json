@@ -1,0 +1,24 @@
+{
+  "properties": {
+    "rotation": [ 0.0, 180.0, 0.0 ]
+  },
+  "components": [
+    {
+      "type": "SkinMeshComponent",
+      "properties": {
+        "fileName": "Practice\\MyModel.fbx",
+        "shaderName": "SkinMesh.hlsl"
+      }
+    },
+    {
+      "type": "DragAndDropCharacter",
+      "properties": {
+      }
+    },
+    {
+      "type": "AABBCollider",
+      "properties": {
+      }
+    }
+  ]
+}

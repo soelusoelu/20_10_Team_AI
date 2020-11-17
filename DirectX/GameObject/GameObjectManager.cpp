@@ -6,6 +6,7 @@
 #include "../Utility/StringUtil.h"
 #include <algorithm>
 #include <iterator>
+#include <unordered_set>
 
 GameObjectManager::GameObjectManager() :
     mUpdatingGameObjects(false) {
@@ -42,12 +43,7 @@ void GameObjectManager::add(const GameObjectPtr & add) {
 }
 
 void GameObjectManager::clear() {
-    StringSet set{};
-    clearExceptSpecified(set);
-}
-
-void GameObjectManager::clearExceptSpecified(const StringSet & tags) {
-    auto excepts = tags;
+    std::unordered_set<std::string> excepts;
     excepts.emplace("Camera");
     excepts.emplace("DirectionalLight");
 

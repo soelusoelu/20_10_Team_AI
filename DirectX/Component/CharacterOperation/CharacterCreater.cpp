@@ -3,9 +3,11 @@
 #include "../Mesh/MeshComponent.h"
 #include "../Sprite/SpriteComponent.h"
 #include "../../Collision/Collision.h"
+#include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObjectFactory.h"
 #include "../../Input/Input.h"
 #include "../../Transform/Transform2D.h"
+#include "../../System/AssetsManager.h"
 #include "../../System/Window.h"
 #include "../../Utility/LevelLoader.h"
 
@@ -70,31 +72,44 @@ void CharacterCreater::update() {
 }
 
 void CharacterCreater::loadProperties(const rapidjson::Value& inObj) {
-    //キャラクター配列を取得
-    const auto& characterArray = inObj["characters"];
-    //配列構造になっているかチェック
-    if (characterArray.IsArray()) {
-        //配列の要素数分拡張
-        mCharactersInfo.resize(characterArray.Size());
-        //要素数分ファイルから値を読み込んでいく
-        for (size_t i = 0; i < mCharactersInfo.size(); i++) {
-            //キャラクターオブジェクトを取得
-            const auto& characterObj = characterArray[i];
-            //オブジェクト構造になっているかチェック
-            if (characterObj.IsObject()) {
-                auto& chara = mCharactersInfo[i];
-                JsonHelper::getString(characterObj, "fileName", &chara.fileName);
-                JsonHelper::getString(characterObj, "sprite", &chara.spriteFileName);
-                JsonHelper::getInt(characterObj, "cost", &chara.cost);
-                chara.sprite = addComponent<SpriteComponent>("SpriteComponent");
-                chara.sprite->setTextureFromFileName(chara.spriteFileName);
-                chara.isActive = true;
-            }
-        }
-    }
     JsonHelper::getVector2(inObj, "spriteStartPosition", &mSpriteStartPos);
     JsonHelper::getVector2(inObj, "spriteScale", &mSpriteScale);
     JsonHelper::getFloat(inObj, "spriteSpace", &mSpriteSpace);
+}
+
+void CharacterCreater::loadCharacter(const rapidjson::Value& inObj) {
+    rapidjson::Document doc;
+    if (!LevelLoader::loadJSON(doc, "Characters.json")) {
+        return;
+    }
+    if (!doc.IsObject()) {
+        return;
+    }
+
+    std::vector<std::string> characters;
+    JsonHelper::getStringArray(inObj, "characters", &characters);
+    //配列の要素数分拡張
+    mCharactersInfo.resize(characters.size());
+    for (size_t i = 0; i < characters.size(); ++i) {
+        const auto& name = characters[i];
+        const auto& charaObj = doc[name.c_str()];
+        if (!charaObj.IsObject()) {
+            continue;
+        }
+
+        auto& chara = mCharactersInfo[i];
+        chara.fileName = name;
+        std::string mesh;
+        if (JsonHelper::getString(charaObj, "mesh", &mesh)) {
+            //メッシュを事前に読み込んでおく
+            AssetsManager::instance().loadMesh(mesh);
+        }
+        JsonHelper::getString(charaObj, "sprite", &chara.spriteFileName);
+        JsonHelper::getInt(charaObj, "cost", &chara.cost);
+        chara.sprite = addComponent<SpriteComponent>("SpriteComponent");
+        chara.sprite->setTextureFromFileName(chara.spriteFileName);
+        chara.isActive = true;
+    }
 }
 
 bool CharacterCreater::selectSprite(const Vector2& mousePos) {

@@ -3,23 +3,6 @@
     {
       "type": "CharacterCreater",
       "properties": {
-        "characters": [
-          {
-            "fileName": "SphereTest",
-            "sprite": "Character/red.png",
-            "cost": 10
-          },
-          {
-            "fileName": "BoxTest",
-            "sprite": "Character/green.png",
-            "cost": 20
-          },
-          {
-            "fileName": "PLightTest",
-            "sprite": "Character/blue.png",
-            "cost": 30
-          }
-        ],
         "spriteStartPosition": [ 64.0, 850.0 ],
         "spriteScale": [ 0.7, 0.7 ],
         "spriteSpace": 48.0
