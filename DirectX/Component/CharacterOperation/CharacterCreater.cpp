@@ -7,6 +7,7 @@
 #include "../../GameObject/GameObjectFactory.h"
 #include "../../Input/Input.h"
 #include "../../Transform/Transform2D.h"
+#include "../../Sprite/SpriteUtility.h"
 #include "../../System/AssetsManager.h"
 #include "../../System/Window.h"
 #include "../../Utility/LevelLoader.h"
@@ -123,18 +124,8 @@ bool CharacterCreater::selectSprite(const Vector2& mousePos) {
             continue;
         }
 
-        //計算に必要な要素を取得する
-        auto& s = chara.sprite;
-        const auto& st = s->transform();
-        auto sPos = st.getPosition() * compen;
-        auto sScale = st.getScale() * compen;
-        auto texSize = s->getTextureSize() * sScale;
-
-        //スプライトをもとに矩形作成
-        Square square(sPos, sPos + texSize);
-
-        //矩形の中にマウスの座標が含まれているか
-        if (square.contains(mousePos)) {
+        //スプライトの中にマウスの座標が含まれているか
+        if (SpriteUtility::contains(*chara.sprite, mousePos)) {
             mClickedSpriteID = i;
             return true;
         }

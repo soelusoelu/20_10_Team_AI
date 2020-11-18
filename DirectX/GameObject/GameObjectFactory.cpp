@@ -16,6 +16,7 @@
 #include "../Component/Collider/AABBCollider.h"
 #include "../Component/Collider/CircleCollider.h"
 #include "../Component/Collider/SphereCollider.h"
+#include "../Component/GameState/GameStart.h"
 #include "../Component/Light/DirectionalLight.h"
 #include "../Component/Light/PointLightComponent.h"
 #include "../Component/Mesh/MeshComponent.h"
@@ -65,6 +66,8 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(AABBCollider);
     ADD_COMPONENT(CircleCollider);
     ADD_COMPONENT(SphereCollider);
+
+    ADD_COMPONENT(GameStart);
 
     ADD_COMPONENT(DirectionalLight);
     ADD_COMPONENT(PointLightComponent);

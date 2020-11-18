@@ -201,6 +201,8 @@
     <ClCompile Include="Mesh\Fbx\FbxUtility.cpp" />
     <ClCompile Include="ASCellManager.cpp" />
     <ClCompile Include="Component\Scene\StageSelect.cpp" />
+    <ClCompile Include="Component\GameState\GameStart.cpp" />
+    <ClCompile Include="Sprite\SpriteUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -441,5 +443,8 @@
     <ClInclude Include="ASCell.h" />
     <ClInclude Include="ASCellManager.h" />
     <ClInclude Include="Component\Scene\StageSelect.h" />
+    <ClInclude Include="Component\GameState\GameStart.h" />
+    <ClInclude Include="Sprite\SpriteUtility.h" />
+    <ClInclude Include="Component\GameState\GameState.h" />
   </ItemGroup>
 </Project>

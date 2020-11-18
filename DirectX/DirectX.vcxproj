@@ -187,6 +187,7 @@
     <ClCompile Include="DebugLayer\ImGuiInspector.cpp" />
     <ClCompile Include="DebugLayer\ImGuiWrapper.cpp" />
     <ClCompile Include="Component\Other\GameObjectSaveAndLoader.cpp" />
+    <ClCompile Include="Component\GameState\GameStart.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxUtility.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMotionParser.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
@@ -204,6 +205,7 @@
     <ClCompile Include="DebugLayer\PointRenderer.cpp" />
     <ClCompile Include="Component\Other\SaveThis.cpp" />
     <ClCompile Include="Component\Scene\StageSelect.cpp" />
+    <ClCompile Include="Sprite\SpriteUtility.cpp" />
     <ClCompile Include="System\Shader\InputElementManager.cpp" />
     <ClCompile Include="System\Shader\ConstantBufferManager.cpp" />
     <ClCompile Include="DebugLayer\LineRenderer\LineRenderer.cpp" />
@@ -371,9 +373,11 @@
     <ClInclude Include="Collision\Circle.h" />
     <ClInclude Include="Component\CharacterOperation\DragAndDropCharacter.h" />
     <ClInclude Include="Component\CollideOperation\MeshAdder.h" />
+    <ClInclude Include="Component\GameState\GameState.h" />
     <ClInclude Include="DebugLayer\ImGuiInspector.h" />
     <ClInclude Include="DebugLayer\ImGuiWrapper.h" />
     <ClInclude Include="Component\Other\GameObjectSaveAndLoader.h" />
+    <ClInclude Include="Component\GameState\GameStart.h" />
     <ClInclude Include="Mesh\Fbx\FbxUtility.h" />
     <ClInclude Include="Mesh\Fbx\FbxMotionParser.h" />
     <ClInclude Include="Imgui\imconfig.h" />
@@ -401,6 +405,7 @@
     <ClInclude Include="DebugLayer\PointRenderer.h" />
     <ClInclude Include="Component\Other\SaveThis.h" />
     <ClInclude Include="Component\Scene\StageSelect.h" />
+    <ClInclude Include="Sprite\SpriteUtility.h" />
     <ClInclude Include="System\Shader\InputElementManager.h" />
     <ClInclude Include="System\Shader\ConstantBufferManager.h" />
     <ClInclude Include="DebugLayer\LineRenderer\LineRenderer.h" />
