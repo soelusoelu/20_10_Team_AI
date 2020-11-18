@@ -1,6 +1,7 @@
 ﻿#include "GamePlay.h"
 #include "Scene.h"
 #include "../CharacterOperation/CharacterCreater.h"
+#include "../GameState/GameStart.h"
 #include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObject.h"
 #include "../../GameObject/GameObjectFactory.h"
@@ -12,6 +13,8 @@ GamePlay::GamePlay(GameObject& gameObject)
     : Component(gameObject)
     , mScene(nullptr)
     , mCharaCreater(nullptr)
+    , mGameStart(nullptr)
+    , mState(GameState::OPERATE_PHASE)
     , mStageNo(0)
 {
 }
@@ -22,12 +25,24 @@ void GamePlay::start() {
     mScene = getComponent<Scene>();
     auto cc = GameObjectCreater::create("CharacterCreater");
     mCharaCreater = cc->componentManager().getComponent<CharacterCreater>();
+    auto gs = GameObjectCreater::create("GameStart");
+    mGameStart = gs->componentManager().getComponent<GameStart>();
 
     getStageNo();
     loadStage();
 }
 
 void GamePlay::update() {
+    if (mState == GameState::OPERATE_PHASE) {
+        mGameStart->originalUpdate(mState);
+
+        if (mState != GameState::OPERATE_PHASE) {
+            mGameStart->gameObject().setActive(false);
+        }
+    } else if (mState == GameState::ACTION_PHASE) {
+
+    }
+
     Debug::renderLine(Vector3::left * 100.f, Vector3::right * 100.f, ColorPalette::red);
     Debug::renderLine(Vector3::down * 100.f, Vector3::up * 100.f, ColorPalette::green);
     Debug::renderLine(Vector3::back * 100.f, Vector3::forward * 100.f, ColorPalette::blue);
