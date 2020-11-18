@@ -1,10 +1,12 @@
 ﻿#pragma once
 
 #include "../Component.h"
+#include "../GameState/GameState.h"
 #include <memory>
 
 class Scene;
 class CharacterCreater;
+class GameStart;
 
 class GamePlay : public Component {
 public:
@@ -22,5 +24,7 @@ private:
 private:
     std::shared_ptr<Scene> mScene;
     std::shared_ptr<CharacterCreater> mCharaCreater;
+    std::shared_ptr<GameStart> mGameStart;
+    GameState mState;
     int mStageNo;
 };
