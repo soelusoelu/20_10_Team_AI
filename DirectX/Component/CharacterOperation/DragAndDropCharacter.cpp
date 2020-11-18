@@ -129,5 +129,5 @@ void DragAndDropCharacter::moveToIntersectPoint() {
     }
 
     //衝突点まで移動
-    transform().setPosition(movePoint);
+    //transform().setPosition(movePoint);
 }

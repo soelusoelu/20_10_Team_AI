@@ -7,6 +7,7 @@ class ASCellManager
 {
 public:
 	ASCellManager();
+	ASCellManager(int width,int height,Position startPos, Position endPos);
 	~ASCellManager();
 	//初期処理
 	void Initialize();
@@ -20,6 +21,8 @@ public:
 	void CheckOpenedCell();
 	//指定したセルのコストをその時のゴールセルと基準セルを基に設定する
 	void SetCost(ASCell* cells);
+	//ルートのデータを渡す
+	std::vector<Position> GetRoute();
 	//指定した座標のセルを返す
 	ASCell* GetCell(Position pos);
 	void StartSearch();

@@ -16,8 +16,23 @@ ASCellManager::ASCellManager()
 	SetGoalPosition(pos);
 	currentCell = startCell;
 	//探索開始
-	StartSearch();
+	//StartSearch();
 
+}
+
+ASCellManager::ASCellManager(int width, int height, Position startPos, Position endPos)
+{
+	cellsWidth = width;
+	cellsHeight = height;
+	Initialize();
+	//スタート地点とゴール地点仮置き
+	Position pos=startPos;
+	SetStartPosition(pos);
+	pos = endPos;
+	SetGoalPosition(pos);
+	currentCell = startCell;
+	//探索開始
+	StartSearch();
 }
 
 ASCellManager::~ASCellManager()
@@ -118,12 +133,16 @@ void ASCellManager::SetGoalPosition(Position pos)
 
 void ASCellManager::SetCost(ASCell* cells)
 {
-
 	int x = fabs(cells->position.x- goalCell->position.x);
 	int y = fabs(cells->position.y - goalCell->position.y);
 	cells->scoreE = fmax(x,y);
 	cells->scoreR = currentCell->scoreR + 1;
 	cells->score = cells->scoreE + cells->scoreR;
+}
+
+std::vector<Position> ASCellManager::GetRoute()
+{
+	return routes;
 }
 
 ASCell* ASCellManager::GetCell(Position pos)

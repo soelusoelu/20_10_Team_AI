@@ -15,6 +15,12 @@
       "type": "AABBCollider",
       "properties": {
       }
+    },
+    {
+      "type": "ASAI",
+      "properties": {
+        
+      }
     }
   ]
 }

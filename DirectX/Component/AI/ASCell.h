@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include"../../Math/Vector2.h"
 enum E_State { NONE, OPEN, CLOSE };
 struct Position {
 	int x=0; int y=0;

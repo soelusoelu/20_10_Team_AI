@@ -4,6 +4,9 @@
 #include "../Component/ComponentManager.h"
 #include "../Component/Camera/Camera.h"
 #include "../Component/Camera/CameraMove.h"
+#include "../Component/AI/ASAI.h"
+#include "../Component/AI/ASCell.h"
+#include "../Component/AI/ASCellManager.h"
 #include "../Component/CharacterOperation/CharacterCost.h"
 #include "../Component/CharacterOperation/CharacterCreater.h"
 #include "../Component/CharacterOperation/CostRenderer.h"
@@ -50,6 +53,8 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(Camera);
     ADD_COMPONENT(CameraMove);
+
+    ADD_COMPONENT(ASAI);
 
     ADD_COMPONENT(CharacterCost);
     ADD_COMPONENT(CharacterCreater);
