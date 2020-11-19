@@ -45,6 +45,7 @@ void SkinMeshComponent::draw(const Camera& camera, const DirectionalLight& dirLi
     meshcb.world = world;
     meshcb.wvp = world * camera.getViewProjection();
     meshcb.lightDir = dirLight.getDirection();
+    meshcb.lightColor = dirLight.getLightColor();
     meshcb.cameraPos = camera.getPosition();
     mShader->transferData(&meshcb, sizeof(meshcb), 0);
 
@@ -59,6 +60,7 @@ void SkinMeshComponent::draw(const Camera& camera, const DirectionalLight& dirLi
         }
         matcb.diffuse = Vector4(mat.diffuse, alpha);
         matcb.specular = mat.specular;
+        matcb.shininess = mat.shininess;
         //データ転送
         mShader->transferData(&matcb, sizeof(matcb), 1);
 

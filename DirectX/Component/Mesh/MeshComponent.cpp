@@ -84,6 +84,7 @@ void MeshComponent::draw(const Camera& camera, const DirectionalLight& dirLight)
     meshcb.world = world;
     meshcb.wvp = world * camera.getViewProjection();
     meshcb.lightDir = dirLight.getDirection();
+    meshcb.lightColor = dirLight.getLightColor();
     meshcb.cameraPos = camera.getPosition();
     mShader->transferData(&meshcb, sizeof(meshcb), 0);
 
@@ -98,6 +99,7 @@ void MeshComponent::draw(const Camera& camera, const DirectionalLight& dirLight)
         }
         matcb.diffuse = Vector4(mat.diffuse, alpha);
         matcb.specular = mat.specular;
+        matcb.shininess = mat.shininess;
         //データ転送
         mShader->transferData(&matcb, sizeof(matcb), 1);
 

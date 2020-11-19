@@ -4,10 +4,11 @@ SamplerState samplerState : register(s0);
 cbuffer global_0 : register(b0)
 {
     float3 lightDir : packoffset(c0);
-    float3 cameraPos : packoffset(c1);
-    matrix world : packoffset(c2);
-    matrix wvp : packoffset(c6);
-    matrix bones[256] : packoffset(c10);
+    float3 lightColor : packoffset(c1); //ライトの色
+    float3 cameraPos : packoffset(c2);
+    matrix world : packoffset(c3);
+    matrix wvp : packoffset(c7);
+    matrix bones[256] : packoffset(c11);
 };
 
 cbuffer global_1 : register(b1)
@@ -15,6 +16,7 @@ cbuffer global_1 : register(b1)
     float3 ambient : packoffset(c0);
     float4 diffuse : packoffset(c1);
     float3 specular : packoffset(c2);
+    float shininess : packoffset(c3);
 };
 
 struct VS_OUTPUT
@@ -56,12 +58,10 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
     //反射光ベクトル
     float3 reflect = normalize(lightDir + 2 * NL * normal);
-    //光沢度
-    const float shininess = 4.0;
     //鏡面反射光
     float spec = pow(saturate(dot(reflect, viewDir)), shininess) * specular;
 
-    float3 color = saturate(ambient + diff + spec);
+    float3 color = saturate(ambient + diff + spec) * lightColor;
     float4 texColor = tex.Sample(samplerState, input.UV);
 
     return float4(color * texColor.rgb, diffuse.a * texColor.a);

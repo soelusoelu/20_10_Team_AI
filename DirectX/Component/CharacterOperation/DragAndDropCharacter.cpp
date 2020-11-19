@@ -6,6 +6,7 @@
 #include "../../GameObject/GameObject.h"
 #include "../../GameObject/GameObjectManager.h"
 #include "../../Input/Input.h"
+#include "../../System/Window.h"
 #include "../../Transform/Transform3D.h"
 
 DragAndDropCharacter::DragAndDropCharacter(GameObject& gameObject)
@@ -33,8 +34,18 @@ void DragAndDropCharacter::start() {
 }
 
 void DragAndDropCharacter::dragMove(GameObject& target) {
+    //マウスの座標を取得する
+    const auto& mousePos = Input::mouse().getMousePosition();
+
+    //カーソルがゲーム画面外なら終了
+    if (mousePos.x > Window::width()
+        || mousePos.y > Window::height())
+    {
+        return;
+    }
+
     //カメラからマウスの位置へ向かうレイを取得
-    const auto& rayCameraToMousePos = mCamera->screenToRay(Input::mouse().getMousePosition());
+    const auto& rayCameraToMousePos = mCamera->screenToRay(mousePos);
 
     //地形とレイが衝突していなかったら終了
     if (!intersectRayGroundMeshes(rayCameraToMousePos)) {
