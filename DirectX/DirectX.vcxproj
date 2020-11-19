@@ -165,6 +165,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Component\CharacterOperation\CharacterSelector.cpp" />
+    <ClCompile Include="Component\CharacterOperation\CharacterOperation.cpp" />
+    <ClCompile Include="Component\CharacterOperation\CharacterDeleter.cpp" />
     <ClCompile Include="Component\AI\ASAI.cpp" />
     <ClCompile Include="Component\AI\ASCellManager.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterCost.cpp" />
@@ -356,6 +359,9 @@
     <ClCompile Include="Component\Sound\WaveformRenderSample.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Component\CharacterOperation\CharacterSelector.h" />
+    <ClInclude Include="Component\CharacterOperation\CharacterOperation.h" />
+    <ClInclude Include="Component\CharacterOperation\CharacterDeleter.h" />
     <ClInclude Include="Component\AI\ASAI.h" />
     <ClInclude Include="Component\AI\ASCell.h" />
     <ClInclude Include="Component\AI\ASCellManager.h" />

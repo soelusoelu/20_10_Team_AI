@@ -9,6 +9,9 @@
 #include "../Component/AI/ASCellManager.h"
 #include "../Component/CharacterOperation/CharacterCost.h"
 #include "../Component/CharacterOperation/CharacterCreater.h"
+#include "../Component/CharacterOperation/CharacterDeleter.h"
+#include "../Component/CharacterOperation/CharacterOperation.h"
+#include "../Component/CharacterOperation/CharacterSelector.h"
 #include "../Component/CharacterOperation/CostRenderer.h"
 #include "../Component/CharacterOperation/DragAndDropCharacter.h"
 #include "../Component/CollideOperation/AABBMouseScaler.h"
@@ -59,6 +62,9 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(CharacterCost);
     ADD_COMPONENT(CharacterCreater);
+    ADD_COMPONENT(CharacterDeleter);
+    ADD_COMPONENT(CharacterOperation);
+    ADD_COMPONENT(CharacterSelector);
     ADD_COMPONENT(CostRenderer);
     ADD_COMPONENT(DragAndDropCharacter);
 

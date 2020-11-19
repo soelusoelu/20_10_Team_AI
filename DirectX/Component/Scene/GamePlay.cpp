@@ -1,6 +1,6 @@
 ﻿#include "GamePlay.h"
 #include "Scene.h"
-#include "../CharacterOperation/CharacterCreater.h"
+#include "../CharacterOperation/CharacterOperation.h"
 #include "../GameState/GameStart.h"
 #include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObject.h"
@@ -12,7 +12,7 @@
 GamePlay::GamePlay(GameObject& gameObject)
     : Component(gameObject)
     , mScene(nullptr)
-    , mCharaCreater(nullptr)
+    , mCharaOperator(nullptr)
     , mGameStart(nullptr)
     , mState(GameState::OPERATE_PHASE)
     , mStageNo(0)
@@ -23,8 +23,8 @@ GamePlay::~GamePlay() = default;
 
 void GamePlay::start() {
     mScene = getComponent<Scene>();
-    auto cc = GameObjectCreater::create("CharacterCreater");
-    mCharaCreater = cc->componentManager().getComponent<CharacterCreater>();
+    auto cc = GameObjectCreater::create("CharacterOperation");
+    mCharaOperator = cc->componentManager().getComponent<CharacterOperation>();
     auto gs = GameObjectCreater::create("GameStart");
     mGameStart = gs->componentManager().getComponent<GameStart>();
 
@@ -86,5 +86,5 @@ void GamePlay::loadStage() {
         GameObjectCreater::create(ground);
     }
 
-    mCharaCreater->loadCharacter(data);
+    mCharaOperator->loadCharacter(data);
 }

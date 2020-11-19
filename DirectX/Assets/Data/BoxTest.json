@@ -1,11 +1,6 @@
 {
   "components": [
     {
-      "type": "DragAndDropCharacter",
-      "properties": {
-      }
-    },
-    {
       "type": "MeshComponent",
       "properties": {
         "fileName": "Shape/box.fbx"

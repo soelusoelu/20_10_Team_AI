@@ -199,10 +199,14 @@
     <ClCompile Include="Mesh\Fbx\FbxBoneWeightParser.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMotionParser.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxUtility.cpp" />
-    <ClCompile Include="ASCellManager.cpp" />
     <ClCompile Include="Component\Scene\StageSelect.cpp" />
     <ClCompile Include="Component\GameState\GameStart.cpp" />
     <ClCompile Include="Sprite\SpriteUtility.cpp" />
+    <ClCompile Include="Component\AI\ASAI.cpp" />
+    <ClCompile Include="Component\AI\ASCellManager.cpp" />
+    <ClCompile Include="Component\CharacterOperation\CharacterDeleter.cpp" />
+    <ClCompile Include="Component\CharacterOperation\CharacterOperation.cpp" />
+    <ClCompile Include="Component\CharacterOperation\CharacterSelector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -440,11 +444,15 @@
     <ClInclude Include="Mesh\Fbx\FbxMotionParser.h" />
     <ClInclude Include="Mesh\Fbx\FbxMotionTime.h" />
     <ClInclude Include="Mesh\Fbx\FbxUtility.h" />
-    <ClInclude Include="ASCell.h" />
-    <ClInclude Include="ASCellManager.h" />
     <ClInclude Include="Component\Scene\StageSelect.h" />
     <ClInclude Include="Component\GameState\GameStart.h" />
     <ClInclude Include="Sprite\SpriteUtility.h" />
     <ClInclude Include="Component\GameState\GameState.h" />
+    <ClInclude Include="Component\AI\ASAI.h" />
+    <ClInclude Include="Component\AI\ASCell.h" />
+    <ClInclude Include="Component\AI\ASCellManager.h" />
+    <ClInclude Include="Component\CharacterOperation\CharacterDeleter.h" />
+    <ClInclude Include="Component\CharacterOperation\CharacterOperation.h" />
+    <ClInclude Include="Component\CharacterOperation\CharacterSelector.h" />
   </ItemGroup>
 </Project>

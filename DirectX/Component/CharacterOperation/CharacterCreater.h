@@ -15,18 +15,20 @@ public:
     CharacterCreater(GameObject& gameObject);
     ~CharacterCreater();
     virtual void start() override;
-    virtual void update() override;
     virtual void loadProperties(const rapidjson::Value& inObj) override;
+    std::shared_ptr<GameObject> originalUpdate();
     void loadCharacter(const rapidjson::Value& inObj);
 
 private:
     CharacterCreater(const CharacterCreater&) = delete;
     CharacterCreater& operator=(const CharacterCreater&) = delete;
 
+    //マウスの左ボタンを押している間の処理
+    void clickingLeftMouseButton(std::shared_ptr<GameObject>& out, const Vector2& mousePos);
     //マウスでスプライトを選択する
     bool selectSprite(const Vector2& mousePos);
     //対応するキャラクターを作成する
-    void createCharacter(int id);
+    std::shared_ptr<GameObject> createCharacter(int id);
     //コストオーバーしてるスプライトの操作
     void spriteCostOver();
 
