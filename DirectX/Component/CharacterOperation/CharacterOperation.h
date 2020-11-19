@@ -27,6 +27,11 @@ private:
     CharacterOperation(const CharacterOperation&) = delete;
     CharacterOperation& operator=(const CharacterOperation&) = delete;
 
+    //マウスの左ボタンを押した瞬間の処理
+    void clickLeftMouseButton();
+    //マウスの左ボタンを押している間の処理
+    void clickingLeftMouseButton();
+
 private:
     GameObjectPtrList mCreatedCharacters;
     std::shared_ptr<GameObject> mSelectObject;

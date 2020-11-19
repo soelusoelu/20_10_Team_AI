@@ -19,30 +19,13 @@ void CharacterSelector::start() {
     mCamera = gameObjectManager.find("Camera")->componentManager().getComponent<Camera>();
 }
 
-void CharacterSelector::selectGameObject(GameObjectPtr& out, const GameObjectPtrList& characters) {
-    //マウスインターフェイスを取得
-    const auto& mouse = Input::mouse();
-
-    //マウスの左ボタンを押した瞬間じゃなければ終了
-    if (!mouse.getMouseButtonDown(MouseCode::LeftButton)) {
-        return;
-    }
-
+void CharacterSelector::selectGameObject(GameObjectPtr& out, const GameObjectPtrList& characters) const {
     //カメラからマウス位置へ向かうレイを取得する
-    const auto& ray = mCamera->screenToRay(mouse.getMousePosition());
-    //レイからAABBを作成
-    AABB rayAABB;
-    rayAABB.updateMinMax(ray.start);
-    rayAABB.updateMinMax(ray.end);
+    const auto& ray = mCamera->screenToRay(Input::mouse().getMousePosition());
 
     for (const auto& chara : characters) {
         //キャラからAABBを取得
         auto charaAABB = chara->componentManager().getComponent<AABBCollider>()->getAABB();
-
-        //レイとキャラで擬似衝突判定
-        //if (!Intersect::intersectAABB(rayAABB, charaAABB)) {
-        //    continue;
-        //}
 
         //AABBとレイの衝突判定
         if (Intersect::intersectRayAABB(ray, charaAABB)) {

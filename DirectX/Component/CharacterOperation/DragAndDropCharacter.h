@@ -15,6 +15,8 @@ public:
     DragAndDropCharacter(GameObject& gameObject);
     ~DragAndDropCharacter();
     virtual void start() override;
+
+    //マウスの位置にターゲットを移動させる
     void dragMove(GameObject& target);
 
 private:
@@ -24,7 +26,7 @@ private:
     //すべての地形メッシュとレイの衝突判定を行う
     bool intersectRayGroundMeshes(const Ray& ray);
     //メッシュを衝突点まで移動させる
-    void moveToIntersectPoint(GameObject& target);
+    void moveToIntersectPoint(GameObject& target) const;
 
 private:
     std::shared_ptr<Camera> mCamera;

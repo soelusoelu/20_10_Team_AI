@@ -1,4 +1,5 @@
 ﻿#include "DragAndDropCharacter.h"
+#include "../ComponentManager.h"
 #include "../Camera/Camera.h"
 #include "../Collider/AABBCollider.h"
 #include "../Mesh/MeshComponent.h"
@@ -32,18 +33,8 @@ void DragAndDropCharacter::start() {
 }
 
 void DragAndDropCharacter::dragMove(GameObject& target) {
-    //マウスインターフェイスを取得
-    const auto& mouse = Input::mouse();
-
-    //マウスの左ボタンを押していなかったら終了
-    if (!(mouse.getMouseButton(MouseCode::LeftButton))
-        && !(mouse.getMouseButtonDown(MouseCode::LeftButton)))
-    {
-        return;
-    }
-
     //カメラからマウスの位置へ向かうレイを取得
-    const auto& rayCameraToMousePos = mCamera->screenToRay(mouse.getMousePosition());
+    const auto& rayCameraToMousePos = mCamera->screenToRay(Input::mouse().getMousePosition());
 
     //地形とレイが衝突していなかったら終了
     if (!intersectRayGroundMeshes(rayCameraToMousePos)) {
@@ -66,14 +57,25 @@ bool DragAndDropCharacter::intersectRayGroundMeshes(const Ray& ray) {
     return false;
 }
 
-void DragAndDropCharacter::moveToIntersectPoint(GameObject& target) {
+void DragAndDropCharacter::moveToIntersectPoint(GameObject& target) const {
+    //AABBコライダーを取得する
+    auto aabbColl = target.componentManager().getComponent<AABBCollider>();
+    if (!aabbColl) {
+        return;
+    }
+
+    //ターゲットのトランスフォームを取得する
+    auto& t = target.transform();
+
     //X軸を基準に移動制限を設ける
     auto movePoint = mIntersectPoint;
-    //auto offset = mAABB->getAABB().max.x - transform().getPosition().x;
-    //if (movePoint.x + offset > 0.f) {
-    //    movePoint.x = -offset;
-    //}
+
+    //はみ出した当たり判定分補正を掛ける
+    auto offset = aabbColl->getAABB().max.x - t.getPosition().x;
+    if (movePoint.x + offset > 0.f) {
+        movePoint.x = -offset;
+    }
 
     //衝突点まで移動
-    target.transform().setPosition(movePoint);
+    t.setPosition(movePoint);
 }

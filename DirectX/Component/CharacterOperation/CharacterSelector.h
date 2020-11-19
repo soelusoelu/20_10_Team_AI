@@ -15,7 +15,7 @@ public:
     CharacterSelector(GameObject& gameObject);
     ~CharacterSelector();
     virtual void start() override;
-    void selectGameObject(GameObjectPtr& out, const GameObjectPtrList& characters);
+    void selectGameObject(GameObjectPtr& out, const GameObjectPtrList& characters) const;
 
 private:
     CharacterSelector(const CharacterSelector&) = delete;

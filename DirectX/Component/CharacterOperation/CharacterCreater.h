@@ -16,8 +16,13 @@ public:
     ~CharacterCreater();
     virtual void start() override;
     virtual void loadProperties(const rapidjson::Value& inObj) override;
-    std::shared_ptr<GameObject> originalUpdate();
+
+    //ゲームオブジェクトを生成する
+    std::shared_ptr<GameObject> create();
+    //ファイルからキャラクター情報をロードする
     void loadCharacter(const rapidjson::Value& inObj);
+    //このクラスを操作中か
+    bool isOperating() const;
 
 private:
     CharacterCreater(const CharacterCreater&) = delete;
@@ -37,7 +42,7 @@ private:
     //キャラクター配列
     std::vector<CharacterCreateInfo> mCharactersInfo;
     //スプライトをクリックしている状態か
-    bool mClickedSprite;
+    bool mClickingSprite;
     //スプライトのID
     int mClickedSpriteID;
     //スプライトを並べる際の開始位置

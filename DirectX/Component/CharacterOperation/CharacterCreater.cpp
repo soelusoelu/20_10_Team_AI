@@ -15,7 +15,7 @@
 CharacterCreater::CharacterCreater(GameObject& gameObject)
     : Component(gameObject)
     , mCost(nullptr)
-    , mClickedSprite(false)
+    , mClickingSprite(false)
     , mClickedSpriteID(0)
     , mSpriteStartPos(Vector2::zero)
     , mSpriteScale(Vector2::zero)
@@ -45,7 +45,7 @@ void CharacterCreater::loadProperties(const rapidjson::Value& inObj) {
     JsonHelper::getFloat(inObj, "spriteSpace", &mSpriteSpace);
 }
 
-std::shared_ptr<GameObject> CharacterCreater::originalUpdate() {
+std::shared_ptr<GameObject> CharacterCreater::create() {
     std::shared_ptr<GameObject> result = nullptr;
 
     //マウスインターフェイスを取得
@@ -53,7 +53,7 @@ std::shared_ptr<GameObject> CharacterCreater::originalUpdate() {
 
     //マウスの左ボタンを押した瞬間だったら
     if (mouse.getMouseButtonDown(MouseCode::LeftButton)) {
-        mClickedSprite = selectSprite(mouse.getMousePosition());
+        mClickingSprite = selectSprite(mouse.getMousePosition());
     }
     //マウスの左ボタンを押し続けていたら
     if (mouse.getMouseButton(MouseCode::LeftButton)) {
@@ -61,7 +61,7 @@ std::shared_ptr<GameObject> CharacterCreater::originalUpdate() {
     }
     //マウスの左ボタンを離した瞬間だったら
     if (mouse.getMouseButtonUp(MouseCode::LeftButton)) {
-        mClickedSprite = false;
+        mClickingSprite = false;
     }
 
     return result;
@@ -102,9 +102,13 @@ void CharacterCreater::loadCharacter(const rapidjson::Value& inObj) {
     }
 }
 
+bool CharacterCreater::isOperating() const {
+    return mClickingSprite;
+}
+
 void CharacterCreater::clickingLeftMouseButton(std::shared_ptr<GameObject>& out, const Vector2& mousePos) {
     //スプライトをクリックしていないなら終了
-    if (!mClickedSprite) {
+    if (!mClickingSprite) {
         return;
     }
 
@@ -120,7 +124,7 @@ void CharacterCreater::clickingLeftMouseButton(std::shared_ptr<GameObject>& out,
     spriteCostOver();
 
     //多重生成を阻止するため
-    mClickedSprite = false;
+    mClickingSprite = false;
 }
 
 bool CharacterCreater::selectSprite(const Vector2& mousePos) {
