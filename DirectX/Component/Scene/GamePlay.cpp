@@ -23,6 +23,7 @@ GamePlay::~GamePlay() = default;
 
 void GamePlay::start() {
     mScene = getComponent<Scene>();
+    GameObjectCreater::create("SphereMap");
     auto cc = GameObjectCreater::create("CharacterOperation");
     mCharaOperator = cc->componentManager().getComponent<CharacterOperation>();
     auto gs = GameObjectCreater::create("GameStart");

@@ -1,12 +1,12 @@
 {
   "properties": {
-    "rotation": [ 0.0, 180.0, 0.0 ]
+    "rotation": [ 0.0, -90.0, 0.0 ]
   },
   "components": [
     {
       "type": "SkinMeshComponent",
       "properties": {
-        "fileName": "Practice/MyModel.fbx",
+        "fileName": "Practice/test.fbx",
         "shaderName": "SkinMesh.hlsl"
       }
     },
@@ -14,14 +14,14 @@
       "type": "AABBCollider",
       "properties": {
         "min": [
-          -1.740321397781372,
+          -1.4133567810058594,
           0.20364421606063844,
-          -1.413356900215149
+          -2.1725893020629885
         ],
         "max": [
-          1.0,
+          1.411314606666565,
           5.593063831329346,
-          1.4113144874572755
+          1.0
         ]
       }
     }

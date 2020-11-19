@@ -10,7 +10,7 @@
     "cost": 20
   },
   "SimpleCharacter": {
-    "mesh": "Practice/MyModel.fbx",
+    "mesh": "Practice/test.fbx",
     "sprite": "Character/blue.png",
     "cost": 30
   }

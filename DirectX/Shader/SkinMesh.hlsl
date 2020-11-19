@@ -49,14 +49,20 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float3 normal = input.Normal;
     float3 viewDir = normalize(cameraPos - input.WorldPos);
 
-    float NL = dot(normal, lightDir);
-    float3 Reflect = normalize(2 * NL * normal - lightDir);
-    float spec = pow(saturate(dot(Reflect, viewDir)), 4);
+    float NL = dot(normal, -lightDir);
 
-    float3 color = saturate(ambient + diffuse.rgb * NL + specular * spec);
+    //ŠgŽU”½ŽËŒõ
+    float3 diff = NL * diffuse.rgb;
+
+    //”½ŽËŒõƒxƒNƒgƒ‹
+    float3 reflect = normalize(lightDir + 2 * NL * normal);
+    //Œõ‘ò“x
+    const float shininess = 4.0;
+    //‹¾–Ê”½ŽËŒõ
+    float spec = pow(saturate(dot(reflect, viewDir)), shininess) * specular;
+
+    float3 color = saturate(ambient + diff + spec);
     float4 texColor = tex.Sample(samplerState, input.UV);
 
-    color *= texColor.rgb;
-
-    return float4(color, texColor.a * diffuse.a);
+    return float4(color * texColor.rgb, diffuse.a * texColor.a);
 }

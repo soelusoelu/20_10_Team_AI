@@ -35,9 +35,7 @@ void FbxMeshParser::parse(
     //メッシュごとのトランスフォームを計算
     FbxNode* node = fbxMesh->GetNode();
     auto t = FbxUtility::fbxDouble3ToVector3(node->LclTranslation.Get());
-    t.x *= -1.f;
     auto r = FbxUtility::fbxDouble3ToVector3(node->LclRotation.Get());
-    r.y *= -1.f;
     Quaternion q(r);
     auto s = FbxUtility::fbxDouble3ToVector3(node->LclScaling.Get());
     auto mat = Matrix4::createScale(s) * Matrix4::createFromQuaternion(q) * Matrix4::createTranslation(t);
