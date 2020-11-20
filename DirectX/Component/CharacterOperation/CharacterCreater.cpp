@@ -18,8 +18,10 @@ CharacterCreater::CharacterCreater(GameObject& gameObject)
     , mClickingSprite(false)
     , mClickedSpriteID(0)
     , mSpriteStartPos(Vector2::zero)
-    , mSpriteScale(Vector2::zero)
-    , mSpriteSpace(0.f) {
+    , mSpriteScale(Vector2::one)
+    , mSpriteSpace(0.f)
+    , mSpritePivot(Pivot::LEFT_TOP)
+{
 }
 
 CharacterCreater::~CharacterCreater() = default;
@@ -33,6 +35,7 @@ void CharacterCreater::start() {
         auto& st = s->transform();
         auto texSize = s->getTextureSize() * mSpriteScale;
         st.setScale(mSpriteScale);
+        st.setPivot(mSpritePivot);
 
         //スプライトの位置を計算し配置していく
         st.setPosition(mSpriteStartPos + Vector2(texSize.x * i + mSpriteSpace * i, 0.f));
@@ -43,6 +46,10 @@ void CharacterCreater::loadProperties(const rapidjson::Value& inObj) {
     JsonHelper::getVector2(inObj, "spriteStartPosition", &mSpriteStartPos);
     JsonHelper::getVector2(inObj, "spriteScale", &mSpriteScale);
     JsonHelper::getFloat(inObj, "spriteSpace", &mSpriteSpace);
+    std::string pivot;
+    if (JsonHelper::getString(inObj, "spritePivot", &pivot)) {
+        PivotFunc::stringToPivot(pivot, &mSpritePivot);
+    }
 }
 
 std::shared_ptr<GameObject> CharacterCreater::create() {

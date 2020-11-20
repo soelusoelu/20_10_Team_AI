@@ -3,6 +3,7 @@
 #include "CharacterCreateInfo.h"
 #include "../Component.h"
 #include "../../Math/Math.h"
+#include "../../Transform/Pivot.h"
 #include <memory>
 #include <string>
 #include <vector>
@@ -45,10 +46,13 @@ private:
     bool mClickingSprite;
     //スプライトのID
     int mClickedSpriteID;
+
     //スプライトを並べる際の開始位置
     Vector2 mSpriteStartPos;
     //スプライト共通のスケール値
     Vector2 mSpriteScale;
     //スプライトを並べる際の間隔
     float mSpriteSpace;
+    //スプライトのピボット位置
+    Pivot mSpritePivot;
 };
