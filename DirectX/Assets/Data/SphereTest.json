@@ -14,7 +14,13 @@
     {
       "type": "ASAI",
       "properties": {
-        
+
+      }
+    },
+    {
+      "type": "CharacterAction",
+      "properties": {
+
       }
     }
   ]

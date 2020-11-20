@@ -12,7 +12,9 @@ public:
     CostRenderer(GameObject& gameObject);
     ~CostRenderer();
     virtual void start() override;
-    virtual void update() override;
+
+    //コストが更新されたら
+    void onUpdateCost();
 
 private:
     CostRenderer(const CostRenderer&) = delete;

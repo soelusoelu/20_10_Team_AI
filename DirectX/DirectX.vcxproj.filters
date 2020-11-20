@@ -207,6 +207,7 @@
     <ClCompile Include="Component\CharacterOperation\CharacterDeleter.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterOperation.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterSelector.cpp" />
+    <ClCompile Include="Component\CharacterAction\CharacterAction.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -454,5 +455,6 @@
     <ClInclude Include="Component\CharacterOperation\CharacterDeleter.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterOperation.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterSelector.h" />
+    <ClInclude Include="Component\CharacterAction\CharacterAction.h" />
   </ItemGroup>
 </Project>

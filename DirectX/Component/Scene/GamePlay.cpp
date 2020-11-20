@@ -29,17 +29,17 @@ void GamePlay::start() {
     auto gs = GameObjectCreater::create("GameStart");
     mGameStart = gs->componentManager().getComponent<GameStart>();
 
+    mGameStart->callbackGameStart([this] { mState = GameState::ACTION_PHASE; });
+    mGameStart->callbackGameStart([&] { mCharaOperator->onChangeActionPhase(); });
+
     getStageNo();
     loadStage();
 }
 
 void GamePlay::update() {
     if (mState == GameState::OPERATE_PHASE) {
-        mGameStart->originalUpdate(mState);
-
-        if (mState != GameState::OPERATE_PHASE) {
-            mGameStart->gameObject().setActive(false);
-        }
+        mCharaOperator->originalUpdate(mState);
+        mGameStart->originalUpdate();
     } else if (mState == GameState::ACTION_PHASE) {
 
     }

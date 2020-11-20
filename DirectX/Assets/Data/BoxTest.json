@@ -10,6 +10,12 @@
       "type": "AABBCollider",
       "properties": {
       }
+    },
+    {
+      "type": "CharacterAction",
+      "properties": {
+
+      }
     }
   ]
 }

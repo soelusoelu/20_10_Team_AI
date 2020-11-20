@@ -31,7 +31,7 @@ void ASAI::start()
 	transform().setPosition(Vector3(-90, 0, -90));
 }
 
-void ASAI::update()
+void ASAI::originalUpdate()
 {
 	Vector3 v3=routePoint-transform().getPosition();
 	float distance = v3.length();

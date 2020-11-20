@@ -1,6 +1,10 @@
 ﻿#pragma once
 
 #include "../Component.h"
+#include <functional>
+#include <memory>
+
+class Subject;
 
 //キャラクター生成コスト管理クラス
 class CharacterCost : public Component {
@@ -17,6 +21,8 @@ public:
     int getCost() const;
     //最大コストを取得する
     int getMaxCost() const;
+    //コストが更新された際のコールバック
+    void callbackUpdateCost(const std::function<void()>& callback);
 
 private:
     CharacterCost(const CharacterCost&) = delete;
@@ -28,4 +34,5 @@ private:
 private:
     int mMaxCost;
     int mCurrentCost;
+    std::unique_ptr<Subject> mSubject;
 };

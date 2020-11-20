@@ -3,6 +3,7 @@
 #include "CharacterDeleter.h"
 #include "CharacterSelector.h"
 #include "DragAndDropCharacter.h"
+#include "../CharacterAction/CharacterAction.h"
 #include "../../GameObject/GameObject.h"
 #include "../../GameObject/GameObjectFactory.h"
 #include "../../Input/Input.h"
@@ -30,7 +31,30 @@ void CharacterOperation::start() {
     mDragAndDrop = getComponent<DragAndDropCharacter>();
 }
 
-void CharacterOperation::update() {
+void CharacterOperation::originalUpdate(GameState state) {
+    if (state == GameState::OPERATE_PHASE) {
+        operatePhase();
+    } else if (state == GameState::ACTION_PHASE) {
+        actionPhase();
+    }
+}
+
+void CharacterOperation::loadCharacter(const rapidjson::Value& inObj) {
+    mCreater->loadCharacter(inObj);
+}
+
+void CharacterOperation::onChangeActionPhase() {
+    //アクションフェーズでは使用しない
+    mCreater->gameObject().setActive(false);
+
+    //全キャラクターをアクションフェーズに移行する
+    for (const auto& chara : mCreatedCharacters) {
+        auto action = chara->componentManager().getComponent<CharacterAction>();
+        action->enabled();
+    }
+}
+
+void CharacterOperation::operatePhase() {
     //キャラクターを生成する
     auto newChara = mCreater->create();
 
@@ -51,10 +75,16 @@ void CharacterOperation::update() {
     if (mouse.getMouseButton(MouseCode::LeftButton)) {
         clickingLeftMouseButton();
     }
+    //マウスの左ボタンを離した瞬間なら
+    if (mouse.getMouseButtonUp(MouseCode::LeftButton)) {
+        mSelectObject = nullptr;
+    }
 }
 
-void CharacterOperation::loadCharacter(const rapidjson::Value& inObj) {
-    mCreater->loadCharacter(inObj);
+void CharacterOperation::actionPhase() {
+    for (const auto& chara : mCreatedCharacters) {
+
+    }
 }
 
 void CharacterOperation::clickLeftMouseButton() {

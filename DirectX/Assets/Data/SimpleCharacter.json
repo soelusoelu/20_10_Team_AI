@@ -24,6 +24,12 @@
           1.0
         ]
       }
+    },
+    {
+      "type": "CharacterAction",
+      "properties": {
+
+      }
     }
   ]
 }

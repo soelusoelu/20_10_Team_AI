@@ -15,12 +15,6 @@ TextBase::TextBase(GameObject& gameObject) :
 
 TextBase::~TextBase() = default;
 
-void TextBase::lateUpdate() {
-    if (!mIsActive) {
-        return;
-    }
-}
-
 void TextBase::onEnable(bool value) {
     setActive(value);
 }

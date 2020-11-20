@@ -15,8 +15,15 @@ CostRenderer::~CostRenderer() = default;
 void CostRenderer::start() {
     mCost = getComponent<CharacterCost>();
     mText = getComponent<Text>();
+
+    //初期テキストを設定する
+    auto beginText = StringUtil::intToString(mCost->getMaxCost());
+    mText->setText(beginText + "/" + beginText);
+
+    //コールバック登録
+    mCost->callbackUpdateCost([this] { onUpdateCost(); });
 }
 
-void CostRenderer::update() {
+void CostRenderer::onUpdateCost() {
     mText->setText(StringUtil::intToString(mCost->getCost()) + "/" + StringUtil::intToString(mCost->getMaxCost()));
 }
