@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "MeshComponent.h"
-#include "../../Math/Math.h"
 #include "../../Mesh/Bone.h"
 
 class SkinMeshComponent : public MeshComponent {

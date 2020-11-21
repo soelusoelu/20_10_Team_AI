@@ -118,13 +118,13 @@ void SceneManager::draw() const {
     }
 
     //各テクスチャ上にレンダリング
-    mRenderer->renderToTexture();
+    //mRenderer->renderToTexture();
     //メッシュ描画準備
     //mRenderer->renderMesh();
     ////メッシュの一括描画
     //mMeshManager->draw(*mCamera, mLightManager->getDirectionalLight());
     //各テクスチャを参照してレンダリング
-    mRenderer->renderFromTexture(*mCamera, *mLightManager);
+    //mRenderer->renderFromTexture(*mCamera, *mLightManager);
     ////ポイントライト描画準備
     //mRenderer->renderPointLight();
     ////ポイントライトの一括描画

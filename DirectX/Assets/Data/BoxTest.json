@@ -1,7 +1,7 @@
 {
   "components": [
     {
-      "type": "MeshComponent",
+      "type": "MeshOutLine",
       "properties": {
         "fileName": "Shape/box.fbx"
       }

@@ -1,22 +1,11 @@
+#include "MeshCommonAndMaterialHeader.hlsli"
+
 Texture2D tex : register(t0);
 SamplerState samplerState : register(s0);
 
-cbuffer global_0 : register(b0)
+cbuffer Animation : register(b2)
 {
-    float3 lightDir : packoffset(c0);
-    float3 lightColor : packoffset(c1); //ÉâÉCÉgÇÃêF
-    float3 cameraPos : packoffset(c2);
-    matrix world : packoffset(c3);
-    matrix wvp : packoffset(c7);
-    matrix bones[256] : packoffset(c11);
-};
-
-cbuffer global_1 : register(b1)
-{
-    float3 ambient : packoffset(c0);
-    float4 diffuse : packoffset(c1);
-    float3 specular : packoffset(c2);
-    float shininess : packoffset(c3);
+    matrix bones[256];
 };
 
 struct VS_OUTPUT

@@ -11,20 +11,21 @@ struct TextureConstantBuffer {
     Vector4 uv;
 };
 
-//不透明メッシュ
+//シンプルメッシュ
 struct MeshConstantBuffer {
     Matrix4 world;
     Matrix4 wvp;
 };
 
-//スキンメッシュ
-struct SkinMeshConstantBuffer {
+//メッシュ共通バッファ
+struct MeshCommonConstantBuffer {
+    ALIGN16 Matrix4 world; //ワールド行列
+    ALIGN16 Matrix4 view; //ビュー行列
+    ALIGN16 Matrix4 projection; //プロジェクション行列
+    ALIGN16 Matrix4 wvp; //ワールドから射影までの変換行列
     ALIGN16 Vector3 lightDir; //ワールド行列
     ALIGN16 Vector3 lightColor; //ライトの色
     ALIGN16 Vector3 cameraPos; //カメラ位置
-    ALIGN16 Matrix4 world;
-    ALIGN16 Matrix4 wvp;
-    ALIGN16 Matrix4 bones[256];
 };
 
 //マテリアル
@@ -35,13 +36,9 @@ struct MaterialConstantBuffer {
     ALIGN16 float shininess;
 };
 
-//透明メッシュ
-struct TransparentConstantBuffer {
-    ALIGN16 Matrix4 world; //ワールド行列
-    ALIGN16 Matrix4 wvp; //ワールドから射影までの変換行列
-    ALIGN16 Vector3 lightDir; //ワールド行列
-    ALIGN16 Vector3 lightColor; //ライトの色
-    ALIGN16 Vector3 cameraPos; //カメラ位置
+//スキンメッシュ
+struct SkinMeshConstantBuffer {
+    ALIGN16 Matrix4 bones[256];
 };
 
 //ポイント
@@ -79,4 +76,9 @@ struct PointLightConstantBuffer {
 //シンプルメッシュ
 struct SimpleMeshConstantBuffer {
     Matrix4 wvp;
+};
+
+//アウトライン
+struct OutLineConstantBuffer {
+    Vector4 outlineColor;
 };

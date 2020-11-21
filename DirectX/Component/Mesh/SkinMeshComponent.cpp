@@ -3,6 +3,7 @@
 #include "../Light/DirectionalLight.h"
 #include "../../Device/Time.h"
 #include "../../Input/Input.h"
+#include "../../Math/Math.h"
 #include "../../Mesh/Material.h"
 #include "../../Mesh/Mesh.h"
 #include "../../System/Shader/ConstantBuffers.h"
@@ -36,18 +37,23 @@ void SkinMeshComponent::draw(const Camera& camera, const DirectionalLight& dirLi
     mShader->setShaderInfo();
 
     //シェーダーのコンスタントバッファーに各種データを渡す
-    SkinMeshConstantBuffer meshcb;
-    auto& motion = mMesh->getMotion(mCurrentMotionNo);
-    for (size_t i = 0; i < mMesh->getBoneCount(); i++) {
-        meshcb.bones[i] = mMesh->getBone(i).offsetMat * motion.frameMat[i][mCurrentFrame];
-    }
+    MeshCommonConstantBuffer meshcb;
     const auto& world = transform().getWorldTransform();
     meshcb.world = world;
+    meshcb.view = camera.getView();
+    meshcb.projection = camera.getProjection();
     meshcb.wvp = world * camera.getViewProjection();
     meshcb.lightDir = dirLight.getDirection();
     meshcb.lightColor = dirLight.getLightColor();
     meshcb.cameraPos = camera.getPosition();
     mShader->transferData(&meshcb, sizeof(meshcb), 0);
+
+    SkinMeshConstantBuffer skinMeshcb;
+    auto& motion = mMesh->getMotion(mCurrentMotionNo);
+    for (size_t i = 0; i < mMesh->getBoneCount(); i++) {
+        skinMeshcb.bones[i] = mMesh->getBone(i).offsetMat * motion.frameMat[i][mCurrentFrame];
+    }
+    mShader->transferData(&skinMeshcb, sizeof(skinMeshcb), 2);
 
     for (size_t i = 0; i < mMesh->getMeshCount(); ++i) {
         MaterialConstantBuffer matcb;

@@ -195,6 +195,7 @@
     <ClCompile Include="Component\GameState\GameStart.cpp" />
     <ClCompile Include="Component\EnemyOperation\EnemyCreater.cpp" />
     <ClCompile Include="Component\EnemyOperation\EnemyOperation.cpp" />
+    <ClCompile Include="Component\Mesh\MeshOutLine.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxUtility.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMotionParser.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
@@ -392,6 +393,7 @@
     <ClInclude Include="Component\GameState\GameStart.h" />
     <ClInclude Include="Component\EnemyOperation\EnemyCreater.h" />
     <ClInclude Include="Component\EnemyOperation\EnemyOperation.h" />
+    <ClInclude Include="Component\Mesh\MeshOutLine.h" />
     <ClInclude Include="Mesh\Fbx\FbxUtility.h" />
     <ClInclude Include="Mesh\Fbx\FbxMotionParser.h" />
     <ClInclude Include="Imgui\imconfig.h" />
@@ -672,6 +674,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Shader\OutLine.hlsl" />
     <FxCompile Include="Shader\Point3D.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
@@ -721,6 +724,10 @@
     <ProjectReference Include="..\DirectXTex\DirectXTex_Desktop_2019_Win10.vcxproj">
       <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\MeshCommonAndMaterialHeader.hlsli" />
+    <None Include="Shader\MeshCommonHeader.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

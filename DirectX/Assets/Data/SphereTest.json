@@ -1,9 +1,12 @@
 {
+  "properties": {
+    "scale": [ 2.0, 2.0, 2.0 ]
+  },
   "components": [
     {
-      "type": "MeshComponent",
+      "type": "MeshOutLine",
       "properties": {
-        "fileName": "Shape/Sphere.fbx"
+        "fileName": "Shape/Sphere.obj"
       }
     },
     {

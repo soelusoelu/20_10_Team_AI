@@ -79,9 +79,11 @@ void MeshComponent::draw(const Camera& camera, const DirectionalLight& dirLight)
     mShader->setShaderInfo();
 
     //シェーダーのコンスタントバッファーに各種データを渡す
-    TransparentConstantBuffer meshcb;
+    MeshCommonConstantBuffer meshcb;
     const auto& world = transform().getWorldTransform();
     meshcb.world = world;
+    meshcb.view = camera.getView();
+    meshcb.projection = camera.getProjection();
     meshcb.wvp = world * camera.getViewProjection();
     meshcb.lightDir = dirLight.getDirection();
     meshcb.lightColor = dirLight.getLightColor();

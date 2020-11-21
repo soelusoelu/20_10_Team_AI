@@ -29,6 +29,7 @@
 #include "../Component/Light/DirectionalLight.h"
 #include "../Component/Light/PointLightComponent.h"
 #include "../Component/Mesh/MeshComponent.h"
+#include "../Component/Mesh/MeshOutLine.h"
 #include "../Component/Mesh/SkinMeshComponent.h"
 #include "../Component/Other/GameObjectSaveAndLoader.h"
 #include "../Component/Other/HitPointComponent.h"
@@ -92,6 +93,7 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(PointLightComponent);
 
     ADD_COMPONENT(MeshComponent);
+    ADD_COMPONENT(MeshOutLine);
     ADD_COMPONENT(SkinMeshComponent);
 
     ADD_COMPONENT(GameObjectSaveAndLoader);
