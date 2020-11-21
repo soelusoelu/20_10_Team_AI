@@ -31,30 +31,7 @@ void CharacterOperation::start() {
     mDragAndDrop = getComponent<DragAndDropCharacter>();
 }
 
-void CharacterOperation::originalUpdate(GameState state) {
-    if (state == GameState::OPERATE_PHASE) {
-        operatePhase();
-    } else if (state == GameState::ACTION_PHASE) {
-        actionPhase();
-    }
-}
-
-void CharacterOperation::transferExternalDataToCharacterCreater(const rapidjson::Value& inObj, int maxCost) {
-    mCreater->receiveExternalData(inObj, maxCost);
-}
-
-void CharacterOperation::onChangeActionPhase() {
-    //アクションフェーズでは使用しない
-    mCreater->gameObject().setActive(false);
-
-    //全キャラクターをアクションフェーズに移行する
-    for (const auto& chara : mCreatedCharacters) {
-        auto action = chara->componentManager().getComponent<CharacterAction>();
-        action->enabled();
-    }
-}
-
-void CharacterOperation::operatePhase() {
+void CharacterOperation::updateForOperatePhase() {
     //キャラクターを生成する
     auto newChara = mCreater->create();
 
@@ -81,9 +58,24 @@ void CharacterOperation::operatePhase() {
     }
 }
 
-void CharacterOperation::actionPhase() {
+void CharacterOperation::updateForActionPhase() {
     for (const auto& chara : mCreatedCharacters) {
 
+    }
+}
+
+void CharacterOperation::transferExternalDataToCharacterCreater(const rapidjson::Value& inObj, int maxCost) {
+    mCreater->receiveExternalData(inObj, maxCost);
+}
+
+void CharacterOperation::onChangeActionPhase() {
+    //アクションフェーズでは使用しない
+    mCreater->gameObject().setActive(false);
+
+    //全キャラクターをアクションフェーズに移行する
+    for (const auto& chara : mCreatedCharacters) {
+        auto action = chara->componentManager().getComponent<CharacterAction>();
+        action->enabled();
     }
 }
 

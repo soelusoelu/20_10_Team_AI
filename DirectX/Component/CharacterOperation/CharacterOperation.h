@@ -23,7 +23,8 @@ public:
     virtual void start() override;
 
     //独自アップデート
-    void originalUpdate(GameState state);
+    void updateForOperatePhase();
+    void updateForActionPhase();
     //CharacterCreaterに情報を渡す
     void transferExternalDataToCharacterCreater(const rapidjson::Value& inObj, int maxCost);
     //アクションモードに変わった際の処理
@@ -33,8 +34,6 @@ private:
     CharacterOperation(const CharacterOperation&) = delete;
     CharacterOperation& operator=(const CharacterOperation&) = delete;
 
-    //操作フェーズでの処理
-    void operatePhase();
     //アクションフェーズでの処理
     void actionPhase();
     //マウスの左ボタンを押した瞬間の処理

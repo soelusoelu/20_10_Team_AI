@@ -43,7 +43,7 @@ void GamePlay::start() {
 
 void GamePlay::update() {
     if (mState == GameState::OPERATE_PHASE) {
-        mCharaOperator->originalUpdate(mState);
+        mCharaOperator->updateForOperatePhase();
         mGameStart->originalUpdate();
     } else if (mState == GameState::ACTION_PHASE) {
 

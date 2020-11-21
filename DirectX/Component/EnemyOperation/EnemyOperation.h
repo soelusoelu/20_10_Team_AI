@@ -7,6 +7,7 @@
 class GameObject;
 class EnemyCreater;
 
+//エネミー操作統括クラス
 class EnemyOperation : public Component {
     using GameObjectPtr = std::shared_ptr<GameObject>;
     using GameObjectPtrList = std::list<GameObjectPtr>;
