@@ -1,20 +1,20 @@
 {
   "Stage1": {
-    "Ground": "Plane",
+    "cost": 100,
+    "ground": "Plane",
     "characters": [
       "SphereTest",
       "BoxTest",
       "SimpleCharacter"
-    ],
-    "enemys": "ToDo"
+    ]
   },
   "Stage2": {
-    "Ground": "Plane",
+    "cost": 200,
+    "ground": "Plane",
     "characters": [
       "SimpleCharacter",
       "BoxTest",
       "SphereTest"
-    ],
-    "enemys": "ToDo"
+    ]
   }
 }

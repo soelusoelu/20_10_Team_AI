@@ -39,8 +39,8 @@ void CharacterOperation::originalUpdate(GameState state) {
     }
 }
 
-void CharacterOperation::loadCharacter(const rapidjson::Value& inObj) {
-    mCreater->loadCharacter(inObj);
+void CharacterOperation::transferExternalDataToCharacterCreater(const rapidjson::Value& inObj, int maxCost) {
+    mCreater->receiveExternalData(inObj, maxCost);
 }
 
 void CharacterOperation::onChangeActionPhase() {

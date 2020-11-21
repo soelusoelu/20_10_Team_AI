@@ -24,8 +24,8 @@ public:
 
     //独自アップデート
     void originalUpdate(GameState state);
-    //CharacterCreaterにキャラクター情報を渡す
-    void loadCharacter(const rapidjson::Value& inObj);
+    //CharacterCreaterに情報を渡す
+    void transferExternalDataToCharacterCreater(const rapidjson::Value& inObj, int maxCost);
     //アクションモードに変わった際の処理
     void onChangeActionPhase();
 

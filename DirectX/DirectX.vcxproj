@@ -193,6 +193,7 @@
     <ClCompile Include="DebugLayer\ImGuiWrapper.cpp" />
     <ClCompile Include="Component\Other\GameObjectSaveAndLoader.cpp" />
     <ClCompile Include="Component\GameState\GameStart.cpp" />
+    <ClCompile Include="Component\EnemyOperation\EnemyCreater.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxUtility.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMotionParser.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
@@ -388,6 +389,7 @@
     <ClInclude Include="DebugLayer\ImGuiWrapper.h" />
     <ClInclude Include="Component\Other\GameObjectSaveAndLoader.h" />
     <ClInclude Include="Component\GameState\GameStart.h" />
+    <ClInclude Include="Component\EnemyOperation\EnemyCreater.h" />
     <ClInclude Include="Mesh\Fbx\FbxUtility.h" />
     <ClInclude Include="Mesh\Fbx\FbxMotionParser.h" />
     <ClInclude Include="Imgui\imconfig.h" />

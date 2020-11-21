@@ -6,6 +6,7 @@
 
 class Scene;
 class CharacterOperation;
+class EnemyCreater;
 class GameStart;
 
 class GamePlay : public Component {
@@ -24,6 +25,7 @@ private:
 private:
     std::shared_ptr<Scene> mScene;
     std::shared_ptr<CharacterOperation> mCharaOperator;
+    std::shared_ptr<EnemyCreater> mEnemyCreater;
     std::shared_ptr<GameStart> mGameStart;
     GameState mState;
     int mStageNo;

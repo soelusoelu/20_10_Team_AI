@@ -23,6 +23,7 @@
 #include "../Component/Collider/AABBCollider.h"
 #include "../Component/Collider/CircleCollider.h"
 #include "../Component/Collider/SphereCollider.h"
+#include "../Component/EnemyOperation/EnemyCreater.h"
 #include "../Component/GameState/GameStart.h"
 #include "../Component/Light/DirectionalLight.h"
 #include "../Component/Light/PointLightComponent.h"
@@ -80,6 +81,8 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(AABBCollider);
     ADD_COMPONENT(CircleCollider);
     ADD_COMPONENT(SphereCollider);
+
+    ADD_COMPONENT(EnemyCreater);
 
     ADD_COMPONENT(GameStart);
 

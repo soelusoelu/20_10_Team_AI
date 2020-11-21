@@ -20,8 +20,8 @@ public:
 
     //ゲームオブジェクトを生成する
     std::shared_ptr<GameObject> create();
-    //ファイルからキャラクター情報をロードする
-    void loadCharacter(const rapidjson::Value& inObj);
+    //外部からデータを受け取る
+    void receiveExternalData(const rapidjson::Value& inObj, int maxCost);
     //このクラスを操作中か
     bool isOperating() const;
 
@@ -46,7 +46,10 @@ private:
     bool mClickingSprite;
     //スプライトのID
     int mClickedSpriteID;
+    //最大コスト
+    int mMaxCost;
 
+    //↓ファイルから受け取る値
     //スプライトを並べる際の開始位置
     Vector2 mSpriteStartPos;
     //スプライト共通のスケール値

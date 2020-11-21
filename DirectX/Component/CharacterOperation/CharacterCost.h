@@ -17,6 +17,8 @@ public:
     void useCost(int amount);
     //指定の量のコストが戻ってくる
     void returnCost(int amount);
+    //コストを設定する
+    void setCost(int cost, bool maxToo = true);
     //残りのコストを取得する
     int getCost() const;
     //最大コストを取得する

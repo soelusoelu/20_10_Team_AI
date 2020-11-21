@@ -1,6 +1,7 @@
 ﻿#include "GamePlay.h"
 #include "Scene.h"
 #include "../CharacterOperation/CharacterOperation.h"
+#include "../EnemyOperation/EnemyCreater.h"
 #include "../GameState/GameStart.h"
 #include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObject.h"
@@ -13,6 +14,7 @@ GamePlay::GamePlay(GameObject& gameObject)
     : Component(gameObject)
     , mScene(nullptr)
     , mCharaOperator(nullptr)
+    , mEnemyCreater(nullptr)
     , mGameStart(nullptr)
     , mState(GameState::OPERATE_PHASE)
     , mStageNo(0)
@@ -24,8 +26,10 @@ GamePlay::~GamePlay() = default;
 void GamePlay::start() {
     mScene = getComponent<Scene>();
     GameObjectCreater::create("SphereMap");
-    auto cc = GameObjectCreater::create("CharacterOperation");
-    mCharaOperator = cc->componentManager().getComponent<CharacterOperation>();
+    auto co = GameObjectCreater::create("CharacterOperation");
+    mCharaOperator = co->componentManager().getComponent<CharacterOperation>();
+    auto ec = GameObjectCreater::create("EnemyCreater");
+    mEnemyCreater = ec->componentManager().getComponent<EnemyCreater>();
     auto gs = GameObjectCreater::create("GameStart");
     mGameStart = gs->componentManager().getComponent<GameStart>();
 
@@ -82,10 +86,19 @@ void GamePlay::loadStage() {
         return;
     }
 
+    //エネミーを生成する
+    mEnemyCreater->createEnemys(mStageNo);
+
+    //地形メッシュを生成
     std::string ground;
-    if (JsonHelper::getString(data, "Ground", &ground)) {
+    if (JsonHelper::getString(data, "ground", &ground)) {
         GameObjectCreater::create(ground);
     }
 
-    mCharaOperator->loadCharacter(data);
+    //コストを取得
+    int cost;
+    JsonHelper::getInt(data, "cost", &cost);
+
+    //情報を渡す
+    mCharaOperator->transferExternalDataToCharacterCreater(data, cost);
 }

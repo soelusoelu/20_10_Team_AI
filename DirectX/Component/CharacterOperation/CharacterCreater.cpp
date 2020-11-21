@@ -17,6 +17,7 @@ CharacterCreater::CharacterCreater(GameObject& gameObject)
     , mCost(nullptr)
     , mClickingSprite(false)
     , mClickedSpriteID(0)
+    , mMaxCost(0)
     , mSpriteStartPos(Vector2::zero)
     , mSpriteScale(Vector2::one)
     , mSpriteSpace(0.f)
@@ -28,6 +29,8 @@ CharacterCreater::~CharacterCreater() = default;
 
 void CharacterCreater::start() {
     mCost = getComponent<CharacterCost>();
+    //最大コストを設定する
+    mCost->setCost(mMaxCost);
 
     //スプライトの位置を調整する
     for (int i = 0; i < mCharactersInfo.size(); ++i) {
@@ -74,7 +77,12 @@ std::shared_ptr<GameObject> CharacterCreater::create() {
     return result;
 }
 
-void CharacterCreater::loadCharacter(const rapidjson::Value& inObj) {
+void CharacterCreater::receiveExternalData(const rapidjson::Value& inObj, int maxCost) {
+    //最大コストを確保しとく
+    mMaxCost = maxCost;
+    int temp = 0;
+    JsonHelper::getInt(inObj, "cost", &temp);
+
     rapidjson::Document doc;
     if (!LevelLoader::loadJSON(doc, "Characters.json")) {
         return;
