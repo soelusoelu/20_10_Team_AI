@@ -1,7 +1,7 @@
 ﻿#include "GamePlay.h"
 #include "Scene.h"
 #include "../CharacterOperation/CharacterOperation.h"
-#include "../EnemyOperation/EnemyCreater.h"
+#include "../EnemyOperation/EnemyOperation.h"
 #include "../GameState/GameStart.h"
 #include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObject.h"
@@ -14,7 +14,7 @@ GamePlay::GamePlay(GameObject& gameObject)
     : Component(gameObject)
     , mScene(nullptr)
     , mCharaOperator(nullptr)
-    , mEnemyCreater(nullptr)
+    , mEnemyOperator(nullptr)
     , mGameStart(nullptr)
     , mState(GameState::OPERATE_PHASE)
     , mStageNo(0)
@@ -28,13 +28,14 @@ void GamePlay::start() {
     GameObjectCreater::create("SphereMap");
     auto co = GameObjectCreater::create("CharacterOperation");
     mCharaOperator = co->componentManager().getComponent<CharacterOperation>();
-    auto ec = GameObjectCreater::create("EnemyCreater");
-    mEnemyCreater = ec->componentManager().getComponent<EnemyCreater>();
+    auto eo = GameObjectCreater::create("EnemyOperation");
+    mEnemyOperator = eo->componentManager().getComponent<EnemyOperation>();
     auto gs = GameObjectCreater::create("GameStart");
     mGameStart = gs->componentManager().getComponent<GameStart>();
 
     mGameStart->callbackGameStart([this] { mState = GameState::ACTION_PHASE; });
     mGameStart->callbackGameStart([&] { mCharaOperator->onChangeActionPhase(); });
+    mGameStart->callbackGameStart([&] { mEnemyOperator->onChangeActionPhase(); });
 
     getStageNo();
     loadStage();
@@ -86,8 +87,8 @@ void GamePlay::loadStage() {
         return;
     }
 
-    //エネミーを生成する
-    mEnemyCreater->createEnemys(mStageNo);
+    //情報を渡す
+    mEnemyOperator->setStageNo(mStageNo);
 
     //地形メッシュを生成
     std::string ground;

@@ -28,7 +28,7 @@ void ASAI::start()
 	routePhase = 0;
 	routePoint=CalcPosition(routePhase);
 	routePhase++;
-	transform().setPosition(Vector3(-90, 0, -90));
+	//transform().setPosition(Vector3(-90, 0, -90));
 }
 
 void ASAI::originalUpdate()

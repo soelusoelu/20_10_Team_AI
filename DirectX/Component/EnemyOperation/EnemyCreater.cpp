@@ -13,7 +13,7 @@ EnemyCreater::EnemyCreater(GameObject& gameObject)
 
 EnemyCreater::~EnemyCreater() = default;
 
-void EnemyCreater::createEnemys(int stageNo) {
+void EnemyCreater::createEnemys(GameObjectPtrList& enemys, int stageNo) {
     rapidjson::Document doc;
     if (!LevelLoader::loadJSON(doc, "Enemys.json")) {
         return;
@@ -49,6 +49,6 @@ void EnemyCreater::createEnemys(int stageNo) {
         t.rotate(Vector3::up, 180.f);
 
         //リストに登録する
-        mEnemys.emplace_back(e);
+        enemys.emplace_back(e);
     }
 }

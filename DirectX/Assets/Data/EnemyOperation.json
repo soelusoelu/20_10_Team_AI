@@ -1,6 +1,12 @@
 {
   "components": [
     {
+      "type": "EnemyOperation",
+      "properties": {
+
+      }
+    },
+    {
       "type": "EnemyCreater",
       "properties": {
       }
