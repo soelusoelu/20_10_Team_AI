@@ -21,7 +21,7 @@ MeshShader::MeshShader(GameObject& gameObject)
 MeshShader::~MeshShader() = default;
 
 void MeshShader::start() {
-    auto mesh = getMeshComponent();
+    auto mesh = mMesh.lock();
     if (!mesh) {
         mMesh = getComponent<MeshComponent>();
     }
