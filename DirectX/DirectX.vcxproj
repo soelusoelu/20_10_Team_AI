@@ -196,6 +196,7 @@
     <ClCompile Include="Component\EnemyOperation\EnemyCreater.cpp" />
     <ClCompile Include="Component\EnemyOperation\EnemyOperation.cpp" />
     <ClCompile Include="Component\Mesh\MeshOutLine.cpp" />
+    <ClCompile Include="Component\Mesh\MeshShader.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxUtility.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMotionParser.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
@@ -213,6 +214,7 @@
     <ClCompile Include="DebugLayer\PointRenderer.cpp" />
     <ClCompile Include="Component\Other\SaveThis.cpp" />
     <ClCompile Include="Component\Scene\StageSelect.cpp" />
+    <ClCompile Include="Component\Mesh\SkinMeshOutLine.cpp" />
     <ClCompile Include="Sprite\SpriteUtility.cpp" />
     <ClCompile Include="System\Shader\InputElementManager.cpp" />
     <ClCompile Include="System\Shader\ConstantBufferManager.cpp" />
@@ -394,6 +396,7 @@
     <ClInclude Include="Component\EnemyOperation\EnemyCreater.h" />
     <ClInclude Include="Component\EnemyOperation\EnemyOperation.h" />
     <ClInclude Include="Component\Mesh\MeshOutLine.h" />
+    <ClInclude Include="Component\Mesh\MeshShader.h" />
     <ClInclude Include="Mesh\Fbx\FbxUtility.h" />
     <ClInclude Include="Mesh\Fbx\FbxMotionParser.h" />
     <ClInclude Include="Imgui\imconfig.h" />
@@ -421,6 +424,7 @@
     <ClInclude Include="DebugLayer\PointRenderer.h" />
     <ClInclude Include="Component\Other\SaveThis.h" />
     <ClInclude Include="Component\Scene\StageSelect.h" />
+    <ClInclude Include="Component\Mesh\SkinMeshOutLine.h" />
     <ClInclude Include="Sprite\SpriteUtility.h" />
     <ClInclude Include="System\Shader\InputElementManager.h" />
     <ClInclude Include="System\Shader\ConstantBufferManager.h" />
@@ -711,6 +715,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Shader\SkinMeshOutLine.hlsl" />
     <FxCompile Include="Shader\Texture.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>

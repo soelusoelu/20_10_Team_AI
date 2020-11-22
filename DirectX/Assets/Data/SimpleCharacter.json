@@ -4,10 +4,9 @@
   },
   "components": [
     {
-      "type": "SkinMeshComponent",
+      "type": "MeshComponent",
       "properties": {
-        "fileName": "Practice/test.fbx",
-        "shaderName": "SkinMesh.hlsl"
+        "fileName": "Practice/test.fbx"
       }
     },
     {
@@ -27,9 +26,17 @@
     },
     {
       "type": "CharacterAction",
+      "properties": {}
+    },
+    {
+      "type": "MeshShader",
       "properties": {
-
+        "shaderName": "SkinMesh.hlsl"
       }
+    },
+    {
+      "type": "SkinMeshComponent",
+      "properties": {}
     }
   ]
 }

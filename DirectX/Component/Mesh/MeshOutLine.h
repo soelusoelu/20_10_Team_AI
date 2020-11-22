@@ -9,7 +9,7 @@ class Shader;
 class MeshOutLine : public MeshComponent {
 public:
     MeshOutLine(GameObject& gameObject);
-    ~MeshOutLine();
+    virtual ~MeshOutLine();
     virtual void awake() override;
     virtual void loadProperties(const rapidjson::Value& inObj) override;
     virtual void saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const override;
@@ -36,7 +36,7 @@ private:
     //アウトラインを描画する
     void drawOutLine(const Camera& camera, const DirectionalLight& dirLight) const;
 
-private:
+protected:
     std::shared_ptr<Shader> mOutLineShader;
     Vector3 mOutLineColor;
     float mOutLineThickness;

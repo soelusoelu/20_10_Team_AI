@@ -30,7 +30,9 @@
 #include "../Component/Light/PointLightComponent.h"
 #include "../Component/Mesh/MeshComponent.h"
 #include "../Component/Mesh/MeshOutLine.h"
+#include "../Component/Mesh/MeshShader.h"
 #include "../Component/Mesh/SkinMeshComponent.h"
+#include "../Component/Mesh/SkinMeshOutLine.h"
 #include "../Component/Other/GameObjectSaveAndLoader.h"
 #include "../Component/Other/HitPointComponent.h"
 #include "../Component/Other/SaveThis.h"
@@ -94,7 +96,9 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(MeshComponent);
     ADD_COMPONENT(MeshOutLine);
+    ADD_COMPONENT(MeshShader);
     ADD_COMPONENT(SkinMeshComponent);
+    ADD_COMPONENT(SkinMeshOutLine);
 
     ADD_COMPONENT(GameObjectSaveAndLoader);
     ADD_COMPONENT(HitPointComponent);

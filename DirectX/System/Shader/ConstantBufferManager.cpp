@@ -15,7 +15,8 @@ ConstantBufferManager::ConstantBufferManager() {
     mConstantBuffers.emplace("Line3D.hlsl", BuffersSize{ sizeof(LineConstantBuffer) });
     mConstantBuffers.emplace("PointLight.hlsl", BuffersSize{ sizeof(PointLightConstantBuffer) });
     mConstantBuffers.emplace("SimpleMesh.hlsl", BuffersSize{ sizeof(SimpleMeshConstantBuffer) });
-    mConstantBuffers.emplace("OutLine.hlsl", BuffersSize{ sizeof(MeshCommonConstantBuffer), sizeof(MaterialConstantBuffer), sizeof(OutLineConstantBuffer) });
+    mConstantBuffers.emplace("OutLine.hlsl", BuffersSize{ sizeof(MeshCommonConstantBuffer), sizeof(OutLineConstantBuffer) });
+    mConstantBuffers.emplace("SkinMeshOutLine.hlsl", BuffersSize{ sizeof(MeshCommonConstantBuffer), sizeof(OutLineConstantBuffer), sizeof(SkinMeshConstantBuffer) });
 }
 
 ConstantBufferManager::~ConstantBufferManager() = default;

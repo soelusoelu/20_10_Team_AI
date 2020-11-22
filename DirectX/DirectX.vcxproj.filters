@@ -14,6 +14,7 @@
     <FxCompile Include="Shader\Point3D.hlsl" />
     <FxCompile Include="Shader\Mesh.hlsl" />
     <FxCompile Include="Shader\OutLine.hlsl" />
+    <FxCompile Include="Shader\SkinMeshOutLine.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Component\ComponentManager.cpp" />
@@ -212,6 +213,8 @@
     <ClCompile Include="Component\EnemyOperation\EnemyCreater.cpp" />
     <ClCompile Include="Component\EnemyOperation\EnemyOperation.cpp" />
     <ClCompile Include="Component\Mesh\MeshOutLine.cpp" />
+    <ClCompile Include="Component\Mesh\SkinMeshOutLine.cpp" />
+    <ClCompile Include="Component\Mesh\MeshShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -463,6 +466,8 @@
     <ClInclude Include="Component\EnemyOperation\EnemyCreater.h" />
     <ClInclude Include="Component\EnemyOperation\EnemyOperation.h" />
     <ClInclude Include="Component\Mesh\MeshOutLine.h" />
+    <ClInclude Include="Component\Mesh\SkinMeshOutLine.h" />
+    <ClInclude Include="Component\Mesh\MeshShader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />

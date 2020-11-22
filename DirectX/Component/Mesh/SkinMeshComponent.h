@@ -1,17 +1,26 @@
 ﻿#pragma once
 
-#include "MeshComponent.h"
-#include "../../Mesh/Bone.h"
+#include "../Component.h"
 
-class SkinMeshComponent : public MeshComponent {
+class MeshComponent;
+class MeshShader;
+
+class SkinMeshComponent : public Component {
 public:
     SkinMeshComponent(GameObject& gameObject);
     ~SkinMeshComponent();
+    virtual void start() override;
     virtual void update() override;
-    virtual void draw(const Camera& camera, const DirectionalLight& dirLight) const override;
+
+    //startが間に合わないとき用
+    void setMeshAndShader(
+        const std::shared_ptr<MeshComponent>& mesh,
+        const std::shared_ptr<MeshShader>& shader
+    );
 
 private:
+    std::shared_ptr<MeshComponent> mMesh;
+    std::shared_ptr<MeshShader> mMeshShader;
     int mCurrentMotionNo;
     int mCurrentFrame;
-    std::vector<Bone> mBones;
 };

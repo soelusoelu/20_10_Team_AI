@@ -1,6 +1,7 @@
 ﻿#include "MeshOutLine.h"
 #include "../Camera/Camera.h"
 #include "../Light/DirectionalLight.h"
+#include "../../DebugLayer/ImGuiWrapper.h"
 #include "../../DirectX/DirectXInclude.h"
 #include "../../Imgui/imgui.h"
 #include "../../Mesh/Material.h"
@@ -29,21 +30,24 @@ void MeshOutLine::awake() {
 }
 
 void MeshOutLine::loadProperties(const rapidjson::Value& inObj) {
-    JsonHelper::getFloat(inObj, "thickness", &mOutLineThickness);
+    JsonHelper::getVector3(inObj, "outLineColor", &mOutLineColor);
+    JsonHelper::getFloat(inObj, "outLineColorThickness", &mOutLineThickness);
     JsonHelper::getBool(inObj, "isDrawOutLine", &mIsDrawOutLine);
 
     MeshComponent::loadProperties(inObj);
 }
 
 void MeshOutLine::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const {
-    JsonHelper::setFloat(alloc, inObj, "thickness", mOutLineThickness);
+    JsonHelper::setVector3(alloc, inObj, "outLineColor", mOutLineColor);
+    JsonHelper::setFloat(alloc, inObj, "outLineColorThickness", mOutLineThickness);
     JsonHelper::setBool(alloc, inObj, "isDrawOutLine", mIsDrawOutLine);
 
     MeshComponent::saveProperties(alloc, inObj);
 }
 
 void MeshOutLine::drawInspector() {
-    ImGui::SliderFloat("Thickness", &mOutLineThickness, 0.f, 1.f);
+    ImGuiWrapper::colorEdit3("OutLineColor", mOutLineColor);
+    ImGui::SliderFloat("OutLineThickness", &mOutLineThickness, 0.f, 1.f);
     ImGui::Checkbox("IsDrawOutLine", &mIsDrawOutLine);
 
     MeshComponent::drawInspector();

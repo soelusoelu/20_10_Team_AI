@@ -47,7 +47,6 @@ std::shared_ptr<MeshComponent> MeshAdder::addMeshComponent(GameObject& gameObjec
     auto newMesh = Component::addComponent<MeshComponent>(gameObject, "MeshComponent");
     //メッシュとシェーダーを生成する
     newMesh->createMesh(fileName, directoryPath);
-    newMesh->setDefaultShader();
 
     return newMesh;
 }

@@ -1,4 +1,6 @@
 ﻿#include "MeshComponent.h"
+#include "MeshShader.h"
+#include "SkinMeshComponent.h"
 #include "../Camera/Camera.h"
 #include "../Light/DirectionalLight.h"
 #include "../../DebugLayer/Debug.h"
@@ -13,14 +15,15 @@
 #include "../../Transform/Transform3D.h"
 #include "../../Utility/LevelLoader.h"
 
-MeshComponent::MeshComponent(GameObject& gameObject) :
-    Component(gameObject),
-    mMesh(nullptr),
-    mShader(nullptr),
-    mFileName(),
-    mDirectoryPath(),
-    mState(State::ACTIVE),
-    mAlpha(1.f) {
+MeshComponent::MeshComponent(GameObject& gameObject)
+    : Component(gameObject)
+    , mMesh(nullptr)
+    , mMeshShader(nullptr)
+    , mFileName()
+    , mDirectoryPath()
+    , mState(State::ACTIVE)
+    , mAlpha(1.f)
+{
 }
 
 MeshComponent::~MeshComponent() = default;
@@ -30,6 +33,23 @@ void MeshComponent::awake() {
 }
 
 void MeshComponent::start() {
+    mMeshShader = getComponent<MeshShader>();
+    //MeshShaderがないなら追加する
+    if (!mMeshShader) {
+        mMeshShader = addComponent<MeshShader>("MeshShader");
+        mMeshShader->setMeshComponent(shared_from_this());
+    }
+
+    //ボーンが有るモデルなら
+    if (mMesh->getBoneCount() > 0) {
+        auto skinMesh = getComponent<SkinMeshComponent>();
+        //SkinMeshComponentがアタッチされてないなら追加する
+        if (!skinMesh) {
+            skinMesh = addComponent<SkinMeshComponent>("SkinMeshComponent");
+            skinMesh->setMeshAndShader(shared_from_this(), mMeshShader);
+        }
+    }
+
     if (mMesh) {
         addToManager();
     }
@@ -48,16 +68,6 @@ void MeshComponent::loadProperties(const rapidjson::Value& inObj) {
         createMesh(mFileName, mDirectoryPath);
     }
 
-    std::string shader;
-    //シェーダー名が取得できたら読み込む
-    if (JsonHelper::getString(inObj, "shaderName", &shader)) {
-        //シェーダーを生成する
-        mShader = AssetsManager::instance().createShader(shader);
-    } else {
-        //できなかったらデフォルトを使う
-        setDefaultShader();
-    }
-
     //アルファ値を取得する
     JsonHelper::getFloat(inObj, "alpha", &mAlpha);
 }
@@ -65,7 +75,6 @@ void MeshComponent::loadProperties(const rapidjson::Value& inObj) {
 void MeshComponent::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const {
     JsonHelper::setString(alloc, inObj, "fileName", mFileName);
     JsonHelper::setString(alloc, inObj, "directoryPath", mDirectoryPath);
-    JsonHelper::setString(alloc, inObj, "shaderName", mShader->getShaderName());
     JsonHelper::setFloat(alloc, inObj, "alpha", mAlpha);
 }
 
@@ -75,38 +84,18 @@ void MeshComponent::drawInspector() {
 }
 
 void MeshComponent::draw(const Camera& camera, const DirectionalLight& dirLight) const {
-    //使用するシェーダーの登録
-    mShader->setShaderInfo();
+    //描画前準備
+    mMeshShader->preSet();
 
-    //シェーダーのコンスタントバッファーに各種データを渡す
-    MeshCommonConstantBuffer meshcb;
-    const auto& world = transform().getWorldTransform();
-    meshcb.world = world;
-    meshcb.view = camera.getView();
-    meshcb.projection = camera.getProjection();
-    meshcb.wvp = world * camera.getViewProjection();
-    meshcb.lightDir = dirLight.getDirection();
-    meshcb.lightColor = dirLight.getLightColor();
-    meshcb.cameraPos = camera.getPosition();
-    mShader->transferData(&meshcb, sizeof(meshcb), 0);
+    //メッシュ共通の値を設定する
+    mMeshShader->setCommonValue(camera, dirLight);
+
+    //コンスタントバッファに転送する
+    mMeshShader->transferData();
 
     for (size_t i = 0; i < mMesh->getMeshCount(); ++i) {
-        MaterialConstantBuffer matcb;
-        const auto& mat = mMesh->getMaterial(i);
-        matcb.ambient = mat.ambient;
-        //アルファ値は0のときが多いから
-        float alpha = mAlpha;
-        if (!Math::nearZero(mat.transparency)) {
-            alpha *= mat.transparency;
-        }
-        matcb.diffuse = Vector4(mat.diffuse, alpha);
-        matcb.specular = mat.specular;
-        matcb.shininess = mat.shininess;
-        //データ転送
-        mShader->transferData(&matcb, sizeof(matcb), 1);
-
-        //テクスチャ登録
-        mat.texture->setTextureInfo();
+        //マテリアルを設定する
+        mMeshShader->setDefaultMaterial(i);
 
         //描画
         mMesh->draw(i);
@@ -117,16 +106,6 @@ void MeshComponent::createMesh(const std::string& fileName, const std::string& d
     mMesh = AssetsManager::instance().createMesh(fileName, directoryPath);
     mFileName = fileName;
     mDirectoryPath = directoryPath;
-}
-
-void MeshComponent::setDefaultShader() {
-    std::string shader = "Mesh.hlsl";
-    //ノーマルマップが有るなら
-    if (mMesh->getMaterial(0).normalMapTexture) {
-        shader = "NormalMap.hlsl";
-    }
-    //シェーダーを生成する
-    mShader = AssetsManager::instance().createShader(shader);
 }
 
 void MeshComponent::destroy() {
