@@ -6,7 +6,8 @@
     {
       "type": "MeshOutLine",
       "properties": {
-        "fileName": "Practice/test.fbx"
+        "fileName": "Practice/test.fbx",
+        "offset": 2.6947
       }
     },
     {

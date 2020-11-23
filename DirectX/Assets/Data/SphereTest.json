@@ -1,12 +1,14 @@
 {
   "properties": {
-    "scale": [ 2.0, 2.0, 2.0 ]
+    "scale": [ 2.0, 2.0, 2.0 ],
+    "pivot": [ 0.0, -1.0, 0.0 ]
   },
   "components": [
     {
       "type": "MeshOutLine",
       "properties": {
-        "fileName": "Shape/Sphere.obj"
+        "fileName": "Shape/Sphere.obj",
+        "offset": 1.0
       }
     },
     {

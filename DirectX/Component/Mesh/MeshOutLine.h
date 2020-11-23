@@ -45,4 +45,5 @@ protected:
     float mOutLineThickness;
     bool mIsDrawOutLine;
     bool mIsAnimation;
+    float mOffset;
 };

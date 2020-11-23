@@ -1,9 +1,13 @@
 {
+  "properties": {
+    "pivot": [ 0.0, -1.0, 0.0 ]
+  },
   "components": [
     {
       "type": "MeshOutLine",
       "properties": {
-        "fileName": "Shape/box.fbx"
+        "fileName": "Shape/box.fbx",
+        "offset": 1.0
       }
     },
     {

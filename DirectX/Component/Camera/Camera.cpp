@@ -67,6 +67,10 @@ void Camera::lookAt(const Vector3 & position) {
     mLookAt = position;
 }
 
+const Vector3& Camera::getLookAt() const {
+    return mLookAt;
+}
+
 Vector3 Camera::screenToWorldPoint(const Vector2 & position, float z) {
     //ビューポート、射影、ビュー、それぞれの逆行列を求める
     auto invView = Matrix4::inverse(mView);

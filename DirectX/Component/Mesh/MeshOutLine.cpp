@@ -22,6 +22,7 @@ MeshOutLine::MeshOutLine(GameObject& gameObject)
     , mOutLineThickness(0.1f)
     , mIsDrawOutLine(true)
     , mIsAnimation(false)
+    , mOffset(0.f)
 {
 }
 
@@ -51,6 +52,7 @@ void MeshOutLine::loadProperties(const rapidjson::Value& inObj) {
     JsonHelper::getVector3(inObj, "outLineColor", &mOutLineColor);
     JsonHelper::getFloat(inObj, "outLineColorThickness", &mOutLineThickness);
     JsonHelper::getBool(inObj, "isDrawOutLine", &mIsDrawOutLine);
+    JsonHelper::getFloat(inObj, "offset", &mOffset);
 
     MeshComponent::loadProperties(inObj);
 }
@@ -59,6 +61,7 @@ void MeshOutLine::saveProperties(rapidjson::Document::AllocatorType& alloc, rapi
     JsonHelper::setVector3(alloc, inObj, "outLineColor", mOutLineColor);
     JsonHelper::setFloat(alloc, inObj, "outLineColorThickness", mOutLineThickness);
     JsonHelper::setBool(alloc, inObj, "isDrawOutLine", mIsDrawOutLine);
+    JsonHelper::setFloat(alloc, inObj, "offset", mOffset);
 
     MeshComponent::saveProperties(alloc, inObj);
 }
@@ -67,6 +70,7 @@ void MeshOutLine::drawInspector() {
     ImGuiWrapper::colorEdit3("OutLineColor", mOutLineColor);
     ImGui::SliderFloat("OutLineThickness", &mOutLineThickness, 0.f, 1.f);
     ImGui::Checkbox("IsDrawOutLine", &mIsDrawOutLine);
+    ImGuiWrapper::dragFloat("Offset", mOffset, 0.01f);
 
     MeshComponent::drawInspector();
 }
@@ -118,11 +122,11 @@ void MeshOutLine::drawOutLine(const Camera& camera, const DirectionalLight& dirL
     //スケールを拡大したモデルをアウトラインとして描画するため
     //ワールド行列の再計算をする
     const auto& t = transform();
-    auto pivot = t.getPivot();
-    auto world = Matrix4::createTranslation(-pivot);
+    auto offset = Vector3::up * mOffset;
+    auto world = Matrix4::createTranslation(-t.getPivot() - offset);
     world *= Matrix4::createScale(t.getScale() + Vector3::one * mOutLineThickness);
     world *= Matrix4::createFromQuaternion(t.getRotation());
-    world *= Matrix4::createTranslation(t.getPosition());
+    world *= Matrix4::createTranslation(t.getPosition() + offset * t.getScale());
 
     //シェーダーのコンスタントバッファーに各種データを渡す
     MeshCommonConstantBuffer meshcb;
