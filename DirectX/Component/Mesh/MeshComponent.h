@@ -43,7 +43,7 @@ public:
     bool getActive() const;
     bool isDead() const;
     //メッシュインターフェースを取得する
-    const IMesh& getMesh() const;
+    IMesh& getMesh() const;
     //アルファ値を設定する
     void setAlpha(float alpha);
     //アルファ値を取得する

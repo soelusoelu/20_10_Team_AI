@@ -38,7 +38,7 @@ struct MaterialConstantBuffer {
 
 //スキンメッシュ
 struct SkinMeshConstantBuffer {
-    ALIGN16 Matrix4 bones[256];
+    Matrix4 bones[256];
 };
 
 //ポイント

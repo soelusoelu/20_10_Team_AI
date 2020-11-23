@@ -1,6 +1,8 @@
 ﻿#include "MeshOutLine.h"
+#include "SkinMeshComponent.h"
 #include "../Camera/Camera.h"
 #include "../Light/DirectionalLight.h"
+#include "../../DebugLayer/Debug.h"
 #include "../../DebugLayer/ImGuiWrapper.h"
 #include "../../DirectX/DirectXInclude.h"
 #include "../../Imgui/imgui.h"
@@ -15,18 +17,34 @@
 
 MeshOutLine::MeshOutLine(GameObject& gameObject)
     : MeshComponent(gameObject)
+    , mOutLineShader(nullptr)
     , mOutLineColor(ColorPalette::white)
     , mOutLineThickness(0.1f)
     , mIsDrawOutLine(true)
+    , mIsAnimation(false)
 {
 }
 
 MeshOutLine::~MeshOutLine() = default;
 
 void MeshOutLine::awake() {
-    mOutLineShader = AssetsManager::instance().createShader("OutLine.hlsl");
+    //ボーンの有無でアニメーションするモデルか判断する
+    mIsAnimation = (mMesh->getBoneCount() > 0);
+
+    //アニメーションするかでシェーダーを決める
+    auto name = (mIsAnimation) ? "SkinMeshOutLine.hlsl" : "OutLine.hlsl";
+    mOutLineShader = AssetsManager::instance().createShader(name);
 
     MeshComponent::awake();
+}
+
+void MeshOutLine::start() {
+    //スキンメッシュコンポーネントのアタッチがメッシュコンポーネントのstartで行うから先
+    MeshComponent::start();
+
+    if (mIsAnimation) {
+        mSkinMesh = getComponent<SkinMeshComponent>();
+    }
 }
 
 void MeshOutLine::loadProperties(const rapidjson::Value& inObj) {
@@ -120,6 +138,19 @@ void MeshOutLine::drawOutLine(const Camera& camera, const DirectionalLight& dirL
     OutLineConstantBuffer outlinecb;
     outlinecb.outlineColor = Vector4(mOutLineColor, 1.f);
     mOutLineShader->transferData(&outlinecb, sizeof(outlinecb), 1);
+
+    //アニメーションするならボーンのデータも渡す
+    if (mIsAnimation) {
+        std::shared_ptr<SkinMeshComponent> sm = nullptr;
+        sm = mSkinMesh.lock();
+        if (!sm) {
+            Debug::logError("Failed lock. SkinMeshComponent is null.");
+            return;
+        }
+
+        //ボーンデータを転送する
+        mOutLineShader->transferData(sm->getBoneCurrentFrameMatrix().data(), sizeof(SkinMeshConstantBuffer), 2);
+    }
 
     //アウトラインを描画する
     for (size_t i = 0; i < mMesh->getMeshCount(); ++i) {

@@ -4,6 +4,7 @@
 #include "IMeshLoader.h"
 #include "Material.h"
 #include "Motion.h"
+#include <string>
 #include <vector>
 
 //外部公開用メッシュインターフェース
@@ -20,6 +21,8 @@ public:
     virtual const Motion& getMotion(unsigned index) const = 0;
     //モーション数を取得する
     virtual unsigned getMotionCount() const = 0;
+    //モーション名を設定する
+    virtual void setMotionName(const std::string& name, unsigned index) = 0;
     //ボーンを取得する
     virtual const Bone& getBone(unsigned index) const = 0;
     //ボーン数を取得する

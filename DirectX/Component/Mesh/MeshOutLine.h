@@ -5,12 +5,14 @@
 #include <memory>
 
 class Shader;
+class SkinMeshComponent;
 
 class MeshOutLine : public MeshComponent {
 public:
     MeshOutLine(GameObject& gameObject);
-    virtual ~MeshOutLine();
+    ~MeshOutLine();
     virtual void awake() override;
+    virtual void start() override;
     virtual void loadProperties(const rapidjson::Value& inObj) override;
     virtual void saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const override;
     virtual void drawInspector() override;
@@ -38,7 +40,9 @@ private:
 
 protected:
     std::shared_ptr<Shader> mOutLineShader;
+    std::weak_ptr<SkinMeshComponent> mSkinMesh;
     Vector3 mOutLineColor;
     float mOutLineThickness;
     bool mIsDrawOutLine;
+    bool mIsAnimation;
 };

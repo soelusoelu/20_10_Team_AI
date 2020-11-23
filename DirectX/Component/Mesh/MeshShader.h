@@ -29,6 +29,7 @@ public:
     //デフォルトのマテリアルデータを設定する
     void setDefaultMaterial(unsigned materialIndex, unsigned constantBufferIndex = 1) const;
     //全メッシュに共通する値を設定する
+    //データが生きている必要あり
     void setTransferData(const void* data, unsigned size, unsigned constantBufferIndex);
 
     //MeshComponentをセットする

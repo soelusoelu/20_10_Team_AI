@@ -26,11 +26,17 @@ const MeshVertices& Mesh::getMeshVertices(unsigned index) const {
 }
 
 const Motion& Mesh::getMotion(unsigned index) const {
+    assert(index < mMotions.size());
     return mMotions[index];
 }
 
 unsigned Mesh::getMotionCount() const {
     return mMotions.size();
+}
+
+void Mesh::setMotionName(const std::string& name, unsigned index) {
+    assert(index < mMotions.size());
+    mMotions[index].name = name;
 }
 
 const Bone& Mesh::getBone(unsigned index) const {

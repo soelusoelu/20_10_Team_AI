@@ -32,7 +32,6 @@
 #include "../Component/Mesh/MeshOutLine.h"
 #include "../Component/Mesh/MeshShader.h"
 #include "../Component/Mesh/SkinMeshComponent.h"
-#include "../Component/Mesh/SkinMeshOutLine.h"
 #include "../Component/Other/GameObjectSaveAndLoader.h"
 #include "../Component/Other/HitPointComponent.h"
 #include "../Component/Other/SaveThis.h"
@@ -98,7 +97,6 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(MeshOutLine);
     ADD_COMPONENT(MeshShader);
     ADD_COMPONENT(SkinMeshComponent);
-    ADD_COMPONENT(SkinMeshOutLine);
 
     ADD_COMPONENT(GameObjectSaveAndLoader);
     ADD_COMPONENT(HitPointComponent);
@@ -201,6 +199,11 @@ void GameObjectFactory::loadComponent(GameObject& gameObject, const rapidjson::V
         Debug::windowMessage(type + "は有効な型ではありません");
         return;
     }
+    //プロパティがあるか
+    if (!component.HasMember("properties")) {
+        return;
+    }
+
     //新規コンポーネントを生成
     itr->second(gameObject, type, component["properties"]);
 }
