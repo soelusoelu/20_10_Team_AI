@@ -214,6 +214,7 @@
     <ClCompile Include="Component\EnemyOperation\EnemyOperation.cpp" />
     <ClCompile Include="Component\Mesh\MeshOutLine.cpp" />
     <ClCompile Include="Component\Mesh\MeshShader.cpp" />
+    <ClCompile Include="Component\CharacterAction\SimpleCharacter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -466,6 +467,8 @@
     <ClInclude Include="Component\EnemyOperation\EnemyOperation.h" />
     <ClInclude Include="Component\Mesh\MeshOutLine.h" />
     <ClInclude Include="Component\Mesh\MeshShader.h" />
+    <ClInclude Include="Component\CharacterAction\SimpleCharacter.h" />
+    <ClInclude Include="Component\CharacterAction\IChangeActionPhase.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />

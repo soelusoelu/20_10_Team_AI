@@ -4,6 +4,7 @@
 CharacterAction::CharacterAction(GameObject& gameObject)
     : Component(gameObject)
     , mAI(nullptr)
+    , mCallbackChangeActionPhase(nullptr)
     , mIsActive(false)
 {
 }
@@ -32,8 +33,17 @@ void CharacterAction::onEnable(bool value) {
 
 void CharacterAction::enabled() {
     mIsActive = true;
+
+    //コールバックが登録されていたら呼び出す
+    if (mCallbackChangeActionPhase) {
+        mCallbackChangeActionPhase->onChangeActionPhase();
+    }
 }
 
 void CharacterAction::disabled() {
     mIsActive = false;
+}
+
+void CharacterAction::callbackChangeActionPhase(IChangeActionPhase* callback) {
+    mCallbackChangeActionPhase = callback;
 }

@@ -8,6 +8,7 @@
 #include "../Component/AI/ASCell.h"
 #include "../Component/AI/ASCellManager.h"
 #include "../Component/CharacterAction/CharacterAction.h"
+#include "../Component/CharacterAction/SimpleCharacter.h"
 #include "../Component/CharacterOperation/CharacterCost.h"
 #include "../Component/CharacterOperation/CharacterCreater.h"
 #include "../Component/CharacterOperation/CharacterDeleter.h"
@@ -66,6 +67,7 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(ASAI);
 
     ADD_COMPONENT(CharacterAction);
+    ADD_COMPONENT(SimpleCharacter);
 
     ADD_COMPONENT(CharacterCost);
     ADD_COMPONENT(CharacterCreater);

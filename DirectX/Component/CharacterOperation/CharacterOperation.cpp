@@ -58,12 +58,6 @@ void CharacterOperation::updateForOperatePhase() {
     }
 }
 
-void CharacterOperation::updateForActionPhase() {
-    for (const auto& chara : mCreatedCharacters) {
-
-    }
-}
-
 void CharacterOperation::transferExternalDataToCharacterCreater(const rapidjson::Value& inObj, int maxCost) {
     mCreater->receiveExternalData(inObj, maxCost);
 }

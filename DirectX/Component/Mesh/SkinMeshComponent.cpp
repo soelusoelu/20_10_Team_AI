@@ -2,7 +2,6 @@
 #include "MeshComponent.h"
 #include "MeshShader.h"
 #include "../../DebugLayer/Debug.h"
-#include "../../Input/Input.h"
 #include "../../Mesh/IMesh.h"
 #include "../../System/Shader/ConstantBuffers.h"
 #include <cassert>
@@ -32,9 +31,6 @@ void SkinMeshComponent::start() {
 void SkinMeshComponent::update() {
     const auto& iMesh = mMesh->getMesh();
 
-    if (Input::keyboard().getKeyDown(KeyCode::Space)) {
-        changeMotion(++mCurrentMotionNo);
-    }
     const auto& motion = iMesh.getMotion(mCurrentMotionNo);
     ++mCurrentFrame;
     if (mCurrentFrame >= motion.numFrame) {

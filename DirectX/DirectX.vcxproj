@@ -214,6 +214,7 @@
     <ClCompile Include="DebugLayer\PointRenderer.cpp" />
     <ClCompile Include="Component\Other\SaveThis.cpp" />
     <ClCompile Include="Component\Scene\StageSelect.cpp" />
+    <ClCompile Include="Component\CharacterAction\SimpleCharacter.cpp" />
     <ClCompile Include="Sprite\SpriteUtility.cpp" />
     <ClCompile Include="System\Shader\InputElementManager.cpp" />
     <ClCompile Include="System\Shader\ConstantBufferManager.cpp" />
@@ -365,6 +366,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\CharacterAction\CharacterAction.h" />
+    <ClInclude Include="Component\CharacterAction\IChangeActionPhase.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterSelector.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterOperation.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterDeleter.h" />
@@ -423,6 +425,7 @@
     <ClInclude Include="DebugLayer\PointRenderer.h" />
     <ClInclude Include="Component\Other\SaveThis.h" />
     <ClInclude Include="Component\Scene\StageSelect.h" />
+    <ClInclude Include="Component\CharacterAction\SimpleCharacter.h" />
     <ClInclude Include="Sprite\SpriteUtility.h" />
     <ClInclude Include="System\Shader\InputElementManager.h" />
     <ClInclude Include="System\Shader\ConstantBufferManager.h" />

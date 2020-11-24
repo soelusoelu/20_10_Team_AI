@@ -24,7 +24,6 @@ public:
 
     //独自アップデート
     void updateForOperatePhase();
-    void updateForActionPhase();
     //CharacterCreaterに情報を渡す
     void transferExternalDataToCharacterCreater(const rapidjson::Value& inObj, int maxCost);
     //アクションモードに変わった際の処理

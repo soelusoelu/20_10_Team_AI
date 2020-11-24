@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "IChangeActionPhase.h"
 #include "../Component.h"
 #include <memory>
 
@@ -18,6 +19,8 @@ public:
     void enabled();
     //このクラスを非アクティブ化する
     void disabled();
+    //アクションフェーズに移行する際のコールバック
+    void callbackChangeActionPhase(IChangeActionPhase* callback);
 
 private:
     CharacterAction(const CharacterAction&) = delete;
@@ -25,6 +28,7 @@ private:
 
 private:
     std::shared_ptr<ASAI> mAI;
+    IChangeActionPhase* mCallbackChangeActionPhase;
     //このクラスが実行可能状態か
     bool mIsActive;
 };

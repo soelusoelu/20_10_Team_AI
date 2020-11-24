@@ -38,6 +38,10 @@
     {
       "type": "SkinMeshComponent",
       "properties": {}
+    },
+    {
+      "type": "SimpleCharacter",
+      "properties": {}
     }
   ]
 }
