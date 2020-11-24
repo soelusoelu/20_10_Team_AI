@@ -5,6 +5,10 @@
   },
   "components": [
     {
+      "type": "CharacterCommonComponents",
+      "properties": {}
+    },
+    {
       "type": "MeshOutLine",
       "properties": {
         "fileName": "Shape/Sphere.obj",

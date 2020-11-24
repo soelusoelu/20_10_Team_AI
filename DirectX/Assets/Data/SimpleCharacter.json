@@ -4,6 +4,10 @@
   },
   "components": [
     {
+      "type": "CharacterCommonComponents",
+      "properties": {}
+    },
+    {
       "type": "MeshOutLine",
       "properties": {
         "fileName": "Practice/test.fbx",

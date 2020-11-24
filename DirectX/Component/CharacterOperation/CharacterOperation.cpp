@@ -3,7 +3,9 @@
 #include "CharacterDeleter.h"
 #include "CharacterSelector.h"
 #include "DragAndDropCharacter.h"
+#include "../Character/CharacterCommonComponents.h"
 #include "../CharacterAction/CharacterAction.h"
+#include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObject.h"
 #include "../../GameObject/GameObjectFactory.h"
 #include "../../Input/Input.h"
@@ -35,10 +37,9 @@ void CharacterOperation::updateForOperatePhase() {
     //キャラクターを生成する
     auto newChara = mCreater->create();
 
+    //生成していたら登録する
     if (newChara) {
-        //生成していたら登録し、選択対象にする
-        mCreatedCharacters.emplace_back(newChara);
-        mSelectObject = newChara;
+        addCharacter(*newChara);
     }
 
     //マウスインターフェイスを取得
@@ -68,9 +69,22 @@ void CharacterOperation::onChangeActionPhase() {
 
     //全キャラクターをアクションフェーズに移行する
     for (const auto& chara : mCreatedCharacters) {
-        auto action = chara->componentManager().getComponent<CharacterAction>();
-        action->enabled();
+        chara->getCharacterAction().enabled();
     }
+}
+
+void CharacterOperation::addCharacter(const GameObject& newChara) {
+    auto temp = newChara.componentManager().getComponent<CharacterCommonComponents>();
+
+    //CharacterCommonComponentsがないならエラー出力して終了
+    if (!temp) {
+        Debug::logError("Not found CharacterCommonComponents.");
+        return;
+    }
+
+    //登録し、選択対象にする
+    mCreatedCharacters.emplace_back(temp);
+    mSelectObject = temp;
 }
 
 void CharacterOperation::clickLeftMouseButton() {
@@ -79,8 +93,8 @@ void CharacterOperation::clickLeftMouseButton() {
         return;
     }
 
-    //ゲームオブジェクトを選択する
-    mSelector->selectGameObject(mSelectObject, mCreatedCharacters);
+    //キャラクターを選択する
+    mSelector->selectCharacter(mSelectObject, mCreatedCharacters);
 }
 
 void CharacterOperation::clickingLeftMouseButton() {
@@ -94,5 +108,5 @@ void CharacterOperation::clickingLeftMouseButton() {
     }
 
     //選択しているゲームオブジェクトを移動する
-    mDragAndDrop->dragMove(*mSelectObject);
+    mDragAndDrop->dragMove(mSelectObject->gameObject());
 }

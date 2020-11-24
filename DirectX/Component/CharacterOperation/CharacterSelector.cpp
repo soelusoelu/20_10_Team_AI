@@ -1,6 +1,6 @@
 ﻿#include "CharacterSelector.h"
-#include "../ComponentManager.h"
 #include "../Camera/Camera.h"
+#include "../Character/CharacterCommonComponents.h"
 #include "../Collider/AABBCollider.h"
 #include "../../Collision/Collision.h"
 #include "../../GameObject/GameObject.h"
@@ -19,16 +19,13 @@ void CharacterSelector::start() {
     mCamera = gameObjectManager.find("Camera")->componentManager().getComponent<Camera>();
 }
 
-void CharacterSelector::selectGameObject(GameObjectPtr& out, const GameObjectPtrList& characters) const {
+void CharacterSelector::selectCharacter(CharacterPtr& out, const CharacterPtrList& characters) const {
     //カメラからマウス位置へ向かうレイを取得する
     const auto& ray = mCamera->screenToRay(Input::mouse().getMousePosition());
 
     for (const auto& chara : characters) {
-        //キャラからAABBを取得
-        auto charaAABB = chara->componentManager().getComponent<AABBCollider>()->getAABB();
-
         //AABBとレイの衝突判定
-        if (Intersect::intersectRayAABB(ray, charaAABB)) {
+        if (Intersect::intersectRayAABB(ray, chara->getAABBCollider().getAABB())) {
             //衝突したゲームオブジェクトを選択する
             out = chara;
             return;

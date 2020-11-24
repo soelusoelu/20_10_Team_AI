@@ -215,6 +215,7 @@
     <ClCompile Include="Component\Mesh\MeshOutLine.cpp" />
     <ClCompile Include="Component\Mesh\MeshShader.cpp" />
     <ClCompile Include="Component\CharacterAction\SimpleCharacter.cpp" />
+    <ClCompile Include="Component\Character\CharacterCommonComponents.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -469,6 +470,7 @@
     <ClInclude Include="Component\Mesh\MeshShader.h" />
     <ClInclude Include="Component\CharacterAction\SimpleCharacter.h" />
     <ClInclude Include="Component\CharacterAction\IChangeActionPhase.h" />
+    <ClInclude Include="Component\Character\CharacterCommonComponents.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />

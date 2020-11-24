@@ -10,11 +10,12 @@ class CharacterCreater;
 class CharacterDeleter;
 class CharacterSelector;
 class DragAndDropCharacter;
+class CharacterCommonComponents;
 
 //キャラ操作統括クラス
 class CharacterOperation : public Component {
-    using GameObjectPtr = std::shared_ptr<GameObject>;
-    using GameObjectPtrList = std::list<GameObjectPtr>;
+    using CharacterPtr = std::shared_ptr<CharacterCommonComponents>;
+    using CharacterPtrList = std::list<CharacterPtr>;
 
 public:
     CharacterOperation(GameObject& gameObject);
@@ -33,16 +34,16 @@ private:
     CharacterOperation(const CharacterOperation&) = delete;
     CharacterOperation& operator=(const CharacterOperation&) = delete;
 
-    //アクションフェーズでの処理
-    void actionPhase();
+    //新しいキャラクターを登録する
+    void addCharacter(const GameObject& newChara);
     //マウスの左ボタンを押した瞬間の処理
     void clickLeftMouseButton();
     //マウスの左ボタンを押している間の処理
     void clickingLeftMouseButton();
 
 private:
-    GameObjectPtrList mCreatedCharacters;
-    std::shared_ptr<GameObject> mSelectObject;
+    CharacterPtrList mCreatedCharacters;
+    std::shared_ptr<CharacterCommonComponents> mSelectObject;
     std::shared_ptr<CharacterCreater> mCreater;
     std::shared_ptr<CharacterDeleter> mDeleter;
     std::shared_ptr<CharacterSelector> mSelector;

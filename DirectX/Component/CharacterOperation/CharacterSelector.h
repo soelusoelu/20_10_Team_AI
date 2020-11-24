@@ -5,17 +5,18 @@
 #include <memory>
 
 class Camera;
+class CharacterCommonComponents;
 
 //キャラクターを選択するクラス
 class CharacterSelector : public Component {
-    using GameObjectPtr = std::shared_ptr<GameObject>;
-    using GameObjectPtrList = std::list<GameObjectPtr>;
+    using CharacterPtr = std::shared_ptr<CharacterCommonComponents>;
+    using CharacterPtrList = std::list<CharacterPtr>;
 
 public:
     CharacterSelector(GameObject& gameObject);
     ~CharacterSelector();
     virtual void start() override;
-    void selectGameObject(GameObjectPtr& out, const GameObjectPtrList& characters) const;
+    void selectCharacter(CharacterPtr& out, const CharacterPtrList& characters) const;
 
 private:
     CharacterSelector(const CharacterSelector&) = delete;
