@@ -5,6 +5,7 @@
 #include "DragAndDropCharacter.h"
 #include "../Character/CharacterCommonComponents.h"
 #include "../CharacterAction/CharacterAction.h"
+#include "../Mesh/MeshOutLine.h"
 #include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObject.h"
 #include "../../GameObject/GameObjectFactory.h"
@@ -55,7 +56,7 @@ void CharacterOperation::updateForOperatePhase() {
     }
     //マウスの左ボタンを離した瞬間なら
     if (mouse.getMouseButtonUp(MouseCode::LeftButton)) {
-        mSelectObject = nullptr;
+        releaseLeftMouseButton();
     }
 }
 
@@ -82,9 +83,13 @@ void CharacterOperation::addCharacter(const GameObject& newChara) {
         return;
     }
 
-    //登録し、選択対象にする
-    mCreatedCharacters.emplace_back(temp);
+    //今選択しているメッシュのアウトラインを非表示にする
+    setOutLineForSelectObject(false);
+
+    //選択対象を変更する
     mSelectObject = temp;
+    //登録する
+    mCreatedCharacters.emplace_back(temp);
 }
 
 void CharacterOperation::clickLeftMouseButton() {
@@ -95,6 +100,9 @@ void CharacterOperation::clickLeftMouseButton() {
 
     //キャラクターを選択する
     mSelector->selectCharacter(mSelectObject, mCreatedCharacters);
+
+    //アウトラインを表示する
+    setOutLineForSelectObject(true);
 }
 
 void CharacterOperation::clickingLeftMouseButton() {
@@ -109,4 +117,16 @@ void CharacterOperation::clickingLeftMouseButton() {
 
     //選択しているゲームオブジェクトを移動する
     mDragAndDrop->dragMove(mSelectObject->gameObject());
+}
+
+void CharacterOperation::releaseLeftMouseButton() {
+    //アウトラインを非表示にして、選択をはずす
+    setOutLineForSelectObject(false);
+    mSelectObject = nullptr;
+}
+
+void CharacterOperation::setOutLineForSelectObject(bool value) {
+    if (mSelectObject) {
+        mSelectObject->getMeshOutLine().setActiveOutLine(value);
+    }
 }

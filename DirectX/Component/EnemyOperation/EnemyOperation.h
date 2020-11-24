@@ -4,13 +4,13 @@
 #include <list>
 #include <memory>
 
-class GameObject;
 class EnemyCreater;
+class CharacterCommonComponents;
 
 //エネミー操作統括クラス
 class EnemyOperation : public Component {
-    using GameObjectPtr = std::shared_ptr<GameObject>;
-    using GameObjectPtrList = std::list<GameObjectPtr>;
+    using CharacterPtr = std::shared_ptr<CharacterCommonComponents>;
+    using CharacterPtrList = std::list<CharacterPtr>;
 
 public:
     EnemyOperation(GameObject& gameObject);
@@ -27,7 +27,7 @@ private:
     EnemyOperation& operator=(const EnemyOperation&) = delete;
 
 private:
-    GameObjectPtrList mEnemys;
+    CharacterPtrList mEnemys;
     std::shared_ptr<EnemyCreater> mCreater;
     int mStageNo;
 };

@@ -1,8 +1,8 @@
 ﻿#include "EnemyOperation.h"
 #include "EnemyCreater.h"
 #include "../ComponentManager.h"
+#include "../Character/CharacterCommonComponents.h"
 #include "../CharacterAction/CharacterAction.h"
-#include "../../GameObject/GameObject.h"
 
 EnemyOperation::EnemyOperation(GameObject& gameObject)
     : Component(gameObject)
@@ -25,7 +25,6 @@ void EnemyOperation::setStageNo(int stageNo) {
 void EnemyOperation::onChangeActionPhase() {
     //全エネミーをアクションフェーズに移行する
     for (const auto& enemy : mEnemys) {
-        auto action = enemy->componentManager().getComponent<CharacterAction>();
-        action->enabled();
+        enemy->getCharacterAction().enabled();
     }
 }

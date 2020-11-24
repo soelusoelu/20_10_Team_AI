@@ -15,6 +15,8 @@ CharacterCommonComponents::~CharacterCommonComponents() = default;
 
 void CharacterCommonComponents::start() {
     mMesh = getComponent<MeshOutLine>();
+    //初期状態はアウトラインなし
+    mMesh->setActiveOutLine(false);
     mCollider = getComponent<AABBCollider>();
     mCharaAction = getComponent<CharacterAction>();
 }

@@ -40,6 +40,10 @@ private:
     void clickLeftMouseButton();
     //マウスの左ボタンを押している間の処理
     void clickingLeftMouseButton();
+    //マウスの左ボタンを離した瞬間の処理
+    void releaseLeftMouseButton();
+    //選択中メッシュのアウトラインを描画するか
+    void setOutLineForSelectObject(bool value);
 
 private:
     CharacterPtrList mCreatedCharacters;

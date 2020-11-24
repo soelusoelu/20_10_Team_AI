@@ -1,4 +1,5 @@
 ﻿#include "EnemyCreater.h"
+#include "../Character/CharacterCommonComponents.h"
 #include "../../GameObject/GameObject.h"
 #include "../../GameObject/GameObjectFactory.h"
 #include "../../DebugLayer/Debug.h"
@@ -13,7 +14,7 @@ EnemyCreater::EnemyCreater(GameObject& gameObject)
 
 EnemyCreater::~EnemyCreater() = default;
 
-void EnemyCreater::createEnemys(GameObjectPtrList& enemys, int stageNo) {
+void EnemyCreater::createEnemys(CharacterPtrList& enemys, int stageNo) {
     rapidjson::Document doc;
     if (!LevelLoader::loadJSON(doc, "Enemys.json")) {
         return;
@@ -48,7 +49,10 @@ void EnemyCreater::createEnemys(GameObjectPtrList& enemys, int stageNo) {
         t.setPosition(pos);
         t.rotate(Vector3::up, 180.f);
 
+        //キャラクター共通コンポーネントを取得する
+        auto ccc = e->componentManager().getComponent<CharacterCommonComponents>();
+
         //リストに登録する
-        enemys.emplace_back(e);
+        enemys.emplace_back(ccc);
     }
 }
