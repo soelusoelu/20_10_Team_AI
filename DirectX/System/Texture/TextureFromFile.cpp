@@ -2,6 +2,7 @@
 #include "../../DebugLayer/Debug.h"
 #include "../../DirectX/DirectXInclude.h"
 #include "../../System/SystemInclude.h"
+#include "../../Utility/StringUtil.h"
 #include <DirectXTex.h>
 
 TextureFromFile::TextureFromFile(const std::string& filePath) :
@@ -22,11 +23,10 @@ void TextureFromFile::createTextureFromFileName(const std::string& filePath) {
     DirectX::ScratchImage scratchImage{};
 
     //Unicodeへ変換する
-    wchar_t dst[256];
-    MultiByteToWideChar(CP_ACP, 0, filePath.c_str(), -1, dst, _countof(dst));
+    auto wcharFilePath = StringUtil::charToWchar(filePath);
 
     //ファイルからテクスチャ情報を取得
-    if (FAILED(DirectX::LoadFromWICFile(dst, DirectX::WIC_FLAGS_NONE, &metadata, scratchImage))) {
+    if (FAILED(DirectX::LoadFromWICFile(wcharFilePath.c_str(), DirectX::WIC_FLAGS_NONE, &metadata, scratchImage))) {
         Debug::windowMessage(filePath + ": テクスチャ読み込み失敗");
         return;
     }

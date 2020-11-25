@@ -23,6 +23,8 @@ public:
     Vector3 getPosition() const;
     //視点を指定
     void lookAt(const Vector3& position);
+    //視点を取得する
+    const Vector3& getLookAt() const;
     //スクリーン座標をワールド座標に変換する
     //zが0のときカメラから最も近い点、1のとき最も遠い点を計算する z[0, 1]
     Vector3 screenToWorldPoint(const Vector2& position, float z = 1.f);

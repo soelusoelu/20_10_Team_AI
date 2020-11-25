@@ -45,7 +45,7 @@ void GameObjectManager::add(const GameObjectPtr & add) {
 void GameObjectManager::clear() {
     std::unordered_set<std::string> excepts;
     excepts.emplace("Camera");
-    excepts.emplace("DirectionalLight");
+    excepts.emplace("Light");
 
     auto itr = mGameObjects.begin();
     while (itr != mGameObjects.end()) {

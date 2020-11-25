@@ -1,4 +1,5 @@
 ﻿#include "CharacterCost.h"
+#include "../../Device/Subject.h"
 #include "../../Imgui/imgui.h"
 #include "../../Math/Math.h"
 #include "../../Utility/LevelLoader.h"
@@ -7,6 +8,7 @@ CharacterCost::CharacterCost(GameObject& gameObject)
     : Component(gameObject)
     , mMaxCost(0)
     , mCurrentCost(0)
+    , mSubject(std::make_unique<Subject>())
 {
 }
 
@@ -25,11 +27,20 @@ void CharacterCost::drawInspector() {
 void CharacterCost::useCost(int amount) {
     mCurrentCost -= amount;
     clampCost();
+    mSubject->notify();
 }
 
 void CharacterCost::returnCost(int amount) {
     mCurrentCost += amount;
     clampCost();
+    mSubject->notify();
+}
+
+void CharacterCost::setCost(int cost, bool maxToo) {
+    mCurrentCost = cost;
+    if (maxToo) {
+        mMaxCost = cost;
+    }
 }
 
 int CharacterCost::getCost() const {
@@ -38,6 +49,10 @@ int CharacterCost::getCost() const {
 
 int CharacterCost::getMaxCost() const {
     return mMaxCost;
+}
+
+void CharacterCost::callbackUpdateCost(const std::function<void()>& callback) {
+    mSubject->addObserver(callback);
 }
 
 void CharacterCost::clampCost() {

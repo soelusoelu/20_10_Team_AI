@@ -12,7 +12,7 @@ public:
 	~ASAI();
 	void Initialize();
 	virtual void start()override;
-	virtual void update()override;
+	void originalUpdate();
 
 private:
 	Vector3 CalcPosition(int phase);

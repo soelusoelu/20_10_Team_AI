@@ -5,6 +5,7 @@
 #include "../../DebugLayer/Debug.h"
 #include "../../DirectX/DirectXInclude.h"
 #include "../../Utility/FileUtil.h"
+#include "../../Utility/StringUtil.h"
 #include <d3dcompiler.h>
 
 #pragma comment(lib, "d3dcompiler.lib")
@@ -126,12 +127,11 @@ void Shader::createPixelShader(const std::string& fileName) {
 
 bool Shader::compileShader(Microsoft::WRL::ComPtr<ID3DBlob>* out, const std::string& fileName, const std::string& entryPoint, const std::string& target) {
     //Unicodeへ変換する
-    wchar_t dst[256];
-    MultiByteToWideChar(CP_ACP, 0, fileName.c_str(), -1, dst, _countof(dst));
+    auto wcharFileName = StringUtil::charToWchar(fileName);
 
     //コンパイル開始
     auto hresult = D3DCompileFromFile(
-        dst,
+        wcharFileName.c_str(),
         nullptr,
         D3D_COMPILE_STANDARD_FILE_INCLUDE,
         entryPoint.c_str(),

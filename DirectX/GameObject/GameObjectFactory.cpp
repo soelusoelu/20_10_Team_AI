@@ -7,8 +7,14 @@
 #include "../Component/AI/ASAI.h"
 #include "../Component/AI/ASCell.h"
 #include "../Component/AI/ASCellManager.h"
+#include "../Component/Character/CharacterCommonComponents.h"
+#include "../Component/CharacterAction/CharacterAction.h"
+#include "../Component/CharacterAction/SimpleCharacter.h"
 #include "../Component/CharacterOperation/CharacterCost.h"
 #include "../Component/CharacterOperation/CharacterCreater.h"
+#include "../Component/CharacterOperation/CharacterDeleter.h"
+#include "../Component/CharacterOperation/CharacterOperation.h"
+#include "../Component/CharacterOperation/CharacterSelector.h"
 #include "../Component/CharacterOperation/CostRenderer.h"
 #include "../Component/CharacterOperation/DragAndDropCharacter.h"
 #include "../Component/CollideOperation/AABBMouseScaler.h"
@@ -19,10 +25,14 @@
 #include "../Component/Collider/AABBCollider.h"
 #include "../Component/Collider/CircleCollider.h"
 #include "../Component/Collider/SphereCollider.h"
+#include "../Component/EnemyOperation/EnemyCreater.h"
+#include "../Component/EnemyOperation/EnemyOperation.h"
 #include "../Component/GameState/GameStart.h"
 #include "../Component/Light/DirectionalLight.h"
 #include "../Component/Light/PointLightComponent.h"
 #include "../Component/Mesh/MeshComponent.h"
+#include "../Component/Mesh/MeshOutLine.h"
+#include "../Component/Mesh/MeshShader.h"
 #include "../Component/Mesh/SkinMeshComponent.h"
 #include "../Component/Other/GameObjectSaveAndLoader.h"
 #include "../Component/Other/HitPointComponent.h"
@@ -57,8 +67,16 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(ASAI);
 
+    ADD_COMPONENT(CharacterCommonComponents);
+
+    ADD_COMPONENT(CharacterAction);
+    ADD_COMPONENT(SimpleCharacter);
+
     ADD_COMPONENT(CharacterCost);
     ADD_COMPONENT(CharacterCreater);
+    ADD_COMPONENT(CharacterDeleter);
+    ADD_COMPONENT(CharacterOperation);
+    ADD_COMPONENT(CharacterSelector);
     ADD_COMPONENT(CostRenderer);
     ADD_COMPONENT(DragAndDropCharacter);
 
@@ -72,12 +90,17 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(CircleCollider);
     ADD_COMPONENT(SphereCollider);
 
+    ADD_COMPONENT(EnemyCreater);
+    ADD_COMPONENT(EnemyOperation);
+
     ADD_COMPONENT(GameStart);
 
     ADD_COMPONENT(DirectionalLight);
     ADD_COMPONENT(PointLightComponent);
 
     ADD_COMPONENT(MeshComponent);
+    ADD_COMPONENT(MeshOutLine);
+    ADD_COMPONENT(MeshShader);
     ADD_COMPONENT(SkinMeshComponent);
 
     ADD_COMPONENT(GameObjectSaveAndLoader);
@@ -181,6 +204,11 @@ void GameObjectFactory::loadComponent(GameObject& gameObject, const rapidjson::V
         Debug::windowMessage(type + "は有効な型ではありません");
         return;
     }
+    //プロパティがあるか
+    if (!component.HasMember("properties")) {
+        return;
+    }
+
     //新規コンポーネントを生成
     itr->second(gameObject, type, component["properties"]);
 }

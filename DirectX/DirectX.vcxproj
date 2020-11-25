@@ -165,6 +165,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Component\Character\CharacterCommonComponents.cpp" />
+    <ClCompile Include="Component\CharacterAction\CharacterAction.cpp" />
+    <ClCompile Include="Component\CharacterOperation\CharacterSelector.cpp" />
+    <ClCompile Include="Component\CharacterOperation\CharacterOperation.cpp" />
+    <ClCompile Include="Component\CharacterOperation\CharacterDeleter.cpp" />
     <ClCompile Include="Component\AI\ASAI.cpp" />
     <ClCompile Include="Component\AI\ASCellManager.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterCost.cpp" />
@@ -189,6 +194,10 @@
     <ClCompile Include="DebugLayer\ImGuiWrapper.cpp" />
     <ClCompile Include="Component\Other\GameObjectSaveAndLoader.cpp" />
     <ClCompile Include="Component\GameState\GameStart.cpp" />
+    <ClCompile Include="Component\EnemyOperation\EnemyCreater.cpp" />
+    <ClCompile Include="Component\EnemyOperation\EnemyOperation.cpp" />
+    <ClCompile Include="Component\Mesh\MeshOutLine.cpp" />
+    <ClCompile Include="Component\Mesh\MeshShader.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxUtility.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMotionParser.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
@@ -206,6 +215,7 @@
     <ClCompile Include="DebugLayer\PointRenderer.cpp" />
     <ClCompile Include="Component\Other\SaveThis.cpp" />
     <ClCompile Include="Component\Scene\StageSelect.cpp" />
+    <ClCompile Include="Component\CharacterAction\SimpleCharacter.cpp" />
     <ClCompile Include="Sprite\SpriteUtility.cpp" />
     <ClCompile Include="System\Shader\InputElementManager.cpp" />
     <ClCompile Include="System\Shader\ConstantBufferManager.cpp" />
@@ -356,6 +366,12 @@
     <ClCompile Include="Component\Sound\WaveformRenderSample.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Component\Character\CharacterCommonComponents.h" />
+    <ClInclude Include="Component\CharacterAction\CharacterAction.h" />
+    <ClInclude Include="Component\CharacterAction\IChangeActionPhase.h" />
+    <ClInclude Include="Component\CharacterOperation\CharacterSelector.h" />
+    <ClInclude Include="Component\CharacterOperation\CharacterOperation.h" />
+    <ClInclude Include="Component\CharacterOperation\CharacterDeleter.h" />
     <ClInclude Include="Component\AI\ASAI.h" />
     <ClInclude Include="Component\AI\ASCell.h" />
     <ClInclude Include="Component\AI\ASCellManager.h" />
@@ -380,6 +396,10 @@
     <ClInclude Include="DebugLayer\ImGuiWrapper.h" />
     <ClInclude Include="Component\Other\GameObjectSaveAndLoader.h" />
     <ClInclude Include="Component\GameState\GameStart.h" />
+    <ClInclude Include="Component\EnemyOperation\EnemyCreater.h" />
+    <ClInclude Include="Component\EnemyOperation\EnemyOperation.h" />
+    <ClInclude Include="Component\Mesh\MeshOutLine.h" />
+    <ClInclude Include="Component\Mesh\MeshShader.h" />
     <ClInclude Include="Mesh\Fbx\FbxUtility.h" />
     <ClInclude Include="Mesh\Fbx\FbxMotionParser.h" />
     <ClInclude Include="Imgui\imconfig.h" />
@@ -407,6 +427,7 @@
     <ClInclude Include="DebugLayer\PointRenderer.h" />
     <ClInclude Include="Component\Other\SaveThis.h" />
     <ClInclude Include="Component\Scene\StageSelect.h" />
+    <ClInclude Include="Component\CharacterAction\SimpleCharacter.h" />
     <ClInclude Include="Sprite\SpriteUtility.h" />
     <ClInclude Include="System\Shader\InputElementManager.h" />
     <ClInclude Include="System\Shader\ConstantBufferManager.h" />
@@ -660,6 +681,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Shader\OutLine.hlsl" />
     <FxCompile Include="Shader\Point3D.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
@@ -696,6 +718,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Shader\SkinMeshOutLine.hlsl" />
     <FxCompile Include="Shader\Texture.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
@@ -709,6 +732,10 @@
     <ProjectReference Include="..\DirectXTex\DirectXTex_Desktop_2019_Win10.vcxproj">
       <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\MeshCommonAndMaterialHeader.hlsli" />
+    <None Include="Shader\MeshCommonHeader.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

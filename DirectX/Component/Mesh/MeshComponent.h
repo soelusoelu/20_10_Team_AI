@@ -10,7 +10,7 @@
 
 class Mesh;
 class MeshManager;
-class Shader;
+class MeshShader;
 class Camera;
 class DirectionalLight;
 
@@ -36,8 +36,6 @@ public:
 
     //メッシュを変更する
     void createMesh(const std::string& fileName, const std::string& directoryPath);
-    //デフォルトのシェーダーに変更する
-    void setDefaultShader();
 
     //状態
     void destroy();
@@ -45,7 +43,7 @@ public:
     bool getActive() const;
     bool isDead() const;
     //メッシュインターフェースを取得する
-    const IMesh& getMesh() const;
+    IMesh& getMesh() const;
     //アルファ値を設定する
     void setAlpha(float alpha);
     //アルファ値を取得する
@@ -62,7 +60,7 @@ private:
 
 protected:
     std::shared_ptr<Mesh> mMesh;
-    std::shared_ptr<Shader> mShader;
+    std::shared_ptr<MeshShader> mMeshShader;
     std::string mFileName;
     std::string mDirectoryPath;
     State mState;

@@ -18,12 +18,14 @@ bool SpriteUtility::containsTexture(const Transform2D& transform, const Vector2&
     auto compen = Window::getWindowCompensate();
 
     //計算に必要な要素を取得する
-    auto sPos = (transform.getPosition() - transform.getPivot()) * compen;
-    auto sScale = transform.getScale() * compen;
-    auto texSize = textureSize * sScale;
+    const auto& scale = transform.getScale();
+    const auto& pivot = transform.getPivot() * scale;
+    const auto& compenPos = (transform.getPosition() - pivot) * compen;
+    const auto& compenScale = scale * compen;
+    const auto& texSize = textureSize * compenScale;
 
     //スプライトをもとに矩形作成
-    Square square(sPos, sPos + texSize);
+    Square square(compenPos, compenPos + texSize);
 
     //矩形の中にマウスの座標が含まれているか
     return square.contains(targetPosition);

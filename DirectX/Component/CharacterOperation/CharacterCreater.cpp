@@ -15,17 +15,22 @@
 CharacterCreater::CharacterCreater(GameObject& gameObject)
     : Component(gameObject)
     , mCost(nullptr)
-    , mClickedSprite(false)
+    , mClickingSprite(false)
     , mClickedSpriteID(0)
+    , mMaxCost(0)
     , mSpriteStartPos(Vector2::zero)
-    , mSpriteScale(Vector2::zero)
-    , mSpriteSpace(0.f) {
+    , mSpriteScale(Vector2::one)
+    , mSpriteSpace(0.f)
+    , mSpritePivot(Pivot::LEFT_TOP)
+{
 }
 
 CharacterCreater::~CharacterCreater() = default;
 
 void CharacterCreater::start() {
     mCost = getComponent<CharacterCost>();
+    //最大コストを設定する
+    mCost->setCost(mMaxCost);
 
     //スプライトの位置を調整する
     for (int i = 0; i < mCharactersInfo.size(); ++i) {
@@ -33,42 +38,10 @@ void CharacterCreater::start() {
         auto& st = s->transform();
         auto texSize = s->getTextureSize() * mSpriteScale;
         st.setScale(mSpriteScale);
+        st.setPivot(mSpritePivot);
 
         //スプライトの位置を計算し配置していく
         st.setPosition(mSpriteStartPos + Vector2(texSize.x * i + mSpriteSpace * i, 0.f));
-    }
-}
-
-void CharacterCreater::update() {
-    //マウスインターフェイスを取得
-    const auto& mouse = Input::mouse();
-
-    //マウスの左ボタンを押した瞬間だったら
-    if (mouse.getMouseButtonDown(MouseCode::LeftButton)) {
-        mClickedSprite = selectSprite(mouse.getMousePosition());
-    }
-    //マウスの左ボタンを押し続けていたら
-    if (mouse.getMouseButton(MouseCode::LeftButton)) {
-        //スプライトをクリックしていないなら終了
-        if (!mClickedSprite) {
-            return;
-        }
-
-        //マウス位置がスプライトの外にあるなら対応するキャラクターを生成する
-        if (!selectSprite(mouse.getMousePosition())) {
-            //対応するIDのキャラクターを生成
-            createCharacter(mClickedSpriteID);
-
-            //コストオーバーしたスプライトの操作
-            spriteCostOver();
-
-            //多重生成を阻止するため
-            mClickedSprite = false;
-        }
-    }
-    //マウスの左ボタンを離した瞬間だったら
-    if (mouse.getMouseButtonUp(MouseCode::LeftButton)) {
-        mClickedSprite = false;
     }
 }
 
@@ -76,9 +49,40 @@ void CharacterCreater::loadProperties(const rapidjson::Value& inObj) {
     JsonHelper::getVector2(inObj, "spriteStartPosition", &mSpriteStartPos);
     JsonHelper::getVector2(inObj, "spriteScale", &mSpriteScale);
     JsonHelper::getFloat(inObj, "spriteSpace", &mSpriteSpace);
+    std::string pivot;
+    if (JsonHelper::getString(inObj, "spritePivot", &pivot)) {
+        PivotFunc::stringToPivot(pivot, &mSpritePivot);
+    }
 }
 
-void CharacterCreater::loadCharacter(const rapidjson::Value& inObj) {
+std::shared_ptr<GameObject> CharacterCreater::create() {
+    std::shared_ptr<GameObject> result = nullptr;
+
+    //マウスインターフェイスを取得
+    const auto& mouse = Input::mouse();
+
+    //マウスの左ボタンを押した瞬間だったら
+    if (mouse.getMouseButtonDown(MouseCode::LeftButton)) {
+        mClickingSprite = selectSprite(mouse.getMousePosition());
+    }
+    //マウスの左ボタンを押し続けていたら
+    if (mouse.getMouseButton(MouseCode::LeftButton)) {
+        clickingLeftMouseButton(result, mouse.getMousePosition());
+    }
+    //マウスの左ボタンを離した瞬間だったら
+    if (mouse.getMouseButtonUp(MouseCode::LeftButton)) {
+        mClickingSprite = false;
+    }
+
+    return result;
+}
+
+void CharacterCreater::receiveExternalData(const rapidjson::Value& inObj, int maxCost) {
+    //最大コストを確保しとく
+    mMaxCost = maxCost;
+    int temp = 0;
+    JsonHelper::getInt(inObj, "cost", &temp);
+
     rapidjson::Document doc;
     if (!LevelLoader::loadJSON(doc, "Characters.json")) {
         return;
@@ -113,9 +117,32 @@ void CharacterCreater::loadCharacter(const rapidjson::Value& inObj) {
     }
 }
 
+bool CharacterCreater::isOperating() const {
+    return mClickingSprite;
+}
+
+void CharacterCreater::clickingLeftMouseButton(std::shared_ptr<GameObject>& out, const Vector2& mousePos) {
+    //スプライトをクリックしていないなら終了
+    if (!mClickingSprite) {
+        return;
+    }
+
+    //マウス位置がクリックしたスプライトの内にあるなら終了
+    if (SpriteUtility::contains(*mCharactersInfo[mClickedSpriteID].sprite, mousePos)) {
+        return;
+    }
+
+    //マウス位置がクリックしたスプライトの外にあるなら対応するキャラクターを生成する
+    out = createCharacter(mClickedSpriteID);
+
+    //コストオーバーしたスプライトの操作
+    spriteCostOver();
+
+    //多重生成を阻止するため
+    mClickingSprite = false;
+}
+
 bool CharacterCreater::selectSprite(const Vector2& mousePos) {
-    //ウィンドウ補正値を取得する
-    auto compen = Window::getWindowCompensate();
     //すべてのスプライトで検証する
     for (int i = 0; i < mCharactersInfo.size(); ++i) {
         auto& chara = mCharactersInfo[i];
@@ -135,12 +162,13 @@ bool CharacterCreater::selectSprite(const Vector2& mousePos) {
     return false;
 }
 
-void CharacterCreater::createCharacter(int id) {
+std::shared_ptr<GameObject> CharacterCreater::createCharacter(int id) {
     //IDに対応するメッシュを作成
     const auto& chara = mCharactersInfo[id];
-    GameObjectCreater::create(chara.fileName);
     //キャラ分のコストを減らす
     mCost->useCost(chara.cost);
+    //キャラを生成し、返す
+    return GameObjectCreater::create(chara.fileName);
 }
 
 void CharacterCreater::spriteCostOver() {

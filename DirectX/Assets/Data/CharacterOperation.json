@@ -1,0 +1,28 @@
+{
+  "components": [
+    {
+      "type": "CharacterOperation",
+      "properties": {
+
+      }
+    },
+    {
+      "type": "CharacterDeleter",
+      "properties": {
+
+      }
+    },
+    {
+      "type": "CharacterSelector",
+      "properties": {
+
+      }
+    },
+    {
+      "type": "DragAndDropCharacter",
+      "properties": {
+
+      }
+    }
+  ]
+}

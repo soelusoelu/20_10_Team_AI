@@ -1,19 +1,28 @@
 {
+  "properties": {
+    "pivot": [ 0.0, -1.0, 0.0 ]
+  },
   "components": [
     {
-      "type": "DragAndDropCharacter",
-      "properties": {
-      }
+      "type": "CharacterCommonComponents",
+      "properties": {}
     },
     {
-      "type": "MeshComponent",
+      "type": "MeshOutLine",
       "properties": {
-        "fileName": "Shape/box.fbx"
+        "fileName": "Shape/box.fbx",
+        "offset": 1.0
       }
     },
     {
       "type": "AABBCollider",
       "properties": {
+      }
+    },
+    {
+      "type": "CharacterAction",
+      "properties": {
+
       }
     }
   ]

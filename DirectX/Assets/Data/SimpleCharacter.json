@@ -1,24 +1,51 @@
 {
   "properties": {
-    "rotation": [ 0.0, 180.0, 0.0 ]
+    "rotation": [ 0.0, -90.0, 0.0 ]
   },
   "components": [
     {
-      "type": "SkinMeshComponent",
-      "properties": {
-        "fileName": "Practice/MyModel.fbx",
-        "shaderName": "SkinMesh.hlsl"
-      }
+      "type": "CharacterCommonComponents",
+      "properties": {}
     },
     {
-      "type": "DragAndDropCharacter",
+      "type": "MeshOutLine",
       "properties": {
+        "fileName": "Practice/test.fbx",
+        "offset": 2.6947
       }
     },
     {
       "type": "AABBCollider",
       "properties": {
+        "min": [
+          -1.4133567810058594,
+          0.20364421606063844,
+          -2.1725893020629885
+        ],
+        "max": [
+          1.411314606666565,
+          5.593063831329346,
+          1.0
+        ]
       }
+    },
+    {
+      "type": "CharacterAction",
+      "properties": {}
+    },
+    {
+      "type": "MeshShader",
+      "properties": {
+        "shaderName": "SkinMesh.hlsl"
+      }
+    },
+    {
+      "type": "SkinMeshComponent",
+      "properties": {}
+    },
+    {
+      "type": "SimpleCharacter",
+      "properties": {}
     }
   ]
 }

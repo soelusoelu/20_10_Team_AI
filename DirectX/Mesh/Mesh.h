@@ -27,6 +27,8 @@ public:
     virtual const Motion& getMotion(unsigned index) const override;
     //モーション数を取得する
     virtual unsigned getMotionCount() const override;
+    //モーション名を設定する
+    virtual void setMotionName(const std::string& name, unsigned index) override;
     //ボーンを取得する
     virtual const Bone& getBone(unsigned index) const override;
     //ボーン数を取得する

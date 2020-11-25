@@ -1,22 +1,19 @@
 ﻿#include "DragAndDropCharacter.h"
+#include "../ComponentManager.h"
 #include "../Camera/Camera.h"
 #include "../Collider/AABBCollider.h"
 #include "../Mesh/MeshComponent.h"
 #include "../../GameObject/GameObject.h"
 #include "../../GameObject/GameObjectManager.h"
-#include "../../Imgui/imgui.h"
 #include "../../Input/Input.h"
-#include "../../Transform/Transform3D.h"
 #include "../../System/Window.h"
+#include "../../Transform/Transform3D.h"
 
-DragAndDropCharacter::DragAndDropCharacter(GameObject& gameObject) :
-    Component(gameObject),
-    mCamera(nullptr),
-    mAABB(nullptr),
-    mIntersectPoint(Vector3::zero),
-    mIsIntersectRayGround(false),
-    mSelectedMesh(true) {
-    //生成直後から動かしたいからmSelectedMeshはtrue
+DragAndDropCharacter::DragAndDropCharacter(GameObject& gameObject)
+    : Component(gameObject)
+    , mCamera(nullptr)
+    , mIntersectPoint(Vector3::zero)
+{
 }
 
 DragAndDropCharacter::~DragAndDropCharacter() = default;
@@ -24,7 +21,6 @@ DragAndDropCharacter::~DragAndDropCharacter() = default;
 void DragAndDropCharacter::start() {
     const auto& gameObjectManager = gameObject().getGameObjectManager();
     mCamera = gameObjectManager.find("Camera")->componentManager().getComponent<Camera>();
-    mAABB = getComponent<AABBCollider>();
 
     //指定のタグを含んでいるオブジェクトをすべて取得する
     const auto& grounds = gameObjectManager.findGameObjects("Ground");
@@ -35,61 +31,35 @@ void DragAndDropCharacter::start() {
             mGroundMeshes.emplace_back(mesh);
         }
     }
-
-    //ピボットの位置を足元にするため
-    transform().setPivot(Vector3::down);
 }
 
-void DragAndDropCharacter::update() {
-    //フラグ初期化
-    mIsIntersectRayGround = false;
+void DragAndDropCharacter::dragMove(GameObject& target) {
+    //マウスの座標を取得する
+    const auto& mousePos = Input::mouse().getMousePosition();
 
-    //マウスインターフェイスを取得
-    const auto& mouse = Input::mouse();
+    //カーソルがゲーム画面外なら終了
+    if (mousePos.x > Window::width()
+        || mousePos.y > Window::height())
+    {
+        return;
+    }
 
     //カメラからマウスの位置へ向かうレイを取得
-    auto rayCameraToMousePos = getRayCamraToMousePos(mouse.getMousePosition());
+    const auto& rayCameraToMousePos = mCamera->screenToRay(mousePos);
 
-    //マウスの左ボタンを押した瞬間だったら
-    if (mouse.getMouseButtonDown(MouseCode::LeftButton)) {
-        selectMesh(rayCameraToMousePos);
-    }
-    //マウスの左ボタンを押し続けていたら
-    if (mouse.getMouseButton(MouseCode::LeftButton)) {
-        intersectRayGroundMeshes(rayCameraToMousePos);
-    }
-    //マウスの左ボタンを離した瞬間だったら
-    if (mouse.getMouseButtonUp(MouseCode::LeftButton)) {
-        mSelectedMesh = false;
+    //地形とレイが衝突していなかったら終了
+    if (!intersectRayGroundMeshes(rayCameraToMousePos)) {
+        return;
     }
 
     //条件を満たしていたら移動
-    moveToIntersectPoint();
-}
-
-void DragAndDropCharacter::drawInspector() {
-    ImGui::Checkbox("SelectedMesh", &mSelectedMesh);
-}
-
-Ray DragAndDropCharacter::getRayCamraToMousePos(const Vector2& mousePos) const {
-    //マウス座標をゲームウィンドウ範囲でクランプする
-    auto mp = mousePos.clamp(mousePos, Vector2::zero, Vector2(Window::width(), Window::height()));
-    //ワールド座標におけるマウスの位置を取得
-    auto worldPos = mCamera->screenToWorldPoint(mp, 1.f);
-
-    //レイ作成
-    const auto& cameraPos = mCamera->getPosition();
-    Vector3 dir = Vector3::normalize(worldPos - cameraPos);
-    Ray ray(cameraPos, dir);
-
-    return ray;
+    moveToIntersectPoint(target);
 }
 
 bool DragAndDropCharacter::intersectRayGroundMeshes(const Ray& ray) {
     //すべての地形メッシュとレイの衝突判定
     for (const auto& gm : mGroundMeshes) {
         if (Intersect::intersectRayMesh(ray, gm->getMesh(), gm->transform(), mIntersectPoint)) {
-            mIsIntersectRayGround = true;
             return true;
         }
     }
@@ -98,36 +68,25 @@ bool DragAndDropCharacter::intersectRayGroundMeshes(const Ray& ray) {
     return false;
 }
 
-void DragAndDropCharacter::selectMesh(const Ray& ray) {
-    //地形とレイが衝突していなかったら終了
-    if (!intersectRayGroundMeshes(ray)) {
+void DragAndDropCharacter::moveToIntersectPoint(GameObject& target) const {
+    //AABBコライダーを取得する
+    auto aabbColl = target.componentManager().getComponent<AABBCollider>();
+    if (!aabbColl) {
         return;
     }
 
-    //AABBとレイの衝突判定
-    if (Intersect::intersectRayAABB(ray, mAABB->getAABB())) {
-        //衝突していたらメッシュが選択される
-        mSelectedMesh = true;
-    }
-}
-
-void DragAndDropCharacter::moveToIntersectPoint() {
-    //メッシュが選択されていなかったら終了
-    if (!mSelectedMesh) {
-        return;
-    }
-    //レイが地形と衝突していなかったら終了
-    if (!mIsIntersectRayGround) {
-        return;
-    }
+    //ターゲットのトランスフォームを取得する
+    auto& t = target.transform();
 
     //X軸を基準に移動制限を設ける
     auto movePoint = mIntersectPoint;
-    auto offset = mAABB->getAABB().max.x - transform().getPosition().x;
+
+    //はみ出した当たり判定分補正を掛ける
+    auto offset = aabbColl->getAABB().max.x - t.getPosition().x;
     if (movePoint.x + offset > 0.f) {
         movePoint.x = -offset;
     }
 
     //衝突点まで移動
-    //transform().setPosition(movePoint);
+    t.setPosition(movePoint);
 }
