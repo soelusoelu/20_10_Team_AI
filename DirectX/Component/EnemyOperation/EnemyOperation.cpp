@@ -35,6 +35,10 @@ void EnemyOperation::onChangeActionPhase() {
     }
 }
 
+const CharacterPtrList& EnemyOperation::getEnemys() const {
+    return mEnemys;
+}
+
 void EnemyOperation::setManager(const ICharacterManager* manager) {
     mManager = manager;
 }

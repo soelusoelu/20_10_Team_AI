@@ -24,6 +24,14 @@ void CharacterManager::awake() {
     mEnemyOperator->setManager(this);
 }
 
+const CharacterPtrList& CharacterManager::getCharacters() const {
+    return mCharaOperator->getCharacters();
+}
+
+const CharacterPtrList& CharacterManager::getEnemys() const {
+    return mEnemyOperator->getEnemys();
+}
+
 const IMap& CharacterManager::getMap() const {
     return *mMap;
 }

@@ -75,6 +75,10 @@ void CharacterOperation::onChangeActionPhase() {
     }
 }
 
+const CharacterPtrList& CharacterOperation::getCharacters() const {
+    return mCreatedCharacters;
+}
+
 void CharacterOperation::setManager(const ICharacterManager* manager) {
     mManager = manager;
 }

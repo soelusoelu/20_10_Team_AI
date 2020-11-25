@@ -15,9 +15,6 @@ class CharacterCommonComponents;
 
 //キャラ操作統括クラス
 class CharacterOperation : public Component {
-    using CharacterPtr = std::shared_ptr<CharacterCommonComponents>;
-    using CharacterPtrList = std::list<CharacterPtr>;
-
 public:
     CharacterOperation(GameObject& gameObject);
     ~CharacterOperation();
@@ -30,6 +27,8 @@ public:
     void transferExternalDataToCharacterCreater(const rapidjson::Value& inObj, int maxCost);
     //アクションモードに変わった際の処理
     void onChangeActionPhase();
+    //全キャラクターを取得する
+    const CharacterPtrList& getCharacters() const;
     //自身を管理するマネージャーを設定する
     void setManager(const ICharacterManager* manager);
 

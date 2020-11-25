@@ -15,7 +15,8 @@ public:
     ~CharacterManager();
     virtual void awake() override;
 
-    //マップ情報を取得する
+    virtual const CharacterPtrList& getCharacters() const override;
+    virtual const CharacterPtrList& getEnemys() const override;
     virtual const IMap& getMap() const override;
 
     //独自アップデート
