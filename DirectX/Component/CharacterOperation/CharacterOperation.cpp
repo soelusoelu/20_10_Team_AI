@@ -13,6 +13,7 @@
 
 CharacterOperation::CharacterOperation(GameObject& gameObject)
     : Component(gameObject)
+    , mManager(nullptr)
     , mSelectObject(nullptr)
     , mCreater(nullptr)
     , mDeleter(nullptr)
@@ -74,6 +75,14 @@ void CharacterOperation::onChangeActionPhase() {
     }
 }
 
+const CharacterPtrList& CharacterOperation::getCharacters() const {
+    return mCreatedCharacters;
+}
+
+void CharacterOperation::setManager(const ICharacterManager* manager) {
+    mManager = manager;
+}
+
 void CharacterOperation::addCharacter(const GameObject& newChara) {
     auto temp = newChara.componentManager().getComponent<CharacterCommonComponents>();
 
@@ -88,6 +97,8 @@ void CharacterOperation::addCharacter(const GameObject& newChara) {
 
     //選択対象を変更する
     mSelectObject = temp;
+    //マネージャーを登録する
+    temp->setManager(mManager);
     //登録する
     mCreatedCharacters.emplace_back(temp);
 }

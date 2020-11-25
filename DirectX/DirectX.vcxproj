@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -166,6 +166,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Component\AI\ASMap.cpp" />
+    <ClCompile Include="Component\Character\CharacterManager.cpp" />
     <ClCompile Include="Component\Character\CharacterCommonComponents.cpp" />
     <ClCompile Include="Component\CharacterAction\CharacterAction.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterSelector.cpp" />
@@ -199,6 +200,7 @@
     <ClCompile Include="Component\EnemyOperation\EnemyOperation.cpp" />
     <ClCompile Include="Component\Mesh\MeshOutLine.cpp" />
     <ClCompile Include="Component\Mesh\MeshShader.cpp" />
+    <ClCompile Include="Component\Map\Map.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxUtility.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMotionParser.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
@@ -368,6 +370,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\AI\ASMap.h" />
+    <ClInclude Include="Component\Character\CharacterManager.h" />
     <ClInclude Include="Component\Character\CharacterCommonComponents.h" />
     <ClInclude Include="Component\CharacterAction\CharacterAction.h" />
     <ClInclude Include="Component\CharacterAction\IChangeActionPhase.h" />
@@ -380,6 +383,7 @@
     <ClInclude Include="Component\CharacterOperation\CharacterCost.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterCreateInfo.h" />
     <ClInclude Include="Component\CharacterOperation\CostRenderer.h" />
+    <ClInclude Include="Component\Character\ICharacterManager.h" />
     <ClInclude Include="Component\CollideOperation\AABBSelector.h" />
     <ClInclude Include="Component\CollideOperation\AABBMouseScaler.h" />
     <ClInclude Include="Component\CollideOperation\CollideAdder.h" />
@@ -394,6 +398,7 @@
     <ClInclude Include="Component\CharacterOperation\DragAndDropCharacter.h" />
     <ClInclude Include="Component\CollideOperation\MeshAdder.h" />
     <ClInclude Include="Component\GameState\GameState.h" />
+    <ClInclude Include="Component\Map\IMap.h" />
     <ClInclude Include="DebugLayer\ImGuiInspector.h" />
     <ClInclude Include="DebugLayer\ImGuiWrapper.h" />
     <ClInclude Include="Component\Other\GameObjectSaveAndLoader.h" />
@@ -402,6 +407,7 @@
     <ClInclude Include="Component\EnemyOperation\EnemyOperation.h" />
     <ClInclude Include="Component\Mesh\MeshOutLine.h" />
     <ClInclude Include="Component\Mesh\MeshShader.h" />
+    <ClInclude Include="Component\Map\Map.h" />
     <ClInclude Include="Mesh\Fbx\FbxUtility.h" />
     <ClInclude Include="Mesh\Fbx\FbxMotionParser.h" />
     <ClInclude Include="Imgui\imconfig.h" />
@@ -683,7 +689,14 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="Shader\OutLine.hlsl" />
+    <FxCompile Include="Shader\OutLine.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Shader\Point3D.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
@@ -720,7 +733,14 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="Shader\SkinMeshOutLine.hlsl" />
+    <FxCompile Include="Shader\SkinMeshOutLine.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Shader\Texture.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>

@@ -1,8 +1,8 @@
 ﻿#include "GamePlay.h"
 #include "Scene.h"
-#include "../CharacterOperation/CharacterOperation.h"
-#include "../EnemyOperation/EnemyOperation.h"
+#include "../Character/CharacterManager.h"
 #include "../GameState/GameStart.h"
+#include "../Map/Map.h"
 #include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObject.h"
 #include "../../GameObject/GameObjectFactory.h"
@@ -13,9 +13,9 @@
 GamePlay::GamePlay(GameObject& gameObject)
     : Component(gameObject)
     , mScene(nullptr)
-    , mCharaOperator(nullptr)
-    , mEnemyOperator(nullptr)
+    , mCharacterManager(nullptr)
     , mGameStart(nullptr)
+    , mMap(nullptr)
     , mState(GameState::OPERATE_PHASE)
     , mStageNo(0)
 {
@@ -25,17 +25,16 @@ GamePlay::~GamePlay() = default;
 
 void GamePlay::start() {
     mScene = getComponent<Scene>();
+    mCharacterManager = getComponent<CharacterManager>();
+    mMap = getComponent<Map>();
+
     GameObjectCreater::create("SphereMap");
-    auto co = GameObjectCreater::create("CharacterOperation");
-    mCharaOperator = co->componentManager().getComponent<CharacterOperation>();
-    auto eo = GameObjectCreater::create("EnemyOperation");
-    mEnemyOperator = eo->componentManager().getComponent<EnemyOperation>();
+
     auto gs = GameObjectCreater::create("GameStart");
     mGameStart = gs->componentManager().getComponent<GameStart>();
 
     mGameStart->callbackGameStart([this] { mState = GameState::ACTION_PHASE; });
-    mGameStart->callbackGameStart([&] { mCharaOperator->onChangeActionPhase(); });
-    mGameStart->callbackGameStart([&] { mEnemyOperator->onChangeActionPhase(); });
+    mGameStart->callbackGameStart([&] { mCharacterManager->onChangeActionPhase(); });
 
     getStageNo();
     loadStage();
@@ -43,7 +42,7 @@ void GamePlay::start() {
 
 void GamePlay::update() {
     if (mState == GameState::OPERATE_PHASE) {
-        mCharaOperator->updateForOperatePhase();
+        mCharacterManager->updateForOperatePhase();
         mGameStart->originalUpdate();
     } else if (mState == GameState::ACTION_PHASE) {
 
@@ -87,19 +86,15 @@ void GamePlay::loadStage() {
         return;
     }
 
-    //情報を渡す
-    mEnemyOperator->setStageNo(mStageNo);
-
-    //地形メッシュを生成
+    //地形データを渡す
     std::string ground;
-    if (JsonHelper::getString(data, "ground", &ground)) {
-        GameObjectCreater::create(ground);
-    }
+    JsonHelper::getString(data, "ground", &ground);
+    mMap->receiveMapData(ground);
 
     //コストを取得
     int cost;
     JsonHelper::getInt(data, "cost", &cost);
 
     //情報を渡す
-    mCharaOperator->transferExternalDataToCharacterCreater(data, cost);
+    mCharacterManager->receiveExternalData(mMap, data, cost, mStageNo);
 }
