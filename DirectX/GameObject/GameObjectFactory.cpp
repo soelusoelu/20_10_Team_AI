@@ -8,6 +8,7 @@
 #include "../Component/AI/ASCell.h"
 #include "../Component/AI/ASCellManager.h"
 #include "../Component/Character/CharacterCommonComponents.h"
+#include "../Component/Character/CharacterManager.h"
 #include "../Component/CharacterAction/CharacterAction.h"
 #include "../Component/CharacterAction/SimpleCharacter.h"
 #include "../Component/CharacterOperation/CharacterCost.h"
@@ -30,6 +31,7 @@
 #include "../Component/GameState/GameStart.h"
 #include "../Component/Light/DirectionalLight.h"
 #include "../Component/Light/PointLightComponent.h"
+#include "../Component/Map/Map.h"
 #include "../Component/Mesh/MeshComponent.h"
 #include "../Component/Mesh/MeshOutLine.h"
 #include "../Component/Mesh/MeshShader.h"
@@ -68,6 +70,7 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(ASAI);
 
     ADD_COMPONENT(CharacterCommonComponents);
+    ADD_COMPONENT(CharacterManager);
 
     ADD_COMPONENT(CharacterAction);
     ADD_COMPONENT(SimpleCharacter);
@@ -97,6 +100,8 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(DirectionalLight);
     ADD_COMPONENT(PointLightComponent);
+
+    ADD_COMPONENT(Map);
 
     ADD_COMPONENT(MeshComponent);
     ADD_COMPONENT(MeshOutLine);

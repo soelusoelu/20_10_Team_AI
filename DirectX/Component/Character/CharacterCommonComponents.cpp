@@ -5,6 +5,7 @@
 
 CharacterCommonComponents::CharacterCommonComponents(GameObject& gameObject)
     : Component(gameObject)
+    , mManager(nullptr)
     , mMesh(nullptr)
     , mCollider(nullptr)
     , mCharaAction(nullptr)
@@ -31,4 +32,12 @@ AABBCollider& CharacterCommonComponents::getAABBCollider() const {
 
 CharacterAction& CharacterCommonComponents::getCharacterAction() const {
     return *mCharaAction;
+}
+
+void CharacterCommonComponents::setManager(const ICharacterManager* manager) {
+    mManager = manager;
+}
+
+const ICharacterManager& CharacterCommonComponents::getManager() const {
+    return *mManager;
 }

@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "../Component.h"
+#include "../Character/ICharacterManager.h"
 #include <list>
 #include <memory>
 
@@ -21,6 +22,8 @@ public:
     void setStageNo(int stageNo);
     //アクションモードに変わった際の処理
     void onChangeActionPhase();
+    //自身を管理するマネージャーを設定する
+    void setManager(const ICharacterManager* manager);
 
 private:
     EnemyOperation(const EnemyOperation&) = delete;
@@ -28,6 +31,7 @@ private:
 
 private:
     CharacterPtrList mEnemys;
+    const ICharacterManager* mManager;
     std::shared_ptr<EnemyCreater> mCreater;
     int mStageNo;
 };
