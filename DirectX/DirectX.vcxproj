@@ -165,6 +165,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Component\AI\ASMap.cpp" />
     <ClCompile Include="Component\Character\CharacterCommonComponents.cpp" />
     <ClCompile Include="Component\CharacterAction\CharacterAction.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterSelector.cpp" />
@@ -366,6 +367,7 @@
     <ClCompile Include="Component\Sound\WaveformRenderSample.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Component\AI\ASMap.h" />
     <ClInclude Include="Component\Character\CharacterCommonComponents.h" />
     <ClInclude Include="Component\CharacterAction\CharacterAction.h" />
     <ClInclude Include="Component\CharacterAction\IChangeActionPhase.h" />

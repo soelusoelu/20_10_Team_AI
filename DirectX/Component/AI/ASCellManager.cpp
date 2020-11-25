@@ -47,6 +47,7 @@ void ASCellManager::Initialize()
 	{
 		cells[i].position.x = i % cellsWidth;
 		cells[i].position.y = (i - cells[i].position.x) / cellsWidth;
+		cells[i].posNum = i;
 	}
 	for (int i = 0; i < cellsWidth * cellsHeight; i++)
 	{
@@ -71,6 +72,11 @@ void ASCellManager::Initialize()
 		}
 		cells[i].neighCells.resize(count);
 	}
+	cellStates.resize(cells.size());
+	for (int i = 0; i < cellStates.size(); i++)
+	{
+		cellStates[i] = E_State::NONE;
+	}
 }
 
 
@@ -85,15 +91,16 @@ void ASCellManager::OpenNeighCells(ASCell* cell)
 {
 	for (int i = 0; i < cell->neighCells.size(); i++)
 	{
-		if (cell->neighCells[i]->state == E_State::NONE)
+		if (cellStates[cell->neighCells[i]->posNum] == E_State::NONE)
 		{
-			cell->neighCells[i]->state = E_State::OPEN;
+			//cell->neighCells[i]->state = E_State::OPEN;
+			cellStates[i] = E_State::OPEN;
 			cell->neighCells[i]->parent = cell;
 			SetCost(cell->neighCells[i]);
 			openedCells.push_back(cell->neighCells[i]);
 		}
 	}
-	cell->state = E_State::CLOSE;
+	cellStates[cell->posNum] = E_State::CLOSE;
 }
 
 void ASCellManager::CheckOpenedCell()
@@ -105,11 +112,11 @@ void ASCellManager::CheckOpenedCell()
 		int neighCount = openedCells[i]->neighCells.size();
 		for (int j = 0; j < neighCount; j++)
 		{
-			if (openedCells[i]->neighCells[j]->state != E_State::NONE)count++;
+			if (cellStates[openedCells[i]->neighCells[j]->posNum] != E_State::NONE)count++;
 		}
-		if ((openedCells[i]->state == E_State::CLOSE||count==neighCount)&& openedCells[i] != goalCell)
+		if ((cellStates[openedCells[i]->posNum] == E_State::CLOSE||count==neighCount)&& openedCells[i] != goalCell)
 		{
-			openedCells[i]->state == E_State::CLOSE;
+			cellStates[openedCells[i]->posNum] == E_State::CLOSE;
 			openedCells.erase(openedCells.begin() + i);
 			i--;
 		}
