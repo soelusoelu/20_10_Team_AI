@@ -54,9 +54,9 @@ void ASCellManager::Initialize()
 		int y = cells[i].position.y;
 		//cells[i].neighCells.resize(8);
 		int count = 0;
-		for (int j = fmax(x - 1, 0); j < fmin(x + 2, cellsWidth); j++)
+		for (int j = fmaxf(x - 1, 0); j < fminf(x + 2, cellsWidth); j++)
 		{
-			for (int k = fmax(y - 1, 0); k < fmin(y + 2, cellsHeight); k++)
+			for (int k = fmaxf(y - 1, 0); k < fminf(y + 2, cellsHeight); k++)
 			{
 				if (j != x || k != y)
 				{
@@ -85,15 +85,15 @@ void ASCellManager::OpenNeighCells(ASCell* cell)
 {
 	for (int i = 0; i < cell->neighCells.size(); i++)
 	{
-		if (cell->neighCells[i]->state == NONE)
+		if (cell->neighCells[i]->state == E_State::NONE)
 		{
-			cell->neighCells[i]->state = OPEN;
+			cell->neighCells[i]->state = E_State::OPEN;
 			cell->neighCells[i]->parent = cell;
 			SetCost(cell->neighCells[i]);
 			openedCells.push_back(cell->neighCells[i]);
 		}
 	}
-	cell->state = CLOSE;
+	cell->state = E_State::CLOSE;
 }
 
 void ASCellManager::CheckOpenedCell()
@@ -105,11 +105,11 @@ void ASCellManager::CheckOpenedCell()
 		int neighCount = openedCells[i]->neighCells.size();
 		for (int j = 0; j < neighCount; j++)
 		{
-			if (openedCells[i]->neighCells[j]->state != NONE)count++;
+			if (openedCells[i]->neighCells[j]->state != E_State::NONE)count++;
 		}
-		if ((openedCells[i]->state == CLOSE||count==neighCount)&& openedCells[i] != goalCell)
+		if ((openedCells[i]->state == E_State::CLOSE||count==neighCount)&& openedCells[i] != goalCell)
 		{
-			openedCells[i]->state == CLOSE;
+			openedCells[i]->state == E_State::CLOSE;
 			openedCells.erase(openedCells.begin() + i);
 			i--;
 		}
@@ -133,8 +133,8 @@ void ASCellManager::SetGoalPosition(Position pos)
 
 void ASCellManager::SetCost(ASCell* cells)
 {
-	int x = fabs(cells->position.x- goalCell->position.x);
-	int y = fabs(cells->position.y - goalCell->position.y);
+	int x = fabsf(cells->position.x- goalCell->position.x);
+	int y = fabsf(cells->position.y - goalCell->position.y);
 	cells->scoreE = fmax(x,y);
 	cells->scoreR = currentCell->scoreR + 1;
 	cells->score = cells->scoreE + cells->scoreR;
