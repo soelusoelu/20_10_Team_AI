@@ -66,7 +66,14 @@ void Window::createWindow(HINSTANCE hInstance) {
     );
 
     //ウインドウの表示
+#ifdef _DEBUG
+    //デバッグ時は最大表示
     ShowWindow(mhWnd, SW_MAXIMIZE);
+#else
+    //リリース時はウィンドウサイズで表示
+    ShowWindow(mhWnd, SW_SHOW);
+#endif // _DEBUG
+
     UpdateWindow(mhWnd);
 }
 

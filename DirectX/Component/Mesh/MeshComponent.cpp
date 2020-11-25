@@ -4,6 +4,7 @@
 #include "../Camera/Camera.h"
 #include "../Light/DirectionalLight.h"
 #include "../../DebugLayer/Debug.h"
+#include "../../DebugLayer/ImGuiWrapper.h"
 #include "../../GameObject/GameObject.h"
 #include "../../Imgui/imgui.h"
 #include "../../Mesh/Mesh.h"
@@ -22,6 +23,7 @@ MeshComponent::MeshComponent(GameObject& gameObject)
     , mFileName()
     , mDirectoryPath()
     , mState(State::ACTIVE)
+    , mColor(ColorPalette::white)
     , mAlpha(1.f)
 {
 }
@@ -68,18 +70,20 @@ void MeshComponent::loadProperties(const rapidjson::Value& inObj) {
         createMesh(mFileName, mDirectoryPath);
     }
 
-    //アルファ値を取得する
+    JsonHelper::getVector3(inObj, "color", &mColor);
     JsonHelper::getFloat(inObj, "alpha", &mAlpha);
 }
 
 void MeshComponent::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const {
     JsonHelper::setString(alloc, inObj, "fileName", mFileName);
     JsonHelper::setString(alloc, inObj, "directoryPath", mDirectoryPath);
+    JsonHelper::setVector3(alloc, inObj, "color", mColor);
     JsonHelper::setFloat(alloc, inObj, "alpha", mAlpha);
 }
 
 void MeshComponent::drawInspector() {
     ImGui::Text("FileName: %s", (mDirectoryPath + mFileName).c_str());
+    ImGuiWrapper::colorEdit3("Color", mColor);
     ImGui::SliderFloat("Alpha", &mAlpha, 0.f, 1.f);
 }
 
@@ -126,6 +130,14 @@ bool MeshComponent::isDead() const {
 
 IMesh& MeshComponent::getMesh() const {
     return *mMesh;
+}
+
+void MeshComponent::setColorRatio(const Vector3& color) {
+    mColor = color;
+}
+
+const Vector3& MeshComponent::getColorRatio() const {
+    return mColor;
 }
 
 void MeshComponent::setAlpha(float alpha) {

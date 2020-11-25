@@ -44,6 +44,10 @@ public:
     bool isDead() const;
     //メッシュインターフェースを取得する
     IMesh& getMesh() const;
+    //使用する色の割合を設定する
+    void setColorRatio(const Vector3& color);
+    //使用する色の割合を取得する
+    const Vector3& getColorRatio() const;
     //アルファ値を設定する
     void setAlpha(float alpha);
     //アルファ値を取得する
@@ -64,6 +68,7 @@ protected:
     std::string mFileName;
     std::string mDirectoryPath;
     State mState;
+    Vector3 mColor;
     float mAlpha;
 
     static inline MeshManager* mMeshManager = nullptr;
