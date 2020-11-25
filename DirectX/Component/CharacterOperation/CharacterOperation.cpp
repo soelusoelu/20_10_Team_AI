@@ -42,6 +42,8 @@ void CharacterOperation::updateForOperatePhase() {
     //生成していたら登録する
     if (newChara) {
         addCharacter(*newChara);
+        //タグを設定する
+        newChara->setTag("Player");
     }
 
     //マウスインターフェイスを取得
