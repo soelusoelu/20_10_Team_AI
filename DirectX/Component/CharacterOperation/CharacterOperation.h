@@ -18,7 +18,6 @@ class CharacterOperation : public Component {
 public:
     CharacterOperation(GameObject& gameObject);
     ~CharacterOperation();
-    virtual void awake() override;
     virtual void start() override;
 
     //独自アップデート
@@ -38,14 +37,16 @@ private:
 
     //新しいキャラクターを登録する
     void addCharacter(const GameObject& newChara);
+    //選択中オブジェクトを変更する
+    void changeSelectObject(const CharacterPtr& target);
     //マウスの左ボタンを押した瞬間の処理
     void clickLeftMouseButton();
     //マウスの左ボタンを押している間の処理
     void clickingLeftMouseButton();
     //マウスの左ボタンを離した瞬間の処理
     void releaseLeftMouseButton();
-    //選択中メッシュのアウトラインを描画するか
-    void setOutLineForSelectObject(bool value);
+    //マウスの右ボタンを押した瞬間の処理
+    void clickRightMouseButton();
 
 private:
     CharacterPtrList mCreatedCharacters;

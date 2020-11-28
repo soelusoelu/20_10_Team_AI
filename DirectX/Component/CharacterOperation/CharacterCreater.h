@@ -19,7 +19,7 @@ public:
     virtual void loadProperties(const rapidjson::Value& inObj) override;
 
     //ゲームオブジェクトを生成する
-    std::shared_ptr<GameObject> create();
+    void create(std::shared_ptr<GameObject>& out);
     //外部からデータを受け取る
     void receiveExternalData(const rapidjson::Value& inObj, int maxCost);
     //このクラスを操作中か

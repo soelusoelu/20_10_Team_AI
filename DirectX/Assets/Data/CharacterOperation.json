@@ -23,6 +23,32 @@
       "properties": {
 
       }
+    },
+    {
+      "type": "CharacterCreater",
+      "properties": {
+        "spriteStartPosition": [ 64.0, 1016.0 ],
+        "spriteScale": [ 0.7, 0.7 ],
+        "spriteSpace": 48.0,
+        "spritePivot": "LeftBottom"
+      }
+    },
+    {
+      "type": "CharacterCost",
+      "properties": {
+      }
+    },
+    {
+      "type": "CostRenderer",
+      "properties": {
+
+      }
+    },
+    {
+      "type": "Text",
+      "properties": {
+        "position": [ 80.0, 750.0 ]
+      }
     }
   ]
 }

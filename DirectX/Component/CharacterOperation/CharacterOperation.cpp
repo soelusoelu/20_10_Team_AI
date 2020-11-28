@@ -24,12 +24,8 @@ CharacterOperation::CharacterOperation(GameObject& gameObject)
 
 CharacterOperation::~CharacterOperation() = default;
 
-void CharacterOperation::awake() {
-    auto cc = GameObjectCreater::create("CharacterCreater");
-    mCreater = cc->componentManager().getComponent<CharacterCreater>();
-}
-
 void CharacterOperation::start() {
+    mCreater = getComponent<CharacterCreater>();
     mDeleter = getComponent<CharacterDeleter>();
     mSelector = getComponent<CharacterSelector>();
     mDragAndDrop = getComponent<DragAndDropCharacter>();
@@ -37,13 +33,14 @@ void CharacterOperation::start() {
 
 void CharacterOperation::updateForOperatePhase() {
     //キャラクターを生成する
-    auto newChara = mCreater->create();
+    std::shared_ptr<GameObject> out = nullptr;
+    mCreater->create(out);
 
     //生成していたら登録する
-    if (newChara) {
-        addCharacter(*newChara);
+    if (out) {
+        addCharacter(*out);
         //タグを設定する
-        newChara->setTag("Player");
+        out->setTag("Player");
     }
 
     //マウスインターフェイスを取得
@@ -60,6 +57,11 @@ void CharacterOperation::updateForOperatePhase() {
     //マウスの左ボタンを離した瞬間なら
     if (mouse.getMouseButtonUp(MouseCode::LeftButton)) {
         releaseLeftMouseButton();
+    }
+
+    //マウスの右ボタンを押した瞬間なら
+    if (mouse.getMouseButtonDown(MouseCode::RightButton)) {
+        clickRightMouseButton();
     }
 }
 
@@ -95,19 +97,29 @@ void CharacterOperation::addCharacter(const GameObject& newChara) {
         return;
     }
 
-    //今選択しているメッシュのアウトラインを非表示にする
-    setOutLineForSelectObject(false);
-
-    //選択対象を変更する
-    mSelectObject = temp;
+    //選択対象にする
+    changeSelectObject(temp);
     //メッシュの青みを強くする
     temp->getMeshOutLine().setColorRatio(ColorPalette::blue);
     //マネージャーを登録する
     temp->setManager(mManager);
-    //新しく選択したメッシュのアウトラインを表示する
-    setOutLineForSelectObject(true);
     //登録する
     mCreatedCharacters.emplace_back(temp);
+}
+
+void CharacterOperation::changeSelectObject(const CharacterPtr& target) {
+    if (mSelectObject) {
+        //アウトラインを非表示にする
+        mSelectObject->getMeshOutLine().setActiveOutLine(false);
+    }
+
+    if (target) {
+        //アウトラインを表示する
+        target->getMeshOutLine().setActiveOutLine(true);
+    }
+
+    //選択対象を変更する
+    mSelectObject = target;
 }
 
 void CharacterOperation::clickLeftMouseButton() {
@@ -117,10 +129,10 @@ void CharacterOperation::clickLeftMouseButton() {
     }
 
     //キャラクターを選択する
-    mSelector->selectCharacter(mSelectObject, mCreatedCharacters);
-
-    //アウトラインを表示する
-    setOutLineForSelectObject(true);
+    CharacterPtr out = nullptr;
+    if (mSelector->selectCharacter(out, mCreatedCharacters)) {
+        changeSelectObject(out);
+    }
 }
 
 void CharacterOperation::clickingLeftMouseButton() {
@@ -138,13 +150,11 @@ void CharacterOperation::clickingLeftMouseButton() {
 }
 
 void CharacterOperation::releaseLeftMouseButton() {
-    //アウトラインを非表示にして、選択をはずす
-    setOutLineForSelectObject(false);
-    mSelectObject = nullptr;
+    //選択対象をはずす
+    //changeSelectObject(nullptr);
 }
 
-void CharacterOperation::setOutLineForSelectObject(bool value) {
-    if (mSelectObject) {
-        mSelectObject->getMeshOutLine().setActiveOutLine(value);
-    }
+void CharacterOperation::clickRightMouseButton() {
+    //選択中のキャラクターを削除する
+    mDeleter->deleteCharacter(mSelectObject);
 }

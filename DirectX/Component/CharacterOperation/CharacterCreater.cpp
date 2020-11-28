@@ -41,9 +41,7 @@ void CharacterCreater::loadProperties(const rapidjson::Value& inObj) {
     }
 }
 
-std::shared_ptr<GameObject> CharacterCreater::create() {
-    std::shared_ptr<GameObject> result = nullptr;
-
+void CharacterCreater::create(std::shared_ptr<GameObject>& out) {
     //マウスインターフェイスを取得
     const auto& mouse = Input::mouse();
 
@@ -53,14 +51,12 @@ std::shared_ptr<GameObject> CharacterCreater::create() {
     }
     //マウスの左ボタンを押し続けていたら
     if (mouse.getMouseButton(MouseCode::LeftButton)) {
-        clickingLeftMouseButton(result, mouse.getMousePosition());
+        clickingLeftMouseButton(out, mouse.getMousePosition());
     }
     //マウスの左ボタンを離した瞬間だったら
     if (mouse.getMouseButtonUp(MouseCode::LeftButton)) {
         mClickingSprite = false;
     }
-
-    return result;
 }
 
 void CharacterCreater::receiveExternalData(const rapidjson::Value& inObj, int maxCost) {

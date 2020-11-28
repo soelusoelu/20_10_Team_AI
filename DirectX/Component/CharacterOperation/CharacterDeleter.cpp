@@ -6,3 +6,7 @@ CharacterDeleter::CharacterDeleter(GameObject& gameObject)
 }
 
 CharacterDeleter::~CharacterDeleter() = default;
+
+void CharacterDeleter::deleteCharacter(CharacterPtr& target) {
+
+}
