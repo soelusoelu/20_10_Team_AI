@@ -11,6 +11,7 @@
       "type": "MeshOutLine",
       "properties": {
         "fileName": "Practice/test.fbx",
+        "outLineColorThickness": 0.05,
         "offset": 2.6947
       }
     },

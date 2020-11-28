@@ -35,15 +35,10 @@ private:
 
     //ゲームオブジェクトの削除
     void remove();
-    //待機中のゲームオブジェクトをメインリストに移す
-    void movePendingToMain();
     //ゲームオブジェクトの名前を走査していく
     void checkNameNumber(std::string& name, bool& isEnd, int number = 0) const;
 
 private:
     //ゲームオブジェクトリスト
     GameObjectPtrList mGameObjects;
-    GameObjectPtrList mPendingGameObjects;
-    //アップデート中かのフラグ
-    bool mUpdatingGameObjects;
 };

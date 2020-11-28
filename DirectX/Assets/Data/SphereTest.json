@@ -12,6 +12,7 @@
       "type": "MeshOutLine",
       "properties": {
         "fileName": "Shape/Sphere.obj",
+        "outLineColorThickness": 0.25,
         "offset": 1.0
       }
     },
