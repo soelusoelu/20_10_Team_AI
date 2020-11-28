@@ -53,5 +53,9 @@ void CharacterManager::receiveExternalData(
 ) {
     mMap = map;
     mCharaOperator->transferExternalDataToCharacterCreater(inObj, maxCost);
-    mEnemyOperator->setStageNo(stageNo);
+    mEnemyOperator->receiveStageNo(stageNo);
+}
+
+const CharacterOperation& CharacterManager::getCharacterOperation() const {
+    return *mCharaOperator;
 }

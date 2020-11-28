@@ -42,17 +42,17 @@ void MeshComponent::start() {
         mMeshShader->setMeshComponent(shared_from_this());
     }
 
-    //ボーンが有るモデルなら
-    if (mMesh->getBoneCount() > 0) {
-        auto skinMesh = getComponent<SkinMeshComponent>();
-        //SkinMeshComponentがアタッチされてないなら追加する
-        if (!skinMesh) {
-            skinMesh = addComponent<SkinMeshComponent>("SkinMeshComponent");
-            skinMesh->setMeshAndShader(shared_from_this(), mMeshShader);
-        }
-    }
-
     if (mMesh) {
+        //ボーンが有るモデルなら
+        if (mMesh->getBoneCount() > 0) {
+            auto skinMesh = getComponent<SkinMeshComponent>();
+            //SkinMeshComponentがアタッチされてないなら追加する
+            if (!skinMesh) {
+                addComponent<SkinMeshComponent>("SkinMeshComponent");
+            }
+        }
+
+        //マネージャーに登録する
         addToManager();
     }
 }

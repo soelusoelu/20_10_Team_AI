@@ -83,6 +83,7 @@ const CharacterPtrList& CharacterOperation::getCharacters() const {
 
 void CharacterOperation::setManager(const ICharacterManager* manager) {
     mManager = manager;
+    mDragAndDrop->setManager(mManager);
 }
 
 void CharacterOperation::addCharacter(const GameObject& newChara) {
@@ -99,8 +100,12 @@ void CharacterOperation::addCharacter(const GameObject& newChara) {
 
     //選択対象を変更する
     mSelectObject = temp;
+    //メッシュの青みを強くする
+    temp->getMeshOutLine().setColorRatio(ColorPalette::blue);
     //マネージャーを登録する
     temp->setManager(mManager);
+    //新しく選択したメッシュのアウトラインを表示する
+    setOutLineForSelectObject(true);
     //登録する
     mCreatedCharacters.emplace_back(temp);
 }

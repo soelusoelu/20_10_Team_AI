@@ -29,20 +29,6 @@ CharacterCreater::~CharacterCreater() = default;
 
 void CharacterCreater::start() {
     mCost = getComponent<CharacterCost>();
-    //最大コストを設定する
-    mCost->setCost(mMaxCost);
-
-    //スプライトの位置を調整する
-    for (int i = 0; i < mCharactersInfo.size(); ++i) {
-        auto& s = mCharactersInfo[i].sprite;
-        auto& st = s->transform();
-        auto texSize = s->getTextureSize() * mSpriteScale;
-        st.setScale(mSpriteScale);
-        st.setPivot(mSpritePivot);
-
-        //スプライトの位置を計算し配置していく
-        st.setPosition(mSpriteStartPos + Vector2(texSize.x * i + mSpriteSpace * i, 0.f));
-    }
 }
 
 void CharacterCreater::loadProperties(const rapidjson::Value& inObj) {
@@ -115,10 +101,30 @@ void CharacterCreater::receiveExternalData(const rapidjson::Value& inObj, int ma
         chara.sprite->setTextureFromFileName(chara.spriteFileName);
         chara.isActive = true;
     }
+
+    //初期化
+    initialize();
 }
 
 bool CharacterCreater::isOperating() const {
     return mClickingSprite;
+}
+
+void CharacterCreater::initialize() {
+    //最大コストを設定する
+    mCost->setCost(mMaxCost);
+
+    //スプライトの位置を調整する
+    for (int i = 0; i < mCharactersInfo.size(); ++i) {
+        auto& s = mCharactersInfo[i].sprite;
+        auto& st = s->transform();
+        auto texSize = s->getTextureSize() * mSpriteScale;
+        st.setScale(mSpriteScale);
+        st.setPivot(mSpritePivot);
+
+        //スプライトの位置を計算し配置していく
+        st.setPosition(mSpriteStartPos + Vector2(texSize.x * i + mSpriteSpace * i, 0.f));
+    }
 }
 
 void CharacterCreater::clickingLeftMouseButton(std::shared_ptr<GameObject>& out, const Vector2& mousePos) {

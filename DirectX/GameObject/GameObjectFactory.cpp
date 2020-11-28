@@ -41,7 +41,6 @@
 #include "../Component/Other/SaveThis.h"
 #include "../Component/Sample/RayMouse.h"
 #include "../Component/Scene/GamePlay.h"
-#include "../Component/Scene/Scene.h"
 #include "../Component/Scene/StageSelect.h"
 #include "../Component/Scene/Title.h"
 #include "../Component/Sound/ListenerComponent.h"
@@ -115,7 +114,6 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(RayMouse);
 
     ADD_COMPONENT(GamePlay);
-    ADD_COMPONENT(Scene);
     ADD_COMPONENT(StageSelect);
     ADD_COMPONENT(Title);
 
@@ -191,6 +189,9 @@ void GameObjectFactory::loadComponents(GameObject& gameObject, const rapidjson::
         //各コンポーネントを読み込んでいく
         loadComponent(gameObject, components[i]);
     }
+
+    //全コンポーネントのstartを呼び出す
+    gameObject.componentManager().start();
 }
 
 void GameObjectFactory::loadComponent(GameObject& gameObject, const rapidjson::Value& component) const {

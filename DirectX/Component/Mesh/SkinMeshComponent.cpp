@@ -18,12 +18,8 @@ SkinMeshComponent::SkinMeshComponent(GameObject& gameObject)
 SkinMeshComponent::~SkinMeshComponent() = default;
 
 void SkinMeshComponent::start() {
-    if (!mMesh) {
-        mMesh = getComponent<MeshComponent>();
-    }
-    if (!mMeshShader) {
-        mMeshShader = getComponent<MeshShader>();
-    }
+    mMesh = getComponent<MeshComponent>();
+    mMeshShader = getComponent<MeshShader>();
 
     mCurrentBones.resize(mMesh->getMesh().getBoneCount());
 }
@@ -79,12 +75,4 @@ int SkinMeshComponent::getCurrentMotionFrame() const {
 
 const std::vector<Matrix4>& SkinMeshComponent::getBoneCurrentFrameMatrix() const {
     return mCurrentBones;
-}
-
-void SkinMeshComponent::setMeshAndShader(
-    const std::shared_ptr<MeshComponent>& mesh,
-    const std::shared_ptr<MeshShader>& shader
-) {
-    mMesh = mesh;
-    mMeshShader = shader;
 }

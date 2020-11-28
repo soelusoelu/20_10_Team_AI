@@ -1,6 +1,8 @@
 ﻿#include "GamePlay.h"
 #include "Scene.h"
 #include "../Character/CharacterManager.h"
+#include "../CharacterOperation/CharacterOperation.h"
+#include "../CharacterOperation/DragAndDropCharacter.h"
 #include "../GameState/GameStart.h"
 #include "../Map/Map.h"
 #include "../../DebugLayer/Debug.h"
@@ -11,8 +13,7 @@
 #include "../../Utility/StringUtil.h"
 
 GamePlay::GamePlay(GameObject& gameObject)
-    : Component(gameObject)
-    , mScene(nullptr)
+    : Scene(gameObject)
     , mCharacterManager(nullptr)
     , mGameStart(nullptr)
     , mMap(nullptr)
@@ -24,7 +25,6 @@ GamePlay::GamePlay(GameObject& gameObject)
 GamePlay::~GamePlay() = default;
 
 void GamePlay::start() {
-    mScene = getComponent<Scene>();
     mCharacterManager = getComponent<CharacterManager>();
     mMap = getComponent<Map>();
 
@@ -35,9 +35,6 @@ void GamePlay::start() {
 
     mGameStart->callbackGameStart([this] { mState = GameState::ACTION_PHASE; });
     mGameStart->callbackGameStart([&] { mCharacterManager->onChangeActionPhase(); });
-
-    getStageNo();
-    loadStage();
 }
 
 void GamePlay::update() {
@@ -55,13 +52,13 @@ void GamePlay::update() {
 #ifdef _DEBUG
     //リセット
     if (Input::keyboard().getKeyDown(KeyCode::R)) {
-        mScene->next("GamePlay");
+        next("GamePlay");
     }
 #endif // _DEBUG
 }
 
-void GamePlay::getStageNo() {
-    const auto& value = mScene->getValueFromPreviousScene("StageNo");
+void GamePlay::getValueFromPreviousScene(const ValuePassMap& values) {
+    const auto& value = values.at("StageNo");
     if (!value.has_value()) {
         return;
     }
@@ -69,6 +66,8 @@ void GamePlay::getStageNo() {
         return;
     }
     mStageNo = std::any_cast<int>(value);
+
+    loadStage();
 }
 
 void GamePlay::loadStage() {

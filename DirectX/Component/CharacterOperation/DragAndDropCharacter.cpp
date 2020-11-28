@@ -12,6 +12,7 @@
 DragAndDropCharacter::DragAndDropCharacter(GameObject& gameObject)
     : Component(gameObject)
     , mCamera(nullptr)
+    , mManager(nullptr)
     , mIntersectPoint(Vector3::zero)
 {
 }
@@ -21,16 +22,6 @@ DragAndDropCharacter::~DragAndDropCharacter() = default;
 void DragAndDropCharacter::start() {
     const auto& gameObjectManager = gameObject().getGameObjectManager();
     mCamera = gameObjectManager.find("Camera")->componentManager().getComponent<Camera>();
-
-    //指定のタグを含んでいるオブジェクトをすべて取得する
-    const auto& grounds = gameObjectManager.findGameObjects("Ground");
-    //取得したオブジェクトからメッシュを取得する
-    for (const auto& g : grounds) {
-        auto mesh = g->componentManager().getComponent<MeshComponent>();
-        if (mesh) {
-            mGroundMeshes.emplace_back(mesh);
-        }
-    }
 }
 
 void DragAndDropCharacter::dragMove(GameObject& target) {
@@ -56,16 +47,14 @@ void DragAndDropCharacter::dragMove(GameObject& target) {
     moveToIntersectPoint(target);
 }
 
-bool DragAndDropCharacter::intersectRayGroundMeshes(const Ray& ray) {
-    //すべての地形メッシュとレイの衝突判定
-    for (const auto& gm : mGroundMeshes) {
-        if (Intersect::intersectRayMesh(ray, gm->getMesh(), gm->transform(), mIntersectPoint)) {
-            return true;
-        }
-    }
+void DragAndDropCharacter::setManager(const ICharacterManager* manager) {
+    mManager = manager;
+}
 
-    //どれとも衝突しなかった
-    return false;
+bool DragAndDropCharacter::intersectRayGroundMeshes(const Ray& ray) {
+    //地形メッシュとレイの衝突判定
+    const auto& map = mManager->getMap();
+    return Intersect::intersectRayMesh(ray, map.getMeshData(), map.getTransform(), mIntersectPoint);
 }
 
 void DragAndDropCharacter::moveToIntersectPoint(GameObject& target) const {

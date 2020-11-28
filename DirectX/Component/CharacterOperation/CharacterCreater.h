@@ -29,6 +29,8 @@ private:
     CharacterCreater(const CharacterCreater&) = delete;
     CharacterCreater& operator=(const CharacterCreater&) = delete;
 
+    //外部から値を受け取ってから初期化
+    void initialize();
     //マウスの左ボタンを押している間の処理
     void clickingLeftMouseButton(std::shared_ptr<GameObject>& out, const Vector2& mousePos);
     //マウスでスプライトを選択する

@@ -41,6 +41,7 @@ void CharacterCost::setCost(int cost, bool maxToo) {
     if (maxToo) {
         mMaxCost = cost;
     }
+    mSubject->notify();
 }
 
 int CharacterCost::getCost() const {

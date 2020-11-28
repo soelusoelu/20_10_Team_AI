@@ -34,7 +34,7 @@ void GameObjectManager::update() {
     DebugUtility::hierarchy().setGameObjectToButton(mGameObjects);
 }
 
-void GameObjectManager::add(const GameObjectPtr & add) {
+void GameObjectManager::add(const GameObjectPtr& add) {
     if (mUpdatingGameObjects) {
         mPendingGameObjects.emplace_back(add);
     } else {
@@ -58,7 +58,7 @@ void GameObjectManager::clear() {
     mPendingGameObjects.clear();
 }
 
-const std::shared_ptr<GameObject>& GameObjectManager::find(const std::string & tag) const {
+const std::shared_ptr<GameObject>& GameObjectManager::find(const std::string& tag) const {
     for (const auto& gameObject : mGameObjects) {
         if (!gameObject->getActive()) {
             continue;
@@ -121,6 +121,7 @@ void GameObjectManager::movePendingToMain() {
     if (mPendingGameObjects.empty()) {
         return;
     }
+
     std::copy(mPendingGameObjects.begin(), mPendingGameObjects.end(), std::back_inserter(mGameObjects));
     mPendingGameObjects.clear();
 }

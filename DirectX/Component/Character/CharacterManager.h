@@ -31,6 +31,9 @@ public:
         int stageNo
     );
 
+    //キャラクター操作クラスを取得する
+    const CharacterOperation& getCharacterOperation() const;
+
 private:
     CharacterManager(const CharacterManager&) = delete;
     CharacterManager& operator=(const CharacterManager&) = delete;

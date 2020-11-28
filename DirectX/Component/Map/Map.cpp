@@ -15,6 +15,10 @@ const IMesh& Map::getMeshData() const {
     return mGroundMesh->getMesh();
 }
 
+const Transform3D& Map::getTransform() const {
+    return mGroundMesh->transform();
+}
+
 void Map::receiveMapData(const std::string& mapName) {
     auto map = GameObjectCreater::create(mapName);
     mGroundMesh = map->componentManager().getComponent<MeshComponent>();

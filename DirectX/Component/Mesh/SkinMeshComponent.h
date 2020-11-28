@@ -29,12 +29,6 @@ public:
     //現在のボーン姿勢行列を取得する
     const std::vector<Matrix4>& getBoneCurrentFrameMatrix() const;
 
-    //startが間に合わないとき用
-    void setMeshAndShader(
-        const std::shared_ptr<MeshComponent>& mesh,
-        const std::shared_ptr<MeshShader>& shader
-    );
-
 private:
     std::shared_ptr<MeshComponent> mMesh;
     std::shared_ptr<MeshShader> mMeshShader;

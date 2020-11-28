@@ -106,7 +106,7 @@ void SceneManager::update() {
         //シーン遷移
         createScene(next);
         //新しいシーンに前のシーンの値を渡す
-        mCurrentScene->initialize(toNextValues);
+        mCurrentScene->getValueFromPreviousScene(toNextValues);
         //このフレームは描画しない
         mShouldDraw = false;
     }

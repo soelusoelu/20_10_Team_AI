@@ -16,7 +16,6 @@ GameObject::~GameObject() {
 }
 
 void GameObject::update() {
-    mComponentManager->start();
     if (getActive()) {
         mComponentManager->update();
     }

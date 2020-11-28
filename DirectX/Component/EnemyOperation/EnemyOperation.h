@@ -15,8 +15,8 @@ public:
     ~EnemyOperation();
     virtual void start() override;
 
-    //ステージ番号を設定する
-    void setStageNo(int stageNo);
+    //ステージ番号を受け取る
+    void receiveStageNo(int stageNo);
     //アクションモードに変わった際の処理
     void onChangeActionPhase();
     //全エネミーを取得する
@@ -32,5 +32,4 @@ private:
     CharacterPtrList mEnemys;
     const ICharacterManager* mManager;
     std::shared_ptr<EnemyCreater> mCreater;
-    int mStageNo;
 };
