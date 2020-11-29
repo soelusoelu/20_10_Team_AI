@@ -29,6 +29,7 @@ CharacterCreater::~CharacterCreater() = default;
 
 void CharacterCreater::start() {
     mCost = getComponent<CharacterCost>();
+    mCost->callbackUpdateCost([&] { spriteCostOver(); });
 }
 
 void CharacterCreater::loadProperties(const rapidjson::Value& inObj) {
@@ -41,7 +42,7 @@ void CharacterCreater::loadProperties(const rapidjson::Value& inObj) {
     }
 }
 
-void CharacterCreater::create(std::shared_ptr<GameObject>& out) {
+void CharacterCreater::create(std::shared_ptr<GameObject>& out, int& cost) {
     //マウスインターフェイスを取得
     const auto& mouse = Input::mouse();
 
@@ -51,7 +52,7 @@ void CharacterCreater::create(std::shared_ptr<GameObject>& out) {
     }
     //マウスの左ボタンを押し続けていたら
     if (mouse.getMouseButton(MouseCode::LeftButton)) {
-        clickingLeftMouseButton(out, mouse.getMousePosition());
+        clickingLeftMouseButton(out, cost, mouse.getMousePosition());
     }
     //マウスの左ボタンを離した瞬間だったら
     if (mouse.getMouseButtonUp(MouseCode::LeftButton)) {
@@ -123,7 +124,7 @@ void CharacterCreater::initialize() {
     }
 }
 
-void CharacterCreater::clickingLeftMouseButton(std::shared_ptr<GameObject>& out, const Vector2& mousePos) {
+void CharacterCreater::clickingLeftMouseButton(std::shared_ptr<GameObject>& out, int& cost, const Vector2& mousePos) {
     //スプライトをクリックしていないなら終了
     if (!mClickingSprite) {
         return;
@@ -134,11 +135,10 @@ void CharacterCreater::clickingLeftMouseButton(std::shared_ptr<GameObject>& out,
         return;
     }
 
-    //マウス位置がクリックしたスプライトの外にあるなら対応するキャラクターを生成する
+    //IDに対応するキャラクターを生成する
     out = createCharacter(mClickedSpriteID);
-
-    //コストオーバーしたスプライトの操作
-    spriteCostOver();
+    //IDに対応するコストを取得する
+    cost = mCharactersInfo[mClickedSpriteID].cost;
 
     //多重生成を阻止するため
     mClickingSprite = false;

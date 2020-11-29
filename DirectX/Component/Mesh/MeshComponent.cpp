@@ -57,6 +57,10 @@ void MeshComponent::start() {
     }
 }
 
+void MeshComponent::finalize() {
+    destroy();
+}
+
 void MeshComponent::onEnable(bool value) {
     setActive(value);
 }

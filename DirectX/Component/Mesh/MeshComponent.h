@@ -26,6 +26,7 @@ public:
     virtual ~MeshComponent();
     virtual void awake() override;
     virtual void start() override;
+    virtual void finalize() override;
     virtual void onEnable(bool value) override;
     virtual void loadProperties(const rapidjson::Value& inObj) override;
     virtual void saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const override;

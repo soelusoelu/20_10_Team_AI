@@ -19,7 +19,7 @@ public:
     virtual void loadProperties(const rapidjson::Value& inObj) override;
 
     //ゲームオブジェクトを生成する
-    void create(std::shared_ptr<GameObject>& out);
+    void create(std::shared_ptr<GameObject>& out, int& cost);
     //外部からデータを受け取る
     void receiveExternalData(const rapidjson::Value& inObj, int maxCost);
     //このクラスを操作中か
@@ -32,7 +32,7 @@ private:
     //外部から値を受け取ってから初期化
     void initialize();
     //マウスの左ボタンを押している間の処理
-    void clickingLeftMouseButton(std::shared_ptr<GameObject>& out, const Vector2& mousePos);
+    void clickingLeftMouseButton(std::shared_ptr<GameObject>& out, int& cost, const Vector2& mousePos);
     //マウスでスプライトを選択する
     bool selectSprite(const Vector2& mousePos);
     //対応するキャラクターを作成する

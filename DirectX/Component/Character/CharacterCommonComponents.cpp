@@ -9,6 +9,7 @@ CharacterCommonComponents::CharacterCommonComponents(GameObject& gameObject)
     , mMesh(nullptr)
     , mCollider(nullptr)
     , mCharaAction(nullptr)
+    , mCost(0)
 {
 }
 
@@ -40,4 +41,12 @@ void CharacterCommonComponents::setManager(const ICharacterManager* manager) {
 
 const ICharacterManager& CharacterCommonComponents::getManager() const {
     return *mManager;
+}
+
+void CharacterCommonComponents::setCost(int cost) {
+    mCost = cost;
+}
+
+int CharacterCommonComponents::getCost() const {
+    return mCost;
 }

@@ -36,7 +36,7 @@ private:
     CharacterOperation& operator=(const CharacterOperation&) = delete;
 
     //新しいキャラクターを登録する
-    void addCharacter(const GameObject& newChara);
+    void addCharacter(const GameObject& newChara, int cost);
     //選択中オブジェクトを変更する
     void changeSelectObject(const CharacterPtr& target);
     //マウスの左ボタンを押した瞬間の処理

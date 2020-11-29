@@ -14,6 +14,7 @@ public:
     CharacterCommonComponents(GameObject& gameObject);
     ~CharacterCommonComponents();
     virtual void start() override;
+
     MeshOutLine& getMeshOutLine() const;
     AABBCollider& getAABBCollider() const;
     CharacterAction& getCharacterAction() const;
@@ -22,6 +23,10 @@ public:
     void setManager(const ICharacterManager* manager);
     //自身を管理するマネージャーを取得する
     const ICharacterManager& getManager() const;
+    //生成時コストを設定する
+    void setCost(int cost);
+    //生成時コストを取得する
+    int getCost() const;
 
 private:
     CharacterCommonComponents(const CharacterCommonComponents&) = delete;
@@ -32,4 +37,5 @@ private:
     std::shared_ptr<MeshOutLine> mMesh;
     std::shared_ptr<AABBCollider> mCollider;
     std::shared_ptr<CharacterAction> mCharaAction;
+    int mCost;
 };

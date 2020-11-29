@@ -34,11 +34,12 @@ void CharacterOperation::start() {
 void CharacterOperation::updateForOperatePhase() {
     //キャラクターを生成する
     std::shared_ptr<GameObject> out = nullptr;
-    mCreater->create(out);
+    int cost = 0;
+    mCreater->create(out, cost);
 
     //生成していたら登録する
     if (out) {
-        addCharacter(*out);
+        addCharacter(*out, cost);
         //タグを設定する
         out->setTag("Player");
     }
@@ -92,7 +93,7 @@ void CharacterOperation::setManager(const ICharacterManager* manager) {
     mDragAndDrop->setManager(mManager);
 }
 
-void CharacterOperation::addCharacter(const GameObject& newChara) {
+void CharacterOperation::addCharacter(const GameObject& newChara, int cost) {
     auto temp = newChara.componentManager().getComponent<CharacterCommonComponents>();
 
     //CharacterCommonComponentsがないならエラー出力して終了
@@ -103,6 +104,8 @@ void CharacterOperation::addCharacter(const GameObject& newChara) {
 
     //選択対象にする
     changeSelectObject(temp);
+    //コストを設定する
+    temp->setCost(cost);
     //メッシュの青みを強くする
     temp->getMeshOutLine().setColorRatio(ColorPalette::blue);
     //マネージャーを登録する
@@ -159,6 +162,13 @@ void CharacterOperation::releaseLeftMouseButton() {
 }
 
 void CharacterOperation::clickRightMouseButton() {
+    //キャラクターを選択していないなら終了
+    if (!mSelectObject) {
+        return;
+    }
+
     //選択中のキャラクターを削除する
-    mDeleter->deleteCharacter(mSelectObject);
+    mDeleter->deleteCharacter(mSelectObject, mCreatedCharacters);
+    //選択対象をなしにする
+    changeSelectObject(nullptr);
 }
