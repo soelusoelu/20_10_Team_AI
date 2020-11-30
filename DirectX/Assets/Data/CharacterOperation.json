@@ -26,7 +26,8 @@
         "spriteStartPosition": [ 64.0, 1016.0 ],
         "spriteScale": [ 0.7, 0.7 ],
         "spriteSpace": 48.0,
-        "spritePivot": "LeftBottom"
+        "spritePivot": "LeftBottom",
+        "nonActiveAlpha": 0.2
       }
     },
     {

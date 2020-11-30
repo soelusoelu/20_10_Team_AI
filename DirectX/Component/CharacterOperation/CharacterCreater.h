@@ -9,9 +9,13 @@
 #include <vector>
 
 class CharacterCost;
+class Text;
 
 //キャラクターを生成するクラス
 class CharacterCreater : public Component {
+    using TextPtr = std::shared_ptr<Text>;
+    using TextPtrArray = std::vector<TextPtr>;
+
 public:
     CharacterCreater(GameObject& gameObject);
     ~CharacterCreater();
@@ -44,6 +48,8 @@ private:
     std::shared_ptr<CharacterCost> mCost;
     //キャラクター配列
     std::vector<CharacterCreateInfo> mCharactersInfo;
+    //キャラコストテキスト表示配列
+    TextPtrArray mTexts;
     //スプライトをクリックしている状態か
     bool mClickingSprite;
     //スプライトのID
@@ -60,4 +66,6 @@ private:
     float mSpriteSpace;
     //スプライトのピボット位置
     Pivot mSpritePivot;
+    //非アクティブ時の透明値
+    float mNonActiveAlpha;
 };

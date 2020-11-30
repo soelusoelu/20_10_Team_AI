@@ -2,6 +2,7 @@
 #include "CharacterCost.h"
 #include "../Mesh/MeshComponent.h"
 #include "../Sprite/SpriteComponent.h"
+#include "../Text/Text.h"
 #include "../../Collision/Collision.h"
 #include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObjectFactory.h"
@@ -11,6 +12,7 @@
 #include "../../System/AssetsManager.h"
 #include "../../System/Window.h"
 #include "../../Utility/LevelLoader.h"
+#include "../../Utility/StringUtil.h"
 
 CharacterCreater::CharacterCreater(GameObject& gameObject)
     : Component(gameObject)
@@ -22,6 +24,7 @@ CharacterCreater::CharacterCreater(GameObject& gameObject)
     , mSpriteScale(Vector2::one)
     , mSpriteSpace(0.f)
     , mSpritePivot(Pivot::LEFT_TOP)
+    , mNonActiveAlpha(0.f)
 {
 }
 
@@ -40,6 +43,7 @@ void CharacterCreater::loadProperties(const rapidjson::Value& inObj) {
     if (JsonHelper::getString(inObj, "spritePivot", &pivot)) {
         PivotFunc::stringToPivot(pivot, &mSpritePivot);
     }
+    JsonHelper::getFloat(inObj, "nonActiveAlpha", &mNonActiveAlpha);
 }
 
 void CharacterCreater::create(std::shared_ptr<GameObject>& out, int& cost) {
@@ -97,6 +101,9 @@ void CharacterCreater::receiveExternalData(const rapidjson::Value& inObj, int ma
         chara.sprite = addComponent<SpriteComponent>("SpriteComponent");
         chara.sprite->setTextureFromFileName(chara.spriteFileName);
         chara.isActive = true;
+
+        //キャラコスト表示用にテキストコンポーネントを追加する
+        mTexts.emplace_back(addComponent<Text>("Text"));
     }
 
     //初期化
@@ -121,6 +128,12 @@ void CharacterCreater::initialize() {
 
         //スプライトの位置を計算し配置していく
         st.setPosition(mSpriteStartPos + Vector2(texSize.x * i + mSpriteSpace * i, 0.f));
+
+        //キャラコスト表示位置を設定する
+        auto& text = mTexts[i];
+        text->setText(StringUtil::intToString(mCharactersInfo[i].cost));
+        text->setPosition(st.getPosition() + Vector2::up * texSize.y);
+        text->setScale(Vector2::one * 0.75f);
     }
 }
 
@@ -182,6 +195,20 @@ void CharacterCreater::onUpdateCost() {
         } else {
             chara.sprite->setAlpha(1.f);
             chara.isActive = true;
+        }
+    }
+
+    for (size_t i = 0; i < mCharactersInfo.size(); ++i) {
+        //キャラのコストが現在のコストより多ければ使用不可にする
+        auto& chara = mCharactersInfo[i];
+        if (chara.cost > mCost->getCost()) {
+            chara.sprite->setAlpha(mNonActiveAlpha);
+            chara.isActive = false;
+            mTexts[i]->setAlpha(mNonActiveAlpha);
+        } else {
+            chara.sprite->setAlpha(1.f);
+            chara.isActive = true;
+            mTexts[i]->setAlpha(1.f);
         }
     }
 }
