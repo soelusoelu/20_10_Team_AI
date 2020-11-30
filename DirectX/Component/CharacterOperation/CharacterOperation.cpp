@@ -1,4 +1,5 @@
 ﻿#include "CharacterOperation.h"
+#include "CharacterCost.h"
 #include "CharacterCreater.h"
 #include "CharacterDeleter.h"
 #include "CharacterSelector.h"
@@ -67,7 +68,11 @@ void CharacterOperation::updateForOperatePhase() {
 }
 
 void CharacterOperation::transferExternalDataToCharacterCreater(const rapidjson::Value& inObj, int maxCost) {
-    mCreater->receiveExternalData(inObj, maxCost);
+    //最大コストを設定する
+    getComponent<CharacterCost>()->setCost(maxCost);
+    //データを受け渡す
+    mCreater->receiveExternalData(inObj);
+
 }
 
 void CharacterOperation::onChangeActionPhase() {
