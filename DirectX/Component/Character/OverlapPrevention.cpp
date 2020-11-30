@@ -1,7 +1,6 @@
 ﻿#include "OverlapPrevention.h"
 #include "CharacterCommonComponents.h"
 #include "../Collider/AABBCollider.h"
-#include "../../DebugLayer/Debug.h"
 #include "../../Transform/Transform3D.h"
 
 OverlapPrevention::OverlapPrevention(GameObject& gameObject)
@@ -11,13 +10,17 @@ OverlapPrevention::OverlapPrevention(GameObject& gameObject)
 
 OverlapPrevention::~OverlapPrevention() = default;
 
-void OverlapPrevention::overlapPrevent(CharacterCommonComponents& target, const CharacterPtrList& characters, const Vector3& movePos, const Vector3& previousPos) const {
-    const auto& targetAabbCollider = target.getAABBCollider();
-    const auto& targetAabb = targetAabbCollider.getAABB();
+void OverlapPrevention::overlapPrevent(
+    const AABBCollider& target,
+    const CharacterPtrList& characters,
+    const Vector3& movePos,
+    const Vector3& previousPos
+) const {
+    const auto& targetAabb = target.getAABB();
 
     for (const auto& other : characters) {
         //同一キャラならスキップ
-        if (&target == other.get()) {
+        if (&target.gameObject() == &other->gameObject()) {
             continue;
         }
 
@@ -26,13 +29,13 @@ void OverlapPrevention::overlapPrevent(CharacterCommonComponents& target, const 
         const auto& otherAabb = otherAabbCollider.getAABB();
 
         //押し出す
-        extrudeX(targetAabbCollider, otherAabbCollider, movePos.x - previousPos.x);
-        //extrudeY(targetAabbCollider, otherAabbCollider, movePos.y - previousPos.y);
-        extrudeZ(targetAabbCollider, otherAabbCollider, movePos.z - previousPos.z);
+        extrudeX(target, otherAabbCollider, movePos, movePos.x - previousPos.x);
+        extrudeY(target, otherAabbCollider, movePos, movePos.y - previousPos.y);
+        extrudeZ(target, otherAabbCollider, movePos, movePos.z - previousPos.z);
     }
 }
 
-void OverlapPrevention::extrudeX(const AABBCollider& target, const AABBCollider& other, float moveAmountX) const {
+void OverlapPrevention::extrudeX(const AABBCollider& target, const AABBCollider& other, const Vector3& movePos, float moveAmountX) const {
     //x軸方向に移動していないなら終了
     if (Math::nearZero(moveAmountX)) {
         return;
@@ -52,35 +55,63 @@ void OverlapPrevention::extrudeX(const AABBCollider& target, const AABBCollider&
         return;
     }
 
-    //押し出されるターゲットのトランスフォーム
-    auto& targetT = target.transform();
-    //衝突対象のトランスフォーム
-    const auto& otherT = other.transform();
+    //衝突対象のx位置
+    const auto otherPosX = other.transform().getPosition().x;
 
     //押し出す量
-    auto extrudeAmount = 0.f;
-    if (moveAmountX > 0.f) {
-        extrudeAmount = otherT.getPosition().x - otherAabb.min.x;
-        extrudeAmount += targetAabb.max.x - targetT.getPosition().x;
-    } else {
-        extrudeAmount = otherAabb.max.x - otherT.getPosition().x;
-        extrudeAmount += targetT.getPosition().x - targetAabb.min.x;
+    auto extrudeAmount = otherPosX - otherAabb.min.x;
+    extrudeAmount += targetAabb.max.x - movePos.x;
+    if (moveAmountX < 0.f) {
         extrudeAmount *= -1.f;
     }
 
     //押し出す
-    const auto& prePos = targetT.getPosition();
-    targetT.setPosition(Vector3(
-        otherT.getPosition().x - extrudeAmount,
-        prePos.y,
-        prePos.z
+    target.transform().setPosition(Vector3(
+        otherPosX - extrudeAmount,
+        movePos.y,
+        movePos.z
     ));
 }
 
-void OverlapPrevention::extrudeY(const AABBCollider& target, const AABBCollider& other, float moveAmountY) const {
+void OverlapPrevention::extrudeY(const AABBCollider& target, const AABBCollider& other, const Vector3& movePos, float moveAmountY) const {
+    //y軸方向に移動していないなら終了
+    if (Math::nearZero(moveAmountY)) {
+        return;
+    }
+
+    //押し出されるターゲットのAABB
+    auto targetAabb = target.getAABB();
+    //衝突対象のAABB
+    const auto& otherAabb = other.getAABB();
+
+    //移動量分当たり判定をずらす
+    targetAabb.min.y += moveAmountY;
+    targetAabb.max.y += moveAmountY;
+
+    //衝突していないなら終了
+    if (!Intersect::intersectAABB(targetAabb, otherAabb)) {
+        return;
+    }
+
+    //衝突対象のy位置
+    const auto otherPosY = other.transform().getPosition().y;
+
+    //押し出す量
+    auto extrudeAmount = otherPosY - otherAabb.min.y;
+    extrudeAmount += targetAabb.max.y - movePos.y;
+    if (moveAmountY < 0.f) {
+        extrudeAmount *= -1.f;
+    }
+
+    //押し出す
+    target.transform().setPosition(Vector3(
+        movePos.x,
+        otherPosY - extrudeAmount,
+        movePos.z
+    ));
 }
 
-void OverlapPrevention::extrudeZ(const AABBCollider& target, const AABBCollider& other, float moveAmountZ) const {
+void OverlapPrevention::extrudeZ(const AABBCollider& target, const AABBCollider& other, const Vector3& movePos, float moveAmountZ) const {
     //z軸方向に移動していないなら終了
     if (Math::nearZero(moveAmountZ)) {
         return;
@@ -100,27 +131,20 @@ void OverlapPrevention::extrudeZ(const AABBCollider& target, const AABBCollider&
         return;
     }
 
-    //押し出されるターゲットのトランスフォーム
-    auto& targetT = target.transform();
-    //衝突対象のトランスフォーム
-    const auto& otherT = other.transform();
+    //衝突対象のz位置
+    const auto otherPosZ = other.transform().getPosition().z;
 
     //押し出す量
-    auto extrudeAmount = 0.f;
-    if (moveAmountZ > 0.f) {
-        extrudeAmount = otherT.getPosition().z - otherAabb.min.z;
-        extrudeAmount += targetAabb.max.z - targetT.getPosition().z;
-    } else {
-        extrudeAmount = otherAabb.max.z - otherT.getPosition().z;
-        extrudeAmount += targetT.getPosition().z - targetAabb.min.z;
+    auto extrudeAmount = otherPosZ - otherAabb.min.z;
+    extrudeAmount += targetAabb.max.z - movePos.z;
+    if (moveAmountZ < 0.f) {
         extrudeAmount *= -1.f;
     }
 
     //押し出す
-    const auto& prePos = targetT.getPosition();
-    targetT.setPosition(Vector3(
-        prePos.x,
-        prePos.y,
-        otherT.getPosition().z - extrudeAmount
+    target.transform().setPosition(Vector3(
+        movePos.x,
+        movePos.y,
+        otherPosZ - extrudeAmount
     ));
 }

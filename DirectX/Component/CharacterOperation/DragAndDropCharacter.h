@@ -18,7 +18,7 @@ public:
     virtual void start() override;
 
     //マウスの位置にターゲットを移動させる
-    void dragMove(CharacterCommonComponents& target);
+    void dragMove(const CharacterCommonComponents& target);
     //キャラクターマネージャーを設定する
     void setManager(const ICharacterManager* manager);
 
@@ -29,7 +29,7 @@ private:
     //すべての地形メッシュとレイの衝突判定を行う
     bool intersectRayGroundMeshes(const Ray& ray);
     //メッシュを衝突点まで移動させる
-    void moveToIntersectPoint(CharacterCommonComponents& target) const;
+    void moveToIntersectPoint(const CharacterCommonComponents& target) const;
 
 private:
     std::shared_ptr<Camera> mCamera;

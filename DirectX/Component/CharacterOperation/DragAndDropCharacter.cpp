@@ -29,7 +29,7 @@ void DragAndDropCharacter::start() {
     mOverlapPreventor = getComponent<OverlapPrevention>();
 }
 
-void DragAndDropCharacter::dragMove(CharacterCommonComponents& target) {
+void DragAndDropCharacter::dragMove(const CharacterCommonComponents& target) {
     //マウスの座標を取得する
     const auto& mousePos = Input::mouse().getMousePosition();
 
@@ -56,7 +56,12 @@ void DragAndDropCharacter::dragMove(CharacterCommonComponents& target) {
     moveToIntersectPoint(target);
 
     //押し出し処理
-    mOverlapPreventor->overlapPrevent(target, target.getManager().getCharacters(), t.getPosition(), prePos);
+    mOverlapPreventor->overlapPrevent(
+        target.getAABBCollider(),
+        target.getManager().getCharacters(),
+        t.getPosition(),
+        prePos
+    );
 }
 
 void DragAndDropCharacter::setManager(const ICharacterManager* manager) {
@@ -69,7 +74,7 @@ bool DragAndDropCharacter::intersectRayGroundMeshes(const Ray& ray) {
     return Intersect::intersectRayMesh(ray, map.getMeshData(), map.getTransform(), mIntersectPoint);
 }
 
-void DragAndDropCharacter::moveToIntersectPoint(CharacterCommonComponents& target) const {
+void DragAndDropCharacter::moveToIntersectPoint(const CharacterCommonComponents& target) const {
     //ターゲットのトランスフォームを取得する
     auto& t = target.transform();
 
