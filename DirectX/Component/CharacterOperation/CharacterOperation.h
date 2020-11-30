@@ -43,6 +43,8 @@ private:
     void releaseLeftMouseButton();
     //マウスの右ボタンを押した瞬間の処理
     void clickRightMouseButton();
+    //キャラクターを生成する際に呼ばれる
+    void onCreateCharacter();
     //新しいキャラクターを登録する
     void addCharacter(const GameObject& newChara, int cost);
     //選択中オブジェクトを変更する

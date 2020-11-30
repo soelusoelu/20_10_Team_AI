@@ -12,6 +12,7 @@
 class SpriteComponent;
 class CharacterCost;
 class Text;
+class Subject;
 
 //キャラクター生成のスプライト操作クラス
 class CharacterCreateSpriteOperation : public Component {
@@ -41,8 +42,8 @@ public:
     bool isOperating() const;
     //生成するキャラのID
     int getCreateCharacterID() const;
-    //キャラを生成できる状態か
-    bool canCreate() const;
+    //キャラクターを生成する際のコールバック
+    void callbackCreateCharacter(const std::function<void()>& callback);
 
 private:
     CharacterCreateSpriteOperation(const CharacterCreateSpriteOperation&) = delete;
@@ -58,6 +59,8 @@ private:
 private:
     const ICharacterCreateInfo* mCreater;
     std::shared_ptr<CharacterCost> mCost;
+    //キャラクターを生成する際のコールバック
+    std::unique_ptr<Subject> mCallbackCreateCharacter;
     //スプライト配列
     std::vector<SpriteInfo> mSprites;
     //キャラコストテキスト表示配列
@@ -66,8 +69,6 @@ private:
     bool mClickingSprite;
     //スプライトのID
     int mClickedSpriteID;
-    //キャラを生成可能か
-    bool mCanCreate;
 
     //↓ファイルから受け取る値
     //スプライトを並べる際の開始位置

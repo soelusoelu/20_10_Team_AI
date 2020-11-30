@@ -15,9 +15,9 @@ CharacterCreateSpriteOperation::CharacterCreateSpriteOperation(GameObject& gameO
     : Component(gameObject)
     , mCreater(nullptr)
     , mCost(nullptr)
+    , mCallbackCreateCharacter(std::make_unique<Subject>())
     , mClickingSprite(false)
     , mClickedSpriteID(0)
-    , mCanCreate(false)
     , mSpriteStartPos(Vector2::zero)
     , mSpriteScale(Vector2::one)
     , mSpriteSpace(0.f)
@@ -66,11 +66,6 @@ void CharacterCreateSpriteOperation::initialize() {
 }
 
 void CharacterCreateSpriteOperation::originalUpdate() {
-    //フラグを折る
-    if (mCanCreate) {
-        mCanCreate = false;
-    }
-
     //マウスインターフェイスを取得
     const auto& mouse = Input::mouse();
 
@@ -85,7 +80,6 @@ void CharacterCreateSpriteOperation::originalUpdate() {
     //マウスの左ボタンを離した瞬間だったら
     if (mouse.getMouseButtonUp(MouseCode::LeftButton)) {
         mClickingSprite = false;
-        mCanCreate = false;
     }
 }
 
@@ -109,8 +103,8 @@ int CharacterCreateSpriteOperation::getCreateCharacterID() const {
     return mClickedSpriteID;
 }
 
-bool CharacterCreateSpriteOperation::canCreate() const {
-    return mCanCreate;
+void CharacterCreateSpriteOperation::callbackCreateCharacter(const std::function<void()>& callback) {
+    mCallbackCreateCharacter->addObserver(callback);
 }
 
 void CharacterCreateSpriteOperation::clickingLeftMouseButton(const Vector2& mousePos) {
@@ -124,8 +118,8 @@ void CharacterCreateSpriteOperation::clickingLeftMouseButton(const Vector2& mous
         return;
     }
 
-    //フラグを立てる
-    mCanCreate = true;
+    //キャラクターを生成したと通知を送る
+    mCallbackCreateCharacter->notify();
 
     //多重生成を阻止するため
     mClickingSprite = false;

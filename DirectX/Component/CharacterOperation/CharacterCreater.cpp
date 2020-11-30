@@ -32,14 +32,19 @@ unsigned CharacterCreater::getCharacterCount() const {
     return mCharactersInfo.size();
 }
 
-void CharacterCreater::create(std::shared_ptr<GameObject>& out, int& cost) {
+void CharacterCreater::originalUpdate() {
     mSpriteOperator->originalUpdate();
+}
 
-    //生成可能か
-    if (mSpriteOperator->canCreate()) {
-        //IDに対応するキャラクターを生成する
-        out = createCharacter(cost);
-    }
+void CharacterCreater::create(std::shared_ptr<GameObject>& out, int& cost) {
+    //IDに対応するキャラクターを作成
+    const auto& chara = mCharactersInfo[mSpriteOperator->getCreateCharacterID()];
+    //キャラ分のコストを減らす
+    mCost->useCost(chara.cost);
+    //引数にコストを入れる
+    cost = chara.cost;
+    //キャラを生成する
+    out = GameObjectCreater::create(chara.fileName);
 }
 
 void CharacterCreater::receiveExternalData(const rapidjson::Value& inObj) {
@@ -82,15 +87,4 @@ void CharacterCreater::receiveExternalData(const rapidjson::Value& inObj) {
 
 bool CharacterCreater::isOperating() const {
     return mSpriteOperator->isOperating();
-}
-
-std::shared_ptr<GameObject> CharacterCreater::createCharacter(int& cost) {
-    //IDに対応するメッシュを作成
-    const auto& chara = mCharactersInfo[mSpriteOperator->getCreateCharacterID()];
-    //キャラ分のコストを減らす
-    mCost->useCost(chara.cost);
-    //引数にコストを入れる
-    cost = chara.cost;
-    //キャラを生成し、返す
-    return GameObjectCreater::create(chara.fileName);
 }

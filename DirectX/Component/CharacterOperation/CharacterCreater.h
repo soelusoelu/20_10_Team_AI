@@ -20,6 +20,8 @@ public:
     virtual const CharacterCreateInfo& getCharacterCreateInfo(unsigned index) const override;
     virtual unsigned getCharacterCount() const override;
 
+    //コンポーネント外のアップデート
+    void originalUpdate();
     //ゲームオブジェクトを生成する
     void create(std::shared_ptr<GameObject>& out, int& cost);
     //外部からデータを受け取る
@@ -30,9 +32,6 @@ public:
 private:
     CharacterCreater(const CharacterCreater&) = delete;
     CharacterCreater& operator=(const CharacterCreater&) = delete;
-
-    //対応するキャラクターを作成する
-    std::shared_ptr<GameObject> createCharacter(int& cost);
 
 private:
     std::shared_ptr<CharacterCreateSpriteOperation> mSpriteOperator;

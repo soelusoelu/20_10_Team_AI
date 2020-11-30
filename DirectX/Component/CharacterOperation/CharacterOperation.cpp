@@ -1,6 +1,7 @@
 ﻿#include "CharacterOperation.h"
 #include "CharacterCost.h"
 #include "CharacterCreater.h"
+#include "CharacterCreateSpriteOperation.h"
 #include "CharacterDeleter.h"
 #include "CharacterSelector.h"
 #include "DragAndDropCharacter.h"
@@ -30,20 +31,12 @@ void CharacterOperation::start() {
     mDeleter = getComponent<CharacterDeleter>();
     mSelector = getComponent<CharacterSelector>();
     mDragAndDrop = getComponent<DragAndDropCharacter>();
+
+    getComponent<CharacterCreateSpriteOperation>()->callbackCreateCharacter([&] { onCreateCharacter(); });
 }
 
 void CharacterOperation::updateForOperatePhase() {
-    //キャラクターを生成する
-    std::shared_ptr<GameObject> out = nullptr;
-    int cost = 0;
-    mCreater->create(out, cost);
-
-    //生成していたら登録する
-    if (out) {
-        addCharacter(*out, cost);
-        //タグを設定する
-        out->setTag("Player");
-    }
+    mCreater->originalUpdate();
 
     //マウスインターフェイスを取得
     const auto& mouse = Input::mouse();
@@ -139,6 +132,20 @@ void CharacterOperation::clickRightMouseButton() {
     mDeleter->deleteCharacter(mSelectObject, mCreatedCharacters);
     //選択対象をなしにする
     changeSelectObject(nullptr);
+}
+
+void CharacterOperation::onCreateCharacter() {
+    //キャラクターを生成する
+    std::shared_ptr<GameObject> out = nullptr;
+    int cost = 0;
+    mCreater->create(out, cost);
+
+    //生成していたら登録する
+    if (out) {
+        addCharacter(*out, cost);
+        //タグを設定する
+        out->setTag("Player");
+    }
 }
 
 void CharacterOperation::addCharacter(const GameObject& newChara, int cost) {
