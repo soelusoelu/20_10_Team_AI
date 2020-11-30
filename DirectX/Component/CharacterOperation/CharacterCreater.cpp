@@ -29,7 +29,7 @@ CharacterCreater::~CharacterCreater() = default;
 
 void CharacterCreater::start() {
     mCost = getComponent<CharacterCost>();
-    mCost->callbackUpdateCost([&] { spriteCostOver(); });
+    mCost->callbackUpdateCost([&] { onUpdateCost(); });
 }
 
 void CharacterCreater::loadProperties(const rapidjson::Value& inObj) {
@@ -173,7 +173,7 @@ std::shared_ptr<GameObject> CharacterCreater::createCharacter(int id) {
     return GameObjectCreater::create(chara.fileName);
 }
 
-void CharacterCreater::spriteCostOver() {
+void CharacterCreater::onUpdateCost() {
     for (auto&& chara : mCharactersInfo) {
         //キャラのコストが現在のコストより多ければ使用不可にする
         if (chara.cost > mCost->getCost()) {

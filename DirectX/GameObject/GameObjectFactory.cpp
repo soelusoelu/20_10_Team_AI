@@ -9,6 +9,7 @@
 #include "../Component/AI/ASCellManager.h"
 #include "../Component/Character/CharacterCommonComponents.h"
 #include "../Component/Character/CharacterManager.h"
+#include "../Component/Character/OverlapPrevention.h"
 #include "../Component/CharacterAction/CharacterAction.h"
 #include "../Component/CharacterAction/SimpleCharacter.h"
 #include "../Component/CharacterOperation/CharacterCost.h"
@@ -70,6 +71,7 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(CharacterCommonComponents);
     ADD_COMPONENT(CharacterManager);
+    ADD_COMPONENT(OverlapPrevention);
 
     ADD_COMPONENT(CharacterAction);
     ADD_COMPONENT(SimpleCharacter);

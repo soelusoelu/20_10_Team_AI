@@ -219,6 +219,7 @@
     <ClCompile Include="Component\Other\SaveThis.cpp" />
     <ClCompile Include="Component\Scene\StageSelect.cpp" />
     <ClCompile Include="Component\CharacterAction\SimpleCharacter.cpp" />
+    <ClCompile Include="Component\Character\OverlapPrevention.cpp" />
     <ClCompile Include="Sprite\SpriteUtility.cpp" />
     <ClCompile Include="System\Shader\InputElementManager.cpp" />
     <ClCompile Include="System\Shader\ConstantBufferManager.cpp" />
@@ -436,6 +437,7 @@
     <ClInclude Include="Component\Other\SaveThis.h" />
     <ClInclude Include="Component\Scene\StageSelect.h" />
     <ClInclude Include="Component\CharacterAction\SimpleCharacter.h" />
+    <ClInclude Include="Component\Character\OverlapPrevention.h" />
     <ClInclude Include="Sprite\SpriteUtility.h" />
     <ClInclude Include="System\Shader\InputElementManager.h" />
     <ClInclude Include="System\Shader\ConstantBufferManager.h" />

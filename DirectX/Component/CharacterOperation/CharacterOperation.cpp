@@ -93,6 +93,49 @@ void CharacterOperation::setManager(const ICharacterManager* manager) {
     mDragAndDrop->setManager(mManager);
 }
 
+void CharacterOperation::clickLeftMouseButton() {
+    //キャラクター生成クラスが操作していたら終了
+    if (mCreater->isOperating()) {
+        return;
+    }
+
+    //キャラクターを選択する
+    CharacterPtr out = nullptr;
+    mSelector->selectCharacter(out, mCreatedCharacters);
+    changeSelectObject(out);
+}
+
+void CharacterOperation::clickingLeftMouseButton() {
+    //キャラクター生成クラスが操作していたら終了
+    if (mCreater->isOperating()) {
+        return;
+    }
+    //オブジェクトが選択されていなかったら終了
+    if (!mSelectObject) {
+        return;
+    }
+
+    //選択しているゲームオブジェクトを移動する
+    mDragAndDrop->dragMove(*mSelectObject);
+}
+
+void CharacterOperation::releaseLeftMouseButton() {
+    //選択対象をはずす
+    //changeSelectObject(nullptr);
+}
+
+void CharacterOperation::clickRightMouseButton() {
+    //キャラクターを選択していないなら終了
+    if (!mSelectObject) {
+        return;
+    }
+
+    //選択中のキャラクターを削除する
+    mDeleter->deleteCharacter(mSelectObject, mCreatedCharacters);
+    //選択対象をなしにする
+    changeSelectObject(nullptr);
+}
+
 void CharacterOperation::addCharacter(const GameObject& newChara, int cost) {
     auto temp = newChara.componentManager().getComponent<CharacterCommonComponents>();
 
@@ -127,48 +170,4 @@ void CharacterOperation::changeSelectObject(const CharacterPtr& target) {
 
     //選択対象を変更する
     mSelectObject = target;
-}
-
-void CharacterOperation::clickLeftMouseButton() {
-    //キャラクター生成クラスが操作していたら終了
-    if (mCreater->isOperating()) {
-        return;
-    }
-
-    //キャラクターを選択する
-    CharacterPtr out = nullptr;
-    if (mSelector->selectCharacter(out, mCreatedCharacters)) {
-        changeSelectObject(out);
-    }
-}
-
-void CharacterOperation::clickingLeftMouseButton() {
-    //キャラクター生成クラスが操作していたら終了
-    if (mCreater->isOperating()) {
-        return;
-    }
-    //オブジェクトが選択されていなかったら終了
-    if (!mSelectObject) {
-        return;
-    }
-
-    //選択しているゲームオブジェクトを移動する
-    mDragAndDrop->dragMove(mSelectObject->gameObject());
-}
-
-void CharacterOperation::releaseLeftMouseButton() {
-    //選択対象をはずす
-    //changeSelectObject(nullptr);
-}
-
-void CharacterOperation::clickRightMouseButton() {
-    //キャラクターを選択していないなら終了
-    if (!mSelectObject) {
-        return;
-    }
-
-    //選択中のキャラクターを削除する
-    mDeleter->deleteCharacter(mSelectObject, mCreatedCharacters);
-    //選択対象をなしにする
-    changeSelectObject(nullptr);
 }

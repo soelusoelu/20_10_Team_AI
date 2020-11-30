@@ -7,6 +7,8 @@
 #include <memory>
 
 class Camera;
+class CharacterCommonComponents;
+class OverlapPrevention;
 
 //キャラクターをマウスで操作するクラス
 class DragAndDropCharacter : public Component {
@@ -16,7 +18,7 @@ public:
     virtual void start() override;
 
     //マウスの位置にターゲットを移動させる
-    void dragMove(GameObject& target);
+    void dragMove(CharacterCommonComponents& target);
     //キャラクターマネージャーを設定する
     void setManager(const ICharacterManager* manager);
 
@@ -27,10 +29,11 @@ private:
     //すべての地形メッシュとレイの衝突判定を行う
     bool intersectRayGroundMeshes(const Ray& ray);
     //メッシュを衝突点まで移動させる
-    void moveToIntersectPoint(GameObject& target) const;
+    void moveToIntersectPoint(CharacterCommonComponents& target) const;
 
 private:
     std::shared_ptr<Camera> mCamera;
+    std::shared_ptr<OverlapPrevention> mOverlapPreventor;
     const ICharacterManager* mManager;
     //レイと地形との衝突点
     Vector3 mIntersectPoint;

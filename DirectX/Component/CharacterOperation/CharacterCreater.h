@@ -37,8 +37,8 @@ private:
     bool selectSprite(const Vector2& mousePos);
     //対応するキャラクターを作成する
     std::shared_ptr<GameObject> createCharacter(int id);
-    //コストオーバーしてるスプライトの操作
-    void spriteCostOver();
+    //コストが更新されたら
+    void onUpdateCost();
 
 private:
     std::shared_ptr<CharacterCost> mCost;

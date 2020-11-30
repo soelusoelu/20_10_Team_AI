@@ -219,6 +219,7 @@
     <ClCompile Include="Component\AI\ASMap.cpp" />
     <ClCompile Include="Component\Map\Map.cpp" />
     <ClCompile Include="Component\Character\CharacterManager.cpp" />
+    <ClCompile Include="Component\Character\OverlapPrevention.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -479,6 +480,7 @@
     <ClInclude Include="Component\Character\CharacterManager.h" />
     <ClInclude Include="Component\Map\IMap.h" />
     <ClInclude Include="Component\Character\ICharacterManager.h" />
+    <ClInclude Include="Component\Character\OverlapPrevention.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />

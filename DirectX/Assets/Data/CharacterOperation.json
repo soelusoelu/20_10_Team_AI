@@ -2,27 +2,23 @@
   "components": [
     {
       "type": "CharacterOperation",
-      "properties": {
-
-      }
+      "properties": {}
     },
     {
       "type": "CharacterDeleter",
-      "properties": {
-
-      }
+      "properties": {}
     },
     {
       "type": "CharacterSelector",
-      "properties": {
-
-      }
+      "properties": {}
     },
     {
       "type": "DragAndDropCharacter",
-      "properties": {
-
-      }
+      "properties": {}
+    },
+    {
+      "type": "OverlapPrevention",
+      "properties": {}
     },
     {
       "type": "CharacterCreater",
@@ -35,14 +31,11 @@
     },
     {
       "type": "CharacterCost",
-      "properties": {
-      }
+      "properties": {}
     },
     {
       "type": "CostRenderer",
-      "properties": {
-
-      }
+      "properties": {}
     },
     {
       "type": "Text",

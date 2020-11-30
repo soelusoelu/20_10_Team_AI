@@ -1,4 +1,6 @@
 ﻿#include "DragAndDropCharacter.h"
+#include "../Character/CharacterCommonComponents.h"
+#include "../Character/OverlapPrevention.h"
 #include "../ComponentManager.h"
 #include "../Camera/Camera.h"
 #include "../Collider/AABBCollider.h"
@@ -12,6 +14,7 @@
 DragAndDropCharacter::DragAndDropCharacter(GameObject& gameObject)
     : Component(gameObject)
     , mCamera(nullptr)
+    , mOverlapPreventor(nullptr)
     , mManager(nullptr)
     , mIntersectPoint(Vector3::zero)
 {
@@ -22,9 +25,11 @@ DragAndDropCharacter::~DragAndDropCharacter() = default;
 void DragAndDropCharacter::start() {
     const auto& gameObjectManager = gameObject().getGameObjectManager();
     mCamera = gameObjectManager.find("Camera")->componentManager().getComponent<Camera>();
+
+    mOverlapPreventor = getComponent<OverlapPrevention>();
 }
 
-void DragAndDropCharacter::dragMove(GameObject& target) {
+void DragAndDropCharacter::dragMove(CharacterCommonComponents& target) {
     //マウスの座標を取得する
     const auto& mousePos = Input::mouse().getMousePosition();
 
@@ -43,8 +48,15 @@ void DragAndDropCharacter::dragMove(GameObject& target) {
         return;
     }
 
+    const auto& t = target.transform();
+    //移動前の位置を確保
+    const auto& prePos = t.getPosition();
+
     //条件を満たしていたら移動
     moveToIntersectPoint(target);
+
+    //押し出し処理
+    mOverlapPreventor->overlapPrevent(target, target.getManager().getCharacters(), t.getPosition(), prePos);
 }
 
 void DragAndDropCharacter::setManager(const ICharacterManager* manager) {
@@ -57,21 +69,17 @@ bool DragAndDropCharacter::intersectRayGroundMeshes(const Ray& ray) {
     return Intersect::intersectRayMesh(ray, map.getMeshData(), map.getTransform(), mIntersectPoint);
 }
 
-void DragAndDropCharacter::moveToIntersectPoint(GameObject& target) const {
-    //AABBコライダーを取得する
-    auto aabbColl = target.componentManager().getComponent<AABBCollider>();
-    if (!aabbColl) {
-        return;
-    }
-
+void DragAndDropCharacter::moveToIntersectPoint(CharacterCommonComponents& target) const {
     //ターゲットのトランスフォームを取得する
     auto& t = target.transform();
+
+    const auto& aabb = target.getAABBCollider().getAABB();
 
     //X軸を基準に移動制限を設ける
     auto movePoint = mIntersectPoint;
 
     //はみ出した当たり判定分補正を掛ける
-    auto offset = aabbColl->getAABB().max.x - t.getPosition().x;
+    auto offset = aabb.max.x - t.getPosition().x;
     if (movePoint.x + offset > 0.f) {
         movePoint.x = -offset;
     }
