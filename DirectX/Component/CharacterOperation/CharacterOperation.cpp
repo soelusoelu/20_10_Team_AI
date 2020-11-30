@@ -77,7 +77,7 @@ void CharacterOperation::transferExternalDataToCharacterCreater(const rapidjson:
 
 void CharacterOperation::onChangeActionPhase() {
     //アクションフェーズでは使用しない
-    mCreater->gameObject().setActive(false);
+    gameObject().setActive(false);
     //アウトラインを非表示にする
     if (mSelectObject) {
         mSelectObject->getMeshOutLine().setActiveOutLine(false);

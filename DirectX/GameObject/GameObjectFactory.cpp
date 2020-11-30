@@ -14,6 +14,7 @@
 #include "../Component/CharacterAction/SimpleCharacter.h"
 #include "../Component/CharacterOperation/CharacterCost.h"
 #include "../Component/CharacterOperation/CharacterCreater.h"
+#include "../Component/CharacterOperation/CharacterCreateSpriteOperation.h"
 #include "../Component/CharacterOperation/CharacterDeleter.h"
 #include "../Component/CharacterOperation/CharacterOperation.h"
 #include "../Component/CharacterOperation/CharacterSelector.h"
@@ -78,6 +79,7 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(CharacterCost);
     ADD_COMPONENT(CharacterCreater);
+    ADD_COMPONENT(CharacterCreateSpriteOperation);
     ADD_COMPONENT(CharacterDeleter);
     ADD_COMPONENT(CharacterOperation);
     ADD_COMPONENT(CharacterSelector);

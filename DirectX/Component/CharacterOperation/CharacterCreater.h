@@ -1,26 +1,24 @@
 ﻿#pragma once
 
 #include "CharacterCreateInfo.h"
+#include "ICharacterCreateInfo.h"
 #include "../Component.h"
 #include "../../Math/Math.h"
-#include "../../Transform/Pivot.h"
 #include <memory>
-#include <string>
 #include <vector>
 
+class CharacterCreateSpriteOperation;
 class CharacterCost;
-class Text;
 
 //キャラクターを生成するクラス
-class CharacterCreater : public Component {
-    using TextPtr = std::shared_ptr<Text>;
-    using TextPtrArray = std::vector<TextPtr>;
-
+class CharacterCreater : public Component, public ICharacterCreateInfo {
 public:
     CharacterCreater(GameObject& gameObject);
     ~CharacterCreater();
     virtual void start() override;
-    virtual void loadProperties(const rapidjson::Value& inObj) override;
+
+    virtual const CharacterCreateInfo& getCharacterCreateInfo(unsigned index) const override;
+    virtual unsigned getCharacterCount() const override;
 
     //ゲームオブジェクトを生成する
     void create(std::shared_ptr<GameObject>& out, int& cost);
@@ -33,37 +31,12 @@ private:
     CharacterCreater(const CharacterCreater&) = delete;
     CharacterCreater& operator=(const CharacterCreater&) = delete;
 
-    //外部から値を受け取ってから初期化
-    void initialize();
-    //マウスの左ボタンを押している間の処理
-    void clickingLeftMouseButton(std::shared_ptr<GameObject>& out, int& cost, const Vector2& mousePos);
-    //マウスでスプライトを選択する
-    bool selectSprite(const Vector2& mousePos);
     //対応するキャラクターを作成する
-    std::shared_ptr<GameObject> createCharacter(int id);
-    //コストが更新されたら
-    void onUpdateCost();
+    std::shared_ptr<GameObject> createCharacter(int& cost);
 
 private:
+    std::shared_ptr<CharacterCreateSpriteOperation> mSpriteOperator;
     std::shared_ptr<CharacterCost> mCost;
     //キャラクター配列
     std::vector<CharacterCreateInfo> mCharactersInfo;
-    //キャラコストテキスト表示配列
-    TextPtrArray mTexts;
-    //スプライトをクリックしている状態か
-    bool mClickingSprite;
-    //スプライトのID
-    int mClickedSpriteID;
-
-    //↓ファイルから受け取る値
-    //スプライトを並べる際の開始位置
-    Vector2 mSpriteStartPos;
-    //スプライト共通のスケール値
-    Vector2 mSpriteScale;
-    //スプライトを並べる際の間隔
-    float mSpriteSpace;
-    //スプライトのピボット位置
-    Pivot mSpritePivot;
-    //非アクティブ時の透明値
-    float mNonActiveAlpha;
 };

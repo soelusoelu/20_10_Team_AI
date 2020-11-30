@@ -1,65 +1,44 @@
 ﻿#include "CharacterCreater.h"
 #include "CharacterCost.h"
+#include "CharacterCreateSpriteOperation.h"
 #include "../Mesh/MeshComponent.h"
 #include "../Sprite/SpriteComponent.h"
-#include "../Text/Text.h"
-#include "../../Collision/Collision.h"
-#include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObjectFactory.h"
-#include "../../Input/Input.h"
-#include "../../Transform/Transform2D.h"
-#include "../../Sprite/SpriteUtility.h"
 #include "../../System/AssetsManager.h"
-#include "../../System/Window.h"
 #include "../../Utility/LevelLoader.h"
-#include "../../Utility/StringUtil.h"
+#include <cassert>
 
 CharacterCreater::CharacterCreater(GameObject& gameObject)
     : Component(gameObject)
+    , mSpriteOperator(nullptr)
     , mCost(nullptr)
-    , mClickingSprite(false)
-    , mClickedSpriteID(0)
-    , mSpriteStartPos(Vector2::zero)
-    , mSpriteScale(Vector2::one)
-    , mSpriteSpace(0.f)
-    , mSpritePivot(Pivot::LEFT_TOP)
-    , mNonActiveAlpha(0.f)
 {
 }
 
 CharacterCreater::~CharacterCreater() = default;
 
 void CharacterCreater::start() {
+    mSpriteOperator = getComponent<CharacterCreateSpriteOperation>();
+    mSpriteOperator->setCharacterCreater(this);
     mCost = getComponent<CharacterCost>();
-    mCost->callbackUpdateCost([&] { onUpdateCost(); });
 }
 
-void CharacterCreater::loadProperties(const rapidjson::Value& inObj) {
-    JsonHelper::getVector2(inObj, "spriteStartPosition", &mSpriteStartPos);
-    JsonHelper::getVector2(inObj, "spriteScale", &mSpriteScale);
-    JsonHelper::getFloat(inObj, "spriteSpace", &mSpriteSpace);
-    std::string pivot;
-    if (JsonHelper::getString(inObj, "spritePivot", &pivot)) {
-        PivotFunc::stringToPivot(pivot, &mSpritePivot);
-    }
-    JsonHelper::getFloat(inObj, "nonActiveAlpha", &mNonActiveAlpha);
+const CharacterCreateInfo& CharacterCreater::getCharacterCreateInfo(unsigned index) const {
+    assert(index < mCharactersInfo.size());
+    return mCharactersInfo[index];
+}
+
+unsigned CharacterCreater::getCharacterCount() const {
+    return mCharactersInfo.size();
 }
 
 void CharacterCreater::create(std::shared_ptr<GameObject>& out, int& cost) {
-    //マウスインターフェイスを取得
-    const auto& mouse = Input::mouse();
+    mSpriteOperator->originalUpdate();
 
-    //マウスの左ボタンを押した瞬間だったら
-    if (mouse.getMouseButtonDown(MouseCode::LeftButton)) {
-        mClickingSprite = selectSprite(mouse.getMousePosition());
-    }
-    //マウスの左ボタンを押し続けていたら
-    if (mouse.getMouseButton(MouseCode::LeftButton)) {
-        clickingLeftMouseButton(out, cost, mouse.getMousePosition());
-    }
-    //マウスの左ボタンを離した瞬間だったら
-    if (mouse.getMouseButtonUp(MouseCode::LeftButton)) {
-        mClickingSprite = false;
+    //生成可能か
+    if (mSpriteOperator->canCreate()) {
+        //IDに対応するキャラクターを生成する
+        out = createCharacter(cost);
     }
 }
 
@@ -90,116 +69,28 @@ void CharacterCreater::receiveExternalData(const rapidjson::Value& inObj) {
             //メッシュを事前に読み込んでおく
             AssetsManager::instance().loadMesh(mesh);
         }
-        JsonHelper::getString(charaObj, "sprite", &chara.spriteFileName);
+        if (JsonHelper::getString(charaObj, "sprite", &chara.spriteFileName)) {
+            //スプライトを追加する
+            mSpriteOperator->addSprite(chara.spriteFileName);
+        }
         JsonHelper::getInt(charaObj, "cost", &chara.cost);
-        chara.sprite = addComponent<SpriteComponent>("SpriteComponent");
-        chara.sprite->setTextureFromFileName(chara.spriteFileName);
-        chara.isActive = true;
-
-        //キャラコスト表示用にテキストコンポーネントを追加する
-        mTexts.emplace_back(addComponent<Text>("Text"));
     }
 
     //初期化
-    initialize();
+    mSpriteOperator->initialize();
 }
 
 bool CharacterCreater::isOperating() const {
-    return mClickingSprite;
+    return mSpriteOperator->isOperating();
 }
 
-void CharacterCreater::initialize() {
-    //スプライトの位置を調整する
-    for (int i = 0; i < mCharactersInfo.size(); ++i) {
-        auto& s = mCharactersInfo[i].sprite;
-        auto& st = s->transform();
-        auto texSize = s->getTextureSize() * mSpriteScale;
-        st.setScale(mSpriteScale);
-        st.setPivot(mSpritePivot);
-
-        //スプライトの位置を計算し配置していく
-        st.setPosition(mSpriteStartPos + Vector2(texSize.x * i + mSpriteSpace * i, 0.f));
-
-        //キャラコスト表示位置を設定する
-        auto& text = mTexts[i];
-        text->setText(StringUtil::intToString(mCharactersInfo[i].cost));
-        text->setPosition(st.getPosition() + Vector2::up * texSize.y);
-        text->setScale(Vector2::one * 0.75f);
-    }
-}
-
-void CharacterCreater::clickingLeftMouseButton(std::shared_ptr<GameObject>& out, int& cost, const Vector2& mousePos) {
-    //スプライトをクリックしていないなら終了
-    if (!mClickingSprite) {
-        return;
-    }
-
-    //マウス位置がクリックしたスプライトの内にあるなら終了
-    if (SpriteUtility::contains(*mCharactersInfo[mClickedSpriteID].sprite, mousePos)) {
-        return;
-    }
-
-    //IDに対応するキャラクターを生成する
-    out = createCharacter(mClickedSpriteID);
-    //IDに対応するコストを取得する
-    cost = mCharactersInfo[mClickedSpriteID].cost;
-
-    //多重生成を阻止するため
-    mClickingSprite = false;
-}
-
-bool CharacterCreater::selectSprite(const Vector2& mousePos) {
-    //すべてのスプライトで検証する
-    for (int i = 0; i < mCharactersInfo.size(); ++i) {
-        auto& chara = mCharactersInfo[i];
-        //非アクティブならスキップ
-        if (!chara.isActive) {
-            continue;
-        }
-
-        //スプライトの中にマウスの座標が含まれているか
-        if (SpriteUtility::contains(*chara.sprite, mousePos)) {
-            mClickedSpriteID = i;
-            return true;
-        }
-    }
-
-    //すべてのスプライトの矩形範囲外
-    return false;
-}
-
-std::shared_ptr<GameObject> CharacterCreater::createCharacter(int id) {
+std::shared_ptr<GameObject> CharacterCreater::createCharacter(int& cost) {
     //IDに対応するメッシュを作成
-    const auto& chara = mCharactersInfo[id];
+    const auto& chara = mCharactersInfo[mSpriteOperator->getCreateCharacterID()];
     //キャラ分のコストを減らす
     mCost->useCost(chara.cost);
+    //引数にコストを入れる
+    cost = chara.cost;
     //キャラを生成し、返す
     return GameObjectCreater::create(chara.fileName);
-}
-
-void CharacterCreater::onUpdateCost() {
-    for (auto&& chara : mCharactersInfo) {
-        //キャラのコストが現在のコストより多ければ使用不可にする
-        if (chara.cost > mCost->getCost()) {
-            chara.sprite->setAlpha(0.2f);
-            chara.isActive = false;
-        } else {
-            chara.sprite->setAlpha(1.f);
-            chara.isActive = true;
-        }
-    }
-
-    for (size_t i = 0; i < mCharactersInfo.size(); ++i) {
-        //キャラのコストが現在のコストより多ければ使用不可にする
-        auto& chara = mCharactersInfo[i];
-        if (chara.cost > mCost->getCost()) {
-            chara.sprite->setAlpha(mNonActiveAlpha);
-            chara.isActive = false;
-            mTexts[i]->setAlpha(mNonActiveAlpha);
-        } else {
-            chara.sprite->setAlpha(1.f);
-            chara.isActive = true;
-            mTexts[i]->setAlpha(1.f);
-        }
-    }
 }

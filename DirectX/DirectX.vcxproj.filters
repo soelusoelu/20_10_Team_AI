@@ -220,6 +220,7 @@
     <ClCompile Include="Component\Map\Map.cpp" />
     <ClCompile Include="Component\Character\CharacterManager.cpp" />
     <ClCompile Include="Component\Character\OverlapPrevention.cpp" />
+    <ClCompile Include="Component\CharacterOperation\CharacterCreateSpriteOperation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -481,6 +482,8 @@
     <ClInclude Include="Component\Map\IMap.h" />
     <ClInclude Include="Component\Character\ICharacterManager.h" />
     <ClInclude Include="Component\Character\OverlapPrevention.h" />
+    <ClInclude Include="Component\CharacterOperation\CharacterCreateSpriteOperation.h" />
+    <ClInclude Include="Component\CharacterOperation\ICharacterCreateInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />
