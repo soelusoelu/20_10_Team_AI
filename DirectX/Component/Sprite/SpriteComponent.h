@@ -46,7 +46,7 @@ public:
     void setActive(bool value);
     bool getActive() const;
     bool isDead() const;
-    //テクスチャの張替え
+    //ファイル名からテクスチャを設定する
     void setTextureFromFileName(const std::string& fileName);
     //テクスチャを設定する
     void setTexture(const std::shared_ptr<Texture>& texture);

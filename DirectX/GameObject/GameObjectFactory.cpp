@@ -10,6 +10,7 @@
 #include "../Component/Character/CharacterAction.h"
 #include "../Component/Character/CharacterCommonComponents.h"
 #include "../Component/Character/CharacterManager.h"
+#include "../Component/Character/HitPointRenderer.h"
 #include "../Component/Character/OverlapPrevention.h"
 #include "../Component/Character/PhaseChangeSaver.h"
 #include "../Component/Character/SimpleCharacter.h"
@@ -75,6 +76,7 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(CharacterAction);
     ADD_COMPONENT(CharacterCommonComponents);
     ADD_COMPONENT(CharacterManager);
+    ADD_COMPONENT(HitPointRenderer);
     ADD_COMPONENT(OverlapPrevention);
     ADD_COMPONENT(PhaseChangeSaver);
     ADD_COMPONENT(SimpleCharacter);

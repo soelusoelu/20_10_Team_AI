@@ -17,13 +17,16 @@ void CostRenderer::start() {
     mText = getComponent<Text>();
 
     //初期テキストを設定する
-    auto beginText = StringUtil::intToString(mCost->getMaxCost());
-    mText->setText(beginText + "/" + beginText);
+    mText->setText(createText(mCost->getMaxCost()));
 
     //コールバック登録
     mCost->callbackUpdateCost([this] { onUpdateCost(); });
 }
 
+std::string CostRenderer::createText(int currentCost) const {
+    return (StringUtil::intToString(currentCost) + "/" + StringUtil::intToString(mCost->getMaxCost()));
+}
+
 void CostRenderer::onUpdateCost() {
-    mText->setText(StringUtil::intToString(mCost->getCost()) + "/" + StringUtil::intToString(mCost->getMaxCost()));
+    mText->setText(createText(mCost->getCost()));
 }

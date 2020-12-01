@@ -15,6 +15,7 @@
     <FxCompile Include="Shader\Mesh.hlsl" />
     <FxCompile Include="Shader\OutLine.hlsl" />
     <FxCompile Include="Shader\SkinMeshOutLine.hlsl" />
+    <FxCompile Include="Shader\Texture3D.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Component\ComponentManager.cpp" />

@@ -15,6 +15,13 @@
     {
       "type": "ASAI",
       "properties": {}
+    },
+    {
+      "type": "HitPointRenderer",
+      "properties": {
+        "hpBar": "HpBar.png",
+        "lostHpBar": "LostHpBar.png"
+      }
     }
   ]
 }

@@ -29,7 +29,9 @@
     },
     {
       "type": "HitPointComponent",
-      "properties": {}
+      "properties": {
+        "HP": 300
+      }
     },
     {
       "type": "SimpleCharacter",

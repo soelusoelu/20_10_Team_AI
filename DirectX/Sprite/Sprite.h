@@ -39,8 +39,9 @@ public:
     void setActive(bool value);
     //アクティブ状態の取得
     bool getActive() const;
-    //テクスチャを設定する
+    //ファイル名からテクスチャを設定する
     void setTextureFromFileName(const std::string& fileName);
+    //テクスチャを設定する
     void setTexture(const std::shared_ptr<Texture>& texture);
     //テクスチャの取得
     const Texture& texture() const;

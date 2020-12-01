@@ -1,6 +1,10 @@
 ﻿#pragma once
 
 #include "../Component.h"
+#include <functional>
+#include <memory>
+
+class Subject;
 
 class HitPointComponent : public Component {
 public:
@@ -22,13 +26,18 @@ public:
     int getMaxHP() const;
     //最大HPに対しての現在HPの比率を取得する[0, 1]
     float hpRate() const;
+    //HPが更新された際のコールバック
+    void callbackUpdateHP(const std::function<void()>& callback);
 
 private:
+    HitPointComponent(const HitPointComponent&) = delete;
+    HitPointComponent& operator=(const HitPointComponent&) = delete;
+
     //HPが最大HPを越したら調整
     void clampHpIfOverMax();
 
 private:
-    int mHP;
-    int mMaxHP;
+    int mHp;
+    int mMaxHp;
+    std::unique_ptr<Subject> mCallbackUpdateHp;
 };
-

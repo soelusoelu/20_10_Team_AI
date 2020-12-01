@@ -86,10 +86,10 @@ float Sprite::getAlpha() const {
 }
 
 void Sprite::setUV(float l, float t, float r, float b) {
-    assert(0.f <= l || l <= 1.f);
-    assert(0.f <= t || t <= 1.f);
-    assert(l <= r || r <= 1.f);
-    assert(t <= b || b <= 1.f);
+    //assert(0.f <= l || l <= 1.f);
+    //assert(0.f <= t || t <= 1.f);
+    //assert(l <= r || r <= 1.f);
+    //assert(t <= b || b <= 1.f);
 
     mUV.x = l;
     mUV.y = t;

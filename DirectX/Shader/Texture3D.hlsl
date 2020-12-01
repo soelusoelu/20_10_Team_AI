@@ -4,7 +4,7 @@ SamplerState g_samLinear : register(s0);
 
 cbuffer global
 {
-    matrix wp;
+    matrix wvp;
     float4 color;
     float4 uv;
 };
@@ -19,7 +19,7 @@ struct VS_OUTPUT
 VS_OUTPUT VS(float4 Pos : POSITION, float2 UV : TEXCOORD)
 {
     VS_OUTPUT output = (VS_OUTPUT) 0;
-    output.Pos = mul(wp, Pos);
+    output.Pos = mul(wvp, Pos);
     output.UV = UV * float2(uv.z - uv.x, uv.w - uv.y) + float2(uv.x, uv.y);
 
     return output;
