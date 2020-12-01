@@ -10,8 +10,9 @@ HitPointComponent::HitPointComponent(GameObject& gameObject) :
 
 HitPointComponent::~HitPointComponent() = default;
 
-void HitPointComponent::loadProperties(const rapidjson::Value & inObj) {
+void HitPointComponent::loadProperties(const rapidjson::Value& inObj) {
     JsonHelper::getInt(inObj, "HP", &mHP);
+    mMaxHP = mHP;
     JsonHelper::getInt(inObj, "maxHP", &mMaxHP);
 }
 
@@ -52,8 +53,12 @@ void HitPointComponent::setHP(int hp, bool isChangeMax) {
     }
 }
 
-int HitPointComponent::hp() const {
+int HitPointComponent::getHP() const {
     return mHP;
+}
+
+int HitPointComponent::getMaxHP() const {
+    return mMaxHP;
 }
 
 float HitPointComponent::hpRate() const {

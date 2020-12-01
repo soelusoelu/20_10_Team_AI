@@ -6,7 +6,9 @@
 
 class MeshOutLine;
 class AABBCollider;
+class HitPointComponent;
 class CharacterAction;
+class PhaseChangeSaver;
 
 //キャラクター共通コンポーネント管理クラス
 class CharacterCommonComponents : public Component {
@@ -17,7 +19,9 @@ public:
 
     MeshOutLine& getMeshOutLine() const;
     AABBCollider& getAABBCollider() const;
+    HitPointComponent& getHitPoint() const;
     CharacterAction& getCharacterAction() const;
+    PhaseChangeSaver& getPhaseChangeSaver() const;
 
     //自身を管理するマネージャーを設定する
     void setManager(const ICharacterManager* manager);
@@ -36,6 +40,8 @@ private:
     const ICharacterManager* mManager;
     std::shared_ptr<MeshOutLine> mMesh;
     std::shared_ptr<AABBCollider> mCollider;
+    std::shared_ptr<HitPointComponent> mHP;
     std::shared_ptr<CharacterAction> mCharaAction;
+    std::shared_ptr<PhaseChangeSaver> mPhaseChangeSaver;
     int mCost;
 };

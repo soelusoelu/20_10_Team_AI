@@ -148,10 +148,10 @@ std::shared_ptr<GameObject> GameObjectFactory::createGameObjectFromFile(const st
         return nullptr;
     }
 
-    return createGameObject(document, type);
+    return createGameObject(document, type, directoryPath);
 }
 
-std::shared_ptr<GameObject> GameObjectFactory::createGameObject(const rapidjson::Document& inDocument, const std::string& type) {
+std::shared_ptr<GameObject> GameObjectFactory::createGameObject(const rapidjson::Document& inDocument, const std::string& type, const std::string& directoryPath) {
     //タグを読み込む
     const auto& tag = loadTag(inDocument);
     //ゲームオブジェクトを生成
@@ -159,8 +159,13 @@ std::shared_ptr<GameObject> GameObjectFactory::createGameObject(const rapidjson:
     //プロパティを読み込む
     loadGameObjectProperties(*gameObject, inDocument);
 
+    //継承コンポーネントがあれば取得
+    loadPrototypeComponents(*gameObject, inDocument, directoryPath);
     //コンポーネントがあれば取得
     loadComponents(*gameObject, inDocument);
+
+    //全コンポーネントのstartを呼び出す
+    gameObject->componentManager().start();
 
     return gameObject;
 }
@@ -180,6 +185,27 @@ void GameObjectFactory::loadGameObjectProperties(GameObject& gameObject, const r
     }
 }
 
+void GameObjectFactory::loadPrototypeComponents(GameObject& gameObject, const rapidjson::Document& inDocument, const std::string& directoryPath) const {
+    //ファイルにprototypeメンバがなければ終了
+    if (!inDocument.HasMember("prototype")) {
+        return;
+    }
+
+    //継承コンポーネントのファイル名を取得する
+    std::string prototype;
+    JsonHelper::getString(inDocument, "prototype", &prototype);
+
+    rapidjson::Document document;
+    const auto& fileName = prototype + ".json";
+    if (!LevelLoader::loadJSON(document, fileName, directoryPath)) {
+        Debug::windowMessage(directoryPath + fileName + ": ファイルのロードに失敗しました");
+        return;
+    }
+
+    //継承コンポーネント読み込み
+    loadComponents(gameObject, document);
+}
+
 void GameObjectFactory::loadComponents(GameObject& gameObject, const rapidjson::Document& inDocument) const {
     //ファイルにcomponentsメンバがなければ終了
     if (!inDocument.HasMember("components")) {
@@ -196,9 +222,6 @@ void GameObjectFactory::loadComponents(GameObject& gameObject, const rapidjson::
         //各コンポーネントを読み込んでいく
         loadComponent(gameObject, components[i]);
     }
-
-    //全コンポーネントのstartを呼び出す
-    gameObject.componentManager().start();
 }
 
 void GameObjectFactory::loadComponent(GameObject& gameObject, const rapidjson::Value& component) const {

@@ -1,0 +1,20 @@
+{
+  "components": [
+    {
+      "type": "CharacterCommonComponents",
+      "properties": {}
+    },
+    {
+      "type": "CharacterAction",
+      "properties": {}
+    },
+    {
+      "type": "PhaseChangeSaver",
+      "properties": {}
+    },
+    {
+      "type": "ASAI",
+      "properties": {}
+    }
+  ]
+}

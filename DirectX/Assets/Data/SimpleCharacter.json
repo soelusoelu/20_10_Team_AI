@@ -2,11 +2,8 @@
   "transform": {
     "rotation": [ 0.0, -90.0, 0.0 ]
   },
+  "prototype": "CharacterCommonComponents",
   "components": [
-    {
-      "type": "CharacterCommonComponents",
-      "properties": {}
-    },
     {
       "type": "MeshOutLine",
       "properties": {
@@ -31,21 +28,7 @@
       }
     },
     {
-      "type": "CharacterAction",
-      "properties": {}
-    },
-    {
-      "type": "PhaseChangeSaver",
-      "properties": {}
-    },
-    {
-      "type": "MeshShader",
-      "properties": {
-        "shaderName": "SkinMesh.hlsl"
-      }
-    },
-    {
-      "type": "SkinMeshComponent",
+      "type": "HitPointComponent",
       "properties": {}
     },
     {

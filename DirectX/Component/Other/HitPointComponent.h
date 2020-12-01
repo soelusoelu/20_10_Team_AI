@@ -16,9 +16,11 @@ public:
     void takeHeal(int heal);
     //HPを設定する
     void setHP(int hp, bool isChangeMax = true);
-    //現在HPの取得
-    int hp() const;
-    //最大HPに対しての現在HPの比率(0 ～ 1)
+    //現在HPを取得する
+    int getHP() const;
+    //最大HPを取得する
+    int getMaxHP() const;
+    //最大HPに対しての現在HPの比率を取得する[0, 1]
     float hpRate() const;
 
 private:

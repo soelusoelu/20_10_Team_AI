@@ -2,11 +2,8 @@
   "transform": {
     "pivot": [ 0.0, -1.0, 0.0 ]
   },
+  "prototype": "CharacterCommonComponents",
   "components": [
-    {
-      "type": "CharacterCommonComponents",
-      "properties": {}
-    },
     {
       "type": "MeshOutLine",
       "properties": {
@@ -15,15 +12,11 @@
       }
     },
     {
+      "type": "HitPointComponent",
+      "properties": {}
+    },
+    {
       "type": "AABBCollider",
-      "properties": {}
-    },
-    {
-      "type": "CharacterAction",
-      "properties": {}
-    },
-    {
-      "type": "PhaseChangeSaver",
       "properties": {}
     }
   ]
