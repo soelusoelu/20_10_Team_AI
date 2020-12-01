@@ -31,7 +31,8 @@
         "spriteScale": [ 0.7, 0.7 ],
         "spriteSpace": 48.0,
         "spritePivot": "LeftBottom",
-        "nonActiveAlpha": 0.2
+        "nonActiveAlpha": 0.2,
+        "costTextScale": 0.75
       }
     },
     {

@@ -22,7 +22,9 @@ CharacterCreateSpriteOperation::CharacterCreateSpriteOperation(GameObject& gameO
     , mSpriteScale(Vector2::one)
     , mSpriteSpace(0.f)
     , mSpritePivot(Pivot::LEFT_TOP)
-    , mNonActiveAlpha(0.f) {
+    , mNonActiveAlpha(0.f)
+    , mCostTextScale(1.f)
+{
 }
 
 CharacterCreateSpriteOperation::~CharacterCreateSpriteOperation() = default;
@@ -41,6 +43,7 @@ void CharacterCreateSpriteOperation::loadProperties(const rapidjson::Value& inOb
         PivotFunc::stringToPivot(pivot, &mSpritePivot);
     }
     JsonHelper::getFloat(inObj, "nonActiveAlpha", &mNonActiveAlpha);
+    JsonHelper::getFloat(inObj, "costTextScale", &mCostTextScale);
 }
 
 void CharacterCreateSpriteOperation::initialize() {
@@ -60,7 +63,7 @@ void CharacterCreateSpriteOperation::initialize() {
         //各種設定をする
         text->setText(StringUtil::intToString(mCreater->getCharacterCreateInfo(i).cost));
         text->setPosition(st.getPosition() + Vector2::up * texSize.y);
-        text->setScale(Vector2::one * 0.75f);
+        text->setScale(Vector2::one * mCostTextScale);
         mTexts.emplace_back(text);
     }
 }

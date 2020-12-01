@@ -82,6 +82,16 @@ void CharacterOperation::onChangeActionPhase() {
     }
 }
 
+void CharacterOperation::onChangeOperatePhase() {
+    //操作フェーズで使用する
+    gameObject().setActive(true);
+
+    //全キャラクターをアクション待機状態にする
+    for (const auto& chara : mCreatedCharacters) {
+        chara->getCharacterAction().disabled();
+    }
+}
+
 const CharacterPtrList& CharacterOperation::getCharacters() const {
     return mCreatedCharacters;
 }

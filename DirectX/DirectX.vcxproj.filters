@@ -221,6 +221,7 @@
     <ClCompile Include="Component\Character\CharacterManager.cpp" />
     <ClCompile Include="Component\Character\OverlapPrevention.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterCreateSpriteOperation.cpp" />
+    <ClCompile Include="Component\GameState\GameReset.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -474,7 +475,6 @@
     <ClInclude Include="Component\Mesh\MeshOutLine.h" />
     <ClInclude Include="Component\Mesh\MeshShader.h" />
     <ClInclude Include="Component\CharacterAction\SimpleCharacter.h" />
-    <ClInclude Include="Component\CharacterAction\IChangeActionPhase.h" />
     <ClInclude Include="Component\Character\CharacterCommonComponents.h" />
     <ClInclude Include="Component\AI\ASMap.h" />
     <ClInclude Include="Component\Map\Map.h" />
@@ -484,6 +484,7 @@
     <ClInclude Include="Component\Character\OverlapPrevention.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterCreateSpriteOperation.h" />
     <ClInclude Include="Component\CharacterOperation\ICharacterCreateInfo.h" />
+    <ClInclude Include="Component\GameState\GameReset.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />

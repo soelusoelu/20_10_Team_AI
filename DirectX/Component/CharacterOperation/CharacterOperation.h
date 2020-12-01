@@ -24,8 +24,10 @@ public:
     void updateForOperatePhase();
     //CharacterCreaterに情報を渡す
     void transferExternalDataToCharacterCreater(const rapidjson::Value& inObj, int maxCost);
-    //アクションモードに変わった際の処理
+    //アクションフェーズに変わった際の処理
     void onChangeActionPhase();
+    //操作フェーズに変わった際の処理
+    void onChangeOperatePhase();
     //全キャラクターを取得する
     const CharacterPtrList& getCharacters() const;
     //自身を管理するマネージャーを設定する

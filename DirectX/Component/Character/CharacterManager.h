@@ -21,8 +21,10 @@ public:
 
     //独自アップデート
     void updateForOperatePhase();
-    //アクションモードに変わった際の処理
+    //アクションフェーズに変わった際の処理
     void onChangeActionPhase();
+    //操作フェーズに変わった際の処理
+    void onChangeOperatePhase();
     //外部から情報を受け取る
     void receiveExternalData(
         const std::shared_ptr<IMap>& map,

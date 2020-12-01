@@ -30,6 +30,7 @@
 #include "../Component/Collider/SphereCollider.h"
 #include "../Component/EnemyOperation/EnemyCreater.h"
 #include "../Component/EnemyOperation/EnemyOperation.h"
+#include "../Component/GameState/GameReset.h"
 #include "../Component/GameState/GameStart.h"
 #include "../Component/Light/DirectionalLight.h"
 #include "../Component/Light/PointLightComponent.h"
@@ -99,6 +100,7 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(EnemyCreater);
     ADD_COMPONENT(EnemyOperation);
 
+    ADD_COMPONENT(GameReset);
     ADD_COMPONENT(GameStart);
 
     ADD_COMPONENT(DirectionalLight);

@@ -81,4 +81,6 @@ private:
     Pivot mSpritePivot;
     //非アクティブ時の透明値
     float mNonActiveAlpha;
+    //コスト表示サイズ
+    float mCostTextScale;
 };

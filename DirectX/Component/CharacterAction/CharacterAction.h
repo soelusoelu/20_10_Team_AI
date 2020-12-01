@@ -1,10 +1,11 @@
 ﻿#pragma once
 
-#include "IChangeActionPhase.h"
 #include "../Component.h"
+#include <functional>
 #include <memory>
 
 class ASAI;
+class Subject;
 
 //アクションフェーズでのキャラクター管轄クラス
 class CharacterAction : public Component {
@@ -20,7 +21,9 @@ public:
     //このクラスを非アクティブ化する
     void disabled();
     //アクションフェーズに移行する際のコールバック
-    void callbackChangeActionPhase(IChangeActionPhase* callback);
+    void callbackChangeActionPhase(const std::function<void()>& callback);
+    //操作フェーズに移行する際のコールバック
+    void callbackChangeOperatePhase(const std::function<void()>& callback);
 
 private:
     CharacterAction(const CharacterAction&) = delete;
@@ -28,7 +31,8 @@ private:
 
 private:
     std::shared_ptr<ASAI> mAI;
-    IChangeActionPhase* mCallbackChangeActionPhase;
+    std::unique_ptr<Subject> mCallbackChangeActionPhase;
+    std::unique_ptr<Subject> mCallbackChangeOperatePhase;
     //このクラスが実行可能状態か
     bool mIsActive;
 };

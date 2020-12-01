@@ -37,6 +37,13 @@ void EnemyOperation::onChangeActionPhase() {
     }
 }
 
+void EnemyOperation::onChangeOperatePhase() {
+    //全エネミーをアクション待機状態にする
+    for (const auto& enemy : mEnemys) {
+        enemy->getCharacterAction().disabled();
+    }
+}
+
 const CharacterPtrList& EnemyOperation::getEnemys() const {
     return mEnemys;
 }

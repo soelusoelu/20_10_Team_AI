@@ -3,6 +3,7 @@
 #include "../Character/CharacterManager.h"
 #include "../CharacterOperation/CharacterOperation.h"
 #include "../CharacterOperation/DragAndDropCharacter.h"
+#include "../GameState/GameReset.h"
 #include "../GameState/GameStart.h"
 #include "../Map/Map.h"
 #include "../../DebugLayer/Debug.h"
@@ -16,6 +17,7 @@ GamePlay::GamePlay(GameObject& gameObject)
     : Scene(gameObject)
     , mCharacterManager(nullptr)
     , mGameStart(nullptr)
+    , mGameReset(nullptr)
     , mMap(nullptr)
     , mState(GameState::OPERATE_PHASE)
     , mStageNo(0)
@@ -33,8 +35,16 @@ void GamePlay::start() {
     auto gs = GameObjectCreater::create("GameStart");
     mGameStart = gs->componentManager().getComponent<GameStart>();
 
-    mGameStart->callbackGameStart([this] { mState = GameState::ACTION_PHASE; });
+    auto gr = GameObjectCreater::create("GameReset");
+    mGameReset = gr->componentManager().getComponent<GameReset>();
+
+    mGameStart->callbackGameStart([&] { mState = GameState::ACTION_PHASE; });
     mGameStart->callbackGameStart([&] { mCharacterManager->onChangeActionPhase(); });
+    mGameStart->callbackGameStart([&] { mGameReset->onChangeActionPhase(); });
+
+    mGameReset->callbackGameReset([&] { mState = GameState::OPERATE_PHASE; });
+    mGameReset->callbackGameReset([&] { mCharacterManager->onChangeOperatePhase(); });
+    mGameReset->callbackGameReset([&] { mGameStart->onChangeOperatePhase(); });
 }
 
 void GamePlay::update() {
@@ -42,7 +52,7 @@ void GamePlay::update() {
         mCharacterManager->updateForOperatePhase();
         mGameStart->originalUpdate();
     } else if (mState == GameState::ACTION_PHASE) {
-
+        mGameReset->originalUpdate();
     }
 
     Debug::renderLine(Vector3::left * 100.f, Vector3::right * 100.f, ColorPalette::red);

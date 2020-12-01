@@ -16,9 +16,15 @@ void SimpleCharacter::start() {
     mSkinMesh->setMotionName("Walk", 1);
 
     //コールバック登録
-    getComponent<CharacterAction>()->callbackChangeActionPhase(this);
+    auto charaAction = getComponent<CharacterAction>();
+    charaAction->callbackChangeActionPhase([&] { onChangeActionPhase(); });
+    charaAction->callbackChangeOperatePhase([&] { onChangeOperatePhase(); });
 }
 
 void SimpleCharacter::onChangeActionPhase() {
     mSkinMesh->changeMotion("Walk");
+}
+
+void SimpleCharacter::onChangeOperatePhase() {
+    mSkinMesh->changeMotion("Idol");
 }

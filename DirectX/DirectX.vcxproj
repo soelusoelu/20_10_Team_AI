@@ -202,6 +202,7 @@
     <ClCompile Include="Component\Mesh\MeshOutLine.cpp" />
     <ClCompile Include="Component\Mesh\MeshShader.cpp" />
     <ClCompile Include="Component\Map\Map.cpp" />
+    <ClCompile Include="Component\GameState\GameReset.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxUtility.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMotionParser.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
@@ -377,7 +378,6 @@
     <ClInclude Include="Component\Character\CharacterManager.h" />
     <ClInclude Include="Component\Character\CharacterCommonComponents.h" />
     <ClInclude Include="Component\CharacterAction\CharacterAction.h" />
-    <ClInclude Include="Component\CharacterAction\IChangeActionPhase.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterSelector.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterOperation.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterDeleter.h" />
@@ -412,6 +412,7 @@
     <ClInclude Include="Component\Mesh\MeshOutLine.h" />
     <ClInclude Include="Component\Mesh\MeshShader.h" />
     <ClInclude Include="Component\Map\Map.h" />
+    <ClInclude Include="Component\GameState\GameReset.h" />
     <ClInclude Include="Mesh\Fbx\FbxUtility.h" />
     <ClInclude Include="Mesh\Fbx\FbxMotionParser.h" />
     <ClInclude Include="Imgui\imconfig.h" />

@@ -17,8 +17,10 @@ public:
 
     //ステージ番号を受け取る
     void receiveStageNo(int stageNo);
-    //アクションモードに変わった際の処理
+    //アクションフェーズに変わった際の処理
     void onChangeActionPhase();
+    //操作フェーズに変わった際の処理
+    void onChangeOperatePhase();
     //全エネミーを取得する
     const CharacterPtrList& getEnemys() const;
     //自身を管理するマネージャーを設定する

@@ -1,40 +1,42 @@
-﻿#include "GameStart.h"
+﻿#include "GameReset.h"
 #include "../Sprite/SpriteComponent.h"
 #include "../../Device/Subject.h"
 #include "../../GameObject/GameObject.h"
 #include "../../Input/Input.h"
 #include "../../Sprite/SpriteUtility.h"
 
-GameStart::GameStart(GameObject& gameObject)
+GameReset::GameReset(GameObject& gameObject)
     : Component(gameObject)
     , mCallbackClickSprite(std::make_unique<Subject>())
     , mSprite(nullptr)
 {
 }
 
-GameStart::~GameStart() = default;
+GameReset::~GameReset() = default;
 
-void GameStart::start() {
+void GameReset::start() {
     mSprite = getComponent<SpriteComponent>();
+    //最初は使用しない
+    gameObject().setActive(false);
 }
 
-void GameStart::originalUpdate() {
+void GameReset::originalUpdate() {
     if (clickSprite()) {
         mCallbackClickSprite->notify();
         gameObject().setActive(false);
     }
 }
 
-void GameStart::callbackGameStart(const std::function<void()>& callback) {
+void GameReset::callbackGameReset(const std::function<void()>& callback) {
     mCallbackClickSprite->addObserver(callback);
 }
 
-void GameStart::onChangeOperatePhase() {
-    //操作フェーズでは使用する
+void GameReset::onChangeActionPhase() {
+    //アクションフェーズでは使用する
     gameObject().setActive(true);
 }
 
-bool GameStart::clickSprite() {
+bool GameReset::clickSprite() {
     const auto& mouse = Input::mouse();
     //マウスの左ボタンを押してないなら終了
     if (!mouse.getMouseButtonDown(MouseCode::LeftButton)) {
