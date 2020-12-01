@@ -1,7 +1,6 @@
 ﻿#include "Buffer.h"
 #include "DirectX.h"
 #include "Usage.h"
-#include "../System/GlobalFunction.h"
 
 Buffer::Buffer(const BufferDesc& desc, const SubResourceDesc* data) :
     mDesc(desc),
@@ -16,16 +15,18 @@ Buffer::Buffer(const BufferDesc& desc, const SubResourceDesc* data) :
     }
 }
 
-Buffer::~Buffer() {
-    safeRelease(mBuffer);
-}
+Buffer::~Buffer() = default;
 
 const BufferDesc& Buffer::desc() const {
     return mDesc;
 }
 
 ID3D11Buffer* Buffer::buffer() const {
-    return mBuffer;
+    return mBuffer.Get();
+}
+
+ID3D11Buffer* const* Buffer::bufferAddres() const {
+    return mBuffer.GetAddressOf();
 }
 
 D3D11_BUFFER_DESC Buffer::toBufferDesc(const BufferDesc& desc) const {

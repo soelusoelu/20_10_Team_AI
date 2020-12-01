@@ -67,13 +67,11 @@ void Shader::setPSShader(ID3D11ClassInstance* classInstances, unsigned numClassI
 }
 
 void Shader::setVSConstantBuffers(unsigned index, unsigned numBuffers) const {
-    auto buf = mConstantBuffers[index]->buffer();
-    MyDirectX::DirectX::instance().deviceContext()->VSSetConstantBuffers(index, numBuffers, &buf);
+    MyDirectX::DirectX::instance().deviceContext()->VSSetConstantBuffers(index, numBuffers, mConstantBuffers[index]->bufferAddres());
 }
 
 void Shader::setPSConstantBuffers(unsigned index, unsigned numBuffers) const {
-    auto buf = mConstantBuffers[index]->buffer();
-    MyDirectX::DirectX::instance().deviceContext()->PSSetConstantBuffers(index, numBuffers, &buf);
+    MyDirectX::DirectX::instance().deviceContext()->PSSetConstantBuffers(index, numBuffers, mConstantBuffers[index]->bufferAddres());
 }
 
 void Shader::setInputLayout() const {
