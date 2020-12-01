@@ -1,5 +1,5 @@
 {
-  "properties": {
+  "transform": {
     "pivot": [ 0.0, -1.0, 0.0 ]
   },
   "components": [
@@ -16,14 +16,15 @@
     },
     {
       "type": "AABBCollider",
-      "properties": {
-      }
+      "properties": {}
     },
     {
       "type": "CharacterAction",
-      "properties": {
-
-      }
+      "properties": {}
+    },
+    {
+      "type": "PhaseChangeSaver",
+      "properties": {}
     }
   ]
 }

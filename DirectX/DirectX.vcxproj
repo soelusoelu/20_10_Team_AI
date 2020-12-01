@@ -169,7 +169,7 @@
     <ClCompile Include="Component\AI\ASMap.cpp" />
     <ClCompile Include="Component\Character\CharacterManager.cpp" />
     <ClCompile Include="Component\Character\CharacterCommonComponents.cpp" />
-    <ClCompile Include="Component\CharacterAction\CharacterAction.cpp" />
+    <ClCompile Include="Component\Character\CharacterAction.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterSelector.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterOperation.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterDeleter.cpp" />
@@ -220,8 +220,9 @@
     <ClCompile Include="DebugLayer\PointRenderer.cpp" />
     <ClCompile Include="Component\Other\SaveThis.cpp" />
     <ClCompile Include="Component\Scene\StageSelect.cpp" />
-    <ClCompile Include="Component\CharacterAction\SimpleCharacter.cpp" />
+    <ClCompile Include="Component\Character\SimpleCharacter.cpp" />
     <ClCompile Include="Component\Character\OverlapPrevention.cpp" />
+    <ClCompile Include="Component\Character\PhaseChangeSaver.cpp" />
     <ClCompile Include="Sprite\SpriteUtility.cpp" />
     <ClCompile Include="System\Shader\InputElementManager.cpp" />
     <ClCompile Include="System\Shader\ConstantBufferManager.cpp" />
@@ -377,7 +378,7 @@
     <ClInclude Include="Component\CharacterOperation\ICharacterCreateInfo.h" />
     <ClInclude Include="Component\Character\CharacterManager.h" />
     <ClInclude Include="Component\Character\CharacterCommonComponents.h" />
-    <ClInclude Include="Component\CharacterAction\CharacterAction.h" />
+    <ClInclude Include="Component\Character\CharacterAction.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterSelector.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterOperation.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterDeleter.h" />
@@ -440,8 +441,9 @@
     <ClInclude Include="DebugLayer\PointRenderer.h" />
     <ClInclude Include="Component\Other\SaveThis.h" />
     <ClInclude Include="Component\Scene\StageSelect.h" />
-    <ClInclude Include="Component\CharacterAction\SimpleCharacter.h" />
+    <ClInclude Include="Component\Character\SimpleCharacter.h" />
     <ClInclude Include="Component\Character\OverlapPrevention.h" />
+    <ClInclude Include="Component\Character\PhaseChangeSaver.h" />
     <ClInclude Include="Sprite\SpriteUtility.h" />
     <ClInclude Include="System\Shader\InputElementManager.h" />
     <ClInclude Include="System\Shader\ConstantBufferManager.h" />

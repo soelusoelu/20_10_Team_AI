@@ -209,12 +209,10 @@
     <ClCompile Include="Component\CharacterOperation\CharacterDeleter.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterOperation.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterSelector.cpp" />
-    <ClCompile Include="Component\CharacterAction\CharacterAction.cpp" />
     <ClCompile Include="Component\EnemyOperation\EnemyCreater.cpp" />
     <ClCompile Include="Component\EnemyOperation\EnemyOperation.cpp" />
     <ClCompile Include="Component\Mesh\MeshOutLine.cpp" />
     <ClCompile Include="Component\Mesh\MeshShader.cpp" />
-    <ClCompile Include="Component\CharacterAction\SimpleCharacter.cpp" />
     <ClCompile Include="Component\Character\CharacterCommonComponents.cpp" />
     <ClCompile Include="Component\AI\ASMap.cpp" />
     <ClCompile Include="Component\Map\Map.cpp" />
@@ -222,6 +220,9 @@
     <ClCompile Include="Component\Character\OverlapPrevention.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterCreateSpriteOperation.cpp" />
     <ClCompile Include="Component\GameState\GameReset.cpp" />
+    <ClCompile Include="Component\Character\CharacterAction.cpp" />
+    <ClCompile Include="Component\Character\SimpleCharacter.cpp" />
+    <ClCompile Include="Component\Character\PhaseChangeSaver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -469,12 +470,10 @@
     <ClInclude Include="Component\CharacterOperation\CharacterDeleter.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterOperation.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterSelector.h" />
-    <ClInclude Include="Component\CharacterAction\CharacterAction.h" />
     <ClInclude Include="Component\EnemyOperation\EnemyCreater.h" />
     <ClInclude Include="Component\EnemyOperation\EnemyOperation.h" />
     <ClInclude Include="Component\Mesh\MeshOutLine.h" />
     <ClInclude Include="Component\Mesh\MeshShader.h" />
-    <ClInclude Include="Component\CharacterAction\SimpleCharacter.h" />
     <ClInclude Include="Component\Character\CharacterCommonComponents.h" />
     <ClInclude Include="Component\AI\ASMap.h" />
     <ClInclude Include="Component\Map\Map.h" />
@@ -485,6 +484,9 @@
     <ClInclude Include="Component\CharacterOperation\CharacterCreateSpriteOperation.h" />
     <ClInclude Include="Component\CharacterOperation\ICharacterCreateInfo.h" />
     <ClInclude Include="Component\GameState\GameReset.h" />
+    <ClInclude Include="Component\Character\CharacterAction.h" />
+    <ClInclude Include="Component\Character\SimpleCharacter.h" />
+    <ClInclude Include="Component\Character\PhaseChangeSaver.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />

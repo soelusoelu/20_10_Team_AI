@@ -1,5 +1,5 @@
 {
-  "properties": {
+  "transform": {
     "rotation": [ 0.0, -90.0, 0.0 ]
   },
   "components": [

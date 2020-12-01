@@ -63,12 +63,12 @@ void LevelLoader::saveGameObject(const GameObject& gameObject, const std::string
     //タグを追加
     JsonHelper::setString(alloc, &doc, "tag", gameObject.tag());
 
-    //プロパティ用のjsonオブジェクトを作る
+    //トランスフォーム用のjsonオブジェクトを作る
     rapidjson::Value props(rapidjson::kObjectType);
-    //プロパティを保存
+    //トランスフォームを保存
     gameObject.saveProperties(alloc, &props);
-    //プロパティをゲームオブジェクトのjsonオブジェクトに追加
-    doc.AddMember("properties", props, alloc);
+    //トランスフォームをゲームオブジェクトのjsonオブジェクトに追加
+    doc.AddMember("transform", props, alloc);
 
     //コンポーネントを保存
     rapidjson::Value components(rapidjson::kArrayType);

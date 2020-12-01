@@ -1,5 +1,5 @@
 {
-  "properties": {
+  "transform": {
     "scale": [ 2.0, 2.0, 2.0 ],
     "pivot": [ 0.0, -1.0, 0.0 ]
   },
@@ -18,20 +18,19 @@
     },
     {
       "type": "AABBCollider",
-      "properties": {
-      }
+      "properties": {}
     },
     {
       "type": "ASAI",
-      "properties": {
-
-      }
+      "properties": {}
     },
     {
       "type": "CharacterAction",
-      "properties": {
-
-      }
+      "properties": {}
+    },
+    {
+      "type": "PhaseChangeSaver",
+      "properties": {}
     }
   ]
 }

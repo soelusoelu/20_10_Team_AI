@@ -7,11 +7,12 @@
 #include "../Component/AI/ASAI.h"
 #include "../Component/AI/ASCell.h"
 #include "../Component/AI/ASCellManager.h"
+#include "../Component/Character/CharacterAction.h"
 #include "../Component/Character/CharacterCommonComponents.h"
 #include "../Component/Character/CharacterManager.h"
 #include "../Component/Character/OverlapPrevention.h"
-#include "../Component/CharacterAction/CharacterAction.h"
-#include "../Component/CharacterAction/SimpleCharacter.h"
+#include "../Component/Character/PhaseChangeSaver.h"
+#include "../Component/Character/SimpleCharacter.h"
 #include "../Component/CharacterOperation/CharacterCost.h"
 #include "../Component/CharacterOperation/CharacterCreater.h"
 #include "../Component/CharacterOperation/CharacterCreateSpriteOperation.h"
@@ -71,11 +72,11 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(ASAI);
 
+    ADD_COMPONENT(CharacterAction);
     ADD_COMPONENT(CharacterCommonComponents);
     ADD_COMPONENT(CharacterManager);
     ADD_COMPONENT(OverlapPrevention);
-
-    ADD_COMPONENT(CharacterAction);
+    ADD_COMPONENT(PhaseChangeSaver);
     ADD_COMPONENT(SimpleCharacter);
 
     ADD_COMPONENT(CharacterCost);
@@ -174,8 +175,8 @@ std::string GameObjectFactory::loadTag(const rapidjson::Document& inDocument) {
 }
 
 void GameObjectFactory::loadGameObjectProperties(GameObject& gameObject, const rapidjson::Document& inDocument) {
-    if (inDocument.HasMember("properties")) {
-        gameObject.loadProperties(inDocument["properties"]);
+    if (inDocument.HasMember("transform")) {
+        gameObject.loadProperties(inDocument["transform"]);
     }
 }
 

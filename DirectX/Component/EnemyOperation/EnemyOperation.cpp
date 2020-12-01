@@ -1,8 +1,8 @@
 ﻿#include "EnemyOperation.h"
 #include "EnemyCreater.h"
 #include "../ComponentManager.h"
+#include "../Character/CharacterAction.h"
 #include "../Character/CharacterCommonComponents.h"
-#include "../CharacterAction/CharacterAction.h"
 #include "../Mesh/MeshOutLine.h"
 
 EnemyOperation::EnemyOperation(GameObject& gameObject)

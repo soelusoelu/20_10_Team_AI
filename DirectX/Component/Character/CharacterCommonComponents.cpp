@@ -1,5 +1,5 @@
 ﻿#include "CharacterCommonComponents.h"
-#include "../CharacterAction/CharacterAction.h"
+#include "CharacterAction.h"
 #include "../Collider/AABBCollider.h"
 #include "../Mesh/MeshOutLine.h"
 
