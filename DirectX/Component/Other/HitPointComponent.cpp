@@ -1,5 +1,5 @@
 ﻿#include "HitPointComponent.h"
-#include "../../Imgui/imgui.h"
+#include "../../DebugLayer/ImGuiWrapper.h"
 #include "../../Utility/LevelLoader.h"
 
 HitPointComponent::HitPointComponent(GameObject& gameObject) :
@@ -12,8 +12,10 @@ HitPointComponent::~HitPointComponent() = default;
 
 void HitPointComponent::loadProperties(const rapidjson::Value& inObj) {
     JsonHelper::getInt(inObj, "HP", &mHP);
-    mMaxHP = mHP;
     JsonHelper::getInt(inObj, "maxHP", &mMaxHP);
+    if (mMaxHP < mHP) {
+        mMaxHP = mHP;
+    }
 }
 
 void HitPointComponent::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const {
@@ -22,8 +24,8 @@ void HitPointComponent::saveProperties(rapidjson::Document::AllocatorType& alloc
 }
 
 void HitPointComponent::drawInspector() {
-    ImGui::SliderInt("HP", &mHP, 0, mMaxHP);
-    ImGui::SliderInt("MaxHP", &mMaxHP, 0, INT_MAX);
+    ImGuiWrapper::sliderInt("HP", mHP, 0, mMaxHP);
+    ImGuiWrapper::dragInt("MaxHP", mMaxHP, 1.f, mHP);
 }
 
 void HitPointComponent::takeDamage(int damage) {

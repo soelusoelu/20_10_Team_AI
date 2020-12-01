@@ -223,6 +223,7 @@
     <ClCompile Include="Component\Character\CharacterAction.cpp" />
     <ClCompile Include="Component\Character\SimpleCharacter.cpp" />
     <ClCompile Include="Component\Character\PhaseChangeSaver.cpp" />
+    <ClCompile Include="Component\Character\HitPointRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -487,6 +488,7 @@
     <ClInclude Include="Component\Character\CharacterAction.h" />
     <ClInclude Include="Component\Character\SimpleCharacter.h" />
     <ClInclude Include="Component\Character\PhaseChangeSaver.h" />
+    <ClInclude Include="Component\Character\HitPointRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />

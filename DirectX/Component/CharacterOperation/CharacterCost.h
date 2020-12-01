@@ -36,5 +36,5 @@ private:
 private:
     int mMaxCost;
     int mCurrentCost;
-    std::unique_ptr<Subject> mSubject;
+    std::unique_ptr<Subject> mCallbackUpdateCost;
 };

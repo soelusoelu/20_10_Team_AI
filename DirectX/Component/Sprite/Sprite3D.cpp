@@ -91,9 +91,6 @@ void Sprite3D::loadProperties(const rapidjson::Value& inObj) {
 
 void Sprite3D::drawInspector() {
     ImGui::Text("FileName: %s", mFileName.c_str());
-    //inspect->emplace_back("Position", mTransform->getPosition());
-    //inspect->emplace_back("Rotation", mTransform->getRotation().euler());
-    //inspect->emplace_back("Scale", mTransform->getScale());
 }
 
 void Sprite3D::draw(const Matrix4& viewProj) const {
