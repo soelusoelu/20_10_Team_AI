@@ -210,7 +210,7 @@ void DirectX::createSwapChain(const HWND& hWnd) {
 }
 
 void DirectX::createRenderTargetView() {
-    ID3D11Texture2D* backBuffer;
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer = nullptr;
     mSwapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer));
     auto tex = std::make_unique<Texture2D>(backBuffer);
     mRenderTargetView = std::make_unique<RenderTargetView>(*tex);

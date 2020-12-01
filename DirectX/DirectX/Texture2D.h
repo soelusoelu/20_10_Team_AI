@@ -7,7 +7,7 @@
 class Texture2D {
 public:
     Texture2D(const Texture2DDesc& desc, const SubResourceDesc* data = nullptr);
-    Texture2D(ID3D11Texture2D* texture2D);
+    Texture2D(Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2D);
     ~Texture2D();
     ID3D11Texture2D* texture2D() const;
     const Texture2DDesc& desc() const;
@@ -20,6 +20,6 @@ private:
     Texture2D& operator=(const Texture2D&) = delete;
 
 private:
-    ID3D11Texture2D* mTexture2D;
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> mTexture2D;
     Texture2DDesc mDesc;
 };

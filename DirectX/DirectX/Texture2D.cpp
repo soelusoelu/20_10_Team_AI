@@ -2,7 +2,6 @@
 #include "DirectX.h"
 #include "Format.h"
 #include "Usage.h"
-#include "../System/GlobalFunction.h"
 
 Texture2D::Texture2D(const Texture2DDesc& desc, const SubResourceDesc* data) :
     mTexture2D(nullptr),
@@ -16,17 +15,15 @@ Texture2D::Texture2D(const Texture2DDesc& desc, const SubResourceDesc* data) :
     }
 }
 
-Texture2D::Texture2D(ID3D11Texture2D* texture2D) :
+Texture2D::Texture2D(Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2D) :
     mTexture2D(texture2D),
     mDesc() {
 }
 
-Texture2D::~Texture2D() {
-    safeRelease(mTexture2D);
-}
+Texture2D::~Texture2D() = default;
 
 ID3D11Texture2D* Texture2D::texture2D() const {
-    return mTexture2D;
+    return mTexture2D.Get();
 }
 
 const Texture2DDesc& Texture2D::desc() const {
