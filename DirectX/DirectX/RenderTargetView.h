@@ -2,7 +2,6 @@
 
 #include "RenderTargetViewDesc.h"
 #include "../System/SystemInclude.h"
-#include <memory>
 
 class Texture2D;
 

@@ -26,7 +26,7 @@ void RenderTargetView::clearRenderTarget(float r, float g, float b, float a) con
 }
 
 D3D11_RENDER_TARGET_VIEW_DESC RenderTargetView::toRTVDesc(const RenderTargetViewDesc* desc) const {
-    D3D11_RENDER_TARGET_VIEW_DESC rtvd;
+    D3D11_RENDER_TARGET_VIEW_DESC rtvd{};
     rtvd.Format = toFormat(desc->format);
     rtvd.ViewDimension = toDimension(desc->viewDimension);
     rtvd.Texture2D.MipSlice = desc->texture2D.mipSlice;

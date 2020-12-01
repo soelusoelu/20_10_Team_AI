@@ -3,21 +3,17 @@
 #include "Usage.h"
 #include "../System/GlobalFunction.h"
 
-Buffer::Buffer(const BufferDesc& desc) :
+Buffer::Buffer(const BufferDesc& desc, const SubResourceDesc* data) :
     mDesc(desc),
     mBuffer(nullptr) {
     //バッファの作成
     const auto& temp = toBufferDesc(desc);
-    MyDirectX::DirectX::instance().device()->CreateBuffer(&temp, nullptr, &mBuffer);
-}
-
-Buffer::Buffer(const BufferDesc& desc, const SubResourceDesc& data) :
-    mDesc(desc),
-    mBuffer(nullptr) {
-    //バッファの作成
-    const auto& temp = toBufferDesc(desc);
-    const auto& sub = toSubResource(data);
-    MyDirectX::DirectX::instance().device()->CreateBuffer(&temp, &sub, &mBuffer);
+    if (data) {
+        const auto& sub = toSubResource(*data);
+        MyDirectX::DirectX::instance().device()->CreateBuffer(&temp, &sub, &mBuffer);
+    } else {
+        MyDirectX::DirectX::instance().device()->CreateBuffer(&temp, nullptr, &mBuffer);
+    }
 }
 
 Buffer::~Buffer() {
@@ -33,7 +29,7 @@ ID3D11Buffer* Buffer::buffer() const {
 }
 
 D3D11_BUFFER_DESC Buffer::toBufferDesc(const BufferDesc& desc) const {
-    D3D11_BUFFER_DESC bd;
+    D3D11_BUFFER_DESC bd{};
     bd.ByteWidth = desc.size;
     bd.Usage = toUsage(desc.usage);
     bd.BindFlags = desc.type;

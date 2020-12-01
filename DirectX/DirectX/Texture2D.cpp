@@ -4,19 +4,16 @@
 #include "Usage.h"
 #include "../System/GlobalFunction.h"
 
-Texture2D::Texture2D(const Texture2DDesc& desc) :
+Texture2D::Texture2D(const Texture2DDesc& desc, const SubResourceDesc* data) :
     mTexture2D(nullptr),
     mDesc(desc) {
     const auto& temp = toTexture2DDesc(desc);
-    MyDirectX::DirectX::instance().device()->CreateTexture2D(&temp, nullptr, &mTexture2D);
-}
-
-Texture2D::Texture2D(const Texture2DDesc& desc, const SubResourceDesc& data) :
-    mTexture2D(nullptr),
-    mDesc(desc) {
-    const auto& temp = toTexture2DDesc(desc);
-    const auto& sub = toSubResource(data);
-    MyDirectX::DirectX::instance().device()->CreateTexture2D(&temp, &sub, &mTexture2D);
+    if (data) {
+        const auto& sub = toSubResource(*data);
+        MyDirectX::DirectX::instance().device()->CreateTexture2D(&temp, &sub, &mTexture2D);
+    } else {
+        MyDirectX::DirectX::instance().device()->CreateTexture2D(&temp, nullptr, &mTexture2D);
+    }
 }
 
 Texture2D::Texture2D(ID3D11Texture2D* texture2D) :
@@ -37,7 +34,7 @@ const Texture2DDesc& Texture2D::desc() const {
 }
 
 D3D11_TEXTURE2D_DESC Texture2D::toTexture2DDesc(const Texture2DDesc& desc) const {
-    D3D11_TEXTURE2D_DESC td;
+    D3D11_TEXTURE2D_DESC td{};
     td.Width = desc.width;
     td.Height = desc.height;
     td.MipLevels = desc.mipLevels;

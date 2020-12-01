@@ -6,8 +6,7 @@
 
 class Buffer {
 public:
-    Buffer(const BufferDesc& desc);
-    Buffer(const BufferDesc& desc, const SubResourceDesc& data);
+    Buffer(const BufferDesc& desc, const SubResourceDesc* data = nullptr);
     virtual ~Buffer();
     const BufferDesc& desc() const;
     ID3D11Buffer* buffer() const;
