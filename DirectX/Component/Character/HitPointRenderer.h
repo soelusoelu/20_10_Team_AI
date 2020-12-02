@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "../Component.h"
+#include "../../Math/Math.h"
 #include <memory>
 #include <string>
 
@@ -36,4 +37,6 @@ private:
     std::shared_ptr<Sprite3D> mLostHp;
     std::string mCurrentHpFileName;
     std::string mLostHpFileName;
+    float mBarPivotY;
+    Vector2 mBarScale;
 };

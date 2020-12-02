@@ -65,7 +65,6 @@ void CharacterOperation::transferExternalDataToCharacterCreater(const rapidjson:
     getComponent<CharacterCost>()->setCost(maxCost);
     //データを受け渡す
     mCreater->receiveExternalData(inObj);
-
 }
 
 void CharacterOperation::onChangeActionPhase() {

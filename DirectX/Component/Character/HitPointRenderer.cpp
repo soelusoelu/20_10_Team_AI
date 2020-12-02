@@ -13,6 +13,8 @@ HitPointRenderer::HitPointRenderer(GameObject& gameObject)
     , mCollider(nullptr)
     , mCurrentHp(nullptr)
     , mLostHp(nullptr)
+    , mBarPivotY(0.f)
+    , mBarScale(Vector2::one)
 {
 }
 
@@ -23,21 +25,22 @@ void HitPointRenderer::awake() {
     mCurrentHp = addComponent<Sprite3D>("Sprite3D");
     //取得してあるファイル名からテクスチャを生成する
     mCurrentHp->setTextureFromFileName(mCurrentHpFileName);
-    //アスペクト比からピボット位置を設定する
-    const auto& aspect = mCurrentHp->getTextureAspect();
-    float aspectRatioX = aspect.y / aspect.x;
-    mCurrentHp->transform().setPivot(Vector3::down * 0.5f);
+    //ピボット位置を設定する
+    mCurrentHp->transform().setPivot(Vector3::down * mBarPivotY);
+    //スケール調整
+    mCurrentHp->transform().setScale(Vector3(mBarScale, 1.f));
     //ビルボードで扱う
     mCurrentHp->setBillboard(true);
     //最初は使わない
-    mCurrentHp->setActive(false);
+    //mCurrentHp->setActive(false);
 
     //上と同じ
-    mLostHp = addComponent<Sprite3D>("Sprite3D");
-    mLostHp->setTextureFromFileName(mLostHpFileName);
-    mLostHp->transform().setPivot(mCurrentHp->transform().getPivot());
-    mLostHp->setBillboard(mCurrentHp->isBillboard());
-    mLostHp->setActive(mCurrentHp->getActive());
+    //mLostHp = addComponent<Sprite3D>("Sprite3D");
+    //mLostHp->setTextureFromFileName(mLostHpFileName);
+    //mLostHp->transform().setPivot(mCurrentHp->transform().getPivot());
+    //mLostHp->transform().setScale(mCurrentHp->transform().getScale());
+    //mLostHp->setBillboard(mCurrentHp->isBillboard());
+    //mLostHp->setActive(mCurrentHp->getActive());
 }
 
 void HitPointRenderer::start() {
@@ -62,22 +65,24 @@ void HitPointRenderer::update() {
     );
 
     mCurrentHp->transform().setPosition(renderPos);
-    mLostHp->transform().setPosition(renderPos);
+    //mLostHp->transform().setPosition(renderPos);
 }
 
 void HitPointRenderer::loadProperties(const rapidjson::Value& inObj) {
     JsonHelper::getString(inObj, "hpBar", &mCurrentHpFileName);
     JsonHelper::getString(inObj, "lostHpBar", &mLostHpFileName);
+    JsonHelper::getFloat(inObj, "barPivotY", &mBarPivotY);
+    JsonHelper::getVector2(inObj, "barScale", &mBarScale);
 }
 
 void HitPointRenderer::onChangeActionPhase() {
     mCurrentHp->setActive(true);
-    mLostHp->setActive(true);
+    //mLostHp->setActive(true);
 }
 
 void HitPointRenderer::onChangeOperatePhase() {
     mCurrentHp->setActive(false);
-    mLostHp->setActive(false);
+    //mLostHp->setActive(false);
 }
 
 void HitPointRenderer::onUpdateHp() {
@@ -94,15 +99,15 @@ void HitPointRenderer::onUpdateHp() {
     }
 
     //HPが最大なら用はない
-    if (mHp->getHP() == mHp->getMaxHP()) {
-        if (mLostHp->getActive()) {
-            mLostHp->setActive(false);
-        }
-        return;
-    }
+    //if (mHp->getHP() == mHp->getMaxHP()) {
+    //    if (mLostHp->getActive()) {
+    //        mLostHp->setActive(false);
+    //    }
+    //    return;
+    //}
 
-    if (!mLostHp->getActive()) {
-        mLostHp->setActive(true);
-    }
-    mLostHp->setUV(ratio, 0.f, 1.f, 1.f);
+    //if (!mLostHp->getActive()) {
+    //    mLostHp->setActive(true);
+    //}
+    //mLostHp->setUV(0.f, 0.f, 1.f - ratio, 1.f);
 }

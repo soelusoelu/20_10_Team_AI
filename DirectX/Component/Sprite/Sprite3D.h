@@ -72,6 +72,7 @@ protected:
     std::unique_ptr<Transform3D> mTransform;
     std::shared_ptr<TextureFromFile> mTexture;
     std::shared_ptr<Shader> mShader;
+    Vector2 mCurrentTextureSize;
     Vector2 mTextureAspect;
     Vector3 mColor;
     float mAlpha;

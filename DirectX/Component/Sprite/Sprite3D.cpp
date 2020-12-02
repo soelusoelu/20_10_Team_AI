@@ -19,7 +19,8 @@ Sprite3D::Sprite3D(GameObject& gameObject) :
     mTransform(std::make_unique<Transform3D>()),
     mTexture(nullptr),
     mShader(nullptr),
-    mTextureAspect(Vector2::zero),
+    mCurrentTextureSize(Vector2::zero),
+    mTextureAspect(Vector2::one),
     mColor(ColorPalette::white),
     mAlpha(1.f),
     mUV(Vector4(0.f, 0.f, 1.f, 1.f)),
@@ -34,13 +35,14 @@ void Sprite3D::awake() {
     //ファイル名を読み込めてたらテクスチャを生成
     if (!mFileName.empty()) {
         mTexture = AssetsManager::instance().createTexture(mFileName);
+        mCurrentTextureSize = mTexture->getTextureSize();
+
+        //テクスチャのアスペクト比を計算
+        calcAspectRatio();
     }
 
     //シェーダー生成
     mShader = AssetsManager::instance().createShader("Texture3D.hlsl");
-
-    //テクスチャのアスペクト比を計算
-    calcAspectRatio();
 
     //マネージャーに登録する
     addToManager();
@@ -48,7 +50,10 @@ void Sprite3D::awake() {
 
 void Sprite3D::lateUpdate() {
     if (getActive()) {
+        const auto& scale = mTransform->getScale();
+        mTransform->setScale(scale * Vector3(mTextureAspect, 1.f));
         mTransform->computeWorldTransform();
+        mTransform->setScale(scale);
     }
 }
 
@@ -96,7 +101,9 @@ void Sprite3D::drawInspector() {
     mTransform->drawInspector();
     ImGuiWrapper::colorEdit3("Color", mColor);
     ImGuiWrapper::sliderFloat("Alpha", mAlpha, 0.f, 1.f);
-    ImGuiWrapper::sliderVector4("UV", mUV, 0.f, 1.f);
+    if (ImGuiWrapper::sliderVector4("UV", mUV, 0.f, 1.f)) {
+        setUV(mUV.x, mUV.y, mUV.z, mUV.w);
+    }
 }
 
 void Sprite3D::draw(const Matrix4& viewProj) const {
@@ -182,6 +189,13 @@ void Sprite3D::setUV(float l, float t, float r, float b) {
     mUV.y = t;
     mUV.z = r;
     mUV.w = b;
+
+    //サイズ修正
+    const auto& texSize = mTexture->getTextureSize();
+    mCurrentTextureSize = Vector2(texSize.x * (r - l), texSize.y * (b - t));
+
+    //アスペクト比再計算
+    calcAspectRatio();
 }
 
 const Vector4& Sprite3D::getUV() const {
@@ -201,6 +215,12 @@ void Sprite3D::setTextureFromFileName(const std::string& fileName) {
         mTexture.reset();
     }
     mTexture = AssetsManager::instance().createTexture(fileName);
+
+    //各種初期化
+    mCurrentTextureSize = mTexture->getTextureSize();
+    mColor = ColorPalette::white;
+    mAlpha = 1.f;
+    mUV = Vector4(0.f, 0.f, 1.f, 1.f);
 
     //テクスチャのアスペクト比を計算
     calcAspectRatio();
@@ -248,12 +268,6 @@ void Sprite3D::calcAspectRatio() {
         return;
     }
 
-    const auto& texSize = mTexture->getTextureSize();
-    mTextureAspect = Vector2::one;
-    if (texSize.x > texSize.y) {
-        mTextureAspect.x = texSize.x / texSize.y;
-    } else {
-        mTextureAspect.y = texSize.y / texSize.x;
-    }
-    mTransform->setScale(mTransform->getScale() * Vector3(mTextureAspect, 1.f));
+    //x軸を基準にアスペクト比を求める
+    mTextureAspect.x = mCurrentTextureSize.x / mCurrentTextureSize.y;
 }
