@@ -32,7 +32,7 @@ void HitPointRenderer::awake() {
     //ビルボードで扱う
     mCurrentHp->setBillboard(true);
     //最初は使わない
-    //mCurrentHp->setActive(false);
+    mCurrentHp->setActive(false);
 
     //上と同じ
     //mLostHp = addComponent<Sprite3D>("Sprite3D");

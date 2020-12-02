@@ -141,8 +141,16 @@ void Sprite3D::drawBillboard(const Matrix4& invView, const Matrix4& viewProj) {
 
     //シェーダーのコンスタントバッファーに各種データを渡す
     TextureConstantBuffer cb;
+
+    //ビルボード用ワールド行列計算
+    auto world = Matrix4::createTranslation(-mTransform->getPivot());
+    world *= Matrix4::createScale(mTransform->getScale() * Vector3(mTextureAspect, 1.f));
+    world *= Matrix4::createFromQuaternion(mTransform->getRotation());
+    world *= invView;
+    world *= Matrix4::createTranslation(mTransform->getPosition());
+
     //ワールド、射影行列を渡す
-    cb.wp = invView * mTransform->getWorldTransform() * viewProj;
+    cb.wp = world * viewProj;
     cb.color = Vector4(mColor, mAlpha);
     cb.uv = mUV;
 
