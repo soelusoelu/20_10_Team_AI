@@ -19,7 +19,10 @@ void CharacterSelector::start() {
     mCamera = gameObjectManager.find("Camera")->componentManager().getComponent<Camera>();
 }
 
-void CharacterSelector::selectCharacter(CharacterPtr& out, const CharacterPtrList& characters) const {
+bool CharacterSelector::selectCharacter(
+    CharacterPtr& out,
+    const CharacterPtrList& characters
+) const {
     //カメラからマウス位置へ向かうレイを取得する
     const auto& ray = mCamera->screenToRay(Input::mouse().getMousePosition());
 
@@ -28,7 +31,10 @@ void CharacterSelector::selectCharacter(CharacterPtr& out, const CharacterPtrLis
         if (Intersect::intersectRayAABB(ray, chara->getAABBCollider().getAABB())) {
             //衝突したゲームオブジェクトを選択する
             out = chara;
-            return;
+            return true;
         }
     }
+
+    //どのキャラクターとも衝突していない
+    return false;
 }

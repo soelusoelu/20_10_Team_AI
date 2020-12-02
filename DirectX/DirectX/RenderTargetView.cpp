@@ -7,7 +7,8 @@ RenderTargetView::RenderTargetView(const Texture2D& texture2D, const RenderTarge
     mRenderTargetView(nullptr) {
     auto dev = MyDirectX::DirectX::instance().device();
     if (desc) {
-        dev->CreateRenderTargetView(texture2D.texture2D(), &toRTVDesc(desc), &mRenderTargetView);
+        const auto& temp = toRTVDesc(desc);
+        dev->CreateRenderTargetView(texture2D.texture2D(), &temp, &mRenderTargetView);
     } else {
         dev->CreateRenderTargetView(texture2D.texture2D(), nullptr, &mRenderTargetView);
     }
@@ -25,7 +26,7 @@ void RenderTargetView::clearRenderTarget(float r, float g, float b, float a) con
 }
 
 D3D11_RENDER_TARGET_VIEW_DESC RenderTargetView::toRTVDesc(const RenderTargetViewDesc* desc) const {
-    D3D11_RENDER_TARGET_VIEW_DESC rtvd;
+    D3D11_RENDER_TARGET_VIEW_DESC rtvd{};
     rtvd.Format = toFormat(desc->format);
     rtvd.ViewDimension = toDimension(desc->viewDimension);
     rtvd.Texture2D.MipSlice = desc->texture2D.mipSlice;

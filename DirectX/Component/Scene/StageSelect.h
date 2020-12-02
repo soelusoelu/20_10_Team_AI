@@ -1,21 +1,14 @@
 ﻿#pragma once
 
-#include "../Component.h"
-#include <memory>
+#include "Scene.h"
 
-class Scene;
-
-class StageSelect : public Component {
+class StageSelect : public Scene {
 public:
     StageSelect(GameObject& gameObject);
     ~StageSelect();
-    virtual void start() override;
     virtual void update() override;
 
 private:
     StageSelect(const StageSelect&) = delete;
     StageSelect& operator=(const StageSelect&) = delete;
-
-private:
-    std::shared_ptr<Scene> mScene;
 };

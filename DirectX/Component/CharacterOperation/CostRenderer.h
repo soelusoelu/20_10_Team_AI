@@ -2,6 +2,7 @@
 
 #include "../Component.h"
 #include <memory>
+#include <string>
 
 class CharacterCost;
 class Text;
@@ -13,12 +14,14 @@ public:
     ~CostRenderer();
     virtual void start() override;
 
-    //コストが更新されたら
-    void onUpdateCost();
-
 private:
     CostRenderer(const CostRenderer&) = delete;
     CostRenderer& operator=(const CostRenderer&) = delete;
+
+    //表示する文字列を作成する
+    std::string createText(int currentCost) const;
+    //コストが更新されたら
+    void onUpdateCost();
 
 private:
     std::shared_ptr<CharacterCost> mCost;

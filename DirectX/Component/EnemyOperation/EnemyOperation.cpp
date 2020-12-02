@@ -1,14 +1,14 @@
 ﻿#include "EnemyOperation.h"
 #include "EnemyCreater.h"
 #include "../ComponentManager.h"
+#include "../Character/CharacterAction.h"
 #include "../Character/CharacterCommonComponents.h"
-#include "../CharacterAction/CharacterAction.h"
+#include "../Mesh/MeshOutLine.h"
 
 EnemyOperation::EnemyOperation(GameObject& gameObject)
     : Component(gameObject)
     , mManager(nullptr)
     , mCreater(nullptr)
-    , mStageNo(0)
 {
 }
 
@@ -16,22 +16,31 @@ EnemyOperation::~EnemyOperation() = default;
 
 void EnemyOperation::start() {
     mCreater = getComponent<EnemyCreater>();
-    mCreater->createEnemys(mEnemys, mStageNo);
-
-    //全エネミーにマネージャーを設定する
-    for (const auto& enemy : mEnemys) {
-        enemy->setManager(mManager);
-    }
 }
 
-void EnemyOperation::setStageNo(int stageNo) {
-    mStageNo = stageNo;
+void EnemyOperation::receiveStageNo(int stageNo) {
+    //エネミーを生成する
+    mCreater->createEnemys(mEnemys, stageNo);
+
+    for (const auto& enemy : mEnemys) {
+        //メッシュの赤みを強くする
+        enemy->getMeshOutLine().setColorRatio(ColorPalette::red);
+        //マネージャーを設定する
+        enemy->setManager(mManager);
+    }
 }
 
 void EnemyOperation::onChangeActionPhase() {
     //全エネミーをアクションフェーズに移行する
     for (const auto& enemy : mEnemys) {
         enemy->getCharacterAction().enabled();
+    }
+}
+
+void EnemyOperation::onChangeOperatePhase() {
+    //全エネミーをアクション待機状態にする
+    for (const auto& enemy : mEnemys) {
+        enemy->getCharacterAction().disabled();
     }
 }
 

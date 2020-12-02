@@ -16,7 +16,11 @@ public:
     CharacterSelector(GameObject& gameObject);
     ~CharacterSelector();
     virtual void start() override;
-    void selectCharacter(CharacterPtr& out, const CharacterPtrList& characters) const;
+    //キャラクターを選択する
+    bool selectCharacter(
+        CharacterPtr& out,
+        const CharacterPtrList& characters
+    ) const;
 
 private:
     CharacterSelector(const CharacterSelector&) = delete;

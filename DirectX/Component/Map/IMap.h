@@ -3,6 +3,8 @@
 #include "../AI/ASMap.h"
 #include "../../Mesh/IMesh.h"
 
+class Transform3D;
+
 class IMap {
 public:
     virtual ~IMap() = default;
@@ -10,4 +12,6 @@ public:
     virtual const IMesh& getMeshData() const = 0;
     //マップのCellを取得
     virtual std::vector<ASCell>* GetCellsInfo()=0;
+    //マップのトランスフォームを取得する
+    virtual const Transform3D& getTransform() const = 0;
 };

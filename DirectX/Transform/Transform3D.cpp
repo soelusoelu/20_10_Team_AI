@@ -212,8 +212,6 @@ void Transform3D::saveProperties(rapidjson::Document::AllocatorType& alloc, rapi
 }
 
 void Transform3D::drawInspector() {
-    ImGui::Text("Transform");
-
     ImGuiWrapper::dragVector3("Position", mPosition, 0.01f);
 
     auto euler = mRotation.euler();

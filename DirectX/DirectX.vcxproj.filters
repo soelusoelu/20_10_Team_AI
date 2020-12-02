@@ -15,6 +15,7 @@
     <FxCompile Include="Shader\Mesh.hlsl" />
     <FxCompile Include="Shader\OutLine.hlsl" />
     <FxCompile Include="Shader\SkinMeshOutLine.hlsl" />
+    <FxCompile Include="Shader\Texture3D.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Component\ComponentManager.cpp" />
@@ -209,16 +210,21 @@
     <ClCompile Include="Component\CharacterOperation\CharacterDeleter.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterOperation.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterSelector.cpp" />
-    <ClCompile Include="Component\CharacterAction\CharacterAction.cpp" />
     <ClCompile Include="Component\EnemyOperation\EnemyCreater.cpp" />
     <ClCompile Include="Component\EnemyOperation\EnemyOperation.cpp" />
     <ClCompile Include="Component\Mesh\MeshOutLine.cpp" />
     <ClCompile Include="Component\Mesh\MeshShader.cpp" />
-    <ClCompile Include="Component\CharacterAction\SimpleCharacter.cpp" />
     <ClCompile Include="Component\Character\CharacterCommonComponents.cpp" />
     <ClCompile Include="Component\AI\ASMap.cpp" />
     <ClCompile Include="Component\Map\Map.cpp" />
     <ClCompile Include="Component\Character\CharacterManager.cpp" />
+    <ClCompile Include="Component\Character\OverlapPrevention.cpp" />
+    <ClCompile Include="Component\CharacterOperation\CharacterCreateSpriteOperation.cpp" />
+    <ClCompile Include="Component\GameState\GameReset.cpp" />
+    <ClCompile Include="Component\Character\CharacterAction.cpp" />
+    <ClCompile Include="Component\Character\SimpleCharacter.cpp" />
+    <ClCompile Include="Component\Character\PhaseChangeSaver.cpp" />
+    <ClCompile Include="Component\Character\HitPointRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -466,19 +472,24 @@
     <ClInclude Include="Component\CharacterOperation\CharacterDeleter.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterOperation.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterSelector.h" />
-    <ClInclude Include="Component\CharacterAction\CharacterAction.h" />
     <ClInclude Include="Component\EnemyOperation\EnemyCreater.h" />
     <ClInclude Include="Component\EnemyOperation\EnemyOperation.h" />
     <ClInclude Include="Component\Mesh\MeshOutLine.h" />
     <ClInclude Include="Component\Mesh\MeshShader.h" />
-    <ClInclude Include="Component\CharacterAction\SimpleCharacter.h" />
-    <ClInclude Include="Component\CharacterAction\IChangeActionPhase.h" />
     <ClInclude Include="Component\Character\CharacterCommonComponents.h" />
     <ClInclude Include="Component\AI\ASMap.h" />
     <ClInclude Include="Component\Map\Map.h" />
     <ClInclude Include="Component\Character\CharacterManager.h" />
     <ClInclude Include="Component\Map\IMap.h" />
     <ClInclude Include="Component\Character\ICharacterManager.h" />
+    <ClInclude Include="Component\Character\OverlapPrevention.h" />
+    <ClInclude Include="Component\CharacterOperation\CharacterCreateSpriteOperation.h" />
+    <ClInclude Include="Component\CharacterOperation\ICharacterCreateInfo.h" />
+    <ClInclude Include="Component\GameState\GameReset.h" />
+    <ClInclude Include="Component\Character\CharacterAction.h" />
+    <ClInclude Include="Component\Character\SimpleCharacter.h" />
+    <ClInclude Include="Component\Character\PhaseChangeSaver.h" />
+    <ClInclude Include="Component\Character\HitPointRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />

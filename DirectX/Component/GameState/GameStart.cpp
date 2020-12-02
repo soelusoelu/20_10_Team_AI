@@ -7,7 +7,8 @@
 
 GameStart::GameStart(GameObject& gameObject)
     : Component(gameObject)
-    , mSubject(std::make_unique<Subject>())
+    , mCallbackClickSprite(std::make_unique<Subject>())
+    , mSprite(nullptr)
 {
 }
 
@@ -19,13 +20,18 @@ void GameStart::start() {
 
 void GameStart::originalUpdate() {
     if (clickSprite()) {
-        mSubject->notify();
+        mCallbackClickSprite->notify();
         gameObject().setActive(false);
     }
 }
 
 void GameStart::callbackGameStart(const std::function<void()>& callback) {
-    mSubject->addObserver(callback);
+    mCallbackClickSprite->addObserver(callback);
+}
+
+void GameStart::onChangeOperatePhase() {
+    //操作フェーズでは使用する
+    gameObject().setActive(true);
 }
 
 bool GameStart::clickSprite() {

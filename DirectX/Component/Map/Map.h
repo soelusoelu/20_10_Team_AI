@@ -14,6 +14,8 @@ public:
     Map(GameObject& gameObject);
     ~Map();
     virtual const IMesh& getMeshData() const override;
+    virtual const Transform3D& getTransform() const override;
+
     //外部からデータを受け取る
     void receiveMapData(const std::string& mapName);
     //Cell情報を渡す

@@ -1,16 +1,14 @@
 {
-  "properties": {
+  "transform": {
     "rotation": [ 0.0, -90.0, 0.0 ]
   },
+  "prototype": "CharacterCommonComponents",
   "components": [
-    {
-      "type": "CharacterCommonComponents",
-      "properties": {}
-    },
     {
       "type": "MeshOutLine",
       "properties": {
         "fileName": "Practice/test.fbx",
+        "outLineColorThickness": 0.05,
         "offset": 2.6947
       }
     },
@@ -30,18 +28,10 @@
       }
     },
     {
-      "type": "CharacterAction",
-      "properties": {}
-    },
-    {
-      "type": "MeshShader",
+      "type": "HitPointComponent",
       "properties": {
-        "shaderName": "SkinMesh.hlsl"
+        "HP": 300
       }
-    },
-    {
-      "type": "SkinMeshComponent",
-      "properties": {}
     },
     {
       "type": "SimpleCharacter",

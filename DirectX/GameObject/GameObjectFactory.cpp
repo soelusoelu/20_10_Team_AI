@@ -7,12 +7,16 @@
 #include "../Component/AI/ASAI.h"
 #include "../Component/AI/ASCell.h"
 #include "../Component/AI/ASCellManager.h"
+#include "../Component/Character/CharacterAction.h"
 #include "../Component/Character/CharacterCommonComponents.h"
 #include "../Component/Character/CharacterManager.h"
-#include "../Component/CharacterAction/CharacterAction.h"
-#include "../Component/CharacterAction/SimpleCharacter.h"
+#include "../Component/Character/HitPointRenderer.h"
+#include "../Component/Character/OverlapPrevention.h"
+#include "../Component/Character/PhaseChangeSaver.h"
+#include "../Component/Character/SimpleCharacter.h"
 #include "../Component/CharacterOperation/CharacterCost.h"
 #include "../Component/CharacterOperation/CharacterCreater.h"
+#include "../Component/CharacterOperation/CharacterCreateSpriteOperation.h"
 #include "../Component/CharacterOperation/CharacterDeleter.h"
 #include "../Component/CharacterOperation/CharacterOperation.h"
 #include "../Component/CharacterOperation/CharacterSelector.h"
@@ -28,6 +32,7 @@
 #include "../Component/Collider/SphereCollider.h"
 #include "../Component/EnemyOperation/EnemyCreater.h"
 #include "../Component/EnemyOperation/EnemyOperation.h"
+#include "../Component/GameState/GameReset.h"
 #include "../Component/GameState/GameStart.h"
 #include "../Component/Light/DirectionalLight.h"
 #include "../Component/Light/PointLightComponent.h"
@@ -41,7 +46,6 @@
 #include "../Component/Other/SaveThis.h"
 #include "../Component/Sample/RayMouse.h"
 #include "../Component/Scene/GamePlay.h"
-#include "../Component/Scene/Scene.h"
 #include "../Component/Scene/StageSelect.h"
 #include "../Component/Scene/Title.h"
 #include "../Component/Sound/ListenerComponent.h"
@@ -69,14 +73,17 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(ASAI);
 
+    ADD_COMPONENT(CharacterAction);
     ADD_COMPONENT(CharacterCommonComponents);
     ADD_COMPONENT(CharacterManager);
-
-    ADD_COMPONENT(CharacterAction);
+    ADD_COMPONENT(HitPointRenderer);
+    ADD_COMPONENT(OverlapPrevention);
+    ADD_COMPONENT(PhaseChangeSaver);
     ADD_COMPONENT(SimpleCharacter);
 
     ADD_COMPONENT(CharacterCost);
     ADD_COMPONENT(CharacterCreater);
+    ADD_COMPONENT(CharacterCreateSpriteOperation);
     ADD_COMPONENT(CharacterDeleter);
     ADD_COMPONENT(CharacterOperation);
     ADD_COMPONENT(CharacterSelector);
@@ -96,6 +103,7 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(EnemyCreater);
     ADD_COMPONENT(EnemyOperation);
 
+    ADD_COMPONENT(GameReset);
     ADD_COMPONENT(GameStart);
 
     ADD_COMPONENT(DirectionalLight);
@@ -115,7 +123,6 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(RayMouse);
 
     ADD_COMPONENT(GamePlay);
-    ADD_COMPONENT(Scene);
     ADD_COMPONENT(StageSelect);
     ADD_COMPONENT(Title);
 
@@ -143,10 +150,10 @@ std::shared_ptr<GameObject> GameObjectFactory::createGameObjectFromFile(const st
         return nullptr;
     }
 
-    return createGameObject(document, type);
+    return createGameObject(document, type, directoryPath);
 }
 
-std::shared_ptr<GameObject> GameObjectFactory::createGameObject(const rapidjson::Document& inDocument, const std::string& type) {
+std::shared_ptr<GameObject> GameObjectFactory::createGameObject(const rapidjson::Document& inDocument, const std::string& type, const std::string& directoryPath) {
     //タグを読み込む
     const auto& tag = loadTag(inDocument);
     //ゲームオブジェクトを生成
@@ -154,8 +161,13 @@ std::shared_ptr<GameObject> GameObjectFactory::createGameObject(const rapidjson:
     //プロパティを読み込む
     loadGameObjectProperties(*gameObject, inDocument);
 
+    //継承コンポーネントがあれば取得
+    loadPrototypeComponents(*gameObject, inDocument, directoryPath);
     //コンポーネントがあれば取得
     loadComponents(*gameObject, inDocument);
+
+    //全コンポーネントのstartを呼び出す
+    gameObject->componentManager().start();
 
     return gameObject;
 }
@@ -170,9 +182,30 @@ std::string GameObjectFactory::loadTag(const rapidjson::Document& inDocument) {
 }
 
 void GameObjectFactory::loadGameObjectProperties(GameObject& gameObject, const rapidjson::Document& inDocument) {
-    if (inDocument.HasMember("properties")) {
-        gameObject.loadProperties(inDocument["properties"]);
+    if (inDocument.HasMember("transform")) {
+        gameObject.loadProperties(inDocument["transform"]);
     }
+}
+
+void GameObjectFactory::loadPrototypeComponents(GameObject& gameObject, const rapidjson::Document& inDocument, const std::string& directoryPath) const {
+    //ファイルにprototypeメンバがなければ終了
+    if (!inDocument.HasMember("prototype")) {
+        return;
+    }
+
+    //継承コンポーネントのファイル名を取得する
+    std::string prototype;
+    JsonHelper::getString(inDocument, "prototype", &prototype);
+
+    rapidjson::Document document;
+    const auto& fileName = prototype + ".json";
+    if (!LevelLoader::loadJSON(document, fileName, directoryPath)) {
+        Debug::windowMessage(directoryPath + fileName + ": ファイルのロードに失敗しました");
+        return;
+    }
+
+    //継承コンポーネント読み込み
+    loadComponents(gameObject, document);
 }
 
 void GameObjectFactory::loadComponents(GameObject& gameObject, const rapidjson::Document& inDocument) const {

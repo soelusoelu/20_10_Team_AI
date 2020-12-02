@@ -45,6 +45,11 @@ void CharacterManager::onChangeActionPhase() {
     mEnemyOperator->onChangeActionPhase();
 }
 
+void CharacterManager::onChangeOperatePhase() {
+    mCharaOperator->onChangeOperatePhase();
+    mEnemyOperator->onChangeOperatePhase();
+}
+
 void CharacterManager::receiveExternalData(
     const std::shared_ptr<IMap>& map,
     const rapidjson::Value& inObj,
@@ -53,5 +58,9 @@ void CharacterManager::receiveExternalData(
 ) {
     mMap = map;
     mCharaOperator->transferExternalDataToCharacterCreater(inObj, maxCost);
-    mEnemyOperator->setStageNo(stageNo);
+    mEnemyOperator->receiveStageNo(stageNo);
+}
+
+const CharacterOperation& CharacterManager::getCharacterOperation() const {
+    return *mCharaOperator;
 }

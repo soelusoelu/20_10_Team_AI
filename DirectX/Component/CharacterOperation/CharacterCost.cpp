@@ -1,6 +1,6 @@
 ﻿#include "CharacterCost.h"
+#include "../../DebugLayer/ImGuiWrapper.h"
 #include "../../Device/Subject.h"
-#include "../../Imgui/imgui.h"
 #include "../../Math/Math.h"
 #include "../../Utility/LevelLoader.h"
 
@@ -8,7 +8,7 @@ CharacterCost::CharacterCost(GameObject& gameObject)
     : Component(gameObject)
     , mMaxCost(0)
     , mCurrentCost(0)
-    , mSubject(std::make_unique<Subject>())
+    , mCallbackUpdateCost(std::make_unique<Subject>())
 {
 }
 
@@ -20,20 +20,24 @@ void CharacterCost::loadProperties(const rapidjson::Value& inObj) {
 }
 
 void CharacterCost::drawInspector() {
-    ImGui::SliderInt("MaxCost", &mMaxCost, 0, 100);
-    ImGui::SliderInt("CurrentCost", &mCurrentCost, 0, 100);
+    if (ImGuiWrapper::sliderInt("CurrentCost", mCurrentCost, 0, mMaxCost)) {
+        mCallbackUpdateCost->notify();
+    }
+    if (ImGuiWrapper::dragInt("MaxCost", mMaxCost, 1.f, 0)) {
+        mCallbackUpdateCost->notify();
+    }
 }
 
 void CharacterCost::useCost(int amount) {
     mCurrentCost -= amount;
     clampCost();
-    mSubject->notify();
+    mCallbackUpdateCost->notify();
 }
 
 void CharacterCost::returnCost(int amount) {
     mCurrentCost += amount;
     clampCost();
-    mSubject->notify();
+    mCallbackUpdateCost->notify();
 }
 
 void CharacterCost::setCost(int cost, bool maxToo) {
@@ -41,6 +45,7 @@ void CharacterCost::setCost(int cost, bool maxToo) {
     if (maxToo) {
         mMaxCost = cost;
     }
+    mCallbackUpdateCost->notify();
 }
 
 int CharacterCost::getCost() const {
@@ -52,7 +57,7 @@ int CharacterCost::getMaxCost() const {
 }
 
 void CharacterCost::callbackUpdateCost(const std::function<void()>& callback) {
-    mSubject->addObserver(callback);
+    mCallbackUpdateCost->addObserver(callback);
 }
 
 void CharacterCost::clampCost() {

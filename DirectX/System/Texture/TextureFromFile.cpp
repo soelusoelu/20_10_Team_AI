@@ -37,7 +37,7 @@ void TextureFromFile::createTextureFromFileName(const std::string& filePath) {
     //テクスチャサイズの設定
     mTextureSize = Vector2(metadata.width, metadata.height);
 
-    ID3D11ShaderResourceView* srv = nullptr;
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv = nullptr;
     if (FAILED(DirectX::CreateShaderResourceView(MyDirectX::DirectX::instance().device(), image, 1, metadata, &srv))) {
         Debug::windowMessage(filePath + ": テクスチャ作成失敗");
     }

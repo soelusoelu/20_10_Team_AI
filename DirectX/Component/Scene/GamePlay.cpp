@@ -1,6 +1,9 @@
 ﻿#include "GamePlay.h"
 #include "Scene.h"
 #include "../Character/CharacterManager.h"
+#include "../CharacterOperation/CharacterOperation.h"
+#include "../CharacterOperation/DragAndDropCharacter.h"
+#include "../GameState/GameReset.h"
 #include "../GameState/GameStart.h"
 #include "../Map/Map.h"
 #include "../../DebugLayer/Debug.h"
@@ -11,10 +14,10 @@
 #include "../../Utility/StringUtil.h"
 
 GamePlay::GamePlay(GameObject& gameObject)
-    : Component(gameObject)
-    , mScene(nullptr)
+    : Scene(gameObject)
     , mCharacterManager(nullptr)
     , mGameStart(nullptr)
+    , mGameReset(nullptr)
     , mMap(nullptr)
     , mState(GameState::OPERATE_PHASE)
     , mStageNo(0)
@@ -24,7 +27,6 @@ GamePlay::GamePlay(GameObject& gameObject)
 GamePlay::~GamePlay() = default;
 
 void GamePlay::start() {
-    mScene = getComponent<Scene>();
     mCharacterManager = getComponent<CharacterManager>();
     mMap = getComponent<Map>();
 
@@ -33,11 +35,16 @@ void GamePlay::start() {
     auto gs = GameObjectCreater::create("GameStart");
     mGameStart = gs->componentManager().getComponent<GameStart>();
 
-    mGameStart->callbackGameStart([this] { mState = GameState::ACTION_PHASE; });
-    mGameStart->callbackGameStart([&] { mCharacterManager->onChangeActionPhase(); });
+    auto gr = GameObjectCreater::create("GameReset");
+    mGameReset = gr->componentManager().getComponent<GameReset>();
 
-    getStageNo();
-    loadStage();
+    mGameStart->callbackGameStart([&] { mState = GameState::ACTION_PHASE; });
+    mGameStart->callbackGameStart([&] { mCharacterManager->onChangeActionPhase(); });
+    mGameStart->callbackGameStart([&] { mGameReset->onChangeActionPhase(); });
+
+    mGameReset->callbackGameReset([&] { mState = GameState::OPERATE_PHASE; });
+    mGameReset->callbackGameReset([&] { mCharacterManager->onChangeOperatePhase(); });
+    mGameReset->callbackGameReset([&] { mGameStart->onChangeOperatePhase(); });
 }
 
 void GamePlay::update() {
@@ -45,7 +52,7 @@ void GamePlay::update() {
         mCharacterManager->updateForOperatePhase();
         mGameStart->originalUpdate();
     } else if (mState == GameState::ACTION_PHASE) {
-
+        mGameReset->originalUpdate();
     }
 
     Debug::renderLine(Vector3::left * 100.f, Vector3::right * 100.f, ColorPalette::red);
@@ -55,13 +62,13 @@ void GamePlay::update() {
 #ifdef _DEBUG
     //リセット
     if (Input::keyboard().getKeyDown(KeyCode::R)) {
-        mScene->next("GamePlay");
+        next("GamePlay");
     }
 #endif // _DEBUG
 }
 
-void GamePlay::getStageNo() {
-    const auto& value = mScene->getValueFromPreviousScene("StageNo");
+void GamePlay::getValueFromPreviousScene(const ValuePassMap& values) {
+    const auto& value = values.at("StageNo");
     if (!value.has_value()) {
         return;
     }
@@ -69,6 +76,8 @@ void GamePlay::getStageNo() {
         return;
     }
     mStageNo = std::any_cast<int>(value);
+
+    loadStage();
 }
 
 void GamePlay::loadStage() {

@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "../Component.h"
-#include "../../Math/Math.h"
 #include <functional>
 #include <memory>
 
@@ -16,6 +15,8 @@ public:
     void originalUpdate();
     //アクションフェーズに移行する際のコールバック
     void callbackGameStart(const std::function<void()>& callback);
+    //操作フェーズ移行時の処理
+    void onChangeOperatePhase();
 
 private:
     GameStart(const GameStart&) = delete;
@@ -25,6 +26,6 @@ private:
     bool clickSprite();
 
 private:
-    std::unique_ptr<Subject> mSubject;
+    std::unique_ptr<Subject> mCallbackClickSprite;
     std::shared_ptr<SpriteComponent> mSprite;
 };

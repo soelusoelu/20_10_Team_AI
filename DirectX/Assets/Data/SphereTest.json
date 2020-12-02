@@ -1,35 +1,26 @@
 {
-  "properties": {
+  "transform": {
     "scale": [ 2.0, 2.0, 2.0 ],
     "pivot": [ 0.0, -1.0, 0.0 ]
   },
+  "prototype": "CharacterCommonComponents",
   "components": [
-    {
-      "type": "CharacterCommonComponents",
-      "properties": {}
-    },
     {
       "type": "MeshOutLine",
       "properties": {
         "fileName": "Shape/Sphere.obj",
+        "outLineColorThickness": 0.25,
         "offset": 1.0
       }
     },
     {
       "type": "AABBCollider",
-      "properties": {
-      }
+      "properties": {}
     },
     {
-      "type": "ASAI",
+      "type": "HitPointComponent",
       "properties": {
-
-      }
-    },
-    {
-      "type": "CharacterAction",
-      "properties": {
-
+        "HP": 100
       }
     }
   ]

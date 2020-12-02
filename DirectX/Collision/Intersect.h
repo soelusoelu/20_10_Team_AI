@@ -20,7 +20,7 @@ bool intersectSphere(const Sphere& a, const Sphere& b);
 bool intersectAABB(const AABB& a, const AABB& b);
 
 //無限平面とレイの衝突判定を行う
-bool intersectRayPlane(const Ray& ray, const Plane& p, Vector3& intersectPoint);
+bool intersectRayPlane(const Ray& ray, const Plane& p, Vector3* intersectPoint = nullptr);
 
 //ポリゴンとレイの衝突判定を行う
 bool intersectRayPolygon(const Ray& ray, const Vector3& p1, const Vector3& p2, const Vector3& p3, Vector3& intersectPoint);
@@ -37,6 +37,5 @@ bool intersectRayAABB(const Ray& ray, const AABB& aabb, Vector3& intersectPoint)
 
 //メッシュとレイの衝突判定を行う
 //めちゃめちゃ重い
-bool intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transform3D& transform);
-bool intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transform3D& transform, Vector3& intersectPoint);
+bool intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transform3D& transform, Vector3* intersectPoint = nullptr);
 };

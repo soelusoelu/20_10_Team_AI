@@ -1,10 +1,12 @@
 ﻿#include "CharacterAction.h"
 #include "../AI/ASAI.h"
+#include "../../Device/Subject.h"
 
 CharacterAction::CharacterAction(GameObject& gameObject)
     : Component(gameObject)
     , mAI(nullptr)
-    , mCallbackChangeActionPhase(nullptr)
+    , mCallbackChangeActionPhase(std::make_unique<Subject>())
+    , mCallbackChangeOperatePhase(std::make_unique<Subject>())
     , mIsActive(false)
 {
 }
@@ -34,16 +36,21 @@ void CharacterAction::onEnable(bool value) {
 void CharacterAction::enabled() {
     mIsActive = true;
 
-    //コールバックが登録されていたら呼び出す
-    if (mCallbackChangeActionPhase) {
-        mCallbackChangeActionPhase->onChangeActionPhase();
-    }
+    //通知を送る
+    mCallbackChangeActionPhase->notify();
 }
 
 void CharacterAction::disabled() {
     mIsActive = false;
+
+    //通知を送る
+    mCallbackChangeOperatePhase->notify();
 }
 
-void CharacterAction::callbackChangeActionPhase(IChangeActionPhase* callback) {
-    mCallbackChangeActionPhase = callback;
+void CharacterAction::callbackChangeActionPhase(const std::function<void()>& callback) {
+    mCallbackChangeActionPhase->addObserver(callback);
+}
+
+void CharacterAction::callbackChangeOperatePhase(const std::function<void()>& callback) {
+    mCallbackChangeOperatePhase->addObserver(callback);
 }

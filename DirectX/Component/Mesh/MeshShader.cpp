@@ -27,7 +27,7 @@ void MeshShader::start() {
     }
 }
 
-void MeshShader::loadProperties(const rapidjson::Value & inObj) {
+void MeshShader::loadProperties(const rapidjson::Value& inObj) {
     std::string shader;
     //シェーダー名が取得できたら読み込む
     if (JsonHelper::getString(inObj, "shaderName", &shader)) {
