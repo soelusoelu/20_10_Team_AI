@@ -91,7 +91,7 @@ void MeshShader::setDefaultMaterial(unsigned materialIndex, unsigned constantBuf
     if (!Math::nearZero(mat.transparency)) {
         alpha *= mat.transparency;
     }
-    matcb.diffuse = Vector4(mat.diffuse, alpha);
+    matcb.diffuse = Vector4(mat.diffuse * mesh->getColorRatio(), alpha);
     matcb.specular = mat.specular;
     matcb.shininess = mat.shininess;
     //データ転送

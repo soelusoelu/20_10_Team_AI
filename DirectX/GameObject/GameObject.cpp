@@ -53,6 +53,10 @@ const std::string& GameObject::name() const {
     return mName;
 }
 
+void GameObject::setTag(const std::string& tag) {
+    mTag = tag;
+}
+
 const std::string& GameObject::tag() const {
     return mTag;
 }

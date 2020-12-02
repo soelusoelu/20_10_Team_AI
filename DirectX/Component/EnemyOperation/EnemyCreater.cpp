@@ -44,6 +44,9 @@ void EnemyCreater::createEnemys(CharacterPtrList& enemys, int stageNo) {
         //エネミーを生成する
         auto e = GameObjectCreater::create(type);
 
+        //タグを設定する
+        e->setTag("Enemy");
+
         //エネミーの位置と向きを設定する
         auto& t = e->transform();
         t.setPosition(pos);
