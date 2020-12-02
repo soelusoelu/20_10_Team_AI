@@ -2,6 +2,8 @@
 
 #include "IMap.h"
 #include "../Component.h"
+#include "../AI/ASCell.h"
+#include "../AI/ASMap.h"
 #include <memory>
 #include <string>
 
@@ -14,6 +16,9 @@ public:
     virtual const IMesh& getMeshData() const override;
     //外部からデータを受け取る
     void receiveMapData(const std::string& mapName);
+    //Cell情報を渡す
+    virtual std::vector<ASCell>* GetCellsInfo() override;
+
 
 private:
     Map(const Map&) = delete;
@@ -21,4 +26,5 @@ private:
 
 private:
     std::shared_ptr<MeshComponent> mGroundMesh;
+    ASMap asmap;
 };

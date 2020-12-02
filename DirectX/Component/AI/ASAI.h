@@ -4,6 +4,8 @@
 #include "ASCellManager.h"
 #include "../Component.h"
 #include"../../Math/Vector3.h"
+#include "../Character/ICharacterManager.h"
+class CharacterCommonComponents;
 
 class ASAI :public Component
 {
@@ -14,17 +16,32 @@ public:
 	virtual void start()override;
 	void originalUpdate();
 
+	//Å‹ß‚Ì“G‚Ìî•ñ‚ğæ“¾‚·‚é
+	Vector3 GetNearEnemy();
+
+	//float JudgeCharacter(CharacterPtr chara, float distance);
+
+
 private:
 	Vector3 CalcPosition(int phase);
 
+	Position VectorToPosition(Vector3 v);
+
 	ASCellManager cellManager;
+	ASCellManager *target;
 	std::vector<Position> routes;
 	int routePhase=0;
 	float mapWidth = 200;
 	float mapHeight = 200;
-	int cellCountW=10;
-	int cellCountH=10;
+	int cellCountW= 10;
+	int cellCountH = 10;
 	Vector3 routePoint;
-
+	int startX, startY;
+	int goalX, goalY;
+	//ICharacterManager manager;
+	std::shared_ptr<CharacterCommonComponents> ccc;
+	//Position start;
+	//Position goal;
+	//std::vector<ASCell>&cells;
 };
 

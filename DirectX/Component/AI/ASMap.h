@@ -7,13 +7,14 @@
 #include"../../Math/Vector3.h"
 
 //マップ側が所持するマップ情報のクラス
-class ASMap:public Component
+class ASMap
 {
 public:
+	ASMap();
+	~ASMap();
 	void Initialize();
 	void JudgeSlope(ASCell* cell);
 
-	virtual void start()override;
 	ASCell* GetCell(Position pos);
 	std::vector<ASCell>* GetCells();
 	Vector2 CalcCellPos(ASCell cell);

@@ -1,7 +1,19 @@
 #include "ASMap.h"
 #include "ASCell.h"
 #include <Math.h>
+ASMap::ASMap()
+{
+	Initialize();
+}
+
+ASMap::~ASMap()
+{
+}
+
+
+
 void ASMap::Initialize()
+
 {
 	cells.resize(cellsWidth * cellsHeight);
 	for (int i = 0; i < cellsWidth * cellsHeight; i++)
@@ -46,10 +58,6 @@ void ASMap::JudgeSlope(ASCell* cell)
 
 }
 
-void ASMap::start()
-{
-	Initialize();
-}
 
 ASCell* ASMap::GetCell(Position pos)
 {

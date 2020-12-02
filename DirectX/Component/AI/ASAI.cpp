@@ -1,10 +1,13 @@
 #include "ASAI.h"
 #include "../../Transform/Transform3D.h"
 #include"../../Math/Vector3.h"
-#include"../../Utility/Random.h"
+#include "../../GameObject/GameObject.h"
+#include"../Character/CharacterCommonComponents.h"
+#include "../Character/ICharacterManager.h"
 
 ASAI::ASAI(GameObject& obj):Component(obj)
 {
+
 }
 
 ASAI::~ASAI()
@@ -13,36 +16,82 @@ ASAI::~ASAI()
 
 void ASAI::Initialize()
 {
-}
-
-void ASAI::start()
-{
-	Position start;
-	start.x = 0;
-	start.y = 0;
-	Position goal;
-	goal.x = 9;
-	goal.y = 9;
+	Position start = VectorToPosition(transform().getPosition());
+	start.x = fmaxf(0,fminf( start.x, cellCountW - 1));
+	start.y = fmaxf(0, fminf(start.y,cellCountH-1));
+	Position goal = VectorToPosition(GetNearEnemy());
 	cellManager = ASCellManager(cellCountW, cellCountH, start, goal);
-	routes = cellManager.GetRoute(); 
+	routes = cellManager.GetRoute();
 	routePhase = 0;
-	routePoint=CalcPosition(routePhase);
-	routePhase++;
-	//transform().setPosition(Vector3(-90, 0, -90));
-}
-
-void ASAI::originalUpdate()
-{
-	Vector3 v3=routePoint-transform().getPosition();
-	float distance = v3.length();
-	v3.normalize();
-	transform().translate(v3/3);
-	if (distance < 1 && routePhase < routes.size())
+	if (routes.size() != 0)
 	{
 		routePoint = CalcPosition(routePhase);
 		routePhase++;
 	}
 }
+
+void ASAI::start()
+{
+	ccc = getComponent<CharacterCommonComponents>();
+	//transform().setPosition(Vector3(-90, 0, -90));
+}
+
+void ASAI::originalUpdate()
+{
+	//Position currentP = VectorToPosition(target->transform().getPosition());
+	//Position goalP = cellManager.GetGoalPosition();
+	if (routes.size() == 0/*||currentP.x!=goalP.x|| currentP.y != goalP.y*/)
+	{
+		Initialize();
+	}
+	else
+	{
+		Vector3 v3 = routePoint - transform().getPosition();
+		float distance = v3.length();
+		v3.normalize();
+		transform().translate(v3 / 3);
+		if (distance < 1 && routePhase < routes.size())
+		{
+			routePoint = CalcPosition(routePhase);
+			routePhase++;
+		}
+	}
+}
+
+Vector3 ASAI::GetNearEnemy()
+{
+	Vector3 v;
+	auto& manager=ccc->getManager();
+	float distance = 99999;
+	if (gameObject().tag() == "Enemy")
+	{
+		for (const CharacterPtr &character:manager.getCharacters())
+		{
+			const float d = Vector3().distance(transform().getPosition(), character.get()->transform().getPosition());
+			if (distance > d)
+			{
+				distance = d;
+				v = character->transform().getPosition();
+			}
+		}
+	}
+	else
+	{
+		for (const CharacterPtr& character : manager.getEnemys())
+		{
+			const float d = Vector3().distance(transform().getPosition(), character.get()->transform().getPosition());
+			if (distance > d)
+			{
+				distance = d;
+				v = character->transform().getPosition();
+			}
+		}
+	}
+	return v;
+}
+
+
+
 
 Vector3 ASAI::CalcPosition(int phase)
 {
@@ -53,4 +102,14 @@ Vector3 ASAI::CalcPosition(int phase)
 	v.z = ((float)routes[phase].y / (float)cellCountH * mapHeight) - (mapHeight / 2) + (cellSize / 2);
 	v.y = transform().getPosition().y;
 	return v;
+}
+
+Position ASAI::VectorToPosition(Vector3 v)
+{
+	Position p;
+	float cellSize = mapWidth / cellCountW;
+	p.x = (v.x + (mapWidth / 2)) / (cellSize);
+	cellSize = mapHeight / cellCountH;
+	p.y = (v.y + (mapHeight / 2)) / (cellSize);
+	return p;
 }

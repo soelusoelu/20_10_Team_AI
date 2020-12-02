@@ -33,6 +33,10 @@ public:
 	ASCell* GetCell(Position pos);
 	void StartSearch();
 
+	Position GetStartPosition();
+
+	Position GetGoalPosition();
+
 	std::vector<E_State> cellStates;
 	std::vector<ASCell> cells;
 	std::vector<ASCell*> openedCells;

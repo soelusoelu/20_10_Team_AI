@@ -22,6 +22,7 @@ ASCellManager::ASCellManager()
 
 ASCellManager::ASCellManager(int width, int height, Position startPos, Position endPos)
 {
+	
 	cellsWidth = width;
 	cellsHeight = height;
 	Initialize();
@@ -91,7 +92,7 @@ void ASCellManager::OpenNeighCells(ASCell* cell)
 {
 	for (int i = 0; i < cell->neighCells.size(); i++)
 	{
-		if (cellStates[cell->neighCells[i]->posNum] == E_State::NONE)
+		if (cellStates[cell->neighCells[i]->posNum] == E_State::NONE&& cell->neighCells[i]->canMove)
 		{
 			//cell->neighCells[i]->state = E_State::OPEN;
 			cellStates[i] = E_State::OPEN;
@@ -169,4 +170,14 @@ void ASCellManager::StartSearch()
 		routes.insert(routes.begin(), currentCell->position);
 		currentCell = currentCell->parent;
 	}
+}
+
+Position ASCellManager::GetStartPosition()
+{
+	return startCell->position;
+}
+
+Position ASCellManager::GetGoalPosition()
+{
+	return goalCell->position;
 }
