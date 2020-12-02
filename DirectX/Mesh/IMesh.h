@@ -17,6 +17,8 @@ public:
     virtual unsigned getMeshCount() const = 0;
     //指定の頂点情報を取得
     virtual const MeshVertices& getMeshVertices(unsigned index) const = 0;
+    //指定のインデックスバッファを取得する
+    virtual const Indices& getMeshIndices(unsigned index) const = 0;
     //モーションを取得する
     virtual const Motion& getMotion(unsigned index) const = 0;
     //モーション数を取得する

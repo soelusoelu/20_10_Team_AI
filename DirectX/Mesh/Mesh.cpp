@@ -14,6 +14,7 @@ Mesh::Mesh() :
 Mesh::~Mesh() = default;
 
 const Material& Mesh::getMaterial(unsigned index) const {
+    assert(index < mMaterials.size());
     return mMaterials[index];
 }
 
@@ -22,7 +23,13 @@ unsigned Mesh::getMeshCount() const {
 }
 
 const MeshVertices& Mesh::getMeshVertices(unsigned index) const {
+    assert(index < mMeshesVertices.size());
     return mMeshesVertices[index];
+}
+
+const Indices& Mesh::getMeshIndices(unsigned index) const {
+    assert(index < mMeshesIndices.size());
+    return mMeshesIndices[index];
 }
 
 const Motion& Mesh::getMotion(unsigned index) const {

@@ -23,6 +23,8 @@ public:
     virtual unsigned getMeshCount() const override;
     //指定の頂点情報を取得
     virtual const MeshVertices& getMeshVertices(unsigned index) const override;
+    //指定のインデックスバッファを取得する
+    virtual const Indices& getMeshIndices(unsigned index) const override;
     //モーションを取得する
     virtual const Motion& getMotion(unsigned index) const override;
     //モーション数を取得する

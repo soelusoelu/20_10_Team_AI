@@ -201,17 +201,13 @@ bool Intersect::intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transf
     //すべてのメッシュとレイによる判定を行う
     for (size_t i = 0; i < mesh.getMeshCount(); ++i) {
         const auto& meshVertices = mesh.getMeshVertices(i);
-        const auto polygonCount = meshVertices.size() / 3;
+        const auto& meshIndices = mesh.getMeshIndices(i);
+        const auto polygonCount = meshIndices.size() / 3;
         for (size_t j = 0; j < polygonCount; ++j) {
             //それぞれの頂点にワールド行列を掛ける
-            auto p1 = Vector3::transform(meshVertices[j * 3].pos, world);
-            auto p2 = Vector3::transform(meshVertices[j * 3 + 1].pos, world);
-            auto p3 = Vector3::transform(meshVertices[j * 3 + 2].pos, world);
-
-            //同じ頂点が入っていることが有るから強制的に
-            if (p1.equal(p2) || p2.equal(p3) || p3.equal(p1)) {
-                continue;
-            }
+            auto p1 = Vector3::transform(meshVertices[meshIndices[j * 3]].pos, world);
+            auto p2 = Vector3::transform(meshVertices[meshIndices[j * 3 + 1]].pos, world);
+            auto p3 = Vector3::transform(meshVertices[meshIndices[j * 3 + 2]].pos, world);
 
             //ポリゴンとレイの衝突判定
             if (Intersect::intersectRayPolygon(ray, p1, p2, p3, intersect)) {
