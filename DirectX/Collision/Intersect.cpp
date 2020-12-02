@@ -30,7 +30,7 @@ bool Intersect::intersectAABB(const AABB& a, const AABB& b) {
     return !no;
 }
 
-bool Intersect::intersectRayPlane(const Ray& ray, const Plane& p, Vector3& intersectPoint) {
+bool Intersect::intersectRayPlane(const Ray& ray, const Plane& p, Vector3* intersectPoint) {
     //tの解決策があるかどうかの最初のテスト
     float denom = Vector3::dot(ray.end - ray.start, p.normal());
     if (Math::nearZero(denom)) {
@@ -43,7 +43,9 @@ bool Intersect::intersectRayPlane(const Ray& ray, const Plane& p, Vector3& inter
     //tが線分の範囲内にあるか
     if (t >= 0.f && t <= 1.f) {
         //衝突点を取得する
-        intersectPoint = ray.pointOnSegment(t);
+        if (intersectPoint) {
+            *intersectPoint = ray.pointOnSegment(t);
+        }
         return true;
     }
 
@@ -54,7 +56,7 @@ bool Intersect::intersectRayPlane(const Ray& ray, const Plane& p, Vector3& inter
 bool Intersect::intersectRayPolygon(const Ray& ray, const Vector3& p1, const Vector3& p2, const Vector3& p3, Vector3& intersectPoint) {
     //まずは無限平面でテストする
     Plane plane(p1, p2, p3);
-    if (!intersectRayPlane(ray, plane, intersectPoint)) {
+    if (!intersectRayPlane(ray, plane, &intersectPoint)) {
         return false;
     }
 
@@ -185,14 +187,16 @@ bool Intersect::intersectRayAABB(const Ray& ray, const AABB& aabb, Vector3& inte
     return false;
 }
 
-bool Intersect::intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transform3D& transform) {
-    Vector3 temp;
-    return intersectRayMesh(ray, mesh, transform, temp);
-}
-
-bool Intersect::intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transform3D& transform, Vector3& intersectPoint) {
+bool Intersect::intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transform3D& transform, Vector3* intersectPoint) {
     //ワールド行列を先に取得しておく
     const auto& world = transform.getWorldTransform();
+
+    //衝突した点との最小距離、点
+    float minDistance = FLT_MAX;
+    Vector3 minPoint = Vector3::one * FLT_MAX;
+
+    //衝突した点
+    Vector3 intersect;
 
     //すべてのメッシュとレイによる判定を行う
     for (size_t i = 0; i < mesh.getMeshCount(); ++i) {
@@ -210,10 +214,22 @@ bool Intersect::intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transf
             }
 
             //ポリゴンとレイの衝突判定
-            if (Intersect::intersectRayPolygon(ray, p1, p2, p3, intersectPoint)) {
-                return true;
+            if (Intersect::intersectRayPolygon(ray, p1, p2, p3, intersect)) {
+                float dist = (intersect - ray.start).lengthSq();
+                if (dist < minDistance) {
+                    minDistance = dist;
+                    minPoint = intersect;
+                }
             }
         }
+    }
+
+    //一回でも衝突してたら最小距離の点を設定し終了
+    if (!Math::equal(minDistance, FLT_MAX)) {
+        if (intersectPoint) {
+            *intersectPoint = minPoint;
+        }
+        return true;
     }
 
     //衝突していない

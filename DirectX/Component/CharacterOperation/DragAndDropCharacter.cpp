@@ -71,7 +71,7 @@ void DragAndDropCharacter::setManager(const ICharacterManager* manager) {
 bool DragAndDropCharacter::intersectRayGroundMeshes(const Ray& ray) {
     //地形メッシュとレイの衝突判定
     const auto& map = mManager->getMap();
-    return Intersect::intersectRayMesh(ray, map.getMeshData(), map.getTransform(), mIntersectPoint);
+    return Intersect::intersectRayMesh(ray, map.getMeshData(), map.getTransform(), &mIntersectPoint);
 }
 
 void DragAndDropCharacter::moveToIntersectPoint(const CharacterCommonComponents& target) const {

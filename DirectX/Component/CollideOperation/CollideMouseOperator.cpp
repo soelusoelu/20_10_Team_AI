@@ -90,7 +90,6 @@ bool CollideMouseOperator::intersectRayGroundMeshes() {
     auto rayCameraToMousePos = mCamera->screenToRay(Input::mouse().getMousePosition());
 
     //すべての地形メッシュとレイの衝突判定
-    Vector3 intersectPoint;
     for (const auto& gm : mGroundMeshes) {
         //今選択しているメッシュなら飛ばす
         if (gm == mSelecteMesh) {
@@ -98,7 +97,7 @@ bool CollideMouseOperator::intersectRayGroundMeshes() {
         }
 
         //メッシュとレイの衝突判定
-        if (Intersect::intersectRayMesh(rayCameraToMousePos, gm->getMesh(), gm->transform(), intersectPoint)) {
+        if (Intersect::intersectRayMesh(rayCameraToMousePos, gm->getMesh(), gm->transform())) {
             changeSelectMesh(gm);
             return true;
         }
