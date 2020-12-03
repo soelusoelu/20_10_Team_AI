@@ -16,7 +16,6 @@ DragAndDropCharacter::DragAndDropCharacter(GameObject& gameObject)
     , mCamera(nullptr)
     , mOverlapPreventor(nullptr)
     , mManager(nullptr)
-    , mIntersectPoint(Vector3::zero)
 {
 }
 
@@ -29,7 +28,7 @@ void DragAndDropCharacter::start() {
     mOverlapPreventor = getComponent<OverlapPrevention>();
 }
 
-void DragAndDropCharacter::dragMove(const CharacterCommonComponents& target) {
+void DragAndDropCharacter::dragMove(const CharacterCommonComponents& target) const {
     //マウスの座標を取得する
     const auto& mousePos = Input::mouse().getMousePosition();
 
@@ -40,20 +39,47 @@ void DragAndDropCharacter::dragMove(const CharacterCommonComponents& target) {
         return;
     }
 
-    //カメラからマウスの位置へ向かうレイを取得
-    const auto& rayCameraToMousePos = mCamera->screenToRay(mousePos);
+    //衝突点
+    Vector3 intersectPoint{};
+    //衝突ポリゴン
+    Triangle intersectPolygon{};
 
     //地形とレイが衝突していなかったら終了
-    if (!intersectRayGroundMeshes(rayCameraToMousePos)) {
+    if (!intersectRayGroundMeshes(mCamera->screenToRay(mousePos), intersectPoint, intersectPolygon)) {
         return;
     }
 
+    //衝突したポリゴンの法線
+    if (!comparePolygonNormal(intersectPolygon)) {
+        return;
+    }
+
+    //キャラクター移動処理
+    moveCharacter(target, intersectPoint);
+}
+
+void DragAndDropCharacter::setManager(const ICharacterManager* manager) {
+    mManager = manager;
+}
+
+bool DragAndDropCharacter::intersectRayGroundMeshes(const Ray& ray, Vector3& intersectPoint, Triangle& intersectPolygon) const {
+    //地形メッシュとレイの衝突判定
+    const auto& map = mManager->getMap();
+    return Intersect::intersectRayMesh(ray, map.getMeshData(), map.getTransform(), &intersectPoint, &intersectPolygon);
+}
+
+bool DragAndDropCharacter::comparePolygonNormal(const Triangle& intersectPolygon) const {
+    //法線が上を向いていたら
+    return (Vector3::dot(intersectPolygon.normal, Vector3::up) > 0.f);
+}
+
+void DragAndDropCharacter::moveCharacter(const CharacterCommonComponents& target, const Vector3& intersectPoint) const {
     const auto& t = target.transform();
     //移動前の位置を確保
     const auto& prePos = t.getPosition();
 
-    //条件を満たしていたら移動
-    moveToIntersectPoint(target);
+    //衝突点まで移動する
+    moveToIntersectPoint(target, intersectPoint);
 
     //押し出し処理
     mOverlapPreventor->overlapPrevent(
@@ -64,24 +90,14 @@ void DragAndDropCharacter::dragMove(const CharacterCommonComponents& target) {
     );
 }
 
-void DragAndDropCharacter::setManager(const ICharacterManager* manager) {
-    mManager = manager;
-}
-
-bool DragAndDropCharacter::intersectRayGroundMeshes(const Ray& ray) {
-    //地形メッシュとレイの衝突判定
-    const auto& map = mManager->getMap();
-    return Intersect::intersectRayMesh(ray, map.getMeshData(), map.getTransform(), &mIntersectPoint);
-}
-
-void DragAndDropCharacter::moveToIntersectPoint(const CharacterCommonComponents& target) const {
+void DragAndDropCharacter::moveToIntersectPoint(const CharacterCommonComponents& target, const Vector3& intersectPoint) const {
     //ターゲットのトランスフォームを取得する
     auto& t = target.transform();
 
     const auto& aabb = target.getAABBCollider().getAABB();
 
     //X軸を基準に移動制限を設ける
-    auto movePoint = mIntersectPoint;
+    auto movePoint = intersectPoint;
 
     //はみ出した当たり判定分補正を掛ける
     auto offset = aabb.max.x - t.getPosition().x;

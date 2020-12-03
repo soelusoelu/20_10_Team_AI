@@ -317,6 +317,7 @@
     <ClCompile Include="Mesh\Fbx\FBX.cpp" />
     <ClCompile Include="DirectX\DirectX.cpp" />
     <ClCompile Include="DebugLayer\Debug.cpp" />
+    <ClCompile Include="Collision\Triangle.cpp" />
     <ClCompile Include="Utility\Easing.cpp" />
     <ClCompile Include="Utility\FileUtil.cpp" />
     <ClCompile Include="Utility\LevelLoader.cpp" />
@@ -572,6 +573,7 @@
     <ClInclude Include="Mesh\IMeshLoader.h" />
     <ClInclude Include="DirectX\DirectX.h" />
     <ClInclude Include="DebugLayer\Debug.h" />
+    <ClInclude Include="Collision\Triangle.h" />
     <ClInclude Include="Utility\Easing.h" />
     <ClInclude Include="Utility\FileUtil.h" />
     <ClInclude Include="Utility\LevelLoader.h" />

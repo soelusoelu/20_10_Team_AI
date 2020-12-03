@@ -2,6 +2,8 @@
 #include "../Transform/Transform3D.h"
 #include <algorithm>
 #include <vector>
+#include "../DebugLayer/Debug.h"
+#include "../Utility/StringUtil.h"
 
 bool Intersect::intersectCircle(const Circle& a, const Circle& b) {
     Vector2 dist = a.center - b.center;
@@ -53,22 +55,23 @@ bool Intersect::intersectRayPlane(const Ray& ray, const Plane& p, Vector3* inter
     return false;
 }
 
-bool Intersect::intersectRayPolygon(const Ray& ray, const Vector3& p1, const Vector3& p2, const Vector3& p3, Vector3& intersectPoint) {
+bool Intersect::intersectRayPolygon(const Ray& ray, const Vector3& p0, const Vector3& p1, const Vector3& p2, Vector3* intersectPoint) {
     //まずは無限平面でテストする
-    Plane plane(p1, p2, p3);
-    if (!intersectRayPlane(ray, plane, &intersectPoint)) {
+    Plane plane(p0, p1, p2);
+    Vector3 interPoint{};
+    if (!intersectRayPlane(ray, plane, &interPoint)) {
         return false;
     }
 
     //各辺ベクトルを求める
-    auto ab = p2 - p1;
-    auto bc = p3 - p2;
-    auto ca = p1 - p3;
+    auto ab = p1 - p0;
+    auto bc = p2 - p1;
+    auto ca = p0 - p2;
 
     //各辺ベクトルと各頂点から交点へ向かうベクトルの外積を求める
-    auto crossAB = Vector3::cross(ab, intersectPoint - p1);
-    auto crossBC = Vector3::cross(bc, intersectPoint - p2);
-    auto crossCA = Vector3::cross(ca, intersectPoint - p3);
+    auto crossAB = Vector3::cross(ab, interPoint - p0);
+    auto crossBC = Vector3::cross(bc, interPoint - p1);
+    auto crossCA = Vector3::cross(ca, interPoint - p2);
 
     //それぞれの外積ベクトルとの内積を計算する
     auto dotAB = Vector3::dot(plane.normal(), crossAB);
@@ -76,7 +79,15 @@ bool Intersect::intersectRayPolygon(const Ray& ray, const Vector3& p1, const Vec
     auto dotCA = Vector3::dot(plane.normal(), crossCA);
 
     //3つの内積結果のうち1つでもマイナス符号のものがあれば交点は外にある
-    return !(dotAB < 0.f || dotBC < 0.f || dotCA < 0.f);
+    if (!(dotAB < 0.f || dotBC < 0.f || dotCA < 0.f)) {
+        if (intersectPoint) {
+            *intersectPoint = interPoint;
+        }
+    }
+}
+
+bool Intersect::intersectRayPolygon(const Ray& ray, const Triangle& polygon, Vector3* intersectPoint) {
+    return intersectRayPolygon(ray, polygon.p0, polygon.p1, polygon.p2, intersectPoint);
 }
 
 bool Intersect::intersectRaySphere(const Ray& ray, const Sphere& sphere, Vector3& intersectPoint) {
@@ -187,16 +198,14 @@ bool Intersect::intersectRayAABB(const Ray& ray, const AABB& aabb, Vector3& inte
     return false;
 }
 
-bool Intersect::intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transform3D& transform, Vector3* intersectPoint) {
+bool Intersect::intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transform3D& transform, Vector3* intersectPoint, Triangle* intersectPolygon) {
     //ワールド行列を先に取得しておく
     const auto& world = transform.getWorldTransform();
 
     //衝突した点との最小距離、点
     float minDistance = FLT_MAX;
-    Vector3 minPoint = Vector3::one * FLT_MAX;
-
-    //衝突した点
-    Vector3 intersect;
+    Vector3 minPoint{};
+    Triangle minPoly{};
 
     //すべてのメッシュとレイによる判定を行う
     for (size_t i = 0; i < mesh.getMeshCount(); ++i) {
@@ -205,16 +214,18 @@ bool Intersect::intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transf
         const auto polygonCount = meshIndices.size() / 3;
         for (size_t j = 0; j < polygonCount; ++j) {
             //それぞれの頂点にワールド行列を掛ける
-            auto p1 = Vector3::transform(meshVertices[meshIndices[j * 3]].pos, world);
-            auto p2 = Vector3::transform(meshVertices[meshIndices[j * 3 + 1]].pos, world);
-            auto p3 = Vector3::transform(meshVertices[meshIndices[j * 3 + 2]].pos, world);
+            const auto& p1 = Vector3::transform(meshVertices[meshIndices[j * 3]].pos, world);
+            const auto& p2 = Vector3::transform(meshVertices[meshIndices[j * 3 + 1]].pos, world);
+            const auto& p3 = Vector3::transform(meshVertices[meshIndices[j * 3 + 2]].pos, world);
 
             //ポリゴンとレイの衝突判定
-            if (Intersect::intersectRayPolygon(ray, p1, p2, p3, intersect)) {
-                float dist = (intersect - ray.start).lengthSq();
+            Vector3 interPoint{};
+            if (Intersect::intersectRayPolygon(ray, p1, p2, p3, &interPoint)) {
+                float dist = (interPoint - ray.start).lengthSq();
                 if (dist < minDistance) {
                     minDistance = dist;
-                    minPoint = intersect;
+                    minPoint = interPoint;
+                    minPoly = Triangle(p1, p2, p3);
                 }
             }
         }
@@ -224,6 +235,10 @@ bool Intersect::intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transf
     if (!Math::equal(minDistance, FLT_MAX)) {
         if (intersectPoint) {
             *intersectPoint = minPoint;
+            Debug::log(StringUtil::vector3ToString(minPoint));
+        }
+        if (intersectPolygon) {
+            *intersectPolygon = minPoly;
         }
         return true;
     }

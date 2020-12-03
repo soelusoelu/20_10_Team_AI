@@ -7,7 +7,7 @@
     {
       "type": "MeshComponent",
       "properties": {
-        "fileName": "Test/test.obj"
+        "fileName": "Shape/Plane.fbx"
       }
     }
   ]
