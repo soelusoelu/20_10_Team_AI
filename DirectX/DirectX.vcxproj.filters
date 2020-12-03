@@ -226,6 +226,7 @@
     <ClCompile Include="Component\Character\PhaseChangeSaver.cpp" />
     <ClCompile Include="Component\Character\HitPointRenderer.cpp" />
     <ClCompile Include="Collision\Triangle.cpp" />
+    <ClCompile Include="Mesh\VertexNormalSmoother.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -493,6 +494,7 @@
     <ClInclude Include="Component\Character\HitPointRenderer.h" />
     <ClInclude Include="Collision\Triangle.h" />
     <ClInclude Include="Mesh\IAnimation.h" />
+    <ClInclude Include="Mesh\VertexNormalSmoother.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />

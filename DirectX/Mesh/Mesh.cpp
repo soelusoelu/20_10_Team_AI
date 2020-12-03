@@ -7,8 +7,9 @@
 #include "../Utility/FileUtil.h"
 #include <cassert>
 
-Mesh::Mesh() :
-    mMesh(nullptr) {
+Mesh::Mesh()
+    : mMesh(nullptr)
+{
 }
 
 Mesh::~Mesh() = default;

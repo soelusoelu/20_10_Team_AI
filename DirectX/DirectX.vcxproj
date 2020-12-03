@@ -373,6 +373,7 @@
     <ClCompile Include="Sound\File\WaveformOutput.cpp" />
     <ClCompile Include="Sound\Effects\FourierTransform\WindowFunction.cpp" />
     <ClCompile Include="Component\Sound\WaveformRenderSample.cpp" />
+    <ClCompile Include="Mesh\VertexNormalSmoother.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\CharacterOperation\CharacterCreateSpriteOperation.h" />
@@ -640,6 +641,7 @@
     <ClInclude Include="Sound\File\WaveformOutput.h" />
     <ClInclude Include="Sound\Effects\FourierTransform\WindowFunction.h" />
     <ClInclude Include="Component\Sound\WaveformRenderSample.h" />
+    <ClInclude Include="Mesh\VertexNormalSmoother.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ChickenMesh.hlsl">
