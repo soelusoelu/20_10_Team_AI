@@ -36,7 +36,7 @@ void MeshManager::add(const MeshPtr& mesh) {
 }
 
 void MeshManager::clear() {
-    //mMeshes.clear();
+    mMeshes.clear();
 }
 
 void MeshManager::remove() {

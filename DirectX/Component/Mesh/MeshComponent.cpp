@@ -132,7 +132,11 @@ bool MeshComponent::isDead() const {
     return mState == State::DEAD;
 }
 
-IMesh& MeshComponent::getMesh() const {
+const IMesh& MeshComponent::getMesh() const {
+    return *mMesh;
+}
+
+IAnimation& MeshComponent::getAnimation() const {
     return *mMesh;
 }
 

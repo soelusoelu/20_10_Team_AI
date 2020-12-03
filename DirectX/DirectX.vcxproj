@@ -434,6 +434,7 @@
     <ClInclude Include="Mesh\Fbx\FbxMeshParser.h" />
     <ClInclude Include="Mesh\Fbx\FbxMaterialParser.h" />
     <ClInclude Include="Mesh\Fbx\FbxMotionTime.h" />
+    <ClInclude Include="Mesh\IAnimation.h" />
     <ClInclude Include="Mesh\IMesh.h" />
     <ClInclude Include="Mesh\Motion.h" />
     <ClInclude Include="Mesh\Vertex.h" />

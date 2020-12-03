@@ -123,15 +123,13 @@ void MeshShader::setDefaultShader() {
         return;
     }
 
-    const auto& iMesh = mesh->getMesh();
-
     std::string shader = "Mesh.hlsl";
     //ノーマルマップが有るなら
-    if (iMesh.getMaterial(0).normalMapTexture) {
+    if (mesh->getMesh().getMaterial(0).normalMapTexture) {
         shader = "NormalMap.hlsl";
     }
     //ボーンが有るなら
-    if (iMesh.getBoneCount() > 0) {
+    if (mesh->getAnimation().getBoneCount() > 0) {
         shader = "SkinMesh.hlsl";
     }
     //シェーダーを生成する

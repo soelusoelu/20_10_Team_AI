@@ -2,7 +2,7 @@
 #include "MeshComponent.h"
 #include "MeshShader.h"
 #include "../../DebugLayer/Debug.h"
-#include "../../Mesh/IMesh.h"
+#include "../../Mesh/IAnimation.h"
 #include "../../System/Shader/ConstantBuffers.h"
 #include <cassert>
 
@@ -21,41 +21,41 @@ void SkinMeshComponent::start() {
     mMesh = getComponent<MeshComponent>();
     mMeshShader = getComponent<MeshShader>();
 
-    mCurrentBones.resize(mMesh->getMesh().getBoneCount());
+    mCurrentBones.resize(mMesh->getAnimation().getBoneCount());
 }
 
 void SkinMeshComponent::update() {
-    const auto& iMesh = mMesh->getMesh();
+    const auto& iAnim = mMesh->getAnimation();
 
-    const auto& motion = iMesh.getMotion(mCurrentMotionNo);
+    const auto& motion = iAnim.getMotion(mCurrentMotionNo);
     ++mCurrentFrame;
     if (mCurrentFrame >= motion.numFrame) {
         mCurrentFrame = 0;
     }
 
     //シェーダーにボーンのデータを渡す
-    for (size_t i = 0; i < iMesh.getBoneCount(); ++i) {
-        mCurrentBones[i] = iMesh.getBone(i).offsetMat * motion.frameMat[i][mCurrentFrame];
+    for (size_t i = 0; i < iAnim.getBoneCount(); ++i) {
+        mCurrentBones[i] = iAnim.getBone(i).offsetMat * motion.frameMat[i][mCurrentFrame];
     }
     mMeshShader->setTransferData(mCurrentBones.data(), sizeof(SkinMeshConstantBuffer), 2);
 }
 
 void SkinMeshComponent::setMotionName(const std::string& name, unsigned motionNo) {
-    auto& iMesh = mMesh->getMesh();
-    assert(motionNo < iMesh.getMotionCount());
-    iMesh.setMotionName(name, motionNo);
+    auto& iAnim = mMesh->getAnimation();
+    assert(motionNo < iAnim.getMotionCount());
+    iAnim.setMotionName(name, motionNo);
 }
 
 void SkinMeshComponent::changeMotion(unsigned motionNo) {
-    assert(motionNo < mMesh->getMesh().getMotionCount());
+    assert(motionNo < mMesh->getAnimation().getMotionCount());
     mCurrentMotionNo = motionNo;
     mCurrentFrame = 0;
 }
 
 void SkinMeshComponent::changeMotion(const std::string& motionName) {
-    const auto& iMesh = mMesh->getMesh();
-    for (size_t i = 0; i < iMesh.getMotionCount(); ++i) {
-        if (iMesh.getMotion(i).name == motionName) {
+    const auto& iAnim = mMesh->getAnimation();
+    for (size_t i = 0; i < iAnim.getMotionCount(); ++i) {
+        if (iAnim.getMotion(i).name == motionName) {
             mCurrentMotionNo = i;
             mCurrentFrame = 0;
             return;
@@ -66,7 +66,7 @@ void SkinMeshComponent::changeMotion(const std::string& motionName) {
 }
 
 const Motion& SkinMeshComponent::getCurrentMotion() const {
-    return mMesh->getMesh().getMotion(mCurrentMotionNo);
+    return mMesh->getAnimation().getMotion(mCurrentMotionNo);
 }
 
 int SkinMeshComponent::getCurrentMotionFrame() const {

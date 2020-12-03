@@ -32,6 +32,32 @@ const Indices& Mesh::getMeshIndices(unsigned index) const {
     return mMeshesIndices[index];
 }
 
+unsigned Mesh::getPolygonCount(unsigned index) const {
+    return getMeshIndices(index).size() / 3;
+}
+
+Triangle Mesh::getPolygon(unsigned meshIndex, unsigned polygonIndex) const {
+    const auto& meshVertices = getMeshVertices(meshIndex);
+    const auto& meshIndices = getMeshIndices(meshIndex);
+
+    Triangle polygon{};
+    polygon.p0 = meshVertices[meshIndices[polygonIndex * 3]].pos;
+    polygon.p1 = meshVertices[meshIndices[polygonIndex * 3 + 1]].pos;
+    polygon.p2 = meshVertices[meshIndices[polygonIndex * 3 + 2]].pos;
+
+    return polygon;
+}
+
+Triangle Mesh::getPolygon(unsigned meshIndex, unsigned polygonIndex, const Matrix4& world) const {
+    auto polygon = getPolygon(meshIndex, polygonIndex);
+
+    polygon.p0 = Vector3::transform(polygon.p0, world);
+    polygon.p1 = Vector3::transform(polygon.p1, world);
+    polygon.p2 = Vector3::transform(polygon.p2, world);
+
+    return polygon;
+}
+
 const Motion& Mesh::getMotion(unsigned index) const {
     assert(index < mMotions.size());
     return mMotions[index];

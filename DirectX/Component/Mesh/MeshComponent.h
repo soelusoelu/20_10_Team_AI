@@ -2,6 +2,7 @@
 
 #include "../Component.h"
 #include "../../Math/Math.h"
+#include "../../Mesh/IAnimation.h"
 #include "../../Mesh/IMesh.h"
 #include "../../Mesh/Material.h"
 #include <memory>
@@ -44,7 +45,9 @@ public:
     bool getActive() const;
     bool isDead() const;
     //メッシュインターフェースを取得する
-    IMesh& getMesh() const;
+    const IMesh& getMesh() const;
+    //アニメーションインターフェースを取得する
+    IAnimation& getAnimation() const;
     //使用する色の割合を設定する
     void setColorRatio(const Vector3& color);
     //使用する色の割合を取得する

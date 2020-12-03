@@ -1,14 +1,14 @@
 ﻿#pragma once
 
-#include "AABB.h"
-#include "Circle.h"
-#include "Ray.h"
-#include "Sphere.h"
-#include "Triangle.h"
 #include "../Math/Math.h"
-#include "../Mesh/IMesh.h"
 
+struct AABB;
+struct Circle;
+struct Sphere;
+struct Triangle;
+struct Ray;
 class Transform3D;
+class IMesh;
 
 namespace Intersect {
 //円同士の衝突判定を行う
