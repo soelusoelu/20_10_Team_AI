@@ -40,7 +40,7 @@ std::vector<std::unique_ptr<Buffer>> ConstantBufferManager::createConstantBuffer
 
         //バッファの数だけ生成する
         for (size_t i = 0; i < size; i++) {
-            cb.size = itr->second[i];
+            cb.size = ((itr->second[i] + 0xff) & ~0xff);
             buffers[i] = std::make_unique<Buffer>(cb);
         }
     } else {
