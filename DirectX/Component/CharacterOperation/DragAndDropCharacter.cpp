@@ -70,7 +70,7 @@ bool DragAndDropCharacter::intersectRayGroundMeshes(const Ray& ray, Vector3& int
 
 bool DragAndDropCharacter::comparePolygonNormal(const Triangle& intersectPolygon) const {
     //法線が上を向いていたら
-    return (Vector3::dot(intersectPolygon.normal, Vector3::up) > 0.f);
+    return (Vector3::dot(intersectPolygon.normal, Vector3::up) > 0.2f);
 }
 
 void DragAndDropCharacter::moveCharacter(const CharacterCommonComponents& target, const Vector3& intersectPoint) const {

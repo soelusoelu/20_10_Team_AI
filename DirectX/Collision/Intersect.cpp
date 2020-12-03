@@ -83,7 +83,10 @@ bool Intersect::intersectRayPolygon(const Ray& ray, const Vector3& p0, const Vec
         if (intersectPoint) {
             *intersectPoint = interPoint;
         }
+        return true;
     }
+
+    return false;
 }
 
 bool Intersect::intersectRayPolygon(const Ray& ray, const Triangle& polygon, Vector3* intersectPoint) {
