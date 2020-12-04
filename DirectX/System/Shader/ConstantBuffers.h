@@ -80,5 +80,12 @@ struct SimpleMeshConstantBuffer {
 
 //アウトライン
 struct OutLineConstantBuffer {
+    Matrix4 wvp;
     Vector4 outlineColor;
+};
+
+//影
+struct ShadowConstantBuffer {
+    Matrix4 lightView; //ライトの視点
+    Matrix4 lightProj; //ライトのプロジェクション
 };

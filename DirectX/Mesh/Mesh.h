@@ -3,6 +3,7 @@
 #include "Bone.h"
 #include "IAnimation.h"
 #include "IMesh.h"
+#include "IMeshDrawer.h"
 #include "IMeshLoader.h"
 #include "Material.h"
 #include "Motion.h"
@@ -13,7 +14,7 @@
 class VertexBuffer;
 class IndexBuffer;
 
-class Mesh : public IMesh, public IAnimation {
+class Mesh : public IMesh, public IAnimation, public IMeshDrawer {
 public:
     Mesh();
     ~Mesh();
@@ -44,10 +45,11 @@ public:
     //ボーン数を取得する
     virtual unsigned getBoneCount() const override;
 
+    //メッシュを描画する
+    virtual void draw(unsigned meshIndex) const override;
+
     //ファイル名からメッシュを生成する
     void loadMesh(const std::string& filePath);
-    //メッシュを描画する
-    void draw(unsigned meshIndex) const;
 
 private:
     //初期化処理

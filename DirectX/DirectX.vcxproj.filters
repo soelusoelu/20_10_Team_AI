@@ -16,6 +16,8 @@
     <FxCompile Include="Shader\OutLine.hlsl" />
     <FxCompile Include="Shader\SkinMeshOutLine.hlsl" />
     <FxCompile Include="Shader\Texture3D.hlsl" />
+    <FxCompile Include="Shader\Shadow.hlsl" />
+    <FxCompile Include="Shader\ShadowDepthTextureCreater.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Component\ComponentManager.cpp" />
@@ -227,6 +229,7 @@
     <ClCompile Include="Component\Character\HitPointRenderer.cpp" />
     <ClCompile Include="Collision\Triangle.cpp" />
     <ClCompile Include="Mesh\VertexNormalSmoother.cpp" />
+    <ClCompile Include="Component\Mesh\ShadowMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -495,9 +498,12 @@
     <ClInclude Include="Collision\Triangle.h" />
     <ClInclude Include="Mesh\IAnimation.h" />
     <ClInclude Include="Mesh\VertexNormalSmoother.h" />
+    <ClInclude Include="Component\Mesh\ShadowMap.h" />
+    <ClInclude Include="Mesh\IMeshDrawer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />
     <None Include="Shader\MeshCommonAndMaterialHeader.hlsli" />
+    <None Include="Shader\OutLineHeader.hlsli" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 ﻿#include "MeshComponent.h"
 #include "MeshShader.h"
+#include "ShadowMap.h"
 #include "SkinMeshComponent.h"
 #include "../Camera/Camera.h"
 #include "../Light/DirectionalLight.h"
@@ -20,6 +21,7 @@ MeshComponent::MeshComponent(GameObject& gameObject)
     : Component(gameObject)
     , mMesh(nullptr)
     , mMeshShader(nullptr)
+    , mShadowMap(nullptr)
     , mFileName()
     , mDirectoryPath()
     , mState(State::ACTIVE)
@@ -40,6 +42,12 @@ void MeshComponent::start() {
     if (!mMeshShader) {
         mMeshShader = addComponent<MeshShader>("MeshShader");
         mMeshShader->setMeshComponent(shared_from_this());
+    }
+
+    mShadowMap = getComponent<ShadowMap>();
+    //ShadowMapがないなら追加する
+    if (!mShadowMap) {
+        mShadowMap = addComponent<ShadowMap>("ShadowMap");
     }
 
     if (mMesh) {
@@ -136,8 +144,12 @@ const IMesh& MeshComponent::getMesh() const {
     return *mMesh;
 }
 
-IAnimation& MeshComponent::getAnimation() const {
-    return *mMesh;
+IAnimation* MeshComponent::getAnimation() const {
+    return mMesh.get();
+}
+
+const IMeshDrawer* MeshComponent::getDrawer() const {
+    return mMesh.get();
 }
 
 void MeshComponent::setColorRatio(const Vector3& color) {

@@ -129,19 +129,10 @@ void MeshOutLine::drawOutLine(const Camera& camera, const DirectionalLight& dirL
     world *= Matrix4::createTranslation(t.getPosition() + offset * t.getScale());
 
     //シェーダーのコンスタントバッファーに各種データを渡す
-    MeshCommonConstantBuffer meshcb;
-    meshcb.world = world;
-    meshcb.view = camera.getView();
-    meshcb.projection = camera.getProjection();
-    meshcb.wvp = world * camera.getViewProjection();
-    meshcb.lightDir = dirLight.getDirection();
-    meshcb.lightColor = dirLight.getLightColor();
-    meshcb.cameraPos = camera.getPosition();
-    mOutLineShader->transferData(&meshcb, sizeof(meshcb), 0);
-
     OutLineConstantBuffer outlinecb;
+    outlinecb.wvp = world * camera.getViewProjection();
     outlinecb.outlineColor = Vector4(mOutLineColor, 1.f);
-    mOutLineShader->transferData(&outlinecb, sizeof(outlinecb), 1);
+    mOutLineShader->transferData(&outlinecb, sizeof(outlinecb), 0);
 
     //アニメーションするならボーンのデータも渡す
     if (mIsAnimation) {
@@ -153,7 +144,7 @@ void MeshOutLine::drawOutLine(const Camera& camera, const DirectionalLight& dirL
         }
 
         //ボーンデータを転送する
-        mOutLineShader->transferData(sm->getBoneCurrentFrameMatrix().data(), sizeof(SkinMeshConstantBuffer), 2);
+        mOutLineShader->transferData(sm->getBoneCurrentFrameMatrix().data(), sizeof(SkinMeshConstantBuffer), 1);
     }
 
     //アウトラインを描画する

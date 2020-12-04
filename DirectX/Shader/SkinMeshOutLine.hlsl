@@ -1,11 +1,6 @@
-#include "MeshCommonHeader.hlsli"
+#include "OutLineHeader.hlsli"
 
-cbuffer OutLine : register(b1)
-{
-    float4 outLineColor;
-};
-
-cbuffer Animation : register(b2)
+cbuffer Animation : register(b1)
 {
     matrix bones[256];
 };

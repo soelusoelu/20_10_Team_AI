@@ -4,6 +4,7 @@
 #include "../../Math/Math.h"
 #include "../../Mesh/IAnimation.h"
 #include "../../Mesh/IMesh.h"
+#include "../../Mesh/IMeshDrawer.h"
 #include "../../Mesh/Material.h"
 #include <memory>
 #include <string>
@@ -12,6 +13,7 @@
 class Mesh;
 class MeshManager;
 class MeshShader;
+class ShadowMap;
 class Camera;
 class DirectionalLight;
 
@@ -47,7 +49,9 @@ public:
     //メッシュインターフェースを取得する
     const IMesh& getMesh() const;
     //アニメーションインターフェースを取得する
-    IAnimation& getAnimation() const;
+    IAnimation* getAnimation() const;
+    //描画インターフェースを取得する
+    const IMeshDrawer* getDrawer() const;
     //使用する色の割合を設定する
     void setColorRatio(const Vector3& color);
     //使用する色の割合を取得する
@@ -69,6 +73,7 @@ private:
 protected:
     std::shared_ptr<Mesh> mMesh;
     std::shared_ptr<MeshShader> mMeshShader;
+    std::shared_ptr<ShadowMap> mShadowMap;
     std::string mFileName;
     std::string mDirectoryPath;
     State mState;

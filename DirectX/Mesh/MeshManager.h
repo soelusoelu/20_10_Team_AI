@@ -4,6 +4,7 @@
 #include <memory>
 
 class MeshComponent;
+class ShadowMap;
 class Camera;
 class DirectionalLight;
 
@@ -17,6 +18,7 @@ public:
     void update();
     void draw(const Camera& camera, const DirectionalLight& dirLight) const;
     void add(const MeshPtr& mesh);
+    void addShadowMap(const std::shared_ptr<ShadowMap>& shadowMap);
     void clear();
 
 private:
@@ -30,4 +32,5 @@ private:
 
 private:
     MeshPtrList mMeshes;
+    std::shared_ptr<ShadowMap> mShadowMap;
 };

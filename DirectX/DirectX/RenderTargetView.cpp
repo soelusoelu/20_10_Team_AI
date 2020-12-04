@@ -16,13 +16,36 @@ RenderTargetView::RenderTargetView(const Texture2D& texture2D, const RenderTarge
 
 RenderTargetView::~RenderTargetView() = default;
 
-ID3D11RenderTargetView* RenderTargetView::getRenderTarget() const {
-    return mRenderTargetView.Get();
+void RenderTargetView::setRenderTarget(ID3D11DepthStencilView* depthStencilView) const {
+    const auto& dx = MyDirectX::DirectX::instance();
+    if (depthStencilView) {
+        dx.deviceContext()->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), depthStencilView);
+    } else {
+        dx.deviceContext()->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), dx.depthStencilView());
+    }
 }
 
 void RenderTargetView::clearRenderTarget(float r, float g, float b, float a) const {
     const float clearColor[4] = { r, g, b, a };
     MyDirectX::DirectX::instance().deviceContext()->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
+}
+
+void RenderTargetView::setRenderTargets(
+    const std::vector<std::unique_ptr<RenderTargetView>>& targets,
+    ID3D11DepthStencilView* depthStencilView
+) {
+    const auto VIEW_COUNT = targets.size();
+    std::vector<ID3D11RenderTargetView*> views(VIEW_COUNT);
+    for (size_t i = 0; i < VIEW_COUNT; ++i) {
+        views[i] = targets[i]->mRenderTargetView.Get();
+    }
+
+    const auto& dx = MyDirectX::DirectX::instance();
+    if (depthStencilView) {
+        dx.deviceContext()->OMSetRenderTargets(VIEW_COUNT, views.data(), depthStencilView);
+    } else {
+        dx.deviceContext()->OMSetRenderTargets(VIEW_COUNT, views.data(), dx.depthStencilView());
+    }
 }
 
 D3D11_RENDER_TARGET_VIEW_DESC RenderTargetView::toRTVDesc(const RenderTargetViewDesc* desc) const {

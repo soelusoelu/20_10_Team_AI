@@ -1,12 +1,12 @@
 ﻿#pragma once
 
 #include "../Component.h"
+#include "../../Mesh/IAnimation.h"
 #include "../../Math/Math.h"
 #include "../../Mesh/Motion.h"
 #include <string>
 #include <vector>
 
-class MeshComponent;
 class MeshShader;
 
 class SkinMeshComponent : public Component {
@@ -30,7 +30,7 @@ public:
     const std::vector<Matrix4>& getBoneCurrentFrameMatrix() const;
 
 private:
-    std::shared_ptr<MeshComponent> mMesh;
+    IAnimation* mAnimation;
     std::shared_ptr<MeshShader> mMeshShader;
     std::vector<Matrix4> mCurrentBones;
     int mCurrentMotionNo;

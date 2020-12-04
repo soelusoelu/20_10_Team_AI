@@ -81,15 +81,6 @@ unsigned Mesh::getBoneCount() const {
     return mBones.size();
 }
 
-void Mesh::loadMesh(const std::string& filePath) {
-    //すでに生成済みなら終了する
-    if (mMesh) {
-        return;
-    }
-
-    initialize(filePath);
-}
-
 void Mesh::draw(unsigned meshIndex) const {
     //バーテックスバッファーをセット
     mVertexBuffers[meshIndex]->setVertexBuffer();
@@ -98,6 +89,15 @@ void Mesh::draw(unsigned meshIndex) const {
 
     //プリミティブをレンダリング
     MyDirectX::DirectX::instance().drawIndexed(mMeshesIndices[meshIndex].size());
+}
+
+void Mesh::loadMesh(const std::string& filePath) {
+    //すでに生成済みなら終了する
+    if (mMesh) {
+        return;
+    }
+
+    initialize(filePath);
 }
 
 void Mesh::initialize(const std::string& filePath) {
