@@ -1,15 +1,11 @@
 ﻿#include "MeshComponent.h"
-#include "MeshShader.h"
-#include "ShadowMap.h"
-#include "SkinMeshComponent.h"
+#include "MeshRenderer.h"
 #include "../Camera/Camera.h"
 #include "../Light/DirectionalLight.h"
-#include "../../DebugLayer/Debug.h"
 #include "../../DebugLayer/ImGuiWrapper.h"
 #include "../../GameObject/GameObject.h"
 #include "../../Imgui/imgui.h"
 #include "../../Mesh/Mesh.h"
-#include "../../Mesh/MeshManager.h"
 #include "../../System/AssetsManager.h"
 #include "../../System/Shader/ConstantBuffers.h"
 #include "../../System/Shader/Shader.h"
@@ -20,8 +16,6 @@
 MeshComponent::MeshComponent(GameObject& gameObject)
     : Component(gameObject)
     , mMesh(nullptr)
-    , mMeshShader(nullptr)
-    , mShadowMap(nullptr)
     , mFileName()
     , mDirectoryPath()
     , mState(State::ACTIVE)
@@ -37,31 +31,9 @@ void MeshComponent::awake() {
 }
 
 void MeshComponent::start() {
-    mMeshShader = getComponent<MeshShader>();
-    //MeshShaderがないなら追加する
-    if (!mMeshShader) {
-        mMeshShader = addComponent<MeshShader>("MeshShader");
-        mMeshShader->setMeshComponent(shared_from_this());
-    }
-
-    mShadowMap = getComponent<ShadowMap>();
-    //ShadowMapがないなら追加する
-    if (!mShadowMap) {
-        mShadowMap = addComponent<ShadowMap>("ShadowMap");
-    }
-
-    if (mMesh) {
-        //ボーンが有るモデルなら
-        if (mMesh->getBoneCount() > 0) {
-            auto skinMesh = getComponent<SkinMeshComponent>();
-            //SkinMeshComponentがアタッチされてないなら追加する
-            if (!skinMesh) {
-                addComponent<SkinMeshComponent>("SkinMeshComponent");
-            }
-        }
-
-        //マネージャーに登録する
-        addToManager();
+    auto meshRenderer = getComponent<MeshRenderer>();
+    if (!meshRenderer) {
+        addComponent<MeshRenderer>("MeshRenderer");
     }
 }
 
@@ -99,29 +71,21 @@ void MeshComponent::drawInspector() {
     ImGui::SliderFloat("Alpha", &mAlpha, 0.f, 1.f);
 }
 
-void MeshComponent::draw(const Camera& camera, const DirectionalLight& dirLight) const {
-    //描画前準備
-    mMeshShader->preSet();
-
-    //メッシュ共通の値を設定する
-    mMeshShader->setCommonValue(camera, dirLight);
-
-    //コンスタントバッファに転送する
-    mMeshShader->transferData();
-
-    for (size_t i = 0; i < mMesh->getMeshCount(); ++i) {
-        //マテリアルを設定する
-        mMeshShader->setDefaultMaterial(i);
-
-        //描画
-        mMesh->draw(i);
-    }
-}
-
 void MeshComponent::createMesh(const std::string& fileName, const std::string& directoryPath) {
     mMesh = AssetsManager::instance().createMesh(fileName, directoryPath);
     mFileName = fileName;
     mDirectoryPath = directoryPath;
+}
+
+bool MeshComponent::isDraw() const {
+    if (!mMesh) {
+        return false;
+    }
+    if (!getActive()) {
+        return false;
+    }
+
+    return true;
 }
 
 void MeshComponent::destroy() {
@@ -140,16 +104,16 @@ bool MeshComponent::isDead() const {
     return mState == State::DEAD;
 }
 
-const IMesh& MeshComponent::getMesh() const {
-    return *mMesh;
+const IMesh* MeshComponent::getMesh() const {
+    return (mMesh) ? mMesh.get() : nullptr;
 }
 
 IAnimation* MeshComponent::getAnimation() const {
-    return mMesh.get();
+    return (mMesh) ? mMesh.get() : nullptr;
 }
 
 const IMeshDrawer* MeshComponent::getDrawer() const {
-    return mMesh.get();
+    return (mMesh) ? mMesh.get() : nullptr;
 }
 
 void MeshComponent::setColorRatio(const Vector3& color) {
@@ -166,19 +130,4 @@ void MeshComponent::setAlpha(float alpha) {
 
 float MeshComponent::getAlpha() const {
     return mAlpha;
-}
-
-void MeshComponent::setMeshManager(MeshManager* manager) {
-    mMeshManager = manager;
-}
-
-void MeshComponent::addToManager() {
-    //マネージャーが登録されていなかったら終了する
-    if (!mMeshManager) {
-        Debug::logWarning("The mesh manager is not registered.");
-        return;
-    }
-
-    //マネージャーに自身を登録する
-    mMeshManager->add(shared_from_this());
 }

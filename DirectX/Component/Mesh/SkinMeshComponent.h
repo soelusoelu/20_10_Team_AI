@@ -13,7 +13,6 @@ class SkinMeshComponent : public Component {
 public:
     SkinMeshComponent(GameObject& gameObject);
     ~SkinMeshComponent();
-    virtual void start() override;
     virtual void update() override;
 
     //モーション名を設定する
@@ -28,6 +27,8 @@ public:
     int getCurrentMotionFrame() const;
     //現在のボーン姿勢行列を取得する
     const std::vector<Matrix4>& getBoneCurrentFrameMatrix() const;
+    //各種インターフェースを設定する
+    void setValue(const std::shared_ptr<MeshShader>& meshShader, IAnimation* anim);
 
 private:
     IAnimation* mAnimation;

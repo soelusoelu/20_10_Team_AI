@@ -3,13 +3,13 @@
 #include <list>
 #include <memory>
 
-class MeshComponent;
+class MeshRenderer;
 class ShadowMap;
 class Camera;
 class DirectionalLight;
 
 class MeshManager {
-    using MeshPtr = std::shared_ptr<MeshComponent>;
+    using MeshPtr = std::shared_ptr<MeshRenderer>;
     using MeshPtrList = std::list<MeshPtr>;
 
 public:
@@ -28,7 +28,7 @@ private:
     //不要なメッシュを削除する
     void remove();
     //描画するか
-    bool isDraw(const MeshComponent& mesh, const Camera& camera) const;
+    bool isDraw(const MeshRenderer& mesh, const Camera& camera) const;
 
 private:
     MeshPtrList mMeshes;

@@ -230,6 +230,7 @@
     <ClCompile Include="Collision\Triangle.cpp" />
     <ClCompile Include="Mesh\VertexNormalSmoother.cpp" />
     <ClCompile Include="Component\Mesh\ShadowMap.cpp" />
+    <ClCompile Include="Component\Mesh\MeshRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -500,6 +501,8 @@
     <ClInclude Include="Mesh\VertexNormalSmoother.h" />
     <ClInclude Include="Component\Mesh\ShadowMap.h" />
     <ClInclude Include="Mesh\IMeshDrawer.h" />
+    <ClInclude Include="Component\Mesh\IDrawBefore.h" />
+    <ClInclude Include="Component\Mesh\MeshRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />

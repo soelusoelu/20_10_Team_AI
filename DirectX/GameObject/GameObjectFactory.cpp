@@ -39,7 +39,9 @@
 #include "../Component/Map/Map.h"
 #include "../Component/Mesh/MeshComponent.h"
 #include "../Component/Mesh/MeshOutLine.h"
+#include "../Component/Mesh/MeshRenderer.h"
 #include "../Component/Mesh/MeshShader.h"
+#include "../Component/Mesh/ShadowMap.h"
 #include "../Component/Mesh/SkinMeshComponent.h"
 #include "../Component/Other/GameObjectSaveAndLoader.h"
 #include "../Component/Other/HitPointComponent.h"
@@ -113,7 +115,9 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(MeshComponent);
     ADD_COMPONENT(MeshOutLine);
+    ADD_COMPONENT(MeshRenderer);
     ADD_COMPONENT(MeshShader);
+    ADD_COMPONENT(ShadowMap);
     ADD_COMPONENT(SkinMeshComponent);
 
     ADD_COMPONENT(GameObjectSaveAndLoader);

@@ -1,4 +1,6 @@
 ﻿#include "MeshOutLine.h"
+#include "MeshComponent.h"
+#include "MeshRenderer.h"
 #include "SkinMeshComponent.h"
 #include "../Camera/Camera.h"
 #include "../Light/DirectionalLight.h"
@@ -16,8 +18,11 @@
 #include "../../Utility/LevelLoader.h"
 
 MeshOutLine::MeshOutLine(GameObject& gameObject)
-    : MeshComponent(gameObject)
+    : Component(gameObject)
+    , mMesh(nullptr)
+    , mDrawer(nullptr)
     , mOutLineShader(nullptr)
+    , mSkinMesh(nullptr)
     , mOutLineColor(ColorPalette::white)
     , mOutLineThickness(0.1f)
     , mIsDrawOutLine(true)
@@ -28,24 +33,26 @@ MeshOutLine::MeshOutLine(GameObject& gameObject)
 
 MeshOutLine::~MeshOutLine() = default;
 
-void MeshOutLine::awake() {
+void MeshOutLine::start() {
+    auto mesh = getComponent<MeshComponent>();
+
+    //描画インターフェース取得
+    mMesh = mesh->getMesh();
+    mDrawer = mesh->getDrawer();
+
     //ボーンの有無でアニメーションするモデルか判断する
-    mIsAnimation = (mMesh->getBoneCount() > 0);
+    mIsAnimation = (mesh->getAnimation()->getBoneCount() > 0);
 
     //アニメーションするかでシェーダーを決める
     auto name = (mIsAnimation) ? "SkinMeshOutLine.hlsl" : "OutLine.hlsl";
     mOutLineShader = AssetsManager::instance().createShader(name);
 
-    MeshComponent::awake();
-}
-
-void MeshOutLine::start() {
-    //スキンメッシュコンポーネントのアタッチがメッシュコンポーネントのstartで行うから先
-    MeshComponent::start();
-
     if (mIsAnimation) {
         mSkinMesh = getComponent<SkinMeshComponent>();
     }
+
+    //描画前描画の登録
+    getComponent<MeshRenderer>()->setDrawBefore(this);
 }
 
 void MeshOutLine::loadProperties(const rapidjson::Value& inObj) {
@@ -53,8 +60,6 @@ void MeshOutLine::loadProperties(const rapidjson::Value& inObj) {
     JsonHelper::getFloat(inObj, "outLineColorThickness", &mOutLineThickness);
     JsonHelper::getBool(inObj, "isDrawOutLine", &mIsDrawOutLine);
     JsonHelper::getFloat(inObj, "offset", &mOffset);
-
-    MeshComponent::loadProperties(inObj);
 }
 
 void MeshOutLine::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const {
@@ -62,8 +67,6 @@ void MeshOutLine::saveProperties(rapidjson::Document::AllocatorType& alloc, rapi
     JsonHelper::setFloat(alloc, inObj, "outLineColorThickness", mOutLineThickness);
     JsonHelper::setBool(alloc, inObj, "isDrawOutLine", mIsDrawOutLine);
     JsonHelper::setFloat(alloc, inObj, "offset", mOffset);
-
-    MeshComponent::saveProperties(alloc, inObj);
 }
 
 void MeshOutLine::drawInspector() {
@@ -71,11 +74,9 @@ void MeshOutLine::drawInspector() {
     ImGui::SliderFloat("OutLineThickness", &mOutLineThickness, 0.f, 1.f);
     ImGui::Checkbox("IsDrawOutLine", &mIsDrawOutLine);
     ImGuiWrapper::dragFloat("Offset", mOffset, 0.01f);
-
-    MeshComponent::drawInspector();
 }
 
-void MeshOutLine::draw(const Camera& camera, const DirectionalLight& dirLight) const {
+void MeshOutLine::drawBefore(const Camera& camera, const DirectionalLight& dirLight) const {
     if (mIsDrawOutLine) {
         //裏面のみ描画したいから
         MyDirectX::DirectX::instance().rasterizerState()->setCulling(CullMode::FRONT);
@@ -86,9 +87,6 @@ void MeshOutLine::draw(const Camera& camera, const DirectionalLight& dirLight) c
         //設定を戻す
         MyDirectX::DirectX::instance().rasterizerState()->setCulling(CullMode::BACK);
     }
-
-    //メッシュの描画は上層クラスに任せる
-    MeshComponent::draw(camera, dirLight);
 }
 
 void MeshOutLine::setOutLineColor(const Vector3& color) {
@@ -136,19 +134,12 @@ void MeshOutLine::drawOutLine(const Camera& camera, const DirectionalLight& dirL
 
     //アニメーションするならボーンのデータも渡す
     if (mIsAnimation) {
-        std::shared_ptr<SkinMeshComponent> sm = nullptr;
-        sm = mSkinMesh.lock();
-        if (!sm) {
-            Debug::logError("Failed lock. SkinMeshComponent is null.");
-            return;
-        }
-
         //ボーンデータを転送する
-        mOutLineShader->transferData(sm->getBoneCurrentFrameMatrix().data(), sizeof(SkinMeshConstantBuffer), 1);
+        mOutLineShader->transferData(mSkinMesh->getBoneCurrentFrameMatrix().data(), sizeof(SkinMeshConstantBuffer), 1);
     }
 
     //アウトラインを描画する
     for (size_t i = 0; i < mMesh->getMeshCount(); ++i) {
-        mMesh->draw(i);
+        mDrawer->draw(i);
     }
 }

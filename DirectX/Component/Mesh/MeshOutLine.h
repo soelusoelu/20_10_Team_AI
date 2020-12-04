@@ -1,22 +1,28 @@
 ﻿#pragma once
 
-#include "MeshComponent.h"
+#include "IDrawBefore.h"
+#include "../Component.h"
 #include "../../Math/Math.h"
+#include "../../Mesh/IMesh.h"
+#include "../../Mesh/IMeshDrawer.h"
 #include <memory>
 
 class Shader;
 class SkinMeshComponent;
+class Camera;
+class DirectionalLight;
 
-class MeshOutLine : public MeshComponent {
+class MeshOutLine : public Component, public IDrawBefore {
 public:
     MeshOutLine(GameObject& gameObject);
     ~MeshOutLine();
-    virtual void awake() override;
     virtual void start() override;
     virtual void loadProperties(const rapidjson::Value& inObj) override;
     virtual void saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const override;
     virtual void drawInspector() override;
-    virtual void draw(const Camera& camera, const DirectionalLight& dirLight) const override;
+
+    //メッシュ描画前描画
+    virtual void drawBefore(const Camera& camera, const DirectionalLight& dirLight) const override;
 
     //アウトラインの色を設定する
     void setOutLineColor(const Vector3& color);
@@ -39,8 +45,10 @@ private:
     void drawOutLine(const Camera& camera, const DirectionalLight& dirLight) const;
 
 protected:
+    const IMesh* mMesh;
+    const IMeshDrawer* mDrawer;
     std::shared_ptr<Shader> mOutLineShader;
-    std::weak_ptr<SkinMeshComponent> mSkinMesh;
+    std::shared_ptr<SkinMeshComponent> mSkinMesh;
     Vector3 mOutLineColor;
     float mOutLineThickness;
     bool mIsDrawOutLine;

@@ -1,16 +1,16 @@
 ﻿#include "MeshManager.h"
 #include "../Component/Camera/Camera.h"
-#include "../Component/Mesh/MeshComponent.h"
+#include "../Component/Mesh/MeshRenderer.h"
 #include "../Component/Mesh/ShadowMap.h"
 #include "../DirectX/DirectXInclude.h"
 #include "../Transform/Transform3D.h"
 
 MeshManager::MeshManager() {
-    MeshComponent::setMeshManager(this);
+    MeshRenderer::setMeshManager(this);
 }
 
 MeshManager::~MeshManager() {
-    MeshComponent::setMeshManager(nullptr);
+    MeshRenderer::setMeshManager(nullptr);
 }
 
 void MeshManager::update() {
@@ -66,10 +66,7 @@ void MeshManager::remove() {
     }
 }
 
-bool MeshManager::isDraw(const MeshComponent& mesh, const Camera& camera) const {
-    if (!mesh.getActive()) {
-        return false;
-    }
+bool MeshManager::isDraw(const MeshRenderer& mesh, const Camera& camera) const {
     if (mesh.isDead()) {
         return false;
     }

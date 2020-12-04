@@ -2,7 +2,6 @@
 #include "MeshComponent.h"
 #include "MeshShader.h"
 #include "../../DebugLayer/Debug.h"
-#include "../../Mesh/IAnimation.h"
 #include "../../System/Shader/ConstantBuffers.h"
 #include <cassert>
 
@@ -16,13 +15,6 @@ SkinMeshComponent::SkinMeshComponent(GameObject& gameObject)
 }
 
 SkinMeshComponent::~SkinMeshComponent() = default;
-
-void SkinMeshComponent::start() {
-    mAnimation = getComponent<MeshComponent>()->getAnimation();
-    mMeshShader = getComponent<MeshShader>();
-
-    mCurrentBones.resize(mAnimation->getBoneCount());
-}
 
 void SkinMeshComponent::update() {
     const auto& motion = mAnimation->getMotion(mCurrentMotionNo);
@@ -71,4 +63,11 @@ int SkinMeshComponent::getCurrentMotionFrame() const {
 
 const std::vector<Matrix4>& SkinMeshComponent::getBoneCurrentFrameMatrix() const {
     return mCurrentBones;
+}
+
+void SkinMeshComponent::setValue(const std::shared_ptr<MeshShader>& meshShader, IAnimation* anim) {
+    mAnimation = anim;
+    mMeshShader = meshShader;
+
+    mCurrentBones.resize(mAnimation->getBoneCount());
 }

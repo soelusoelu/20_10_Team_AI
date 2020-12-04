@@ -204,6 +204,7 @@
     <ClCompile Include="Component\Map\Map.cpp" />
     <ClCompile Include="Component\GameState\GameReset.cpp" />
     <ClCompile Include="Component\Character\HitPointRenderer.cpp" />
+    <ClCompile Include="Component\Mesh\MeshRenderer.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxUtility.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMotionParser.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
@@ -408,6 +409,7 @@
     <ClInclude Include="Component\CollideOperation\MeshAdder.h" />
     <ClInclude Include="Component\GameState\GameState.h" />
     <ClInclude Include="Component\Map\IMap.h" />
+    <ClInclude Include="Component\Mesh\IDrawBefore.h" />
     <ClInclude Include="DebugLayer\ImGuiInspector.h" />
     <ClInclude Include="DebugLayer\ImGuiWrapper.h" />
     <ClInclude Include="Component\Other\GameObjectSaveAndLoader.h" />
@@ -419,6 +421,7 @@
     <ClInclude Include="Component\Map\Map.h" />
     <ClInclude Include="Component\GameState\GameReset.h" />
     <ClInclude Include="Component\Character\HitPointRenderer.h" />
+    <ClInclude Include="Component\Mesh\MeshRenderer.h" />
     <ClInclude Include="Mesh\Fbx\FbxUtility.h" />
     <ClInclude Include="Mesh\Fbx\FbxMotionParser.h" />
     <ClInclude Include="Imgui\imconfig.h" />

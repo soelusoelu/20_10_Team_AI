@@ -3,7 +3,6 @@
 #include "../Light/DirectionalLight.h"
 #include "../Mesh/MeshComponent.h"
 #include "../../DebugLayer/Debug.h"
-#include "../../Mesh/IMesh.h"
 #include "../../Mesh/Material.h"
 #include "../../System/AssetsManager.h"
 #include "../../System/Shader/ConstantBuffers.h"
@@ -14,18 +13,13 @@
 
 MeshShader::MeshShader(GameObject& gameObject)
     : Component(gameObject)
+    , mMesh(nullptr)
+    , mAnimation(nullptr)
     , mShader(nullptr)
 {
 }
 
 MeshShader::~MeshShader() = default;
-
-void MeshShader::start() {
-    auto mesh = mMesh.lock();
-    if (!mesh) {
-        mMesh = getComponent<MeshComponent>();
-    }
-}
 
 void MeshShader::loadProperties(const rapidjson::Value& inObj) {
     std::string shader;
@@ -75,23 +69,16 @@ void MeshShader::setCommonValue(const Camera& camera, const DirectionalLight& di
     mShader->transferData(&meshcb, sizeof(meshcb), 0);
 }
 
-void MeshShader::setDefaultMaterial(unsigned materialIndex, unsigned constantBufferIndex) const {
-    auto mesh = getMeshComponent();
-    if (!mesh) {
-        return;
-    }
-
-    const auto& iMesh = mesh->getMesh();
-
+void MeshShader::setDefaultMaterial(const MeshComponent& mesh, unsigned materialIndex, unsigned constantBufferIndex) const {
     MaterialConstantBuffer matcb;
-    const auto& mat = iMesh.getMaterial(materialIndex);
+    const auto& mat = mMesh->getMaterial(materialIndex);
     matcb.ambient = mat.ambient;
-    float alpha = mesh->getAlpha();
+    float alpha = mesh.getAlpha();
     //アルファ値は0のときが多いから
     if (!Math::nearZero(mat.transparency)) {
         alpha *= mat.transparency;
     }
-    matcb.diffuse = Vector4(mat.diffuse * mesh->getColorRatio(), alpha);
+    matcb.diffuse = Vector4(mat.diffuse * mesh.getColorRatio(), alpha);
     matcb.specular = mat.specular;
     matcb.shininess = mat.shininess;
     //データ転送
@@ -112,37 +99,22 @@ void MeshShader::setTransferData(const void* data, unsigned size, unsigned const
     }
 }
 
-void MeshShader::setMeshComponent(const std::shared_ptr<MeshComponent>& mesh) {
+void MeshShader::setInterface(const IMesh* mesh, const IAnimation* anim) {
     mMesh = mesh;
+    mAnimation = anim;
     setDefaultShader();
 }
 
 void MeshShader::setDefaultShader() {
-    auto mesh = getMeshComponent();
-    if (!mesh) {
-        return;
-    }
-
     std::string shader = "Mesh.hlsl";
     //ノーマルマップが有るなら
-    if (mesh->getMesh().getMaterial(0).normalMapTexture) {
+    if (mMesh->getMaterial(0).normalMapTexture) {
         shader = "NormalMap.hlsl";
     }
     //ボーンが有るなら
-    if (mesh->getAnimation().getBoneCount() > 0) {
+    if (mAnimation->getBoneCount() > 0) {
         shader = "SkinMesh.hlsl";
     }
     //シェーダーを生成する
     mShader = AssetsManager::instance().createShader(shader);
-}
-
-std::shared_ptr<MeshComponent> MeshShader::getMeshComponent() const {
-    std::shared_ptr<MeshComponent> mesh = nullptr;
-    mesh = mMesh.lock();
-    //ロックに失敗したらエラーログ
-    if (!mesh) {
-        Debug::logError("Failed lock. MeshComponent is null.");
-    }
-
-    return mesh;
 }
