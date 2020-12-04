@@ -7,8 +7,7 @@
     {
       "type": "DirectionalLight",
       "properties": {
-        "direction": [ -45.0, 0.0, 45.0 ],
-        "color": [ 0.75, 0.85, 0.9 ]
+        "direction": [ -45.0, 0.0, 0.0 ]
       }
     },
     {

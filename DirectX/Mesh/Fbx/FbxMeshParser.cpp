@@ -1,6 +1,5 @@
 ﻿#include "FbxMeshParser.h"
 #include "FbxUtility.h"
-#include <cassert>
 
 FbxMeshParser::FbxMeshParser() = default;
 
@@ -12,21 +11,24 @@ void FbxMeshParser::parse(
     Indices& indices,
     FbxMesh* fbxMesh
 ) const {
-    //頂点数
-    int vertexCount = fbxMesh->GetControlPointsCount();
+    //ポリゴン頂点数
+    int polygonVertexCount = fbxMesh->GetPolygonVertexCount();
+    //インデックスバッファの取得
+    int* polygonVertices = fbxMesh->GetPolygonVertices();
     //頂点座標配列
     FbxVector4* src = fbxMesh->GetControlPoints();
 
+    //法線配列を取得する
+    FbxArray<FbxVector4> normalArray;
+    fbxMesh->GetPolygonVertexNormals(normalArray);
+
+    //UV配列を取得する
+    FbxArray<FbxVector2> uvArray;
+    getUVs(uvArray, fbxMesh);
+
     //事前に拡張しとく
-    meshVertices.resize(vertexCount);
-
-    //インデックスバッファ取得
-    getIndices(indices, fbxMesh);
-
-    //法線とUVを取得
-    Normals normals;
-    UVs uvs;
-    getNormalsAndUVs(normals, uvs, indices, fbxMesh);
+    meshVertices.resize(polygonVertexCount);
+    indices.resize(polygonVertexCount * 3);
 
     //メッシュごとのトランスフォームを計算
     FbxNode* node = fbxMesh->GetNode();
@@ -36,21 +38,41 @@ void FbxMeshParser::parse(
     auto s = FbxUtility::fbxDouble3ToVector3(node->LclScaling.Get());
     auto mat = Matrix4::createScale(s) * Matrix4::createFromQuaternion(q) * Matrix4::createTranslation(t);
 
-    for (size_t i = 0; i < vertexCount; ++i) {
+    for (size_t i = 0; i < polygonVertexCount; ++i) {
         MeshVertex vertex;
 
-        vertex.pos = FbxUtility::fbxVector4ToVector3(src[i]);
-        vertex.pos.x *= -1.f;
+        int index = polygonVertices[i];
+        vertex.pos.x = static_cast<float>(-src[index][0]);
+        vertex.pos.y = static_cast<float>(src[index][1]);
+        vertex.pos.z = static_cast<float>(src[index][2]);
         vertex.pos = Vector3::transform(vertex.pos, mat);
 
-        vertex.normal = Vector3::transform(normals[i], q);
+        vertex.normal.x = static_cast<float>(-normalArray[i][0]);
+        vertex.normal.y = static_cast<float>(normalArray[i][1]);
+        vertex.normal.z = static_cast<float>(normalArray[i][2]);
+        vertex.normal = Vector3::transform(vertex.normal, q);
 
-        if (uvs.size() > 0) {
-            vertex.uv = uvs[i];
+        //UVは使用している場合のみ
+        if (uvArray.Size() > 0) {
+            vertex.uv.x = static_cast<float>(uvArray[i][0]);
+            vertex.uv.y = 1.f - static_cast<float>(uvArray[i][1]);
         }
+
+        //タンジェントは上手く生成できた場合のみ
+        //if (tangents) {
+        //    const auto& tangent = *tangents;
+        //    vertex.tangent.x = tangent[i][0];
+        //    vertex.tangent.y = tangent[i][1];
+        //    vertex.tangent.z = tangent[i][2];
+        //}
 
         //頂点情報を格納
         meshVertices[i] = vertex;
+
+        //fbxは右手系なので、DirectXの左手系に直すために2->1->0の順にインデックスを格納していく
+        indices[i * 3 + 0] = i * 3 + 2;
+        indices[i * 3 + 1] = i * 3 + 1;
+        indices[i * 3 + 2] = i * 3;
     }
 }
 
@@ -159,72 +181,36 @@ void FbxMeshParser::loadUV(FbxMesh* mesh) {
     //}
 }
 
-void FbxMeshParser::getIndices(
-    Indices& indices,
-    const FbxMesh* fbxMesh
-) const {
-    //ポリゴン頂点数
-    int polygonVertexCount = fbxMesh->GetPolygonVertexCount();
-    //for文をループする回数
-    int loopCount = polygonVertexCount / 3;
-
-    //ポリゴンの頂点数分拡張する
-    indices.resize(polygonVertexCount);
-
-    for (int i = 0; i < loopCount; ++i) {
-        //fbxは右手系なので、DirectXの左手系に直すために2->1->0の順にインデックスを格納していく
-        indices[i * 3] = fbxMesh->GetPolygonVertex(i, 2);
-        indices[i * 3 + 1] = fbxMesh->GetPolygonVertex(i, 1);
-        indices[i * 3 + 2] = fbxMesh->GetPolygonVertex(i, 0);
-    }
-}
-
-void FbxMeshParser::getNormalsAndUVs(
-    Normals& normals,
-    UVs& uvs,
-    const Indices& indices,
-    const FbxMesh* fbxMesh
-) const {
-    //頂点数
-    int vertexCount = fbxMesh->GetControlPointsCount();
-
-    //法線配列を取得する
-    FbxArray<FbxVector4> normalArray;
-    fbxMesh->GetPolygonVertexNormals(normalArray);
-    //頂点数分の領域を確保する
-    normals.reserve(vertexCount);
-
-    //UV配列を取得する
-    FbxArray<FbxVector2> uvArray;
-    getUVArray(uvArray, fbxMesh);
-    //頂点数分の領域を確保する
-    uvs.reserve(vertexCount);
-
-    for (int i = 0; i < normalArray.Size(); ++i) {
-        //法線取得
-        auto n = FbxUtility::fbxVector4ToVector3(normalArray[i]);
-        n.x *= -1.f;
-        normals[indices[i]] = n;
-
-        //UVを使用するなら
-        if (uvArray.Size() > 0) {
-            //UV取得
-            const auto& uvArr = uvArray[i];
-            auto& uv = uvs[indices[i]];
-            uv.x = static_cast<float>(uvArr[0]);
-            uv.y = 1.f - static_cast<float>(uvArr[1]);
-        }
-    }
-}
-
-void FbxMeshParser::getUVArray(
-    FbxArray<FbxVector2>& uvArray,
+void FbxMeshParser::getUVs(
+    FbxArray<FbxVector2>& uvs,
     const FbxMesh* fbxMesh
 ) const {
     FbxStringList uvNameList;
+    getUVsFromUVSetNameList(uvs, uvNameList, fbxMesh);
+}
 
+void FbxMeshParser::getUVsAndTangents(
+    FbxArray<FbxVector2>& uvs,
+    FbxLayerElementArrayTemplate<FbxVector4>* tangents,
+    FbxMesh* fbxMesh
+) const {
+    //まずはUVを取得する
+    FbxStringList uvNameList;
+    getUVsFromUVSetNameList(uvs, uvNameList, fbxMesh);
+
+    //次に、UVの名前からTangent(接線)を生成する
+    fbxMesh->GenerateTangentsData(uvNameList.GetStringAt(0));
+    //生成後、取得する
+    fbxMesh->GetTangents(&tangents);
+}
+
+void FbxMeshParser::getUVsFromUVSetNameList(
+    FbxArray<FbxVector2>& uvs,
+    FbxStringList& uvNameList,
+    const FbxMesh* fbxMesh
+) const {
     //UVの名前リストを取得
     fbxMesh->GetUVSetNames(uvNameList);
     //UVリストの名前からUVを取得する
-    fbxMesh->GetPolygonVertexUVs(uvNameList.GetStringAt(0), uvArray);
+    fbxMesh->GetPolygonVertexUVs(uvNameList.GetStringAt(0), uvs);
 }
