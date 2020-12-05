@@ -21,6 +21,10 @@ public:
     void draw(const Camera& camera, const DirectionalLight& dirLight) const;
     //描画前描画をしたいクラスを登録する
     void setDrawBefore(const IDrawBefore* drawer);
+    //メッシュコンポーネントを取得する
+    const MeshComponent& getMeshComponent() const;
+    //メッシュシェーダーを取得する
+    MeshShader& getMeshShader() const;
 
     //自身を管理するマネージャーを登録する
     static void setMeshManager(MeshManager* manager);

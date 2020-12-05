@@ -4,7 +4,6 @@
 #include "../DebugLayer/Hierarchy.h"
 #include "../Utility/LevelLoader.h"
 #include "../Utility/StringUtil.h"
-#include <unordered_set>
 
 GameObjectManager::GameObjectManager() {
     GameObject::setGameObjectManager(this);
@@ -31,14 +30,10 @@ void GameObjectManager::add(const GameObjectPtr& add) {
     mGameObjects.emplace_back(add);
 }
 
-void GameObjectManager::clear() {
-    std::unordered_set<std::string> excepts;
-    excepts.emplace("Camera");
-    excepts.emplace("Light");
-
+void GameObjectManager::clear(const std::unordered_set<std::string>& tags) {
     auto itr = mGameObjects.begin();
     while (itr != mGameObjects.end()) {
-        if (excepts.find((*itr)->tag()) == excepts.end()) {
+        if (tags.find((*itr)->tag()) == tags.end()) {
             itr = mGameObjects.erase(itr);
         } else {
             ++itr;

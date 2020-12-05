@@ -52,6 +52,14 @@ void MeshRenderer::setDrawBefore(const IDrawBefore* drawer) {
     mBeforeDrawer = drawer;
 }
 
+const MeshComponent& MeshRenderer::getMeshComponent() const {
+    return *mMeshComponent;
+}
+
+MeshShader& MeshRenderer::getMeshShader() const {
+    return *mMeshShader;
+}
+
 void MeshRenderer::setMeshManager(MeshManager* manager) {
     mMeshManager = manager;
 }

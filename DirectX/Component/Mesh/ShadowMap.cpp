@@ -1,17 +1,19 @@
 ﻿#include "ShadowMap.h"
+#include "MeshComponent.h"
+#include "MeshRenderer.h"
+#include "MeshShader.h"
 #include "../Camera/Camera.h"
 #include "../Light/DirectionalLight.h"
 #include "../../DirectX/DirectXInclude.h"
 #include "../../Math/Math.h"
 #include "../../System/AssetsManager.h"
 #include "../../System/Window.h"
-#include "../../System/Shader/ConstantBuffers.h"
 #include "../../System/Shader/Shader.h"
 #include "../../Transform/Transform3D.h"
 
 ShadowMap::ShadowMap(GameObject& gameObject)
     : Component(gameObject)
-    , mShadowMap(AssetsManager::instance().createShader("ShadowDepthTextureCreater.hlsl"))
+    , mDepthTextureCreateShader(AssetsManager::instance().createShader("ShadowDepthTextureCreater.hlsl"))
     , mDepthTexture(nullptr)
     , mDepthRenderTargetView(nullptr)
     , mDepthStencilView(nullptr)
@@ -39,7 +41,7 @@ void ShadowMap::awake() {
     createDepthShaderResourceView(desc.format);
 }
 
-void ShadowMap::draw(const Camera& camera, const DirectionalLight& dirLight) const {
+void ShadowMap::drawBegin() const {
     //レンダーターゲットを設定する
     mDepthRenderTargetView->setRenderTarget(mDepthStencilView.Get());
     //レンダーターゲットをクリアする
@@ -47,14 +49,39 @@ void ShadowMap::draw(const Camera& camera, const DirectionalLight& dirLight) con
     //深度バッファクリア
     MyDirectX::DirectX::instance().deviceContext()->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.f, 0);
 
-    ShadowConstantBuffer scb{};
-    scb.lightView = Matrix4::createLookAt(Vector3::up * 100.f, dirLight.getDirection(), Vector3::up);
-    scb.lightProj = Matrix4::createPerspectiveFOV(mWidth, mHeight, camera.getFov(), camera.getNearClip(), camera.getFarClip());
-
     //シェーダー登録
-    mShadowMap->setShaderInfo();
+    mDepthTextureCreateShader->setShaderInfo();
+}
 
+void ShadowMap::draw(const MeshRenderer& renderer, const Camera& camera, const DirectionalLight& dirLight) const {
+    SimpleMeshConstantBuffer smcb{};
+    smcb.wvp = renderer.transform().getWorldTransform() * camera.getViewProjection();
+    mDepthTextureCreateShader->transferData(&smcb, sizeof(smcb));
 
+    const auto& meshComp = renderer.getMeshComponent();
+    const auto& drawer = meshComp.getDrawer();
+    const auto loopCount = meshComp.getMesh()->getMeshCount();
+    for (unsigned i = 0; i < loopCount; ++i) {
+        drawer->draw(i);
+    }
+}
+
+void ShadowMap::setShadowConstantBuffer(MeshRenderer& renderer, const Camera& camera, const DirectionalLight& dirLight) {
+    mShadowConstBuffer.lightView = Matrix4::createLookAt(Vector3::up * 100.f, dirLight.getDirection() * 100.f, Vector3::up);
+    mShadowConstBuffer.lightProj = Matrix4::createPerspectiveFOV(mWidth, mHeight, camera.getFov(), camera.getNearClip(), camera.getFarClip());
+
+    renderer.getMeshShader().setTransferData(&mShadowConstBuffer, sizeof(mShadowConstBuffer), 2);
+}
+
+void ShadowMap::drawEnd() const {
+    auto& dx = MyDirectX::DirectX::instance();
+
+    //レンダーターゲットをバックバッファに戻す
+    dx.setRenderTarget();
+    //バックバッファをクリアする
+    //dx.clearRenderTarget();
+    //深度バッファクリア
+    //dx.clearDepthStencilView();
 }
 
 void ShadowMap::createDepthDesc(Texture2DDesc& desc) const {
@@ -87,6 +114,7 @@ void ShadowMap::createDepthStencilView(const Texture2DDesc& desc) {
     //バインドフラグ以外深度テクスチャと一緒
     Texture2DDesc dsDesc{};
     memcpy_s(&dsDesc, sizeof(dsDesc), &desc, sizeof(desc));
+    dsDesc.format = Format::FORMAT_D24_UNORM_S8_UINT;
     dsDesc.bindFlags = static_cast<unsigned>(Texture2DBind::TEXTURE_BIND_DEPTH_STENCIL);
     auto depthStencilTexture = std::make_unique<Texture2D>(dsDesc);
 

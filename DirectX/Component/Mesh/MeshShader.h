@@ -19,6 +19,7 @@ public:
     ~MeshShader();
     virtual void loadProperties(const rapidjson::Value& inObj) override;
     virtual void saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const override;
+    virtual void drawInspector() override;
 
     //シェーダーを使用する準備をする
     void preSet() const;

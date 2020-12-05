@@ -3,6 +3,7 @@
 #include "../Light/DirectionalLight.h"
 #include "../Mesh/MeshComponent.h"
 #include "../../DebugLayer/Debug.h"
+#include "../../Imgui/imgui.h"
 #include "../../Mesh/Material.h"
 #include "../../System/AssetsManager.h"
 #include "../../System/Shader/ConstantBuffers.h"
@@ -35,6 +36,10 @@ void MeshShader::loadProperties(const rapidjson::Value& inObj) {
 
 void MeshShader::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const {
     JsonHelper::setString(alloc, inObj, "shaderName", mShader->getShaderName());
+}
+
+void MeshShader::drawInspector() {
+    ImGui::Text("Shader: %s", mShader->getShaderName().c_str());
 }
 
 void MeshShader::preSet() const {

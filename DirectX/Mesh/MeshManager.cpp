@@ -3,14 +3,23 @@
 #include "../Component/Mesh/MeshRenderer.h"
 #include "../Component/Mesh/ShadowMap.h"
 #include "../DirectX/DirectXInclude.h"
+#include "../GameObject/GameObject.h"
+#include "../GameObject/GameObjectFactory.h"
 #include "../Transform/Transform3D.h"
 
-MeshManager::MeshManager() {
+MeshManager::MeshManager()
+    : mShadowMap(nullptr)
+{
     MeshRenderer::setMeshManager(this);
 }
 
 MeshManager::~MeshManager() {
     MeshRenderer::setMeshManager(nullptr);
+}
+
+void MeshManager::createShadowMap() {
+    auto sm = GameObjectCreater::create("ShadowMap");
+    mShadowMap = sm->componentManager().getComponent<ShadowMap>();
 }
 
 void MeshManager::update() {
@@ -25,30 +34,14 @@ void MeshManager::draw(const Camera& camera, const DirectionalLight& dirLight) c
     MyDirectX::DirectX::instance().rasterizerState()->setCulling(CullMode::BACK);
 
     if (mShadowMap) {
-        for (const auto& mesh : mMeshes) {
-            if (!isDraw(*mesh, camera)) {
-                continue;
-            }
-
-            mShadowMap->draw(camera, dirLight);
-        }
+        drawShadow(camera, dirLight);
     }
 
-    for (const auto& mesh : mMeshes) {
-        if (!isDraw(*mesh, camera)) {
-            continue;
-        }
-
-        mesh->draw(camera, dirLight);
-    }
+    drawMeshes(camera, dirLight);
 }
 
 void MeshManager::add(const MeshPtr& mesh) {
     mMeshes.emplace_back(mesh);
-}
-
-void MeshManager::addShadowMap(const std::shared_ptr<ShadowMap>& shadowMap) {
-    mShadowMap = shadowMap;
 }
 
 void MeshManager::clear() {
@@ -77,4 +70,35 @@ bool MeshManager::isDraw(const MeshRenderer& mesh, const Camera& camera) const {
     //}
 
     return true;
+}
+
+void MeshManager::drawMeshes(const Camera& camera, const DirectionalLight& dirLight) const {
+    for (const auto& mesh : mMeshes) {
+        if (!isDraw(*mesh, camera)) {
+            continue;
+        }
+
+        mesh->draw(camera, dirLight);
+    }
+}
+
+void MeshManager::drawShadow(const Camera& camera, const DirectionalLight& dirLight) const {
+    //描画準備
+    mShadowMap->drawBegin();
+
+    for (const auto& mesh : mMeshes) {
+        //描画できないなら次へ
+        if (!isDraw(*mesh, camera)) {
+            continue;
+        }
+
+        //描画
+        mShadowMap->draw(*mesh, camera, dirLight);
+
+        //影描画用の定数バッファを設定する
+        //mShadowMap->setShadowConstantBuffer(*mesh, camera, dirLight);
+    }
+
+    //描画終了処理
+    mShadowMap->drawEnd();
 }

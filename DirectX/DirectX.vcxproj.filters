@@ -508,5 +508,29 @@
     <None Include="Shader\MeshCommonHeader.hlsli" />
     <None Include="Shader\MeshCommonAndMaterialHeader.hlsli" />
     <None Include="Shader\OutLineHeader.hlsli" />
+    <None Include="Shader\SimpleHeader.hlsli" />
+    <None Include="Assets\Data\ShadowMap.json" />
+    <None Include="Assets\Data\BoxTest.json" />
+    <None Include="Assets\Data\Camera.json" />
+    <None Include="Assets\Data\CharacterCommonComponents.json" />
+    <None Include="Assets\Data\CharacterOperation.json" />
+    <None Include="Assets\Data\Characters.json" />
+    <None Include="Assets\Data\CollideOperator.json" />
+    <None Include="Assets\Data\DirectionalLight.json" />
+    <None Include="Assets\Data\EnemyOperation.json" />
+    <None Include="Assets\Data\Enemys.json" />
+    <None Include="Assets\Data\GamePlay.json" />
+    <None Include="Assets\Data\GameReset.json" />
+    <None Include="Assets\Data\GameStart.json" />
+    <None Include="Assets\Data\Global.json" />
+    <None Include="Assets\Data\Plane.json" />
+    <None Include="Assets\Data\SimpleCharacter.json" />
+    <None Include="Assets\Data\SkinMesh.json" />
+    <None Include="Assets\Data\SphereMap.json" />
+    <None Include="Assets\Data\SphereTest.json" />
+    <None Include="Assets\Data\Stage.json" />
+    <None Include="Assets\Data\StageSelect.json" />
+    <None Include="Assets\Data\Title.json" />
+    <None Include="Assets\Data\Waveform.json" />
   </ItemGroup>
 </Project>

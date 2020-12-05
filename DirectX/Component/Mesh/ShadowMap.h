@@ -2,13 +2,16 @@
 
 #include "../Component.h"
 #include "../../DirectX/Texture2DDesc.h"
+#include "../../Math/Math.h"
 #include "../../System/SystemInclude.h"
+#include "../../System/Shader/ConstantBuffers.h"
 #include <memory>
 
 class Shader;
 class Texture2D;
 class RenderTargetView;
 class ShaderResourceView;
+class MeshRenderer;
 class Camera;
 class DirectionalLight;
 
@@ -18,7 +21,14 @@ public:
     ShadowMap(GameObject& gameObject);
     ~ShadowMap();
     virtual void awake() override;
-    void draw(const Camera& camera, const DirectionalLight& dirLight) const;
+    //描画準備
+    void drawBegin() const;
+    //描画
+    void draw(const MeshRenderer& renderer, const Camera& camera, const DirectionalLight& dirLight) const;
+    //影描画に使用するコンスタントバッファを登録する
+    void setShadowConstantBuffer(MeshRenderer& renderer, const Camera& camera, const DirectionalLight& dirLight);
+    //描画終了処理
+    void drawEnd() const;
 
 private:
     ShadowMap(const ShadowMap&) = delete;
@@ -36,11 +46,12 @@ private:
     void createDepthShaderResourceView(Format format);
 
 private:
-    std::shared_ptr<Shader> mShadowMap;
+    std::shared_ptr<Shader> mDepthTextureCreateShader;
     std::unique_ptr<Texture2D> mDepthTexture;
     std::unique_ptr<RenderTargetView> mDepthRenderTargetView;
     std::unique_ptr<ShaderResourceView> mDepthShaderResourceView;
     Microsoft::WRL::ComPtr<ID3D11DepthStencilView> mDepthStencilView;
+    ShadowConstantBuffer mShadowConstBuffer;
     int mWidth;
     int mHeight;
 };

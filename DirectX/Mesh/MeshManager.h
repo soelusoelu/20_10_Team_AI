@@ -15,10 +15,10 @@ class MeshManager {
 public:
     MeshManager();
     ~MeshManager();
+    void createShadowMap();
     void update();
     void draw(const Camera& camera, const DirectionalLight& dirLight) const;
     void add(const MeshPtr& mesh);
-    void addShadowMap(const std::shared_ptr<ShadowMap>& shadowMap);
     void clear();
 
 private:
@@ -29,6 +29,10 @@ private:
     void remove();
     //描画するか
     bool isDraw(const MeshRenderer& mesh, const Camera& camera) const;
+    //メッシュの描画をする
+    void drawMeshes(const Camera& camera, const DirectionalLight& dirLight) const;
+    //影の描画をする
+    void drawShadow(const Camera& camera, const DirectionalLight& dirLight) const;
 
 private:
     MeshPtrList mMeshes;

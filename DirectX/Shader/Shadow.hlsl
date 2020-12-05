@@ -3,6 +3,12 @@
 Texture2D tex : register(t0);
 SamplerState samplerState : register(s0);
 
+cbuffer Shadow : register(b2)
+{
+    matrix lightView; //ライトのビュー行列
+    matrix lightProj; //ライトの射影行列
+};
+
 struct VS_OUTPUT
 {
     float4 Pos : SV_POSITION;

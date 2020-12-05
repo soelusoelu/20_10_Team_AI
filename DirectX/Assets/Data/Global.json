@@ -13,6 +13,7 @@
     },
     "fps": 60.0,
     "beginScene": "StageSelect",
+    "removeExclusionTag": [ "Camera", "Light", "Shadow" ],
     "light": {
       "pointLightMeshFileName": "Shape/Sphere.obj"
     },

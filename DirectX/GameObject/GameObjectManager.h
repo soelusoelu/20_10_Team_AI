@@ -3,6 +3,7 @@
 #include <list>
 #include <memory>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 class GameObject;
@@ -20,7 +21,7 @@ public:
     //ゲームオブジェクトの登録
     void add(const GameObjectPtr& add);
     //登録済みの全ゲームオブジェクトの削除
-    void clear();
+    void clear(const std::unordered_set<std::string>& tags);
     //tagに一致するアクティブなゲームオブジェクトの検索
     const GameObjectPtr& find(const std::string& tag) const;
     //tagに一致するアクティブな全ゲームオブジェクトの検索

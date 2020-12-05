@@ -22,6 +22,7 @@
 #include "../Sprite/Sprite.h"
 #include "../Sprite/SpriteManager.h"
 #include "../Utility/LevelLoader.h"
+#include <vector>
 
 SceneManager::SceneManager() :
     mRenderer(std::make_unique<Renderer>()),
@@ -47,6 +48,12 @@ void SceneManager::loadProperties(const rapidjson::Value& inObj) {
     JsonHelper::getString(inObj, "beginScene", &mBeginScene);
     mLightManager->loadProperties(inObj);
     mTextDrawer->loadProperties(inObj);
+
+    std::vector<std::string> tags;
+    JsonHelper::getStringArray(inObj, "removeExclusionTag", &tags);
+    for (const auto& tag : tags) {
+        mRemoveExclusionTags.emplace(tag);
+    }
 }
 
 void SceneManager::initialize() {
@@ -60,6 +67,8 @@ void SceneManager::initialize() {
     mCamera = cam->componentManager().getComponent<Camera>();
 
     mLightManager->createDirectionalLight();
+
+    mMeshManager->createShadowMap();
 
     //初期シーンの設定
     createScene(mBeginScene);
@@ -167,7 +176,7 @@ void SceneManager::draw() const {
 }
 
 void SceneManager::change() {
-    mGameObjectManager->clear();
+    mGameObjectManager->clear(mRemoveExclusionTags);
     mMeshManager->clear();
     mSpriteManager->clear();
 }

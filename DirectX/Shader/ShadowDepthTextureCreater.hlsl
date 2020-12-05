@@ -1,4 +1,4 @@
-#include "MeshCommonHeader.hlsli"
+#include "SimpleHeader.hlsli"
 
 struct VS_OUTPUT
 {

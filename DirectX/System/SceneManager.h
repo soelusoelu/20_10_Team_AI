@@ -3,6 +3,7 @@
 #include <rapidjson/document.h>
 #include <memory>
 #include <string>
+#include <unordered_set>
 
 class Scene;
 class Renderer;
@@ -38,5 +39,6 @@ private:
     std::unique_ptr<LightManager> mLightManager;
     DrawString* mTextDrawer;
     std::string mBeginScene;
+    std::unordered_set<std::string> mRemoveExclusionTags;
     bool mShouldDraw;
 };

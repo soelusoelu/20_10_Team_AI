@@ -1,0 +1,10 @@
+{
+  "tag": "Shadow",
+  "components": [
+    {
+      "type": "ShadowMap",
+      "properties": {
+      }
+    }
+  ]
+}
