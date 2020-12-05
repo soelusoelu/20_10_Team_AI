@@ -4,6 +4,7 @@
 #include "../Component.h"
 #include <memory>
 
+class MeshComponent;
 class MeshOutLine;
 class AABBCollider;
 class HitPointComponent;
@@ -17,6 +18,7 @@ public:
     ~CharacterCommonComponents();
     virtual void start() override;
 
+    MeshComponent& getMeshComponent() const;
     MeshOutLine& getMeshOutLine() const;
     AABBCollider& getAABBCollider() const;
     HitPointComponent& getHitPoint() const;
@@ -38,7 +40,8 @@ private:
 
 private:
     const ICharacterManager* mManager;
-    std::shared_ptr<MeshOutLine> mMesh;
+    std::shared_ptr<MeshComponent> mMesh;
+    std::shared_ptr<MeshOutLine> mOutLine;
     std::shared_ptr<AABBCollider> mCollider;
     std::shared_ptr<HitPointComponent> mHP;
     std::shared_ptr<CharacterAction> mCharaAction;

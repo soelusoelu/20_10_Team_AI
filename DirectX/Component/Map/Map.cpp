@@ -14,7 +14,7 @@ Map::Map(GameObject& gameObject)
 Map::~Map() = default;
 
 const IMesh& Map::getMeshData() const {
-    return mGroundMesh->getMesh();
+    return *mGroundMesh->getMesh();
 }
 
 const Transform3D& Map::getTransform() const {

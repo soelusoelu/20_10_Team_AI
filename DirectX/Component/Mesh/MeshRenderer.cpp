@@ -7,8 +7,6 @@
 
 MeshRenderer::MeshRenderer(GameObject& gameObject)
     : Component(gameObject)
-    , mMesh(nullptr)
-    , mDrawer(nullptr)
     , mBeforeDrawer(nullptr)
     , mMeshComponent(nullptr)
     , mMeshShader(nullptr)
@@ -68,12 +66,13 @@ void MeshRenderer::drawMesh(const Camera& camera, const DirectionalLight& dirLig
     //コンスタントバッファに転送する
     mMeshShader->transferData();
 
-    for (size_t i = 0; i < mMesh->getMeshCount(); ++i) {
+    const auto loopCount = mMeshComponent->getMesh()->getMeshCount();
+    for (size_t i = 0; i < loopCount; ++i) {
         //マテリアルを設定する
         mMeshShader->setDefaultMaterial(*mMeshComponent, i);
 
         //描画
-        mDrawer->draw(i);
+        mMeshComponent->getDrawer()->draw(i);
     }
 }
 
@@ -89,7 +88,7 @@ void MeshRenderer::createSkinMeshComponent() {
     }
 
     //ボーンがないモデルなら終了
-    if (!iAnim->getBoneCount() == 0) {
+    if (iAnim->getBoneCount() == 0) {
         return;
     }
 

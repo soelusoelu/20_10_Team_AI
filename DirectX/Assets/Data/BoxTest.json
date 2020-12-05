@@ -5,9 +5,14 @@
   "prototype": "CharacterCommonComponents",
   "components": [
     {
+      "type": "MeshComponent",
+      "properties": {
+        "fileName": "Shape/box.fbx"
+      }
+    },
+    {
       "type": "MeshOutLine",
       "properties": {
-        "fileName": "Shape/box.fbx",
         "offset": 1.0
       }
     },

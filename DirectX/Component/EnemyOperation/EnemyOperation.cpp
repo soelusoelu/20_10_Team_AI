@@ -3,7 +3,7 @@
 #include "../ComponentManager.h"
 #include "../Character/CharacterAction.h"
 #include "../Character/CharacterCommonComponents.h"
-#include "../Mesh/MeshOutLine.h"
+#include "../Mesh/MeshComponent.h"
 
 EnemyOperation::EnemyOperation(GameObject& gameObject)
     : Component(gameObject)
@@ -24,7 +24,7 @@ void EnemyOperation::receiveStageNo(int stageNo) {
 
     for (const auto& enemy : mEnemys) {
         //メッシュの赤みを強くする
-        enemy->getMeshOutLine().setColorRatio(ColorPalette::red);
+        enemy->getMeshComponent().setColorRatio(ColorPalette::red);
         //マネージャーを設定する
         enemy->setManager(mManager);
     }

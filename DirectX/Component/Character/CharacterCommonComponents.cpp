@@ -2,6 +2,7 @@
 #include "CharacterAction.h"
 #include "PhaseChangeSaver.h"
 #include "../Collider/AABBCollider.h"
+#include "../Mesh/MeshComponent.h"
 #include "../Mesh/MeshOutLine.h"
 #include "../Other/HitPointComponent.h"
 
@@ -9,6 +10,7 @@ CharacterCommonComponents::CharacterCommonComponents(GameObject& gameObject)
     : Component(gameObject)
     , mManager(nullptr)
     , mMesh(nullptr)
+    , mOutLine(nullptr)
     , mCollider(nullptr)
     , mHP(nullptr)
     , mCharaAction(nullptr)
@@ -20,17 +22,22 @@ CharacterCommonComponents::CharacterCommonComponents(GameObject& gameObject)
 CharacterCommonComponents::~CharacterCommonComponents() = default;
 
 void CharacterCommonComponents::start() {
-    mMesh = getComponent<MeshOutLine>();
+    mMesh = getComponent<MeshComponent>();
+    mOutLine = getComponent<MeshOutLine>();
     //初期状態はアウトラインなし
-    mMesh->setActiveOutLine(false);
+    mOutLine->setActiveOutLine(false);
     mCollider = getComponent<AABBCollider>();
     mHP = getComponent<HitPointComponent>();
     mCharaAction = getComponent<CharacterAction>();
     mPhaseChangeSaver = getComponent<PhaseChangeSaver>();
 }
 
-MeshOutLine& CharacterCommonComponents::getMeshOutLine() const {
+MeshComponent& CharacterCommonComponents::getMeshComponent() const {
     return *mMesh;
+}
+
+MeshOutLine& CharacterCommonComponents::getMeshOutLine() const {
+    return *mOutLine;
 }
 
 AABBCollider& CharacterCommonComponents::getAABBCollider() const {

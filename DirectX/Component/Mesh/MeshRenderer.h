@@ -2,8 +2,6 @@
 
 #include "IDrawBefore.h"
 #include "../Component.h"
-#include "../../Mesh/IMesh.h"
-#include "../../Mesh/IMeshDrawer.h"
 #include <memory>
 
 class MeshComponent;
@@ -13,7 +11,7 @@ class DirectionalLight;
 class MeshManager;
 
 //メッシュ描画専用クラス
-class MeshRenderer : public Component, std::enable_shared_from_this<MeshRenderer> {
+class MeshRenderer : public Component, public std::enable_shared_from_this<MeshRenderer> {
 public:
     MeshRenderer(GameObject& gameObject);
     ~MeshRenderer();
@@ -39,8 +37,6 @@ private:
     void addToManager();
 
 private:
-    const IMesh* mMesh;
-    const IMeshDrawer* mDrawer;
     const IDrawBefore* mBeforeDrawer;
     std::shared_ptr<MeshComponent> mMeshComponent;
     std::shared_ptr<MeshShader> mMeshShader;

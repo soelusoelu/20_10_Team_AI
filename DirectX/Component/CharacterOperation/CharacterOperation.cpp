@@ -7,6 +7,7 @@
 #include "DragAndDropCharacter.h"
 #include "../Character/CharacterAction.h"
 #include "../Character/CharacterCommonComponents.h"
+#include "../Mesh/MeshComponent.h"
 #include "../Mesh/MeshOutLine.h"
 #include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObject.h"
@@ -171,7 +172,7 @@ void CharacterOperation::addCharacter(const GameObject& newChara, int cost) {
     //コストを設定する
     temp->setCost(cost);
     //メッシュの青みを強くする
-    temp->getMeshOutLine().setColorRatio(ColorPalette::blue);
+    temp->getMeshComponent().setColorRatio(ColorPalette::blue);
     //マネージャーを登録する
     temp->setManager(mManager);
     //登録する

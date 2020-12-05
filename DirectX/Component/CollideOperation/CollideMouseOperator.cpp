@@ -97,7 +97,7 @@ bool CollideMouseOperator::intersectRayGroundMeshes() {
         }
 
         //メッシュとレイの衝突判定
-        if (Intersect::intersectRayMesh(rayCameraToMousePos, gm->getMesh(), gm->transform())) {
+        if (Intersect::intersectRayMesh(rayCameraToMousePos, *gm->getMesh(), gm->transform())) {
             changeSelectMesh(gm);
             return true;
         }
