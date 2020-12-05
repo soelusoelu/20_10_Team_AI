@@ -18,6 +18,7 @@
     <FxCompile Include="Shader\Texture3D.hlsl" />
     <FxCompile Include="Shader\Shadow.hlsl" />
     <FxCompile Include="Shader\ShadowDepthTextureCreater.hlsl" />
+    <FxCompile Include="Shader\SkinMeshShadow.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Component\ComponentManager.cpp" />
@@ -532,5 +533,6 @@
     <None Include="Assets\Data\StageSelect.json" />
     <None Include="Assets\Data\Title.json" />
     <None Include="Assets\Data\Waveform.json" />
+    <None Include="Shader\ShadowHeader.hlsli" />
   </ItemGroup>
 </Project>

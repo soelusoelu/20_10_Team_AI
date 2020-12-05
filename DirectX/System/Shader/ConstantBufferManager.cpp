@@ -20,6 +20,7 @@ ConstantBufferManager::ConstantBufferManager() {
     mConstantBuffers.emplace("SkinMeshOutLine.hlsl", BuffersSize{ sizeof(OutLineConstantBuffer), sizeof(SkinMeshConstantBuffer) });
     mConstantBuffers.emplace("ShadowDepthTextureCreater.hlsl", BuffersSize{ sizeof(SimpleMeshConstantBuffer) });
     mConstantBuffers.emplace("Shadow.hlsl", BuffersSize{ sizeof(MeshCommonConstantBuffer), sizeof(MaterialConstantBuffer), sizeof(ShadowConstantBuffer) });
+    mConstantBuffers.emplace("SkinMeshShadow.hlsl", BuffersSize{ sizeof(MeshCommonConstantBuffer), sizeof(MaterialConstantBuffer), sizeof(ShadowConstantBuffer), sizeof(SkinMeshConstantBuffer) });
 }
 
 ConstantBufferManager::~ConstantBufferManager() = default;

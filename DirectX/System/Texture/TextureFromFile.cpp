@@ -41,5 +41,5 @@ void TextureFromFile::createTextureFromFileName(const std::string& filePath) {
     if (FAILED(DirectX::CreateShaderResourceView(MyDirectX::DirectX::instance().device(), image, 1, metadata, &srv))) {
         Debug::windowMessage(filePath + ": テクスチャ作成失敗");
     }
-    mShaderResourceView = std::make_unique<ShaderResourceView>(srv);
+    mShaderResourceView = std::make_shared<ShaderResourceView>(srv);
 }

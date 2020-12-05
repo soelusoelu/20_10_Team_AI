@@ -30,7 +30,7 @@ void GamePlay::start() {
     mCharacterManager = getComponent<CharacterManager>();
     mMap = getComponent<Map>();
 
-    GameObjectCreater::create("SphereMap");
+    //GameObjectCreater::create("SphereMap");
 
     auto gs = GameObjectCreater::create("GameStart");
     mGameStart = gs->componentManager().getComponent<GameStart>();

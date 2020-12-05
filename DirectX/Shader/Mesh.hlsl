@@ -1,8 +1,5 @@
 #include "MeshCommonAndMaterialHeader.hlsli"
 
-Texture2D tex : register(t0);
-SamplerState samplerState : register(s0);
-
 struct VS_OUTPUT
 {
     float4 Pos : SV_POSITION;

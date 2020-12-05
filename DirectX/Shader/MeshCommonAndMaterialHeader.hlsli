@@ -1,5 +1,8 @@
 #include "MeshCommonHeader.hlsli"
 
+Texture2D tex : register(t0);
+SamplerState samplerState : register(s0);
+
 cbuffer Material : register(b1)
 {
     float3 ambient : packoffset(c0);

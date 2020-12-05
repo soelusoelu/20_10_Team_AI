@@ -66,9 +66,9 @@ void SceneManager::initialize() {
     auto cam = GameObjectCreater::create("Camera");
     mCamera = cam->componentManager().getComponent<Camera>();
 
-    mLightManager->createDirectionalLight();
-
     mMeshManager->createShadowMap();
+
+    mLightManager->createDirectionalLight();
 
     //初期シーンの設定
     createScene(mBeginScene);

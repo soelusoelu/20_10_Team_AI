@@ -3,7 +3,7 @@
 struct VS_OUTPUT
 {
     float4 Pos : SV_POSITION;
-    float4 Depth : POSITION;
+    float4 Depth : TEXCOORD0;
 };
 
 VS_OUTPUT VS(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD)

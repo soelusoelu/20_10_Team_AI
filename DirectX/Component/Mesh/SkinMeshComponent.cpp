@@ -27,7 +27,7 @@ void SkinMeshComponent::update() {
     for (size_t i = 0; i < mAnimation->getBoneCount(); ++i) {
         mCurrentBones[i] = mAnimation->getBone(i).offsetMat * motion.frameMat[i][mCurrentFrame];
     }
-    mMeshShader->setTransferData(mCurrentBones.data(), sizeof(SkinMeshConstantBuffer), 2);
+    mMeshShader->setTransferData(mCurrentBones.data(), sizeof(SkinMeshConstantBuffer), 3);
 }
 
 void SkinMeshComponent::setMotionName(const std::string& name, unsigned motionNo) {

@@ -1,8 +1,6 @@
 #include "MeshCommonAndMaterialHeader.hlsli"
 
-Texture2D tex : register(t0);
 Texture2D normalTex : register(t1);
-SamplerState samplerState : register(s0);
 
 struct VS_OUTPUT
 {

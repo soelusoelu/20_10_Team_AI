@@ -1,13 +1,4 @@
-#include "MeshCommonAndMaterialHeader.hlsli"
-
-Texture2D tex : register(t0);
-SamplerState samplerState : register(s0);
-
-cbuffer Shadow : register(b2)
-{
-    matrix lightView; //ライトのビュー行列
-    matrix lightProj; //ライトの射影行列
-};
+#include "ShadowHeader.hlsli"
 
 struct VS_OUTPUT
 {
@@ -15,6 +6,7 @@ struct VS_OUTPUT
     float3 Normal : NORMAL;
     float2 UV : TEXCOORD0;
     float3 WorldPos : POSITION;
+    float4 ZCalcTex : TEXCOORD1; //Z値算出用テクスチャ
 };
 
 VS_OUTPUT VS(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD)
@@ -26,6 +18,10 @@ VS_OUTPUT VS(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD
     output.UV = uv;
     output.WorldPos = mul(world, pos).xyz;
 
+    matrix mat = mul(lightView, world);
+    mat = mul(projection, mat);
+    output.ZCalcTex = mul(mat, pos);
+
     return output;
 }
 
@@ -33,6 +29,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 {
     float3 normal = input.Normal;
     float3 viewDir = normalize(cameraPos - input.WorldPos);
+    float4 zCalcTex = input.ZCalcTex;
 
     float NL = dot(normal, -lightDir);
 
@@ -47,5 +44,24 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float3 color = saturate(ambient + diff + spec) * lightColor;
     float4 texColor = tex.Sample(samplerState, input.UV);
 
-    return float4(color * texColor.rgb, diffuse.a * texColor.a);
+    float4 outColor = float4(color * texColor.rgb, diffuse.a * texColor.a);
+
+    //ライト目線によるZ値の再算出
+    float ZValue = zCalcTex.z / zCalcTex.w;
+
+    //テクスチャ座標に変換
+    float2 transTexCoord;
+    transTexCoord.x = (1.0 + zCalcTex.x / zCalcTex.w) * 0.5;
+    transTexCoord.y = (1.0 - zCalcTex.y / zCalcTex.w) * 0.5;
+
+    // 同じ座標のZ値を抽出
+    float SM_Z = depthTex.Sample(samplerState, transTexCoord).x;
+
+    //算出点がシャドウマップのZ値よりも大きければ影と判断
+    if (ZValue > SM_Z + 0.005)
+    {
+        outColor.rgb *= 0.5;
+    }
+
+    return outColor;
 }
