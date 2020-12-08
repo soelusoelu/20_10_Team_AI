@@ -46,14 +46,17 @@ void ShadowMap::awake() {
 }
 
 void ShadowMap::start() {
-    const auto& desc = mDepthTexture->desc();
-    const auto& texSize = Vector2(desc.width, desc.height);
-    const auto& tex = std::make_shared<Texture>(mDepthShaderResourceView, texSize);
-    getComponent<SpriteComponent>()->setTexture(tex);
+    //const auto& desc = mDepthTexture->desc();
+    //const auto& texSize = Vector2(desc.width, desc.height);
+    //const auto& tex = std::make_shared<Texture>(mDepthShaderResourceView, texSize);
+    //getComponent<SpriteComponent>()->setTexture(tex);
 }
 
 void ShadowMap::drawBegin(const DirectionalLight& dirLight) {
     auto& dx = MyDirectX::DirectX::instance();
+
+    //シェーダー登録
+    mDepthTextureCreateShader->setShaderInfo();
 
     //レンダーターゲットを設定する
     mDepthRenderTargetView->setRenderTarget(mDepthStencilView.Get());
@@ -67,9 +70,6 @@ void ShadowMap::drawBegin(const DirectionalLight& dirLight) {
     //ライトビュー計算
     const auto& dir = dirLight.getDirection();
     mShadowConstBuffer.lightView = Matrix4::createLookAt(-dir * 150.f, dir, Vector3::up);
-
-    //シェーダー登録
-    mDepthTextureCreateShader->setShaderInfo();
 }
 
 void ShadowMap::draw(const MeshRenderer& renderer, const Camera& camera, const DirectionalLight& dirLight) const {

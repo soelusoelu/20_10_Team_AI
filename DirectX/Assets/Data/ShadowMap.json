@@ -3,9 +3,7 @@
   "components": [
     {
       "type": "ShadowMap",
-      "properties": {
-        "isRenderSprite": true
-      }
+      "properties": {}
     },
     {
       "type": "SpriteComponent",

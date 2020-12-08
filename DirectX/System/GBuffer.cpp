@@ -10,19 +10,21 @@
 #include "../Mesh/Vertex.h"
 #include "../System/SystemInclude.h"
 
-GBuffer::GBuffer() :
-    mSampler(nullptr),
-    mShader(nullptr),
-    mVertexBuffer(nullptr),
-    mIndexBuffer(nullptr) {
+GBuffer::GBuffer()
+    : mSampler(nullptr)
+    , mGBufferShader(nullptr)
+    , mDefferdShader(nullptr)
+    , mVertexBuffer(nullptr)
+    , mIndexBuffer(nullptr)
+{
 }
 
 GBuffer::~GBuffer() = default;
 
 void GBuffer::create() {
-    Texture2DDesc desc;
-    ShaderResourceViewDesc srvDesc;
-    RenderTargetViewDesc rtvDesc;
+    Texture2DDesc desc{};
+    ShaderResourceViewDesc srvDesc{};
+    RenderTargetViewDesc rtvDesc{};
 
     //カラー
     desc.width = Window::standardWidth();
@@ -80,19 +82,17 @@ void GBuffer::create() {
 void GBuffer::renderToTexture() {
     auto& dx = MyDirectX::DirectX::instance();
 
+    //シェーダーをセット
+    mGBufferShader->setShaderInfo();
+
     //各テクスチャをレンダーターゲットに設定
-    static constexpr unsigned numGBuffer = static_cast<unsigned>(Type::NUM_GBUFFER_TEXTURES);
-    //Microsoft::WRL::ComPtr<ID3D11RenderTargetView> views[numGBuffer];
-    //for (size_t i = 0; i < numGBuffer; i++) {
-    //    views[i] = mRenderTargets[i]->getRenderTarget();
-    //}
-    //dx.setRenderTargets(views->GetAddressOf(), numGBuffer);
+    RenderTargetView::setRenderTargets(mRenderTargets);
 
     //クリア
-    for (size_t i = 0; i < numGBuffer; i++) {
-        mRenderTargets[i]->clearRenderTarget();
+    for (const auto& rt : mRenderTargets) {
+        rt->clearRenderTarget();
     }
-    //dx.clearDepthStencilView();
+    dx.clearDepthStencilView();
 
     //デプステスト有効化
     dx.depthStencilState()->depthTest(true);
@@ -112,7 +112,7 @@ void GBuffer::renderFromTexture(const Camera& camera, const LightManager& lightM
     dx.clearDepthStencilView();
 
     //使用するシェーダーは、テクスチャーを参照するシェーダー
-    mShader->setShaderInfo();
+    mDefferdShader->setShaderInfo();
     //1パス目で作成したテクスチャー3枚をセット
     setShaderResources();
     //サンプラーをセット
@@ -125,7 +125,7 @@ void GBuffer::renderFromTexture(const Camera& camera, const LightManager& lightM
     cb.ambientLight = lightManager.getAmbientLight();
 
     //シェーダーにデータ転送
-    mShader->transferData(&cb, sizeof(cb));
+    mDefferdShader->transferData(&cb, sizeof(cb));
 
     //スクリーンサイズのポリゴンをレンダー
     dx.setPrimitive(PrimitiveType::TRIANGLE_LIST);
@@ -155,7 +155,8 @@ void GBuffer::createSampler() {
 
 void GBuffer::createShader() {
     //シェーダー生成
-    mShader = AssetsManager::instance().createShader("Deferred.hlsl");
+    mGBufferShader = AssetsManager::instance().createShader("GBuffer.hlsl");
+    mDefferdShader = AssetsManager::instance().createShader("Deferred.hlsl");
 }
 
 void GBuffer::createVertexBuffer() {

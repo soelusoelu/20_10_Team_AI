@@ -1,21 +1,8 @@
-Texture2D g_texColor : register(t0);
+#include "MeshCommonAndMaterialHeader.hlsli"
+
 Texture2D g_texNormal : register(t1);
 Texture2D g_texPosition : register(t2);
 Texture2D g_texSpecular : register(t3);
-SamplerState g_samLinear : register(s0);
-
-cbuffer global_0 : register(b0)
-{
-    matrix world; //ワールド行列
-    matrix wvp; //ワールドから射影までの変換行列
-};
-
-cbuffer global_1 : register(b1)
-{
-    float3 ambient : packoffset(c0);
-    float4 diffuse : packoffset(c1);
-    float3 specular : packoffset(c2);
-}
 
 //バーテックスバッファー出力
 struct VS_OUTPUT
@@ -54,7 +41,7 @@ PS_OUTPUT PS(VS_OUTPUT input)
 
     //カラーテクスチャーへ出力
     Out.Color = diffuse;
-    Out.Color = g_texColor.Sample(g_samLinear, input.UV);
+    Out.Color *= tex.Sample(samplerState, input.UV);
 
     //ワールド法線テクスチャーへ出力
     float3 normal = input.WorldNormal;

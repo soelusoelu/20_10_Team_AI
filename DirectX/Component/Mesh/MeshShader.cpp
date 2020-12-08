@@ -112,10 +112,6 @@ void MeshShader::setInterface(const IMesh* mesh, const IAnimation* anim) {
 
 void MeshShader::setDefaultShader() {
     //std::string shader = "Mesh.hlsl";
-    ////ノーマルマップが有るなら
-    //if (mMesh->getMaterial(0).normalMapTexture) {
-    //    shader = "NormalMap.hlsl";
-    //}
     ////ボーンが有るなら
     //if (mAnimation->getBoneCount() > 0) {
     //    shader = "SkinMesh.hlsl";

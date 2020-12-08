@@ -53,7 +53,8 @@ private:
     RTVPtrArray mRenderTargets;
     SRVPtrArray mShaderResourceViews;
     std::unique_ptr<Sampler> mSampler;
-    std::shared_ptr<Shader> mShader;
+    std::shared_ptr<Shader> mGBufferShader;
+    std::shared_ptr<Shader> mDefferdShader;
     std::unique_ptr<VertexBuffer> mVertexBuffer;
     std::unique_ptr<IndexBuffer> mIndexBuffer;
 };
