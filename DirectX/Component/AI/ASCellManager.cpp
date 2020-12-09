@@ -21,8 +21,7 @@ ASCellManager::ASCellManager()
 }
 
 ASCellManager::ASCellManager(int width, int height, Position startPos, Position endPos)
-{
-	
+{	
 	cellsWidth = width;
 	cellsHeight = height;
 	Initialize();

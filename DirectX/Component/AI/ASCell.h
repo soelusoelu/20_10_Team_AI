@@ -15,7 +15,7 @@ struct ASCell
 	std::vector<ASCell*> neighCells;
 
 	//探索用の情報（書き換えが必要な変数
-	//今後GameObject外に移す
+	//今後Cell外に移す
 	int scoreE = 0, scoreR = 0, score = 0;
 	ASCell* parent = nullptr;
 };
