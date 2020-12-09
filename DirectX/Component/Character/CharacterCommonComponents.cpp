@@ -60,8 +60,8 @@ void CharacterCommonComponents::setManager(const ICharacterManager* manager) {
     mManager = manager;
 }
 
-const ICharacterManager& CharacterCommonComponents::getManager() const {
-    return *mManager;
+const ICharacterManager* CharacterCommonComponents::getManager() const {
+    return mManager;
 }
 
 void CharacterCommonComponents::setCost(int cost) {

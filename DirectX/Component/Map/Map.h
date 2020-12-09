@@ -19,7 +19,7 @@ public:
     //外部からデータを受け取る
     void receiveMapData(const std::string& mapName);
     //Cell情報を渡す
-    virtual std::vector<ASCell>* GetCellsInfo() override;
+    virtual const std::vector<ASCell>& GetCellsInfo() override;
 
 
 private:

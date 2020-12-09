@@ -1,6 +1,7 @@
 #include "ASAI.h"
 #include "../../Transform/Transform3D.h"
 #include"../../Math/Vector3.h"
+#include "ASCellManager.h"
 #include "../../GameObject/GameObject.h"
 #include"../Character/CharacterCommonComponents.h"
 #include "../Character/ICharacterManager.h"
@@ -20,8 +21,8 @@ void ASAI::Initialize()
 	start.x = fmaxf(0,fminf( start.x, cellCountW - 1));
 	start.y = fmaxf(0, fminf(start.y,cellCountH-1));
 	Position goal = VectorToPosition(GetNearEnemy());
-	cellManager = ASCellManager(cellCountW, cellCountH, start, goal);
-	routes = cellManager.GetRoute();
+	cellManager = std::make_unique<ASCellManager>(cellCountW, cellCountH, start, goal);
+	routes = cellManager->GetRoute();
 	routePhase = 0;
 	if (routes.size() != 0)
 	{
@@ -32,7 +33,8 @@ void ASAI::Initialize()
 
 void ASAI::start()
 {
-	ccc = getComponent<CharacterCommonComponents>();
+	 manager = getComponent<CharacterCommonComponents>()->getManager();
+
 	//transform().setPosition(Vector3(-90, 0, -90));
 }
 
@@ -46,7 +48,7 @@ void ASAI::originalUpdate()
 	}
 	else
 	{
-		Vector3 v3 = routePoint - transform().getPosition();
+		/*Vector3 v3 = routePoint - transform().getPosition();
 		float distance = v3.length();
 		v3.normalize();
 		transform().translate(v3 / 3);
@@ -54,18 +56,18 @@ void ASAI::originalUpdate()
 		{
 			routePoint = CalcPosition(routePhase);
 			routePhase++;
-		}
+		}*/
 	}
 }
-
+//
 Vector3 ASAI::GetNearEnemy()
 {
 	Vector3 v;
-	auto& manager=ccc->getManager();
+	
 	float distance = 99999;
 	if (gameObject().tag() == "Enemy")
 	{
-		for (const CharacterPtr &character:manager.getCharacters())
+		for (const CharacterPtr &character:manager->getCharacters())
 		{
 			const float d = Vector3().distance(transform().getPosition(), character.get()->transform().getPosition());
 			if (distance > d)
@@ -77,7 +79,7 @@ Vector3 ASAI::GetNearEnemy()
 	}
 	else
 	{
-		for (const CharacterPtr& character : manager.getEnemys())
+		for (const CharacterPtr& character : manager->getEnemys())
 		{
 			const float d = Vector3().distance(transform().getPosition(), character.get()->transform().getPosition());
 			if (distance > d)
@@ -104,7 +106,7 @@ Vector3 ASAI::CalcPosition(int phase)
 	return v;
 }
 
-Position ASAI::VectorToPosition(Vector3 v)
+Position ASAI::VectorToPosition(const Vector3& v)
 {
 	Position p;
 	float cellSize = mapWidth / cellCountW;

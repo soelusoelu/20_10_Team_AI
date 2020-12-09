@@ -28,7 +28,7 @@ public:
     //自身を管理するマネージャーを設定する
     void setManager(const ICharacterManager* manager);
     //自身を管理するマネージャーを取得する
-    const ICharacterManager& getManager() const;
+    const ICharacterManager* getManager() const;
     //生成時コストを設定する
     void setCost(int cost);
     //生成時コストを取得する
