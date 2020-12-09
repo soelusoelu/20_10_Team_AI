@@ -58,7 +58,7 @@ void DragAndDropCharacter::dragMove(const CharacterCommonComponents& target) {
     //押し出し処理
     mOverlapPreventor->overlapPrevent(
         target.getAABBCollider(),
-        target.getManager().getCharacters(),
+        target.getManager()->getCharacters(),
         t.getPosition(),
         prePos
     );

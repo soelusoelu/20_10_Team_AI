@@ -7,6 +7,7 @@
 #include "../Character/ICharacterManager.h"
 class CharacterCommonComponents;
 
+
 class ASAI :public Component
 {
 public:
@@ -25,10 +26,10 @@ public:
 private:
 	Vector3 CalcPosition(int phase);
 
-	Position VectorToPosition(Vector3 v);
+	Position VectorToPosition(const Vector3& v);
 
-	ASCellManager cellManager;
-	ASCellManager *target;
+	std::unique_ptr<ASCellManager> cellManager;
+	std::unique_ptr < ASCellManager> target;
 	std::vector<Position> routes;
 	int routePhase=0;
 	float mapWidth = 200;
@@ -36,10 +37,10 @@ private:
 	int cellCountW= 10;
 	int cellCountH = 10;
 	Vector3 routePoint;
-	int startX, startY;
-	int goalX, goalY;
+	int startX=0, startY=0;
+	int goalX = 0, goalY = 0;
 	//ICharacterManager manager;
-	std::shared_ptr<CharacterCommonComponents> ccc;
+	const ICharacterManager* manager;
 	//Position start;
 	//Position goal;
 	//std::vector<ASCell>&cells;

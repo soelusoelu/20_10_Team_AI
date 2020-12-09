@@ -16,9 +16,9 @@ public:
 	void JudgeSlope(ASCell* cell);
 
 	ASCell* GetCell(Position pos);
-	std::vector<ASCell>* GetCells();
-	Vector2 CalcCellPos(ASCell cell);
-	Vector2 ConvertV3toV2(Vector3 v3);
+	const std::vector<ASCell>& GetCells();
+	 Vector2 CalcCellPos(const ASCell& cell);
+	 Vector2 ConvertV3toV2(const Vector3& v3);
 private:
 	std::vector<ASCell>cells;
 	float mapWidth = 200, mapHeight = 200;

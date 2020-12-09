@@ -64,12 +64,12 @@ ASCell* ASMap::GetCell(Position pos)
 	return &cells[pos.y * cellsWidth + pos.x];
 }
 
-std::vector<ASCell>* ASMap::GetCells()
+const std::vector<ASCell>& ASMap::GetCells()
 {
-	return &cells;
+	return cells;
 }
 
-Vector2 ASMap::CalcCellPos(ASCell cell)
+Vector2 ASMap::CalcCellPos(const ASCell& cell)
 {
 	Vector2 v;
 	float cellSize = mapWidth / cellsWidth;
@@ -79,7 +79,7 @@ Vector2 ASMap::CalcCellPos(ASCell cell)
 	return v;
 }
 
-Vector2 ASMap::ConvertV3toV2(Vector3 v3)
+Vector2 ASMap::ConvertV3toV2(const Vector3& v3)
 {
 	Vector2 v2;
 	v2.x = v3.x;

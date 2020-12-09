@@ -26,7 +26,7 @@ void Map::receiveMapData(const std::string& mapName) {
     mGroundMesh = map->componentManager().getComponent<MeshComponent>();
 }
 
-std::vector<ASCell>* Map::GetCellsInfo()
+const std::vector<ASCell>& Map::GetCellsInfo()
 {
     return asmap.GetCells();
 }
