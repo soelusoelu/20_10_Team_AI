@@ -6,8 +6,10 @@ ComponentManager::ComponentManager() = default;
 ComponentManager::~ComponentManager() = default;
 
 void ComponentManager::start() {
-    for (const auto& comp : mComponents) {
-        comp->start();
+    //addComponentで追加されたものは無視(addComponent内で処理するため)
+    const auto COMPONENT_COUNT = mComponents.size();
+    for (size_t i = 0; i < COMPONENT_COUNT; ++i) {
+        mComponents[i]->start();
     }
 }
 
@@ -41,7 +43,7 @@ void ComponentManager::onEnable(bool value) const {
     }
 }
 
-const std::list<std::shared_ptr<Component>>& ComponentManager::getAllComponents() const {
+const std::vector<std::shared_ptr<Component>>& ComponentManager::getAllComponents() const {
     return mComponents;
 }
 

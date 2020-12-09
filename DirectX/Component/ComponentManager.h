@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include <rapidjson/document.h>
-#include <list>
 #include <memory>
 #include <string>
 #include <vector>
@@ -10,7 +9,7 @@ class Component;
 
 class ComponentManager {
     using ComponentPtr = std::shared_ptr<Component>;
-    using ComponentPtrList = std::list<ComponentPtr>;
+    using ComponentPtrArray = std::vector<ComponentPtr>;
 
 public:
     ComponentManager();
@@ -30,7 +29,7 @@ public:
     void onEnable(bool value) const;
 
     //全コンポーネントの取得
-    const ComponentPtrList& getAllComponents() const;
+    const ComponentPtrArray& getAllComponents() const;
 
     //コンポーネントの取得
     template<typename T>
@@ -70,5 +69,5 @@ private:
     void saveComponent(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* outArray, const Component& component) const;
 
 private:
-    ComponentPtrList mComponents;
+    ComponentPtrArray mComponents;
 };
