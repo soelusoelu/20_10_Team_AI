@@ -33,8 +33,11 @@ void ASAI::Initialize()
 
 void ASAI::start()
 {
-	 manager = getComponent<CharacterCommonComponents>()->getManager();
-
+	 const auto& ccc = getComponent<CharacterCommonComponents>();
+	 manager = ccc->getManager();
+     if (!manager) {
+		 ccc->callbackSetManager([&] { manager = getComponent<CharacterCommonComponents>()->getManager(); });
+     }
 	//transform().setPosition(Vector3(-90, 0, -90));
 }
 
@@ -59,7 +62,7 @@ void ASAI::originalUpdate()
 		}*/
 	}
 }
-//
+
 Vector3 ASAI::GetNearEnemy()
 {
 	Vector3 v;

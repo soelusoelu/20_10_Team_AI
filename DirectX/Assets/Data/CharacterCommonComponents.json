@@ -20,6 +20,10 @@
         "barPivotY": 3.0,
         "barScale": [ 0.75, 0.5 ]
       }
+    },
+    {
+      "type": "ASAI",
+      "properties": {}
     }
   ]
 }

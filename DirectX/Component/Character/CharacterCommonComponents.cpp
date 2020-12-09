@@ -5,6 +5,7 @@
 #include "../Mesh/MeshComponent.h"
 #include "../Mesh/MeshOutLine.h"
 #include "../Other/HitPointComponent.h"
+#include "../../Device/Subject.h"
 
 CharacterCommonComponents::CharacterCommonComponents(GameObject& gameObject)
     : Component(gameObject)
@@ -15,6 +16,7 @@ CharacterCommonComponents::CharacterCommonComponents(GameObject& gameObject)
     , mHP(nullptr)
     , mCharaAction(nullptr)
     , mPhaseChangeSaver(nullptr)
+    , mCallbackSetManager(std::make_unique<Subject>())
     , mCost(0)
 {
 }
@@ -58,6 +60,8 @@ PhaseChangeSaver& CharacterCommonComponents::getPhaseChangeSaver() const {
 
 void CharacterCommonComponents::setManager(const ICharacterManager* manager) {
     mManager = manager;
+
+    mCallbackSetManager->notify();
 }
 
 const ICharacterManager* CharacterCommonComponents::getManager() const {
@@ -70,4 +74,8 @@ void CharacterCommonComponents::setCost(int cost) {
 
 int CharacterCommonComponents::getCost() const {
     return mCost;
+}
+
+void CharacterCommonComponents::callbackSetManager(const std::function<void()>& callback) {
+    mCallbackSetManager->addObserver(callback);
 }
