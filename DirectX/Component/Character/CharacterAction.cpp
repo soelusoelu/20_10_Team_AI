@@ -26,7 +26,7 @@ void CharacterAction::update() {
     }
 
     //AIにすべてをまかせる
-   mAI->originalUpdate();
+    mAI->originalUpdate();
 }
 
 void CharacterAction::onEnable(bool value) {

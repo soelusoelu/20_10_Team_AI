@@ -2,6 +2,7 @@
 
 #include "ICharacterManager.h"
 #include "../Component.h"
+#include <functional>
 #include <memory>
 
 class MeshComponent;
@@ -10,6 +11,7 @@ class AABBCollider;
 class HitPointComponent;
 class CharacterAction;
 class PhaseChangeSaver;
+class Subject;
 
 //キャラクター共通コンポーネント管理クラス
 class CharacterCommonComponents : public Component {
@@ -34,6 +36,9 @@ public:
     //生成時コストを取得する
     int getCost() const;
 
+    //マネージャーが登録された際のコールバック
+    void callbackSetManager(const std::function<void()>& callback);
+
 private:
     CharacterCommonComponents(const CharacterCommonComponents&) = delete;
     CharacterCommonComponents& operator=(const CharacterCommonComponents&) = delete;
@@ -46,5 +51,6 @@ private:
     std::shared_ptr<HitPointComponent> mHP;
     std::shared_ptr<CharacterAction> mCharaAction;
     std::shared_ptr<PhaseChangeSaver> mPhaseChangeSaver;
+    std::unique_ptr<Subject> mCallbackSetManager;
     int mCost;
 };
