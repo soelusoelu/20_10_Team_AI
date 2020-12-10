@@ -60,7 +60,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
     //算出点がシャドウマップのZ値よりも大きければ影と判断
     if (ZValue > SM_Z + 0.005)
     {
-        outColor.rgb *= 0.5;
+        outColor.rgb *= 0.2;
     }
 
     return outColor;

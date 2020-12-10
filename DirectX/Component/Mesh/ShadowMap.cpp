@@ -6,6 +6,7 @@
 #include "../Light/DirectionalLight.h"
 #include "../Sprite/SpriteComponent.h"
 #include "../../DirectX/DirectXInclude.h"
+#include "../../Imgui/imgui.h"
 #include "../../Math/Math.h"
 #include "../../System/AssetsManager.h"
 #include "../../System/Window.h"
@@ -24,6 +25,7 @@ ShadowMap::ShadowMap(GameObject& gameObject)
     , mDepthShaderResourceView(nullptr)
     , mWidth(0)
     , mHeight(0)
+    , mLightDistance(0.f)
 {
 #ifdef _DEBUG
     mWidth = Window::debugWidth();
@@ -52,6 +54,14 @@ void ShadowMap::start() {
     getComponent<SpriteComponent>()->setTexture(tex);
 }
 
+void ShadowMap::loadProperties(const rapidjson::Value& inObj) {
+    JsonHelper::getFloat(inObj, "lightDistance", &mLightDistance);
+}
+
+void ShadowMap::drawInspector() {
+    ImGui::DragFloat("LightDistance", &mLightDistance);
+}
+
 void ShadowMap::drawBegin(const DirectionalLight& dirLight) {
     auto& dx = MyDirectX::DirectX::instance();
 
@@ -69,7 +79,7 @@ void ShadowMap::drawBegin(const DirectionalLight& dirLight) {
 
     //ライトビュー計算
     const auto& dir = dirLight.getDirection();
-    mShadowConstBuffer.lightView = Matrix4::createLookAt(-dir * 150.f, dir, Vector3::up);
+    mShadowConstBuffer.lightView = Matrix4::createLookAt(-dir * mLightDistance, dir, Vector3::up);
 }
 
 void ShadowMap::draw(const MeshRenderer& renderer, const Camera& camera, const DirectionalLight& dirLight) const {
@@ -104,6 +114,11 @@ void ShadowMap::drawEnd() const {
 
 void ShadowMap::transferShadowTexture(unsigned constantBufferIndex) {
     mDepthShaderResourceView->setPSShaderResources(constantBufferIndex);
+}
+
+void ShadowMap::drawEndShadowTexture(unsigned constantBufferIndex) {
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> nullView = nullptr;
+    MyDirectX::DirectX::instance().deviceContext()->PSSetShaderResources(constantBufferIndex, 1, nullView.GetAddressOf());
 }
 
 void ShadowMap::createDepthDesc(Texture2DDesc& desc) const {

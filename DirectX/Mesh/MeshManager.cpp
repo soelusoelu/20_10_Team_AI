@@ -78,7 +78,13 @@ void MeshManager::drawMeshes(const Camera& camera, const DirectionalLight& dirLi
             continue;
         }
 
+        //深度テクスチャを転送する
+        mShadowMap->transferShadowTexture();
+
         mesh->draw(camera, dirLight);
+
+        //深度テクスチャの後処理
+        mShadowMap->drawEndShadowTexture();
     }
 }
 

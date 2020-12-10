@@ -22,6 +22,8 @@ public:
     ~ShadowMap();
     virtual void awake() override;
     virtual void start() override;
+    virtual void loadProperties(const rapidjson::Value& inObj) override;
+    virtual void drawInspector() override;
 
     //描画準備
     void drawBegin(const DirectionalLight& dirLight);
@@ -33,6 +35,8 @@ public:
     void drawEnd() const;
     //深度を書き込んだテクスチャをGPUに送る
     void transferShadowTexture(unsigned constantBufferIndex = 1);
+    //レンダーターゲットテクスチャの使用後処理
+    void drawEndShadowTexture(unsigned constantBufferIndex = 1);
 
 private:
     ShadowMap(const ShadowMap&) = delete;
@@ -58,4 +62,5 @@ private:
     ShadowConstantBuffer mShadowConstBuffer;
     int mWidth;
     int mHeight;
+    float mLightDistance;
 };

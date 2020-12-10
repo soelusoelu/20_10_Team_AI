@@ -3,7 +3,9 @@
   "components": [
     {
       "type": "ShadowMap",
-      "properties": {}
+      "properties": {
+        "lightDistance": 150.0
+      }
     },
     {
       "type": "SpriteComponent",
