@@ -17,6 +17,7 @@ public:
 
     Matrix4& operator*=(const Matrix4& right);
 
+    //転置行列
     void transpose();
 
     // Invert the matrix - super slow
@@ -64,10 +65,10 @@ public:
     //ビュー行列を作成する
     static Matrix4 createLookAt(const Vector3& pos, const Vector3& lookAt, const Vector3& up);
 
-    //プロジェクション行列を作成する
+    //透視投影行列を作成する
     static Matrix4 createPerspectiveFOV(int width, int height, float fov, float nearClip, float farClip);
 
-    static Matrix4 createOrtho(float width, float height, float _near, float _far);
+    static Matrix4 createOrtho(int width, int height, float _near, float _far);
 
     static const Matrix4 identity;
 };

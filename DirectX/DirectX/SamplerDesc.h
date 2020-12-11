@@ -70,8 +70,8 @@ struct SamplerDesc {
         mipLODBias(0.f),
         maxAnisotropy(1),
         comparisonFunc(ComparisonFunc::NEVER),
-        minLOD(Math::negInfinity),
-        maxLOD(Math::infinity) {
+        minLOD(FLT_MIN),
+        maxLOD(FLT_MAX) {
         borderColor[0] = 1.f;
         borderColor[1] = 1.f;
         borderColor[2] = 1.f;

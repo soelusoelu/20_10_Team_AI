@@ -416,10 +416,13 @@ Matrix4 Matrix4::createPerspectiveFOV(int width, int height, float fov, float ne
     return Matrix4(temp);
 }
 
-Matrix4 Matrix4::createOrtho(float width, float height, float _near, float _far) {
+Matrix4 Matrix4::createOrtho(int width, int height, float _near, float _far) {
+    float w = static_cast<float>(width);
+    float h = static_cast<float>(height);
+
     float temp[4][4] = {
-        { 2.f / width, 0.f, 0.f, 0.f },
-        { 0.f, -2.f / height, 0.f, 0.f },
+        { 2.f / w, 0.f, 0.f, 0.f },
+        { 0.f, -2.f / h, 0.f, 0.f },
         { 0.f, 0.f, 1.f / (_far - _near), 0.f },
         { -1.f, 1.f, _near / (_near - _far), 1.f }
     };

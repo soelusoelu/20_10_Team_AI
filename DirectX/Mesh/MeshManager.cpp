@@ -90,7 +90,7 @@ void MeshManager::drawMeshes(const Camera& camera, const DirectionalLight& dirLi
 
 void MeshManager::drawShadow(const Camera& camera, const DirectionalLight& dirLight) const {
     //描画準備
-    mShadowMap->drawBegin(dirLight);
+    mShadowMap->drawBegin(camera, dirLight);
 
     for (const auto& mesh : mMeshes) {
         //描画できないなら次へ
@@ -99,7 +99,7 @@ void MeshManager::drawShadow(const Camera& camera, const DirectionalLight& dirLi
         }
 
         //描画
-        mShadowMap->draw(*mesh, camera, dirLight);
+        mShadowMap->draw(*mesh);
 
         //影描画用の定数バッファを設定する
         mShadowMap->setShadowConstantBuffer(*mesh);
