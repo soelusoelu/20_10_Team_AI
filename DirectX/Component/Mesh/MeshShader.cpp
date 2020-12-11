@@ -111,16 +111,6 @@ void MeshShader::setInterface(const IMesh* mesh, const IAnimation* anim) {
 }
 
 void MeshShader::setDefaultShader() {
-    //std::string shader = "Mesh.hlsl";
-    ////ボーンが有るなら
-    //if (mAnimation->getBoneCount() > 0) {
-    //    shader = "SkinMesh.hlsl";
-    //}
-    ////シェーダーを生成する
-    //mShader = AssetsManager::instance().createShader(shader);
-
-
-
     std::string shader = "Shadow.hlsl";
     //ボーンが有るなら
     if (mAnimation->getBoneCount() > 0) {

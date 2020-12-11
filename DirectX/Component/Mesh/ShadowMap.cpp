@@ -26,6 +26,8 @@ ShadowMap::ShadowMap(GameObject& gameObject)
     , mWidth(0)
     , mHeight(0)
     , mLightDistance(0.f)
+    , mNearClip(0.f)
+    , mFarClip(0.f)
 {
 #ifdef _DEBUG
     mWidth = Window::debugWidth();
@@ -56,10 +58,14 @@ void ShadowMap::start() {
 
 void ShadowMap::loadProperties(const rapidjson::Value& inObj) {
     JsonHelper::getFloat(inObj, "lightDistance", &mLightDistance);
+    JsonHelper::getFloat(inObj, "nearClip", &mNearClip);
+    JsonHelper::getFloat(inObj, "farClip", &mFarClip);
 }
 
 void ShadowMap::drawInspector() {
     ImGui::DragFloat("LightDistance", &mLightDistance, 0.1f, 0.f);
+    ImGui::DragFloat("NearClip", &mNearClip, 0.1f, 0.f, mFarClip);
+    ImGui::DragFloat("FarClip", &mFarClip, 0.1f, mNearClip, 10000.f);
 }
 
 void ShadowMap::drawBegin(const Camera& camera, const DirectionalLight& dirLight) {
@@ -80,7 +86,7 @@ void ShadowMap::drawBegin(const Camera& camera, const DirectionalLight& dirLight
     //ライトビュー計算
     const auto& dir = dirLight.getDirection();
     mShadowConstBuffer.lightView = Matrix4::createLookAt(-dir * mLightDistance, dir, Vector3::up);
-    mShadowConstBuffer.lightProj = Matrix4::createPerspectiveFOV(mWidth, mHeight, camera.getFov(), 40.f, 300.f);
+    mShadowConstBuffer.lightProj = Matrix4::createPerspectiveFOV(mWidth, mHeight, camera.getFov(), mNearClip, mFarClip);
 }
 
 void ShadowMap::draw(const MeshRenderer& renderer) const {

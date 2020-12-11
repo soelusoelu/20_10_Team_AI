@@ -63,4 +63,6 @@ private:
     int mWidth;
     int mHeight;
     float mLightDistance;
+    float mNearClip;
+    float mFarClip;
 };
