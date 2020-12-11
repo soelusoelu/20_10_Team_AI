@@ -4,15 +4,12 @@
 #include "MeshShader.h"
 #include "../Camera/Camera.h"
 #include "../Light/DirectionalLight.h"
-#include "../Sprite/SpriteComponent.h"
 #include "../../DirectX/DirectXInclude.h"
 #include "../../Imgui/imgui.h"
 #include "../../Math/Math.h"
 #include "../../System/AssetsManager.h"
 #include "../../System/Window.h"
 #include "../../System/Shader/Shader.h"
-#include "../../System/Texture/Texture.h"
-#include "../../Transform/Transform2D.h"
 #include "../../Transform/Transform3D.h"
 #include "../../Utility/LevelLoader.h"
 
@@ -47,13 +44,6 @@ void ShadowMap::awake() {
     createDepthRenderTargetView(desc.format);
     createDepthStencilView(desc);
     createDepthShaderResourceView(desc.format);
-}
-
-void ShadowMap::start() {
-    const auto& desc = mDepthTexture->desc();
-    const auto& texSize = Vector2(desc.width, desc.height);
-    const auto& tex = std::make_shared<Texture>(mDepthShaderResourceView, texSize);
-    getComponent<SpriteComponent>()->setTexture(tex);
 }
 
 void ShadowMap::loadProperties(const rapidjson::Value& inObj) {

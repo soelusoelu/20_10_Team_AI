@@ -8,13 +8,6 @@
         "nearClip": 10.0,
         "farClip": 300.0
       }
-    },
-    {
-      "type": "SpriteComponent",
-      "properties": {
-        "drawOrder": 1,
-        "scale": [ 0.3, 0.3 ]
-      }
     }
   ]
 }

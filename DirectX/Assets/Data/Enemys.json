@@ -3,6 +3,22 @@
     {
       "type": "SphereTest",
       "position": [ 10.0, 0.0, 10.0 ]
+    }
+  ],
+  "Stage2": [
+    {
+      "type": "SphereTest",
+      "position": [ 10.0, 0.0, 10.0 ]
+    },
+    {
+      "type": "BoxTest",
+      "position": [ 10.0, 0.0, -10.0 ]
+    }
+  ],
+  "Stage3": [
+    {
+      "type": "SphereTest",
+      "position": [ 10.0, 0.0, 10.0 ]
     },
     {
       "type": "BoxTest",

@@ -21,7 +21,6 @@ public:
     ShadowMap(GameObject& gameObject);
     ~ShadowMap();
     virtual void awake() override;
-    virtual void start() override;
     virtual void loadProperties(const rapidjson::Value& inObj) override;
     virtual void drawInspector() override;
 

@@ -16,5 +16,14 @@
       "BoxTest",
       "SphereTest"
     ]
+  },
+  "Stage3": {
+    "cost": 200,
+    "ground": "Plane",
+    "characters": [
+      "SimpleCharacter",
+      "BoxTest",
+      "SphereTest"
+    ]
   }
 }

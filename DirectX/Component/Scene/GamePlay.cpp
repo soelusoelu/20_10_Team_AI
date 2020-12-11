@@ -30,7 +30,7 @@ void GamePlay::start() {
     mCharacterManager = getComponent<CharacterManager>();
     mMap = getComponent<Map>();
 
-    //GameObjectCreater::create("SphereMap");
+    GameObjectCreater::create("SphereMap");
 
     auto gs = GameObjectCreater::create("GameStart");
     mGameStart = gs->componentManager().getComponent<GameStart>();
@@ -58,13 +58,6 @@ void GamePlay::update() {
     Debug::renderLine(Vector3::left * 100.f, Vector3::right * 100.f, ColorPalette::red);
     Debug::renderLine(Vector3::down * 100.f, Vector3::up * 100.f, ColorPalette::green);
     Debug::renderLine(Vector3::back * 100.f, Vector3::forward * 100.f, ColorPalette::blue);
-
-#ifdef _DEBUG
-    //リセット
-    if (Input::keyboard().getKeyDown(KeyCode::R)) {
-        next("GamePlay");
-    }
-#endif // _DEBUG
 }
 
 void GamePlay::getValueFromPreviousScene(const ValuePassMap& values) {
