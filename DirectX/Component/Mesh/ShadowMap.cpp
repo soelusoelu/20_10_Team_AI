@@ -101,10 +101,6 @@ void ShadowMap::drawEnd() const {
 
     //レンダーターゲットをバックバッファに戻す
     dx.setRenderTarget();
-    //バックバッファをクリアする
-    dx.clearRenderTarget();
-    //深度バッファクリア
-    dx.clearDepthStencilView();
     //ビューポート設定
     dx.setViewport(Window::width(), Window::height());
 }

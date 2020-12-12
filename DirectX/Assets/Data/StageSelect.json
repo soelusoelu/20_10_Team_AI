@@ -7,7 +7,8 @@
         "startPosition": [ 960.0, 256.0 ],
         "nextSpace": [ 0.0, 64.0 ],
         "scale": [ 0.75, 0.75 ],
-        "pivot": "CenterTop"
+        "pivot": "CenterTop",
+        "selectingAlpha": 0.5
       }
     },
     {

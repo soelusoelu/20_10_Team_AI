@@ -21,6 +21,7 @@ MeshComponent::MeshComponent(GameObject& gameObject)
     , mState(State::ACTIVE)
     , mColor(ColorPalette::white)
     , mAlpha(1.f)
+    , mIsReceiveShadow(true)
 {
 }
 
@@ -130,4 +131,12 @@ void MeshComponent::setAlpha(float alpha) {
 
 float MeshComponent::getAlpha() const {
     return mAlpha;
+}
+
+void MeshComponent::setRceiveShadow(bool value) {
+    mIsReceiveShadow = value;
+}
+
+bool MeshComponent::isReceiveShadow() const {
+    return mIsReceiveShadow;
 }
