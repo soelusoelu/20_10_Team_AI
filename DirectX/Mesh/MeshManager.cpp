@@ -27,7 +27,7 @@ void MeshManager::update() {
 }
 
 void MeshManager::draw(const Camera& camera, const DirectionalLight& dirLight) const {
-    if (mMeshes.empty()) {
+    if (mShadowMeshes.empty()) {
         return;
     }
 
@@ -40,8 +40,12 @@ void MeshManager::draw(const Camera& camera, const DirectionalLight& dirLight) c
     drawMeshes(camera, dirLight);
 }
 
-void MeshManager::add(const MeshPtr& mesh) {
-    mMeshes.emplace_back(mesh);
+void MeshManager::add(const MeshPtr& mesh, bool handleShadow) {
+    if (handleShadow) {
+        mShadowMeshes.emplace_back(mesh);
+    } else {
+        mMeshes.emplace_back(mesh);
+    }
 }
 
 void MeshManager::clear() {
@@ -49,10 +53,10 @@ void MeshManager::clear() {
 }
 
 void MeshManager::remove() {
-    auto itr = mMeshes.begin();
-    while (itr != mMeshes.end()) {
+    auto itr = mShadowMeshes.begin();
+    while (itr != mShadowMeshes.end()) {
         if ((*itr)->isDead()) {
-            itr = mMeshes.erase(itr);
+            itr = mShadowMeshes.erase(itr);
         } else {
             ++itr;
         }
@@ -73,7 +77,8 @@ bool MeshManager::isDraw(const MeshRenderer& mesh, const Camera& camera) const {
 }
 
 void MeshManager::drawMeshes(const Camera& camera, const DirectionalLight& dirLight) const {
-    for (const auto& mesh : mMeshes) {
+    //影の影響を受けるメッシュの描画
+    for (const auto& mesh : mShadowMeshes) {
         if (!isDraw(*mesh, camera)) {
             continue;
         }
@@ -86,13 +91,22 @@ void MeshManager::drawMeshes(const Camera& camera, const DirectionalLight& dirLi
         //深度テクスチャの後処理
         mShadowMap->drawEndShadowTexture();
     }
+
+    //影の影響を受けないメッシュの描画
+    for (const auto& mesh : mMeshes) {
+        if (!isDraw(*mesh, camera)) {
+            continue;
+        }
+
+        mesh->draw(camera, dirLight);
+    }
 }
 
 void MeshManager::drawShadow(const Camera& camera, const DirectionalLight& dirLight) const {
     //描画準備
     mShadowMap->drawBegin(camera, dirLight);
 
-    for (const auto& mesh : mMeshes) {
+    for (const auto& mesh : mShadowMeshes) {
         //描画できないなら次へ
         if (!isDraw(*mesh, camera)) {
             continue;

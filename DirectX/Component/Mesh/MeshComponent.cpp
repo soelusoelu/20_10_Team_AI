@@ -21,7 +21,7 @@ MeshComponent::MeshComponent(GameObject& gameObject)
     , mState(State::ACTIVE)
     , mColor(ColorPalette::white)
     , mAlpha(1.f)
-    , mIsReceiveShadow(true)
+    , mShadowHandle(true)
 {
 }
 
@@ -57,6 +57,7 @@ void MeshComponent::loadProperties(const rapidjson::Value& inObj) {
 
     JsonHelper::getVector3(inObj, "color", &mColor);
     JsonHelper::getFloat(inObj, "alpha", &mAlpha);
+    JsonHelper::getBool(inObj, "shadowHandle", &mShadowHandle);
 }
 
 void MeshComponent::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const {
@@ -133,10 +134,6 @@ float MeshComponent::getAlpha() const {
     return mAlpha;
 }
 
-void MeshComponent::setRceiveShadow(bool value) {
-    mIsReceiveShadow = value;
-}
-
-bool MeshComponent::isReceiveShadow() const {
-    return mIsReceiveShadow;
+bool MeshComponent::handleShadow() const {
+    return mShadowHandle;
 }

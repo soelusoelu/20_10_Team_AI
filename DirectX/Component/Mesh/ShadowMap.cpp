@@ -53,7 +53,7 @@ void ShadowMap::loadProperties(const rapidjson::Value& inObj) {
 }
 
 void ShadowMap::drawInspector() {
-    ImGui::DragFloat("LightDistance", &mLightDistance, 0.1f, 0.f);
+    ImGui::DragFloat("LightDistance", &mLightDistance, 0.1f);
     ImGui::DragFloat("NearClip", &mNearClip, 0.1f, 0.f, mFarClip);
     ImGui::DragFloat("FarClip", &mFarClip, 0.1f, mNearClip, 10000.f);
 }

@@ -57,10 +57,8 @@ public:
     void setAlpha(float alpha);
     //アルファ値を取得する
     float getAlpha() const;
-    //影の影響を受けるかを設定する
-    void setRceiveShadow(bool value);
-    //影の影響を受けるかを取得する
-    bool isReceiveShadow() const;
+    //影の処理をするか
+    bool handleShadow() const;
 
 private:
     MeshComponent(const MeshComponent&) = delete;
@@ -73,5 +71,5 @@ protected:
     State mState;
     Vector3 mColor;
     float mAlpha;
-    bool mIsReceiveShadow;
+    bool mShadowHandle;
 };

@@ -116,5 +116,5 @@ void MeshRenderer::addToManager() {
     }
 
     //マネージャーに自身を登録する
-    mMeshManager->add(shared_from_this());
+    mMeshManager->add(shared_from_this(), mMeshComponent->handleShadow());
 }

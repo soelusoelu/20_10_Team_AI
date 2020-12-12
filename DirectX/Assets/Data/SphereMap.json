@@ -4,7 +4,8 @@
     {
       "type": "MeshComponent",
       "properties": {
-        "fileName": "Yashiki/sky.obj"
+        "fileName": "Yashiki/sky.obj",
+        "shadowHandle": false
       }
     }
   ]
