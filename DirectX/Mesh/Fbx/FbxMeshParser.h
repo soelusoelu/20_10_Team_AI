@@ -2,10 +2,14 @@
 
 #include "../IMeshLoader.h"
 #include <fbxsdk.h>
+#include <unordered_map>
 #include <vector>
 
 //FBXメッシュ解析クラス
 class FbxMeshParser {
+    using Normals = std::unordered_map<unsigned short, Vector3>;
+    using UVs = std::unordered_map<unsigned short, Vector2>;
+
 public:
     FbxMeshParser();
     ~FbxMeshParser();
@@ -22,23 +26,23 @@ private:
     void loadNormal(FbxMesh* mesh);
     void loadUV(FbxMesh* mesh);
 
-    //UV配列を取得する
-    void getUVs(
-        FbxArray<FbxVector2>& uvs,
+    //インデックスバッファを取得する
+    void getIndices(
+        Indices& indices,
         const FbxMesh* fbxMesh
     ) const;
 
-    //UV配列を接線配列を取得する
-    void getUVsAndTangents(
-        FbxArray<FbxVector2>& uvs,
-        FbxLayerElementArrayTemplate<FbxVector4>* tangents,
-        FbxMesh* fbxMesh
+    //法線とUVを取得する
+    void getNormalsAndUVs(
+        Normals& normals,
+        UVs& uvs,
+        const Indices& indices,
+        const FbxMesh* fbxMesh
     ) const;
 
-    //UV名前リストからUV配列を作成する
-    void getUVsFromUVSetNameList(
-        FbxArray<FbxVector2>& uvs,
-        FbxStringList& uvNameList,
+    //UV配列を作成する
+    void getUVArray(
+        FbxArray<FbxVector2>& uvArray,
         const FbxMesh* fbxMesh
     ) const;
 };

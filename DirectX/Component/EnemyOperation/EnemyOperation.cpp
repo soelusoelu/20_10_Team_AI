@@ -4,11 +4,14 @@
 #include "../Character/CharacterAction.h"
 #include "../Character/CharacterCommonComponents.h"
 #include "../Mesh/MeshComponent.h"
+#include "../Mesh/MeshMaterial.h"
+#include "../../System/Texture/TextureFromMemory.h"
 
 EnemyOperation::EnemyOperation(GameObject& gameObject)
     : Component(gameObject)
     , mManager(nullptr)
     , mCreater(nullptr)
+    , mEnemyMaterial(nullptr)
 {
 }
 
@@ -16,6 +19,9 @@ EnemyOperation::~EnemyOperation() = default;
 
 void EnemyOperation::start() {
     mCreater = getComponent<EnemyCreater>();
+    mEnemyMaterial = std::make_shared<Material>();
+    mEnemyMaterial->diffuse = ColorPalette::red;
+    mEnemyMaterial->texture = std::make_shared<TextureFromMemory>(1, 1);
 }
 
 void EnemyOperation::receiveStageNo(int stageNo) {
@@ -24,7 +30,12 @@ void EnemyOperation::receiveStageNo(int stageNo) {
 
     for (const auto& enemy : mEnemys) {
         //メッシュの赤みを強くする
-        enemy->getMeshComponent().setColorRatio(ColorPalette::red);
+        const auto& mat = enemy->getComponent<MeshMaterial>();
+        auto mesh = enemy->getMeshComponent().getMesh();
+        for (unsigned i = 0; i < mesh->getMeshCount(); ++i) {
+            mat->setMaterial(mEnemyMaterial, i);
+        }
+
         //マネージャーを設定する
         enemy->setManager(mManager);
     }

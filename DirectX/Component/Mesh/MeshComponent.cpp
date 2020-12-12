@@ -1,16 +1,10 @@
 ﻿#include "MeshComponent.h"
 #include "MeshRenderer.h"
-#include "../Camera/Camera.h"
 #include "../Light/DirectionalLight.h"
-#include "../../DebugLayer/ImGuiWrapper.h"
 #include "../../GameObject/GameObject.h"
 #include "../../Imgui/imgui.h"
 #include "../../Mesh/Mesh.h"
 #include "../../System/AssetsManager.h"
-#include "../../System/Shader/ConstantBuffers.h"
-#include "../../System/Shader/Shader.h"
-#include "../../System/Texture/Texture.h"
-#include "../../Transform/Transform3D.h"
 #include "../../Utility/LevelLoader.h"
 
 MeshComponent::MeshComponent(GameObject& gameObject)
@@ -19,8 +13,6 @@ MeshComponent::MeshComponent(GameObject& gameObject)
     , mFileName()
     , mDirectoryPath()
     , mState(State::ACTIVE)
-    , mColor(ColorPalette::white)
-    , mAlpha(1.f)
     , mShadowHandle(true)
 {
 }
@@ -55,22 +47,16 @@ void MeshComponent::loadProperties(const rapidjson::Value& inObj) {
         createMesh(mFileName, mDirectoryPath);
     }
 
-    JsonHelper::getVector3(inObj, "color", &mColor);
-    JsonHelper::getFloat(inObj, "alpha", &mAlpha);
     JsonHelper::getBool(inObj, "shadowHandle", &mShadowHandle);
 }
 
 void MeshComponent::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const {
     JsonHelper::setString(alloc, inObj, "fileName", mFileName);
     JsonHelper::setString(alloc, inObj, "directoryPath", mDirectoryPath);
-    JsonHelper::setVector3(alloc, inObj, "color", mColor);
-    JsonHelper::setFloat(alloc, inObj, "alpha", mAlpha);
 }
 
 void MeshComponent::drawInspector() {
     ImGui::Text("FileName: %s", (mDirectoryPath + mFileName).c_str());
-    ImGuiWrapper::colorEdit3("Color", mColor);
-    ImGui::SliderFloat("Alpha", &mAlpha, 0.f, 1.f);
 }
 
 void MeshComponent::createMesh(const std::string& fileName, const std::string& directoryPath) {
@@ -106,7 +92,7 @@ bool MeshComponent::isDead() const {
     return mState == State::DEAD;
 }
 
-const IMesh* MeshComponent::getMesh() const {
+IMesh* MeshComponent::getMesh() const {
     return (mMesh) ? mMesh.get() : nullptr;
 }
 
@@ -116,22 +102,6 @@ IAnimation* MeshComponent::getAnimation() const {
 
 const IMeshDrawer* MeshComponent::getDrawer() const {
     return (mMesh) ? mMesh.get() : nullptr;
-}
-
-void MeshComponent::setColorRatio(const Vector3& color) {
-    mColor = color;
-}
-
-const Vector3& MeshComponent::getColorRatio() const {
-    return mColor;
-}
-
-void MeshComponent::setAlpha(float alpha) {
-    mAlpha = alpha;
-}
-
-float MeshComponent::getAlpha() const {
-    return mAlpha;
 }
 
 bool MeshComponent::handleShadow() const {

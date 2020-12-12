@@ -4,6 +4,7 @@
 #include "Material.h"
 #include "Motion.h"
 #include "Vertex.h"
+#include <memory>
 #include <string>
 #include <vector>
 

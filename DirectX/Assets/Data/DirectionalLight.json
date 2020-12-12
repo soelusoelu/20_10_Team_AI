@@ -13,7 +13,8 @@
     {
       "type": "MeshComponent",
       "properties": {
-        "fileName": "Light/DLight.obj"
+        "fileName": "Light/DLight.obj",
+        "shadowHandle": false
       }
     }
   ]

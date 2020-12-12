@@ -39,6 +39,7 @@
 #include "../Component/Light/PointLightComponent.h"
 #include "../Component/Map/Map.h"
 #include "../Component/Mesh/MeshComponent.h"
+#include "../Component/Mesh/MeshMaterial.h"
 #include "../Component/Mesh/MeshOutLine.h"
 #include "../Component/Mesh/MeshRenderer.h"
 #include "../Component/Mesh/MeshShader.h"
@@ -116,6 +117,7 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(Map);
 
     ADD_COMPONENT(MeshComponent);
+    ADD_COMPONENT(MeshMaterial);
     ADD_COMPONENT(MeshOutLine);
     ADD_COMPONENT(MeshRenderer);
     ADD_COMPONENT(MeshShader);

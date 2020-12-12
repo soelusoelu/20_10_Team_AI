@@ -206,6 +206,7 @@
     <ClCompile Include="Component\GameState\GameReset.cpp" />
     <ClCompile Include="Component\Character\HitPointRenderer.cpp" />
     <ClCompile Include="Component\Mesh\MeshRenderer.cpp" />
+    <ClCompile Include="Component\Mesh\MeshMaterial.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxUtility.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMotionParser.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
@@ -424,6 +425,7 @@
     <ClInclude Include="Component\GameState\GameReset.h" />
     <ClInclude Include="Component\Character\HitPointRenderer.h" />
     <ClInclude Include="Component\Mesh\MeshRenderer.h" />
+    <ClInclude Include="Component\Mesh\MeshMaterial.h" />
     <ClInclude Include="Mesh\Fbx\FbxUtility.h" />
     <ClInclude Include="Mesh\Fbx\FbxMotionParser.h" />
     <ClInclude Include="Imgui\imconfig.h" />

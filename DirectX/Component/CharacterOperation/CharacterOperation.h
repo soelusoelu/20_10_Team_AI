@@ -3,6 +3,7 @@
 #include "../Component.h"
 #include "../Character/ICharacterManager.h"
 #include "../GameState/GameState.h"
+#include "../../Mesh/Material.h"
 #include <list>
 #include <memory>
 
@@ -60,4 +61,5 @@ private:
     std::shared_ptr<CharacterDeleter> mDeleter;
     std::shared_ptr<CharacterSelector> mSelector;
     std::shared_ptr<DragAndDropCharacter> mDragAndDrop;
+    std::shared_ptr<Material> mCharacterMaterial;
 };

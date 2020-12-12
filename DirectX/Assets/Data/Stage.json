@@ -11,18 +11,18 @@
     "cost": 100,
     "ground": "Plane",
     "characters": [
-      "SimpleCharacter",
+      "SphereTest",
       "BoxTest",
-      "SphereTest"
+      "SimpleCharacter"
     ]
   },
   "Stage3": {
     "cost": 200,
     "ground": "RoughnessMap",
     "characters": [
-      "SimpleCharacter",
+      "SphereTest",
       "BoxTest",
-      "SphereTest"
+      "SimpleCharacter"
     ]
   }
 }

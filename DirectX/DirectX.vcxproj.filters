@@ -233,6 +233,7 @@
     <ClCompile Include="Component\Mesh\ShadowMap.cpp" />
     <ClCompile Include="Component\Mesh\MeshRenderer.cpp" />
     <ClCompile Include="Component\Character\CharacterDead.cpp" />
+    <ClCompile Include="Component\Mesh\MeshMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -506,6 +507,7 @@
     <ClInclude Include="Component\Mesh\IDrawBefore.h" />
     <ClInclude Include="Component\Mesh\MeshRenderer.h" />
     <ClInclude Include="Component\Character\CharacterDead.h" />
+    <ClInclude Include="Component\Mesh\MeshMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />
