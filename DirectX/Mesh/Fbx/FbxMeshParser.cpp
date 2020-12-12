@@ -200,11 +200,12 @@ void FbxMeshParser::getNormalsAndUVs(
     //頂点数分の領域を確保する
     uvs.reserve(vertexCount);
 
+    std::unordered_map<int, std::vector<Vector3>> normalMap;
     for (int i = 0; i < normalArray.Size(); ++i) {
         //法線取得
         auto n = FbxUtility::fbxVector4ToVector3(normalArray[i]);
         n.x *= -1.f;
-        normals[indices[i]] = n;
+        normalMap[indices[i]].emplace_back(n);
 
         //UVを使用するなら
         if (uvArray.Size() > 0) {
@@ -214,6 +215,16 @@ void FbxMeshParser::getNormalsAndUVs(
             uv.x = static_cast<float>(uvArr[0]);
             uv.y = 1.f - static_cast<float>(uvArr[1]);
         }
+    }
+
+    //多方向にまたがる法線を正規化する
+    for (size_t i = 0; i < normalMap.size(); i++) {
+        const auto& normalArr = normalMap[i];
+        auto sumNormal = Vector3::zero;
+        for (const auto& n : normalArr) {
+            sumNormal += n;
+        }
+        normals[i] = Vector3::normalize(sumNormal / static_cast<float>(normalArr.size()));
     }
 }
 
