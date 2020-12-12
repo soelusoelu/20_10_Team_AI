@@ -94,14 +94,7 @@ void MeshShader::setDefaultMaterial(unsigned materialIndex, unsigned constantBuf
 }
 
 void MeshShader::setTransferData(const void* data, unsigned size, unsigned constantBufferIndex) {
-    TransferData temp{ data, size };
-    //if (mTransferDataMap.find(constantBufferIndex) == mTransferDataMap.end()) {
-    //    //未登録なら新規に登録する
-    //    mTransferDataMap.emplace(constantBufferIndex, temp);
-    //} else {
-    //    //登録済みなら更新する
-    //}
-        mTransferDataMap[constantBufferIndex] = temp;
+    mTransferDataMap[constantBufferIndex] = { data, size };
 }
 
 void MeshShader::setInterface(const IMesh* mesh, const IAnimation* anim) {
