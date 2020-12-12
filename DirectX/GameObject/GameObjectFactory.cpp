@@ -9,6 +9,7 @@
 #include "../Component/AI/ASCellManager.h"
 #include "../Component/Character/CharacterAction.h"
 #include "../Component/Character/CharacterCommonComponents.h"
+#include "../Component/Character/CharacterDead.h"
 #include "../Component/Character/CharacterManager.h"
 #include "../Component/Character/HitPointRenderer.h"
 #include "../Component/Character/OverlapPrevention.h"
@@ -77,6 +78,7 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(CharacterAction);
     ADD_COMPONENT(CharacterCommonComponents);
+    ADD_COMPONENT(CharacterDead);
     ADD_COMPONENT(CharacterManager);
     ADD_COMPONENT(HitPointRenderer);
     ADD_COMPONENT(OverlapPrevention);

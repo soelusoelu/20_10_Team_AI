@@ -165,6 +165,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Component\Character\CharacterDead.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterCreateSpriteOperation.cpp" />
     <ClCompile Include="Component\AI\ASMap.cpp" />
     <ClCompile Include="Component\Character\CharacterManager.cpp" />
@@ -378,6 +379,7 @@
     <ClCompile Include="Mesh\VertexNormalSmoother.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Component\Character\CharacterDead.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterCreateSpriteOperation.h" />
     <ClInclude Include="Component\AI\ASMap.h" />
     <ClInclude Include="Component\CharacterOperation\ICharacterCreateInfo.h" />

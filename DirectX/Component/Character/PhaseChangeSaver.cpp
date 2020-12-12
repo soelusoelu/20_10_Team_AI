@@ -1,6 +1,7 @@
 ﻿#include "PhaseChangeSaver.h"
 #include "CharacterAction.h"
 #include "../Other/HitPointComponent.h"
+#include "../../GameObject/GameObject.h"
 #include "../../Transform/Transform3D.h"
 
 PhaseChangeSaver::PhaseChangeSaver(GameObject& gameObject)
@@ -29,6 +30,10 @@ void PhaseChangeSaver::onChangeActionPhase() {
 }
 
 void PhaseChangeSaver::onChangeOperatePhase() {
+    auto& obj = gameObject();
+    if (!obj.getActive()) {
+        obj.setActive(true);
+    }
     auto& t = transform();
     t.setPosition(mOperatePosition);
     t.setRotation(mOperateRotation);
