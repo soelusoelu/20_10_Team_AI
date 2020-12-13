@@ -3,6 +3,8 @@
 #include "../Character/CharacterManager.h"
 #include "../CharacterOperation/CharacterOperation.h"
 #include "../CharacterOperation/DragAndDropCharacter.h"
+#include "../GameState/GameClear.h"
+#include "../GameState/GameJudge.h"
 #include "../GameState/GameReset.h"
 #include "../GameState/GameStart.h"
 #include "../Map/Map.h"
@@ -18,6 +20,8 @@ GamePlay::GamePlay(GameObject& gameObject)
     , mCharacterManager(nullptr)
     , mGameStart(nullptr)
     , mGameReset(nullptr)
+    , mGameJudge(nullptr)
+    , mGameClear(nullptr)
     , mMap(nullptr)
     , mState(GameState::OPERATE_PHASE)
     , mStageNo(0)
@@ -38,13 +42,28 @@ void GamePlay::start() {
     auto gr = GameObjectCreater::create("GameReset");
     mGameReset = gr->componentManager().getComponent<GameReset>();
 
+    auto gj = GameObjectCreater::create("GameJudge");
+    mGameJudge = gj->componentManager().getComponent<GameJudge>();
+    mGameJudge->setCharacterManager(mCharacterManager.get());
+
+    auto gc = GameObjectCreater::create("GameClear");
+    mGameClear = gc->componentManager().getComponent<GameClear>();
+
+    mCharacterManager->callbackDeadCharacter([&] { mGameJudge->onDeadPlayerSide(); });
+    mCharacterManager->callbackDeadEnemy([&] { mGameJudge->onDeadEnemySide(); });
+
     mGameStart->callbackGameStart([&] { mState = GameState::ACTION_PHASE; });
     mGameStart->callbackGameStart([&] { mCharacterManager->onChangeActionPhase(); });
     mGameStart->callbackGameStart([&] { mGameReset->onChangeActionPhase(); });
+    mGameStart->callbackGameStart([&] { mGameJudge->onChangeActionPhase(); });
 
     mGameReset->callbackGameReset([&] { mState = GameState::OPERATE_PHASE; });
     mGameReset->callbackGameReset([&] { mCharacterManager->onChangeOperatePhase(); });
     mGameReset->callbackGameReset([&] { mGameStart->onChangeOperatePhase(); });
+
+    mGameJudge->callbackPlayerWin([&] { mGameClear->onWinPlayerSide(); });
+    mGameJudge->callbackEnemyWin([&] { mGameClear->onWinEnemySide(); });
+    mGameJudge->callbackSomeWin([&] { mState = GameState::STAGE_CLEAR; });
 }
 
 void GamePlay::update() {
@@ -53,6 +72,8 @@ void GamePlay::update() {
         mGameStart->originalUpdate();
     } else if (mState == GameState::ACTION_PHASE) {
         mGameReset->originalUpdate();
+    } else if (mState == GameState::STAGE_CLEAR) {
+
     }
 
     Debug::renderLine(Vector3::left * 100.f, Vector3::right * 100.f, ColorPalette::red);
@@ -98,5 +119,5 @@ void GamePlay::loadStage() {
     JsonHelper::getInt(data, "cost", &cost);
 
     //情報を渡す
-    mCharacterManager->receiveExternalData(mMap, data, cost, mStageNo);
+    mCharacterManager->receiveExternalData(mMap.get(), data, cost, mStageNo);
 }

@@ -33,6 +33,8 @@
 #include "../Component/Collider/SphereCollider.h"
 #include "../Component/EnemyOperation/EnemyCreater.h"
 #include "../Component/EnemyOperation/EnemyOperation.h"
+#include "../Component/GameState/GameClear.h"
+#include "../Component/GameState/GameJudge.h"
 #include "../Component/GameState/GameReset.h"
 #include "../Component/GameState/GameStart.h"
 #include "../Component/Light/DirectionalLight.h"
@@ -108,6 +110,8 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(EnemyCreater);
     ADD_COMPONENT(EnemyOperation);
 
+    ADD_COMPONENT(GameClear);
+    ADD_COMPONENT(GameJudge);
     ADD_COMPONENT(GameReset);
     ADD_COMPONENT(GameStart);
 

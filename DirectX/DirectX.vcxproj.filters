@@ -234,6 +234,8 @@
     <ClCompile Include="Component\Mesh\MeshRenderer.cpp" />
     <ClCompile Include="Component\Character\CharacterDead.cpp" />
     <ClCompile Include="Component\Mesh\MeshMaterial.cpp" />
+    <ClCompile Include="Component\GameState\GameClear.cpp" />
+    <ClCompile Include="Component\GameState\GameJudge.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -508,6 +510,8 @@
     <ClInclude Include="Component\Mesh\MeshRenderer.h" />
     <ClInclude Include="Component\Character\CharacterDead.h" />
     <ClInclude Include="Component\Mesh\MeshMaterial.h" />
+    <ClInclude Include="Component\GameState\GameClear.h" />
+    <ClInclude Include="Component\GameState\GameJudge.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />
@@ -538,5 +542,8 @@
     <None Include="Assets\Data\Title.json" />
     <None Include="Assets\Data\Waveform.json" />
     <None Include="Shader\ShadowHeader.hlsli" />
+    <None Include="Assets\Data\RoughnessMap.json" />
+    <None Include="Assets\Data\GameClear.json" />
+    <None Include="Assets\Data\GameJudge.json" />
   </ItemGroup>
 </Project>
