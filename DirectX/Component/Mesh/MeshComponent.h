@@ -12,12 +12,6 @@
 class Mesh;
 
 class MeshComponent : public Component {
-    enum class State {
-        ACTIVE,
-        NON_ACTIVE,
-        DEAD
-    };
-
 public:
     MeshComponent(GameObject& gameObject);
     virtual ~MeshComponent();
@@ -36,10 +30,8 @@ public:
     bool isDraw() const;
 
     //状態
-    void destroy();
     void setActive(bool value);
     bool getActive() const;
-    bool isDead() const;
 
     //メッシュインターフェースを取得する
     IMesh* getMesh() const;
@@ -59,6 +51,6 @@ protected:
     std::shared_ptr<Mesh> mMesh;
     std::string mFileName;
     std::string mDirectoryPath;
-    State mState;
+    bool mIsActive;
     bool mShadowHandle;
 };

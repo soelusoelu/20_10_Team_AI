@@ -1,5 +1,6 @@
 ﻿#include "MeshManager.h"
 #include "../Component/Camera/Camera.h"
+#include "../Component/Mesh/MeshComponent.h"
 #include "../Component/Mesh/MeshRenderer.h"
 #include "../Component/Mesh/ShadowMap.h"
 #include "../DirectX/DirectXInclude.h"
@@ -55,10 +56,19 @@ void MeshManager::clear() {
 void MeshManager::remove() {
     auto itr = mShadowMeshes.begin();
     while (itr != mShadowMeshes.end()) {
-        if ((*itr)->isDead()) {
+        if ((*itr)->getMeshComponent().isDead()) {
             itr = mShadowMeshes.erase(itr);
         } else {
             ++itr;
+        }
+    }
+
+    auto itr2 = mMeshes.begin();
+    while (itr2 != mMeshes.end()) {
+        if ((*itr2)->getMeshComponent().isDead()) {
+            itr2 = mMeshes.erase(itr2);
+        } else {
+            ++itr2;
         }
     }
 }

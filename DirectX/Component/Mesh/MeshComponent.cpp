@@ -12,7 +12,7 @@ MeshComponent::MeshComponent(GameObject& gameObject)
     , mMesh(nullptr)
     , mFileName()
     , mDirectoryPath()
-    , mState(State::ACTIVE)
+    , mIsActive(true)
     , mShadowHandle(true)
 {
 }
@@ -76,20 +76,12 @@ bool MeshComponent::isDraw() const {
     return true;
 }
 
-void MeshComponent::destroy() {
-    mState = State::DEAD;
-}
-
 void MeshComponent::setActive(bool value) {
-    mState = (value) ? State::ACTIVE : State::NON_ACTIVE;
+    mIsActive = value;
 }
 
 bool MeshComponent::getActive() const {
-    return mState == State::ACTIVE;
-}
-
-bool MeshComponent::isDead() const {
-    return mState == State::DEAD;
+    return mIsActive;
 }
 
 IMesh* MeshComponent::getMesh() const {
