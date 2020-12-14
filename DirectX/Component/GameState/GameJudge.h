@@ -27,6 +27,8 @@ public:
     void callbackPlayerWin(const std::function<void()>& callback);
     //エネミー側が勝った際のコールバック
     void callbackEnemyWin(const std::function<void()>& callback);
+    //プレイヤー側が勝ったか
+    bool isWinPlayerSide() const;
 
 private:
     GameJudge(const GameJudge&) = delete;
@@ -39,4 +41,5 @@ private:
     std::unique_ptr<Subject> mCallbackEnemyWin;
     int mPlayerSideCount;
     int mEnemySideCount;
+    bool mIsWinPlayerSide;
 };

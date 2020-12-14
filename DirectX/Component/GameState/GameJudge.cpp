@@ -9,6 +9,7 @@ GameJudge::GameJudge(GameObject& gameObject)
     , mCallbackEnemyWin(std::make_unique<Subject>())
     , mPlayerSideCount(0)
     , mEnemySideCount(0)
+    , mIsWinPlayerSide(true)
 {
 }
 
@@ -30,6 +31,7 @@ void GameJudge::onDeadPlayerSide() {
     if (mPlayerSideCount <= 0) {
         mCallbackSomeWin->notify();
         mCallbackEnemyWin->notify();
+        mIsWinPlayerSide = false;
     }
 }
 
@@ -40,6 +42,7 @@ void GameJudge::onDeadEnemySide() {
     if (mEnemySideCount <= 0) {
         mCallbackSomeWin->notify();
         mCallbackPlayerWin->notify();
+        mIsWinPlayerSide = true;
     }
 }
 
@@ -53,4 +56,8 @@ void GameJudge::callbackPlayerWin(const std::function<void()>& callback) {
 
 void GameJudge::callbackEnemyWin(const std::function<void()>& callback) {
     mCallbackEnemyWin->addObserver(callback);
+}
+
+bool GameJudge::isWinPlayerSide() const {
+    return mIsWinPlayerSide;
 }

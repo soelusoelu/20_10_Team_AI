@@ -4,6 +4,7 @@
 #include "../../GameObject/GameObject.h"
 #include "../../Input/Input.h"
 #include "../../Sprite/SpriteUtility.h"
+#include "../../Transform/Transform2D.h"
 
 GameStart::GameStart(GameObject& gameObject)
     : Component(gameObject)
@@ -32,6 +33,13 @@ void GameStart::callbackGameStart(const std::function<void()>& callback) {
 void GameStart::onChangeOperatePhase() {
     //操作フェーズでは使用する
     gameObject().setActive(true);
+}
+
+Vector2 GameStart::getCenterUpPosition() const {
+    const auto& t = mSprite->transform();
+    const auto& currentSize = mSprite->getTextureSize() * t.getScale();
+    //ピボットが右下と決めつけた上で
+    return t.getPosition() + Vector2(-currentSize.x / 2.f, -currentSize.y);
 }
 
 bool GameStart::clickSprite() {

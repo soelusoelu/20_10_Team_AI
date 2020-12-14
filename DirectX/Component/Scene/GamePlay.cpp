@@ -48,6 +48,7 @@ void GamePlay::start() {
 
     auto gc = GameObjectCreater::create("GameClear");
     mGameClear = gc->componentManager().getComponent<GameClear>();
+    mGameClear->setPositionForDownArrow(mGameStart->getCenterUpPosition());
 
     mCharacterManager->callbackDeadCharacter([&] { mGameJudge->onDeadPlayerSide(); });
     mCharacterManager->callbackDeadEnemy([&] { mGameJudge->onDeadEnemySide(); });
@@ -60,6 +61,7 @@ void GamePlay::start() {
     mGameReset->callbackGameReset([&] { mState = GameState::OPERATE_PHASE; });
     mGameReset->callbackGameReset([&] { mCharacterManager->onChangeOperatePhase(); });
     mGameReset->callbackGameReset([&] { mGameStart->onChangeOperatePhase(); });
+    mGameReset->callbackGameReset([&] { mGameClear->initialize(); });
 
     mGameJudge->callbackPlayerWin([&] { mGameClear->onWinPlayerSide(); });
     mGameJudge->callbackEnemyWin([&] { mGameClear->onWinEnemySide(); });
@@ -73,7 +75,14 @@ void GamePlay::update() {
     } else if (mState == GameState::ACTION_PHASE) {
         mGameReset->originalUpdate();
     } else if (mState == GameState::STAGE_CLEAR) {
+        if (mGameJudge->isWinPlayerSide()) {
+            //プレイヤー側の勝利
 
+        } else {
+            //エネミー側の勝利
+            mGameClear->updateEnemyWin();
+            mGameReset->originalUpdate();
+        }
     }
 
     Debug::renderLine(Vector3::left * 100.f, Vector3::right * 100.f, ColorPalette::red);
