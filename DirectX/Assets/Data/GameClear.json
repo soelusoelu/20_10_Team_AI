@@ -2,28 +2,7 @@
   "components": [
     {
       "type": "GameClear",
-      "properties": {
-        "downArrowOffsetY": 32.0,
-        "downArrowMoveSpeed": 180.0,
-        "downArrowSwingHeight": 64.0
-      }
-    },
-    {
-      "type": "SpriteComponent",
-      "properties": {
-        "fileName": "System/pixel.png",
-        "scale": [ 1920.0, 1080.0 ],
-        "color": [ 0.0, 0.0, 0.0 ],
-        "alpha": 0.75
-      }
-    },
-    {
-      "type": "SpriteComponent",
-      "properties": {
-        "fileName": "DownArrow.png",
-        "scale": [ 0.75, 0.75 ],
-        "pivot": "CenterBottom"
-      }
+      "properties": {}
     }
   ]
 }

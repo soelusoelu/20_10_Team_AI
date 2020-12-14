@@ -37,6 +37,9 @@
 #include "../Component/GameState/GameJudge.h"
 #include "../Component/GameState/GameReset.h"
 #include "../Component/GameState/GameStart.h"
+#include "../Component/GameState/StageClear.h"
+#include "../Component/GameState/StageFail.h"
+#include "../Component/GameState/StageFailArrow.h"
 #include "../Component/Light/DirectionalLight.h"
 #include "../Component/Light/PointLightComponent.h"
 #include "../Component/Map/Map.h"
@@ -114,6 +117,9 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(GameJudge);
     ADD_COMPONENT(GameReset);
     ADD_COMPONENT(GameStart);
+    ADD_COMPONENT(StageClear);
+    ADD_COMPONENT(StageFail);
+    ADD_COMPONENT(StageFailArrow);
 
     ADD_COMPONENT(DirectionalLight);
     ADD_COMPONENT(PointLightComponent);

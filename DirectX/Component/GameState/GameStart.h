@@ -19,7 +19,7 @@ public:
     //操作フェーズ移行時の処理
     void onChangeOperatePhase();
     //スプライトのセンターアップ位置
-    Vector2 getCenterUpPosition() const;
+    Vector2 getCenterTopPosition() const;
 
 private:
     GameStart(const GameStart&) = delete;

@@ -231,6 +231,9 @@
     <ClCompile Include="Component\Character\PhaseChangeSaver.cpp" />
     <ClCompile Include="Component\Mesh\ShadowMap.cpp" />
     <ClCompile Include="Sprite\SpriteUtility.cpp" />
+    <ClCompile Include="Component\GameState\StageClear.cpp" />
+    <ClCompile Include="Component\GameState\StageFail.cpp" />
+    <ClCompile Include="Component\GameState\StageFailArrow.cpp" />
     <ClCompile Include="System\Shader\InputElementManager.cpp" />
     <ClCompile Include="System\Shader\ConstantBufferManager.cpp" />
     <ClCompile Include="DebugLayer\LineRenderer\LineRenderer.cpp" />
@@ -464,6 +467,9 @@
     <ClInclude Include="Component\Character\PhaseChangeSaver.h" />
     <ClInclude Include="Component\Mesh\ShadowMap.h" />
     <ClInclude Include="Sprite\SpriteUtility.h" />
+    <ClInclude Include="Component\GameState\StageClear.h" />
+    <ClInclude Include="Component\GameState\StageFail.h" />
+    <ClInclude Include="Component\GameState\StageFailArrow.h" />
     <ClInclude Include="System\Shader\InputElementManager.h" />
     <ClInclude Include="System\Shader\ConstantBufferManager.h" />
     <ClInclude Include="DebugLayer\LineRenderer\LineRenderer.h" />
@@ -853,6 +859,8 @@
     <None Include="Assets\Data\SphereMap.json" />
     <None Include="Assets\Data\SphereTest.json" />
     <None Include="Assets\Data\Stage.json" />
+    <None Include="Assets\Data\StageClear.json" />
+    <None Include="Assets\Data\StageFail.json" />
     <None Include="Assets\Data\StageSelect.json" />
     <None Include="Assets\Data\Title.json" />
     <None Include="Assets\Data\Waveform.json" />

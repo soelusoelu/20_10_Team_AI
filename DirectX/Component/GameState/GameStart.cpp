@@ -35,7 +35,7 @@ void GameStart::onChangeOperatePhase() {
     gameObject().setActive(true);
 }
 
-Vector2 GameStart::getCenterUpPosition() const {
+Vector2 GameStart::getCenterTopPosition() const {
     const auto& t = mSprite->transform();
     const auto& currentSize = mSprite->getTextureSize() * t.getScale();
     //ピボットが右下と決めつけた上で

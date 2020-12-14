@@ -7,6 +7,8 @@
 #include "../GameState/GameJudge.h"
 #include "../GameState/GameReset.h"
 #include "../GameState/GameStart.h"
+#include "../GameState/StageFail.h"
+#include "../GameState/StageFailArrow.h"
 #include "../Map/Map.h"
 #include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObject.h"
@@ -36,19 +38,15 @@ void GamePlay::start() {
 
     GameObjectCreater::create("SphereMap");
 
-    auto gs = GameObjectCreater::create("GameStart");
-    mGameStart = gs->componentManager().getComponent<GameStart>();
+    mGameStart = GameObjectCreater::create("GameStart")->componentManager().getComponent<GameStart>();
 
-    auto gr = GameObjectCreater::create("GameReset");
-    mGameReset = gr->componentManager().getComponent<GameReset>();
+    mGameReset = GameObjectCreater::create("GameReset")->componentManager().getComponent<GameReset>();
 
-    auto gj = GameObjectCreater::create("GameJudge");
-    mGameJudge = gj->componentManager().getComponent<GameJudge>();
+    mGameJudge = GameObjectCreater::create("GameJudge")->componentManager().getComponent<GameJudge>();
     mGameJudge->setCharacterManager(mCharacterManager.get());
 
-    auto gc = GameObjectCreater::create("GameClear");
-    mGameClear = gc->componentManager().getComponent<GameClear>();
-    mGameClear->setPositionForDownArrow(mGameStart->getCenterUpPosition());
+    mGameClear = GameObjectCreater::create("GameClear")->componentManager().getComponent<GameClear>();
+    mGameClear->getStageFail().getFailArrow().setPosition(mGameStart->getCenterTopPosition());
 
     mCharacterManager->callbackDeadCharacter([&] { mGameJudge->onDeadPlayerSide(); });
     mCharacterManager->callbackDeadEnemy([&] { mGameJudge->onDeadEnemySide(); });
@@ -77,7 +75,7 @@ void GamePlay::update() {
     } else if (mState == GameState::STAGE_CLEAR) {
         if (mGameJudge->isWinPlayerSide()) {
             //プレイヤー側の勝利
-
+            mGameClear->updatePlayerWin();
         } else {
             //エネミー側の勝利
             mGameClear->updateEnemyWin();
