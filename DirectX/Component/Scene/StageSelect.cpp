@@ -25,8 +25,7 @@ void StageSelect::awake() {
     for (size_t i = 0; i < STAGE_NUM; i++) {
         const auto& s = addComponent<SpriteComponent>("SpriteComponent");
         s->setTextureFromFileName(mSpriteFileName);
-        const auto& size = s->getTextureSize();
-        const auto& currentSize = size * mScale;
+        const auto& currentSize = s->getTextureSize() * mScale;
         auto& t = s->transform();
         const auto& pos = mStartPosition + Vector2::down * i * currentSize.y + i * mNextSpace;
         t.setPosition(pos);

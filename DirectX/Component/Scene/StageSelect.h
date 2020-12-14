@@ -8,13 +8,10 @@
 #include <vector>
 
 class SpriteComponent;
-class TextNumber;
 
 class StageSelect : public Scene {
     using SpritePtr = std::shared_ptr<SpriteComponent>;
     using SpriteArray = std::vector<SpritePtr>;
-    using TextNumPtr = std::shared_ptr<TextNumber>;
-    using TextNumArray = std::vector<TextNumPtr>;
 
 public:
     StageSelect(GameObject& gameObject);
@@ -33,7 +30,6 @@ private:
 
 private:
     SpriteArray mSprites;
-    TextNumArray mTexts;
     int mSelectingNo;
 
     //スプライトのファイル名
