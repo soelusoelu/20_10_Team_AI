@@ -2,14 +2,7 @@
   "components": [
     {
       "type": "Title",
-      "properties": {
-        "spriteFileName": "stage_once.png",
-        "startPosition": [ 960.0, 512.0 ],
-        "nextSpace": [ 0.0, 64.0 ],
-        "scale": [ 0.75, 0.75 ],
-        "pivot": "CenterTop",
-        "selectingAlpha": 0.5
-      }
+      "properties": {}
     },
     {
       "type": "SpriteComponent",
@@ -24,18 +17,6 @@
         "fileName": "Title.png",
         "position": [ 960.0, 0.0 ],
         "pivot": "CenterTop"
-      }
-    },
-    {
-      "type": "Text",
-      "properties": {
-        "text": "Game Start"
-      }
-    },
-    {
-      "type": "Text",
-      "properties": {
-        "text": "End"
       }
     }
   ]

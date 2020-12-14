@@ -165,6 +165,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Component\Sprite\SpriteButtonComponent.cpp" />
     <ClCompile Include="Component\Character\CharacterDead.cpp" />
     <ClCompile Include="Component\CharacterOperation\CharacterCreateSpriteOperation.cpp" />
     <ClCompile Include="Component\AI\ASMap.cpp" />
@@ -209,6 +210,7 @@
     <ClCompile Include="Component\Mesh\MeshMaterial.cpp" />
     <ClCompile Include="Component\GameState\GameClear.cpp" />
     <ClCompile Include="Component\GameState\GameJudge.cpp" />
+    <ClCompile Include="Component\UI\GameEnd.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxUtility.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMotionParser.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
@@ -230,6 +232,7 @@
     <ClCompile Include="Component\Character\OverlapPrevention.cpp" />
     <ClCompile Include="Component\Character\PhaseChangeSaver.cpp" />
     <ClCompile Include="Component\Mesh\ShadowMap.cpp" />
+    <ClCompile Include="Component\UI\NextStageSelect.cpp" />
     <ClCompile Include="Sprite\SpriteUtility.cpp" />
     <ClCompile Include="Component\GameState\StageClear.cpp" />
     <ClCompile Include="Component\GameState\StageFail.cpp" />
@@ -261,7 +264,7 @@
     <ClCompile Include="Sound\Player\Buffer\BufferSubmitter.cpp" />
     <ClCompile Include="Component\Collider\CircleCollider.cpp" />
     <ClCompile Include="Component\Scene\Scene.cpp" />
-    <ClCompile Include="DebugLayer\Button.cpp" />
+    <ClCompile Include="Device\Button.cpp" />
     <ClCompile Include="Component\Text\Text.cpp" />
     <ClCompile Include="DebugLayer\DebugUtility.cpp" />
     <ClCompile Include="Device\Flag.cpp" />
@@ -385,6 +388,7 @@
     <ClCompile Include="Mesh\VertexNormalSmoother.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Component\Sprite\SpriteButtonComponent.h" />
     <ClInclude Include="Component\Character\CharacterDead.h" />
     <ClInclude Include="Component\CharacterOperation\CharacterCreateSpriteOperation.h" />
     <ClInclude Include="Component\AI\ASMap.h" />
@@ -433,6 +437,7 @@
     <ClInclude Include="Component\Mesh\MeshMaterial.h" />
     <ClInclude Include="Component\GameState\GameClear.h" />
     <ClInclude Include="Component\GameState\GameJudge.h" />
+    <ClInclude Include="Component\UI\GameEnd.h" />
     <ClInclude Include="Mesh\Fbx\FbxUtility.h" />
     <ClInclude Include="Mesh\Fbx\FbxMotionParser.h" />
     <ClInclude Include="Imgui\imconfig.h" />
@@ -466,6 +471,7 @@
     <ClInclude Include="Component\Character\OverlapPrevention.h" />
     <ClInclude Include="Component\Character\PhaseChangeSaver.h" />
     <ClInclude Include="Component\Mesh\ShadowMap.h" />
+    <ClInclude Include="Component\UI\NextStageSelect.h" />
     <ClInclude Include="Sprite\SpriteUtility.h" />
     <ClInclude Include="Component\GameState\StageClear.h" />
     <ClInclude Include="Component\GameState\StageFail.h" />
@@ -505,10 +511,10 @@
     <ClInclude Include="Sound\Player\Buffer\BufferSubmitter.h" />
     <ClInclude Include="Component\Collider\CircleCollider.h" />
     <ClInclude Include="Component\Scene\Scene.h" />
-    <ClInclude Include="DebugLayer\Button.h" />
+    <ClInclude Include="Device\Button.h" />
     <ClInclude Include="Component\Text\Text.h" />
     <ClInclude Include="DebugLayer\DebugUtility.h" />
-    <ClInclude Include="DebugLayer\IButton.h" />
+    <ClInclude Include="Device\IButton.h" />
     <ClInclude Include="DirectX\DirectXInclude.h" />
     <ClInclude Include="Device\Flag.h" />
     <ClInclude Include="Sound\Loader\WaveFormat.h" />
@@ -846,11 +852,13 @@
     <None Include="Assets\Data\EnemyOperation.json" />
     <None Include="Assets\Data\Enemys.json" />
     <None Include="Assets\Data\GameClear.json" />
+    <None Include="Assets\Data\GameEnd.json" />
     <None Include="Assets\Data\GameJudge.json" />
     <None Include="Assets\Data\GamePlay.json" />
     <None Include="Assets\Data\GameReset.json" />
     <None Include="Assets\Data\GameStart.json" />
     <None Include="Assets\Data\Global.json" />
+    <None Include="Assets\Data\NextStageSelect.json" />
     <None Include="Assets\Data\Plane.json" />
     <None Include="Assets\Data\RoughnessMap.json" />
     <None Include="Assets\Data\ShadowMap.json" />

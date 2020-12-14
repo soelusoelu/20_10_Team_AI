@@ -61,10 +61,13 @@
 #include "../Component/Sound/SoundComponent.h"
 #include "../Component/Sound/WaveformRenderSample.h"
 #include "../Component/Sprite/Sprite3D.h"
+#include "../Component/Sprite/SpriteButtonComponent.h"
 #include "../Component/Sprite/SpriteComponent.h"
 #include "../Component/Text/Text.h"
 #include "../Component/Text/TextFloat.h"
 #include "../Component/Text/TextNumber.h"
+#include "../Component/UI/GameEnd.h"
+#include "../Component/UI/NextStageSelect.h"
 #include "../DebugLayer/Debug.h"
 #include "../System/GlobalFunction.h"
 #include "../Utility/LevelLoader.h"
@@ -149,11 +152,15 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(WaveformRenderSample);
 
     ADD_COMPONENT(Sprite3D);
+    ADD_COMPONENT(SpriteButtonComponent);
     ADD_COMPONENT(SpriteComponent);
 
     ADD_COMPONENT(Text);
     ADD_COMPONENT(TextFloat);
     ADD_COMPONENT(TextNumber);
+
+    ADD_COMPONENT(GameEnd);
+    ADD_COMPONENT(NextStageSelect);
 }
 
 GameObjectFactory::~GameObjectFactory() {

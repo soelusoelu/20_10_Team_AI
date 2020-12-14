@@ -9,9 +9,9 @@
 class Button : public IButton {
 public:
     //コールバック関数、位置、寸法
-    Button(std::function<void()> onClick, const Vector2& pos, const Vector2& dims);
+    Button(const std::function<void()>& onClick, const Vector2& pos, const Vector2& dims);
     ~Button();
-    virtual void setClickFunc(std::function<void()> onClick) override;
+    virtual void setClickFunc(const std::function<void()>& onClick) override;
     virtual const Vector2& getPosition() const override;
     virtual void setHighlighted(bool set) override;
     virtual bool getHighlighted() const override;
@@ -30,9 +30,9 @@ class Sprite;
 class SpriteButton : public IButton {
 public:
     //コールバック関数、スプライトファイル名、位置
-    SpriteButton(std::function<void()> onClick, const std::string& fileName, const Vector2& pos);
+    SpriteButton(const std::function<void()>& onClick, const std::string& fileName, const Vector2& pos);
     ~SpriteButton();
-    virtual void setClickFunc(std::function<void()> onClick) override;
+    virtual void setClickFunc(const std::function<void()>& onClick) override;
     virtual const Vector2& getPosition() const override;
     virtual void setHighlighted(bool set) override;
     virtual bool getHighlighted() const override;
