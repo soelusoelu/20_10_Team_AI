@@ -242,6 +242,7 @@
     <ClCompile Include="Component\Sprite\SpriteButtonComponent.cpp" />
     <ClCompile Include="Component\UI\GameEnd.cpp" />
     <ClCompile Include="Component\UI\NextStageSelect.cpp" />
+    <ClCompile Include="Component\UI\CharacterPlacementWarning.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -524,6 +525,7 @@
     <ClInclude Include="Component\Sprite\SpriteButtonComponent.h" />
     <ClInclude Include="Component\UI\GameEnd.h" />
     <ClInclude Include="Component\UI\NextStageSelect.h" />
+    <ClInclude Include="Component\UI\CharacterPlacementWarning.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />
@@ -561,5 +563,6 @@
     <None Include="Assets\Data\StageFail.json" />
     <None Include="Assets\Data\GameEnd.json" />
     <None Include="Assets\Data\NextStageSelect.json" />
+    <None Include="Assets\Data\CharacterPlacementWarning.json" />
   </ItemGroup>
 </Project>

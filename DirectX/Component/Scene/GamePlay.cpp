@@ -39,6 +39,7 @@ void GamePlay::start() {
     GameObjectCreater::create("SphereMap");
 
     mGameStart = GameObjectCreater::create("GameStart")->componentManager().getComponent<GameStart>();
+    mGameStart->setCharacterManager(mCharacterManager.get());
 
     mGameReset = GameObjectCreater::create("GameReset")->componentManager().getComponent<GameReset>();
 

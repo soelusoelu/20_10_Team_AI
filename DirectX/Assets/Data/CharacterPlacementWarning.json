@@ -1,0 +1,18 @@
+{
+  "components": [
+    {
+      "type": "CharacterPlacementWarning",
+      "properties": {
+        "easingSpeed": 0.01
+      }
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "fileName": "CharacterPlacement.png",
+        "position": [ 960.0, 128.0 ],
+        "pivot": "CenterTop"
+      }
+    }
+  ]
+}
