@@ -1,12 +1,14 @@
 ﻿#pragma once
 
 #include "../Component.h"
+#include "../Character/ICharacterManager.h"
 #include "../../Math/Math.h"
 #include <functional>
 #include <memory>
 
-class Subject;
+class CharacterPlacementWarning;
 class SpriteComponent;
+class Subject;
 
 class GameStart : public Component {
 public:
@@ -18,6 +20,8 @@ public:
     void callbackGameStart(const std::function<void()>& callback);
     //操作フェーズ移行時の処理
     void onChangeOperatePhase();
+    //キャラクターマネージャーをセットする
+    void setCharacterManager(const ICharacterManager* manager);
     //スプライトのセンターアップ位置
     Vector2 getCenterTopPosition() const;
 
@@ -25,10 +29,9 @@ private:
     GameStart(const GameStart&) = delete;
     GameStart& operator=(const GameStart&) = delete;
 
-    //スタート画像をクリックしたか
-    bool clickSprite();
-
 private:
+    const ICharacterManager* mCharacterManager;
+    std::shared_ptr<CharacterPlacementWarning> mWarning;
+    std::shared_ptr<SpriteComponent> mStartSprite;
     std::unique_ptr<Subject> mCallbackClickSprite;
-    std::shared_ptr<SpriteComponent> mSprite;
 };

@@ -22,9 +22,6 @@ private:
     GameReset(const GameReset&) = delete;
     GameReset& operator=(const GameReset&) = delete;
 
-    //画像をクリックしたか
-    bool clickSprite();
-
 private:
     std::unique_ptr<Subject> mCallbackClickSprite;
     std::shared_ptr<SpriteComponent> mSprite;

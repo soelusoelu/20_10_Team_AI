@@ -13,6 +13,10 @@ public:
     static bool contains(const Sprite& sprite, const Vector2& position);
     //スプライトコンポーネントの中に指定の座標が含まれているか
     static bool contains(const SpriteComponent& sprite, const Vector2& position);
+    //スプライトをマウスの左ボタンでクリックしたか
+    static bool clickSprite(const Sprite& sprite);
+    //スプライトコンポーネントをマウスの左ボタンでクリックしたか
+    static bool clickSprite(const SpriteComponent& sprite);
 
 private:
     //トランスフォームと画像サイズから指定の座標が含まれているか調べる
