@@ -56,8 +56,14 @@ public:
     const Shader& shader() const;
     //ファイル名の取得
     const std::string& fileName() const;
+    //描画優先番号の設定
+    //重いので注意
+    void setDrawOrder(int order);
     //描画優先番号の取得
     int getDrawOrder() const;
+
+    //ソート用
+    static bool compare(const std::shared_ptr<SpriteComponent>& lhs, const std::shared_ptr<SpriteComponent>& rhs);
 
     static void setSpriteManager(SpriteManager* manager);
 

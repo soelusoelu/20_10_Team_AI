@@ -35,7 +35,7 @@ void Physics::sweepAndPrune() {
     }
 
     //min.xが小さい順にソート
-    std::sort(mColliders.begin(), mColliders.end(), [](CollPtr a, CollPtr b) {
+    std::sort(mColliders.begin(), mColliders.end(), [&](const CollPtr& a, const CollPtr& b) {
         auto circleA = std::dynamic_pointer_cast<AABBCollider>(a);
         auto circleB = std::dynamic_pointer_cast<AABBCollider>(b);
         return circleA->getAABB().min.x < circleB->getAABB().min.x;

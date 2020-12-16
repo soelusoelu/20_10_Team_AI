@@ -1,0 +1,21 @@
+{
+  "components": [
+    {
+      "type": "Menu",
+      "properties": {}
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "fileName": "Menu.png",
+        "position": [ 1856.0, 64.0 ],
+        "pivot": "RightTop"
+      }
+    },
+    {
+      "type": "SpriteButtonComponent",
+      "properties": {
+      }
+    }
+  ]
+}

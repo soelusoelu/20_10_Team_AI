@@ -21,7 +21,7 @@ void GameReset::start() {
 }
 
 void GameReset::originalUpdate() {
-    if (clickSprite()) {
+    if (SpriteUtility::clickSprite(*mSprite)) {
         mCallbackClickSprite->notify();
         gameObject().setActive(false);
     }
@@ -34,14 +34,4 @@ void GameReset::callbackGameReset(const std::function<void()>& callback) {
 void GameReset::onChangeActionPhase() {
     //アクションフェーズでは使用する
     gameObject().setActive(true);
-}
-
-bool GameReset::clickSprite() {
-    const auto& mouse = Input::mouse();
-    //マウスの左ボタンを押してないなら終了
-    if (!mouse.getMouseButtonDown(MouseCode::LeftButton)) {
-        return false;
-    }
-
-    return SpriteUtility::contains(*mSprite, mouse.getMousePosition());
 }

@@ -1,6 +1,7 @@
 ﻿#include "SpriteManager.h"
 #include "../Component/Sprite/Sprite3D.h"
 #include "../Component/Sprite/SpriteComponent.h"
+#include <algorithm>
 
 SpriteManager::SpriteManager() {
     SpriteComponent::setSpriteManager(this);
@@ -69,6 +70,10 @@ void SpriteManager::add3D(const Sprite3DPtr& add) {
 
 void SpriteManager::clear() {
     remove();
+}
+
+void SpriteManager::sort() {
+    mSpriteComponents.sort(SpriteComponent::compare);
 }
 
 void SpriteManager::remove() {

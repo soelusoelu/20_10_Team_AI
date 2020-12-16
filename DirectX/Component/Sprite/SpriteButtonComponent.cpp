@@ -20,8 +20,7 @@ SpriteButtonComponent::~SpriteButtonComponent() = default;
 
 void SpriteButtonComponent::start() {
     mSprite = getComponent<SpriteComponent>();
-    mSelectingSprite->setActive(false);
-    if (mSprite) {
+    if (canAccessSprites()) {
         spriteSettings(*mSelectingSprite, *mSprite);
     }
 }
@@ -30,11 +29,8 @@ void SpriteButtonComponent::update() {
     const auto& mouse = Input::mouse();
 
     auto contains = SpriteUtility::contains(*mSprite, mouse.getMousePosition());
-    if (contains && !mPreviousContains) {
-        activeSpriteSettings(mSelectingSprite, mSprite);
-    } else if (!contains && mPreviousContains) {
-        activeSpriteSettings(mSprite, mSelectingSprite);
-    }
+    //スプライトの切り替え
+    swapSprite(contains);
 
     //マウスの左ボタンを押していれば通知を送る
     if (contains && mouse.getMouseButtonDown(MouseCode::LeftButton)) {
@@ -50,12 +46,21 @@ void SpriteButtonComponent::loadProperties(const rapidjson::Value& inObj) {
     }
 }
 
+void SpriteButtonComponent::initialize() {
+    activeSpriteSettings(mSprite, mSelectingSprite);
+    mPreviousContains = false;
+}
+
 void SpriteButtonComponent::setSprite(const SpritePtr& sprite) {
     mSprite = sprite;
 }
 
 void SpriteButtonComponent::callbackClick(const std::function<void()>& onClick) {
     mCallbackClick->addObserver(onClick);
+}
+
+bool SpriteButtonComponent::canAccessSprites() const {
+    return (mSprite && mSelectingSprite);
 }
 
 void SpriteButtonComponent::spriteSettings(SpriteComponent& dst, const SpriteComponent& src) {
@@ -67,6 +72,9 @@ void SpriteButtonComponent::spriteSettings(SpriteComponent& dst, const SpriteCom
     dstT.setPivot(srcT.getPivotEnum());
     dst.setColor(src.getColor());
     dst.setAlpha(src.getAlpha());
+    if (dst.getDrawOrder() != src.getDrawOrder()) {
+        dst.setDrawOrder(src.getDrawOrder());
+    }
 }
 
 void SpriteButtonComponent::activeSpriteSettings(const SpritePtr& active, const SpritePtr& nonActive) {
@@ -75,5 +83,18 @@ void SpriteButtonComponent::activeSpriteSettings(const SpritePtr& active, const 
     }
     if (nonActive) {
         nonActive->setActive(false);
+    }
+}
+
+void SpriteButtonComponent::swapSprite(bool contains) {
+    //スプライトにアクセスできなかったら終了
+    if (!canAccessSprites()) {
+        return;
+    }
+
+    if (contains && !mPreviousContains) {
+        activeSpriteSettings(mSelectingSprite, mSprite);
+    } else if (!contains && mPreviousContains) {
+        activeSpriteSettings(mSprite, mSelectingSprite);
     }
 }

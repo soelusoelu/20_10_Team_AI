@@ -22,6 +22,8 @@ public:
     void addComponent(const SpriteComponentPtr& add);
     void add3D(const Sprite3DPtr& add);
     void clear();
+    //drawOrder順にソートする
+    void sort();
 
 private:
     void remove();

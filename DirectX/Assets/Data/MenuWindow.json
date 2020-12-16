@@ -1,0 +1,28 @@
+{
+  "components": [
+    {
+      "type": "MenuWindow",
+      "properties": {}
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "drawOrder": 5,
+        "fileName": "System/pixel.png",
+        "scale": [ 1920.0, 1080.0 ],
+        "color": [ 0.0, 0.0, 0.0 ],
+        "alpha": 0.2
+      }
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "drawOrder": 10,
+        "fileName": "MenuWindow.png",
+        "position": [ 960.0, 540.0 ],
+        "scale": [ 1.25, 1.25 ],
+        "pivot": "Center"
+      }
+    }
+  ]
+}

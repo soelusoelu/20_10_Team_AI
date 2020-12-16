@@ -26,7 +26,7 @@ void GameStart::start() {
 
 void GameStart::originalUpdate() {
     //スプライトをクリックしていなければ終了
-    if (!clickSprite()) {
+    if (!SpriteUtility::clickSprite(*mStartSprite)) {
         return;
     }
 
@@ -58,14 +58,4 @@ Vector2 GameStart::getCenterTopPosition() const {
     const auto& currentSize = mStartSprite->getTextureSize() * t.getScale();
     //ピボットが右下と決めつけた上で
     return t.getPosition() + Vector2(-currentSize.x / 2.f, -currentSize.y);
-}
-
-bool GameStart::clickSprite() {
-    const auto& mouse = Input::mouse();
-    //マウスの左ボタンを押してないなら終了
-    if (!mouse.getMouseButtonDown(MouseCode::LeftButton)) {
-        return false;
-    }
-
-    return SpriteUtility::contains(*mStartSprite, mouse.getMousePosition());
 }

@@ -10,6 +10,7 @@
 #include "../GameState/StageFail.h"
 #include "../GameState/StageFailArrow.h"
 #include "../Map/Map.h"
+#include "../UI/Menu.h"
 #include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObject.h"
 #include "../../GameObject/GameObjectFactory.h"
@@ -24,6 +25,7 @@ GamePlay::GamePlay(GameObject& gameObject)
     , mGameReset(nullptr)
     , mGameJudge(nullptr)
     , mGameClear(nullptr)
+    , mMenu(nullptr)
     , mMap(nullptr)
     , mState(GameState::OPERATE_PHASE)
     , mStageNo(0)
@@ -48,6 +50,8 @@ void GamePlay::start() {
 
     mGameClear = GameObjectCreater::create("GameClear")->componentManager().getComponent<GameClear>();
     mGameClear->getStageFail().getFailArrow().setPosition(mGameStart->getCenterTopPosition());
+
+    mMenu = GameObjectCreater::create("Menu")->componentManager().getComponent<Menu>();
 
     mCharacterManager->callbackDeadCharacter([&] { mGameJudge->onDeadPlayerSide(); });
     mCharacterManager->callbackDeadEnemy([&] { mGameJudge->onDeadEnemySide(); });

@@ -179,8 +179,17 @@ const std::string& SpriteComponent::fileName() const {
     return mSprite->fileName();
 }
 
+void SpriteComponent::setDrawOrder(int order) {
+    mDrawOrder = order;
+    mSpriteManager->sort();
+}
+
 int SpriteComponent::getDrawOrder() const {
     return mDrawOrder;
+}
+
+bool SpriteComponent::compare(const std::shared_ptr<SpriteComponent>& lhs, const std::shared_ptr<SpriteComponent>& rhs) {
+    return (lhs->mDrawOrder < rhs->mDrawOrder);
 }
 
 void SpriteComponent::setSpriteManager(SpriteManager* manager) {

@@ -1,6 +1,7 @@
 ﻿#include "SpriteUtility.h"
 #include "../Collision/Collision.h"
 #include "../Component/Sprite/SpriteComponent.h"
+#include "../Input/Input.h"
 #include "../Sprite/Sprite.h"
 #include "../System/Window.h"
 #include "../Transform/Transform2D.h"
@@ -11,6 +12,26 @@ bool SpriteUtility::contains(const Sprite& sprite, const Vector2& position) {
 
 bool SpriteUtility::contains(const SpriteComponent& sprite, const Vector2& position) {
     return containsTexture(sprite.transform(), sprite.getTextureSize(), position);
+}
+
+bool SpriteUtility::clickSprite(const Sprite& sprite) {
+    const auto& mouse = Input::mouse();
+    //マウスの左ボタンを押してないなら終了
+    if (!mouse.getMouseButtonDown(MouseCode::LeftButton)) {
+        return false;
+    }
+
+    return contains(sprite, mouse.getMousePosition());
+}
+
+bool SpriteUtility::clickSprite(const SpriteComponent& sprite) {
+    const auto& mouse = Input::mouse();
+    //マウスの左ボタンを押してないなら終了
+    if (!mouse.getMouseButtonDown(MouseCode::LeftButton)) {
+        return false;
+    }
+
+    return contains(sprite, mouse.getMousePosition());
 }
 
 bool SpriteUtility::containsTexture(const Transform2D& transform, const Vector2& textureSize, const Vector2& targetPosition) {

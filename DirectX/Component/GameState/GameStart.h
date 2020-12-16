@@ -29,9 +29,6 @@ private:
     GameStart(const GameStart&) = delete;
     GameStart& operator=(const GameStart&) = delete;
 
-    //スタート画像をクリックしたか
-    bool clickSprite();
-
 private:
     const ICharacterManager* mCharacterManager;
     std::shared_ptr<CharacterPlacementWarning> mWarning;

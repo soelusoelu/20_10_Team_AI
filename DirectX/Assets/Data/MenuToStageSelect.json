@@ -1,0 +1,23 @@
+{
+  "components": [
+    {
+      "type": "MenuToStageSelect",
+      "properties": {}
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "drawOrder": 15,
+        "fileName": "toSelect.png",
+        "position": [ 960.0, 560.0 ],
+        "pivot": "Center"
+      }
+    },
+    {
+      "type": "SpriteButtonComponent",
+      "properties": {
+        "selectingSpriteFileName": "toSelect_dark.png"
+      }
+    }
+  ]
+}
