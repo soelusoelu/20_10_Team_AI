@@ -2,7 +2,7 @@
 #include "../Sprite/Sprite.h"
 #include "../Transform/Transform2D.h"
 
-Button::Button(std::function<void()> onClick, const Vector2& pos, const Vector2& dims) :
+Button::Button(const std::function<void()>& onClick, const Vector2& pos, const Vector2& dims) :
     mOnClick(onClick),
     mPosition(pos),
     mDimensions(dims),
@@ -11,7 +11,7 @@ Button::Button(std::function<void()> onClick, const Vector2& pos, const Vector2&
 
 Button::~Button() = default;
 
-void Button::setClickFunc(std::function<void()> onClick) {
+void Button::setClickFunc(const std::function<void()>& onClick) {
     mOnClick = onClick;
 }
 
@@ -43,7 +43,7 @@ void Button::onClick() {
 
 
 
-SpriteButton::SpriteButton(std::function<void()> onClick, const std::string& fileName, const Vector2& pos) :
+SpriteButton::SpriteButton(const std::function<void()>& onClick, const std::string& fileName, const Vector2& pos) :
     mOnClick(onClick),
     mSprite(std::make_unique<Sprite>(fileName)),
     mHighlighted(false) {
@@ -52,7 +52,7 @@ SpriteButton::SpriteButton(std::function<void()> onClick, const std::string& fil
 
 SpriteButton::~SpriteButton() = default;
 
-void SpriteButton::setClickFunc(std::function<void()> onClick) {
+void SpriteButton::setClickFunc(const std::function<void()>& onClick) {
     mOnClick = onClick;
 }
 

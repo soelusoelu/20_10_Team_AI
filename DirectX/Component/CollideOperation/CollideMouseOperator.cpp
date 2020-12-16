@@ -11,6 +11,7 @@
 #include "../../GameObject/GameObject.h"
 #include "../../GameObject/GameObjectManager.h"
 #include "../../Input/Input.h"
+#include "../../Mesh/IMesh.h"
 
 CollideMouseOperator::CollideMouseOperator(GameObject& gameObject)
     : Component(gameObject)
@@ -87,7 +88,7 @@ void CollideMouseOperator::selectNearestMesh() {
 
 bool CollideMouseOperator::intersectRayGroundMeshes() {
     //カメラからマウスの位置へ向かうレイを取得
-    auto rayCameraToMousePos = mCamera->screenToRay(Input::mouse().getMousePosition());
+    const auto& rayCameraToMousePos = mCamera->screenToRay(Input::mouse().getMousePosition());
 
     //すべての地形メッシュとレイの衝突判定
     for (const auto& gm : mGroundMeshes) {

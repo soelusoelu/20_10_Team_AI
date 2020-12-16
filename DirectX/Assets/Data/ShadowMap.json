@@ -3,13 +3,10 @@
   "components": [
     {
       "type": "ShadowMap",
-      "properties": {}
-    },
-    {
-      "type": "SpriteComponent",
       "properties": {
-        "drawOrder": 1,
-        "scale": [ 0.3, 0.3 ]
+        "lightDistance": 150.0,
+        "nearClip": 10.0,
+        "farClip": 300.0
       }
     }
   ]

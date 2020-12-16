@@ -8,6 +8,8 @@ class Scene;
 class CharacterManager;
 class GameStart;
 class GameReset;
+class GameJudge;
+class GameClear;
 class Map;
 
 class GamePlay : public Scene {
@@ -27,6 +29,8 @@ private:
     std::shared_ptr<CharacterManager> mCharacterManager;
     std::shared_ptr<GameStart> mGameStart;
     std::shared_ptr<GameReset> mGameReset;
+    std::shared_ptr<GameJudge> mGameJudge;
+    std::shared_ptr<GameClear> mGameClear;
     std::shared_ptr<Map> mMap;
     GameState mState;
     int mStageNo;

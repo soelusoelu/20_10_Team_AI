@@ -8,11 +8,13 @@
 #include "../Character/CharacterAction.h"
 #include "../Character/CharacterCommonComponents.h"
 #include "../Mesh/MeshComponent.h"
+#include "../Mesh/MeshMaterial.h"
 #include "../Mesh/MeshOutLine.h"
 #include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObject.h"
 #include "../../GameObject/GameObjectFactory.h"
 #include "../../Input/Input.h"
+#include "../../System/Texture/TextureFromMemory.h"
 
 CharacterOperation::CharacterOperation(GameObject& gameObject)
     : Component(gameObject)
@@ -22,6 +24,7 @@ CharacterOperation::CharacterOperation(GameObject& gameObject)
     , mDeleter(nullptr)
     , mSelector(nullptr)
     , mDragAndDrop(nullptr)
+    , mCharacterMaterial(nullptr)
 {
 }
 
@@ -32,6 +35,10 @@ void CharacterOperation::start() {
     mDeleter = getComponent<CharacterDeleter>();
     mSelector = getComponent<CharacterSelector>();
     mDragAndDrop = getComponent<DragAndDropCharacter>();
+
+    mCharacterMaterial = std::make_shared<Material>();
+    mCharacterMaterial->diffuse = ColorPalette::blue;
+    mCharacterMaterial->texture = std::make_shared<TextureFromMemory>(1, 1);
 
     getComponent<CharacterCreateSpriteOperation>()->callbackCreateCharacter([&] { onCreateCharacter(); });
 }
@@ -172,7 +179,11 @@ void CharacterOperation::addCharacter(const GameObject& newChara, int cost) {
     //コストを設定する
     temp->setCost(cost);
     //メッシュの青みを強くする
-    temp->getMeshComponent().setColorRatio(ColorPalette::blue);
+    const auto& mat = temp->getComponent<MeshMaterial>();
+    auto mesh = temp->getMeshComponent().getMesh();
+    for (unsigned i = 0; i < mesh->getMeshCount(); ++i) {
+        mat->setMaterial(mCharacterMaterial, i);
+    }
     //マネージャーを登録する
     temp->setManager(mManager);
     //登録する

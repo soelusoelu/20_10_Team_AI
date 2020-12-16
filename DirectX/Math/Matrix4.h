@@ -12,62 +12,79 @@ public:
 
     explicit Matrix4(float inMat[4][4]);
 
-    // Matrix multiplication (a * b)
+    //掛け算
     friend Matrix4 operator*(const Matrix4& a, const Matrix4& b);
 
+    //掛け合わせる
     Matrix4& operator*=(const Matrix4& right);
 
+    //転置行列
     void transpose();
 
-    // Invert the matrix - super slow
+    static Matrix4 transpose(const Matrix4& src);
+
+    //逆行列
     void inverse();
 
     static Matrix4 inverse(const Matrix4& right);
 
-    // Get the translation component of the matrix
+    //行列の平行移動成分を取得する
     Vector3 getTranslation() const;
 
-    // Get the X axis of the matrix (forward)
+    //行列のX軸を取得する
     Vector3 getXAxis() const;
 
-    // Get the Y axis of the matrix (left)
+    //行列のY軸を取得する
     Vector3 getYAxis() const;
 
-    // Get the Z axis of the matrix (up)
+    //行列のZ軸を取得する
     Vector3 getZAxis() const;
 
-    // Extract the scale component from the matrix
+    //行列のスケール成分を取得する
     Vector3 getScale() const;
 
-    // Create a scale matrix with x, y, and z scales
+    //スケール行列を作成する
     static Matrix4 createScale(float xScale, float yScale, float zScale);
 
+    //スケール行列を作成する
     static Matrix4 createScale(const Vector3& scaleVector);
 
-    // Create a scale matrix with a uniform factor
+    //均一にスケール行列を作成する
     static Matrix4 createScale(float scale);
 
-    // Rotation about x-axis
+    //X軸を中心とした回転行列を作成する
     static Matrix4 createRotationX(float theta);
 
-    // Rotation about y-axis
+    //Y軸を中心とした回転行列を作成する
     static Matrix4 createRotationY(float theta);
 
-    // Rotation about z-axis
+    //Z軸を中心とした回転行列を作成する
     static Matrix4 createRotationZ(float theta);
 
-    // Create a rotation matrix from a quaternion
+    //クォータニオンから回転行列を作成する
     static Matrix4 createFromQuaternion(const Quaternion& q);
 
+    //平行移動行列を作成する
     static Matrix4 createTranslation(const Vector3& trans);
 
     //ビュー行列を作成する
     static Matrix4 createLookAt(const Vector3& pos, const Vector3& lookAt, const Vector3& up);
 
-    //プロジェクション行列を作成する
+    //透視投影行列を作成する
     static Matrix4 createPerspectiveFOV(int width, int height, float fov, float nearClip, float farClip);
 
-    static Matrix4 createOrtho(float width, float height, float _near, float _far);
+    //z値が線形な透視投影行列を作成する
+    static Matrix4 createPerspectiveLinearFOV(int width, int height, float fov, float nearClip, float farClip);
 
+    static Matrix4 createOrtho(int width, int height, float _near, float _far);
+
+
+private:
+    //逆行列で使用する余因子を求める
+    float createCofactor(const float src[4][4], int row, int column);
+    //行列式を求める
+    float createDeterminant(const float src[3][3]);
+
+public:
     static const Matrix4 identity;
 };

@@ -1,0 +1,31 @@
+{
+  "components": [
+    {
+      "type": "GameEnd",
+      "properties": {}
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "fileName": "stage_once.png",
+        "position": [ 960.0, 768.0 ],
+        "scale": [ 0.75, 0.75 ],
+        "pivot": "Center"
+      }
+    },
+    {
+      "type": "SpriteButtonComponent",
+      "properties": {
+        "selectingSpriteFileName": "stage_once_select.png"
+      }
+    },
+    {
+      "type": "Text",
+      "properties": {
+        "text": "End",
+        "color": [ 0.0, 0.0, 0.0 ],
+        "pivot": "Center"
+      }
+    }
+  ]
+}

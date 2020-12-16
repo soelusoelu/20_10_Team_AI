@@ -33,7 +33,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
     //”½ŽËŒõƒxƒNƒgƒ‹
     float3 reflect = normalize(lightDir + 2 * NL * normal);
     //‹¾–Ê”½ŽËŒõ
-    float spec = pow(saturate(dot(reflect, viewDir)), shininess) * specular;
+    float3 spec = pow(saturate(dot(reflect, viewDir)), shininess) * specular;
 
     float3 color = saturate(ambient + diff + spec) * lightColor;
     float4 texColor = tex.Sample(samplerState, input.UV);

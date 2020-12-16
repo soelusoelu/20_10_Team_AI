@@ -1,0 +1,14 @@
+{
+  "tag": "Ground",
+  "transform": {
+    "scale": [ 10.0, 10.0, 10.0 ]
+  },
+  "components": [
+    {
+      "type": "MeshComponent",
+      "properties": {
+        "fileName": "Test/test.obj"
+      }
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 ﻿#include "MeshManager.h"
 #include "../Component/Camera/Camera.h"
+#include "../Component/Mesh/MeshComponent.h"
 #include "../Component/Mesh/MeshRenderer.h"
 #include "../Component/Mesh/ShadowMap.h"
 #include "../DirectX/DirectXInclude.h"
@@ -27,7 +28,7 @@ void MeshManager::update() {
 }
 
 void MeshManager::draw(const Camera& camera, const DirectionalLight& dirLight) const {
-    if (mMeshes.empty()) {
+    if (mShadowMeshes.empty()) {
         return;
     }
 
@@ -40,8 +41,12 @@ void MeshManager::draw(const Camera& camera, const DirectionalLight& dirLight) c
     drawMeshes(camera, dirLight);
 }
 
-void MeshManager::add(const MeshPtr& mesh) {
-    mMeshes.emplace_back(mesh);
+void MeshManager::add(const MeshPtr& mesh, bool handleShadow) {
+    if (handleShadow) {
+        mShadowMeshes.emplace_back(mesh);
+    } else {
+        mMeshes.emplace_back(mesh);
+    }
 }
 
 void MeshManager::clear() {
@@ -49,12 +54,21 @@ void MeshManager::clear() {
 }
 
 void MeshManager::remove() {
-    auto itr = mMeshes.begin();
-    while (itr != mMeshes.end()) {
-        if ((*itr)->isDead()) {
-            itr = mMeshes.erase(itr);
+    auto itr = mShadowMeshes.begin();
+    while (itr != mShadowMeshes.end()) {
+        if ((*itr)->getMeshComponent().isDead()) {
+            itr = mShadowMeshes.erase(itr);
         } else {
             ++itr;
+        }
+    }
+
+    auto itr2 = mMeshes.begin();
+    while (itr2 != mMeshes.end()) {
+        if ((*itr2)->getMeshComponent().isDead()) {
+            itr2 = mMeshes.erase(itr2);
+        } else {
+            ++itr2;
         }
     }
 }
@@ -73,6 +87,22 @@ bool MeshManager::isDraw(const MeshRenderer& mesh, const Camera& camera) const {
 }
 
 void MeshManager::drawMeshes(const Camera& camera, const DirectionalLight& dirLight) const {
+    //影の影響を受けるメッシュの描画
+    for (const auto& mesh : mShadowMeshes) {
+        if (!isDraw(*mesh, camera)) {
+            continue;
+        }
+
+        //深度テクスチャを転送する
+        mShadowMap->transferShadowTexture();
+
+        mesh->draw(camera, dirLight);
+
+        //深度テクスチャの後処理
+        mShadowMap->drawEndShadowTexture();
+    }
+
+    //影の影響を受けないメッシュの描画
     for (const auto& mesh : mMeshes) {
         if (!isDraw(*mesh, camera)) {
             continue;
@@ -84,16 +114,16 @@ void MeshManager::drawMeshes(const Camera& camera, const DirectionalLight& dirLi
 
 void MeshManager::drawShadow(const Camera& camera, const DirectionalLight& dirLight) const {
     //描画準備
-    mShadowMap->drawBegin(dirLight);
+    mShadowMap->drawBegin(camera, dirLight);
 
-    for (const auto& mesh : mMeshes) {
+    for (const auto& mesh : mShadowMeshes) {
         //描画できないなら次へ
         if (!isDraw(*mesh, camera)) {
             continue;
         }
 
         //描画
-        mShadowMap->draw(*mesh, camera, dirLight);
+        mShadowMap->draw(*mesh);
 
         //影描画用の定数バッファを設定する
         mShadowMap->setShadowConstantBuffer(*mesh);

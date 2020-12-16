@@ -4,14 +4,12 @@
 #include "MeshShader.h"
 #include "../Camera/Camera.h"
 #include "../Light/DirectionalLight.h"
-#include "../Sprite/SpriteComponent.h"
 #include "../../DirectX/DirectXInclude.h"
+#include "../../Imgui/imgui.h"
 #include "../../Math/Math.h"
 #include "../../System/AssetsManager.h"
 #include "../../System/Window.h"
 #include "../../System/Shader/Shader.h"
-#include "../../System/Texture/Texture.h"
-#include "../../Transform/Transform2D.h"
 #include "../../Transform/Transform3D.h"
 #include "../../Utility/LevelLoader.h"
 
@@ -24,6 +22,9 @@ ShadowMap::ShadowMap(GameObject& gameObject)
     , mDepthShaderResourceView(nullptr)
     , mWidth(0)
     , mHeight(0)
+    , mLightDistance(0.f)
+    , mNearClip(0.f)
+    , mFarClip(0.f)
 {
 #ifdef _DEBUG
     mWidth = Window::debugWidth();
@@ -45,14 +46,19 @@ void ShadowMap::awake() {
     createDepthShaderResourceView(desc.format);
 }
 
-void ShadowMap::start() {
-    //const auto& desc = mDepthTexture->desc();
-    //const auto& texSize = Vector2(desc.width, desc.height);
-    //const auto& tex = std::make_shared<Texture>(mDepthShaderResourceView, texSize);
-    //getComponent<SpriteComponent>()->setTexture(tex);
+void ShadowMap::loadProperties(const rapidjson::Value& inObj) {
+    JsonHelper::getFloat(inObj, "lightDistance", &mLightDistance);
+    JsonHelper::getFloat(inObj, "nearClip", &mNearClip);
+    JsonHelper::getFloat(inObj, "farClip", &mFarClip);
 }
 
-void ShadowMap::drawBegin(const DirectionalLight& dirLight) {
+void ShadowMap::drawInspector() {
+    ImGui::DragFloat("LightDistance", &mLightDistance, 0.1f);
+    ImGui::DragFloat("NearClip", &mNearClip, 0.1f, 0.f, mFarClip);
+    ImGui::DragFloat("FarClip", &mFarClip, 0.1f, mNearClip, 10000.f);
+}
+
+void ShadowMap::drawBegin(const Camera& camera, const DirectionalLight& dirLight) {
     auto& dx = MyDirectX::DirectX::instance();
 
     //シェーダー登録
@@ -61,7 +67,7 @@ void ShadowMap::drawBegin(const DirectionalLight& dirLight) {
     //レンダーターゲットを設定する
     mDepthRenderTargetView->setRenderTarget(mDepthStencilView.Get());
     //レンダーターゲットをクリアする
-    mDepthRenderTargetView->clearRenderTarget();
+    mDepthRenderTargetView->clearRenderTarget(1.f, 1.f, 1.f, 1.f);
     //深度バッファクリア
     dx.deviceContext()->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.f, 0);
     //ビューポート設定
@@ -69,12 +75,13 @@ void ShadowMap::drawBegin(const DirectionalLight& dirLight) {
 
     //ライトビュー計算
     const auto& dir = dirLight.getDirection();
-    mShadowConstBuffer.lightView = Matrix4::createLookAt(-dir * 150.f, dir, Vector3::up);
+    mShadowConstBuffer.lightView = Matrix4::createLookAt(-dir * mLightDistance, dir, Vector3::up);
+    mShadowConstBuffer.lightProj = Matrix4::createPerspectiveFOV(mWidth, mHeight, camera.getFov(), mNearClip, mFarClip);
 }
 
-void ShadowMap::draw(const MeshRenderer& renderer, const Camera& camera, const DirectionalLight& dirLight) const {
+void ShadowMap::draw(const MeshRenderer& renderer) const {
     SimpleMeshConstantBuffer smcb{};
-    smcb.wvp = renderer.transform().getWorldTransform() * mShadowConstBuffer.lightView * camera.getProjection();
+    smcb.wvp = renderer.transform().getWorldTransform() * mShadowConstBuffer.lightView * mShadowConstBuffer.lightProj;
     mDepthTextureCreateShader->transferData(&smcb, sizeof(smcb));
 
     const auto& meshComp = renderer.getMeshComponent();
@@ -94,10 +101,6 @@ void ShadowMap::drawEnd() const {
 
     //レンダーターゲットをバックバッファに戻す
     dx.setRenderTarget();
-    //バックバッファをクリアする
-    dx.clearRenderTarget();
-    //深度バッファクリア
-    dx.clearDepthStencilView();
     //ビューポート設定
     dx.setViewport(Window::width(), Window::height());
 }
@@ -106,11 +109,16 @@ void ShadowMap::transferShadowTexture(unsigned constantBufferIndex) {
     mDepthShaderResourceView->setPSShaderResources(constantBufferIndex);
 }
 
+void ShadowMap::drawEndShadowTexture(unsigned constantBufferIndex) {
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> nullView = nullptr;
+    MyDirectX::DirectX::instance().deviceContext()->PSSetShaderResources(constantBufferIndex, 1, nullView.GetAddressOf());
+}
+
 void ShadowMap::createDepthDesc(Texture2DDesc& desc) const {
     //深度テクスチャ用ディスクリプタ
     desc.width = mWidth;
     desc.height = mHeight;
-    desc.format = Format::FORMAT_RGBA8_UNORM;
+    desc.format = Format::FORMAT_R16_UNORM;
     desc.usage = Usage::USAGE_DEFAULT;
     desc.bindFlags =
         static_cast<unsigned>(Texture2DBind::TEXTURE_BIND_RENDER_TARGET)
@@ -135,7 +143,7 @@ void ShadowMap::createDepthStencilView(const Texture2DDesc& desc) {
     //深度テクスチャ用深度ステンシルビュー
     Texture2DDesc dsDesc{};
     memcpy_s(&dsDesc, sizeof(dsDesc), &desc, sizeof(desc));
-    dsDesc.format = Format::FORMAT_D24_UNORM_S8_UINT;
+    dsDesc.format = Format::FORMAT_D32_FLOAT;
     dsDesc.bindFlags = static_cast<unsigned>(Texture2DBind::TEXTURE_BIND_DEPTH_STENCIL);
     auto depthStencilTexture = std::make_unique<Texture2D>(dsDesc);
 

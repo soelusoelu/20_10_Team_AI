@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "../Component.h"
+#include "../../Math/Math.h"
 #include <functional>
 #include <memory>
 
@@ -17,6 +18,8 @@ public:
     void callbackGameStart(const std::function<void()>& callback);
     //操作フェーズ移行時の処理
     void onChangeOperatePhase();
+    //スプライトのセンターアップ位置
+    Vector2 getCenterTopPosition() const;
 
 private:
     GameStart(const GameStart&) = delete;

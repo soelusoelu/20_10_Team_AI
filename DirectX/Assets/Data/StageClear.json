@@ -1,0 +1,26 @@
+{
+  "components": [
+    {
+      "type": "StageClear",
+      "properties": {}
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "fileName": "System/pixel.png",
+        "scale": [ 1920.0, 1080.0 ],
+        "color": [ 0.0, 0.0, 0.0 ],
+        "alpha": 0.75
+      }
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "drawOrder": 1,
+        "fileName": "stage_clear.png",
+        "position": [ 960.0, 128.0 ],
+        "pivot": "CenterTop"
+      }
+    }
+  ]
+}

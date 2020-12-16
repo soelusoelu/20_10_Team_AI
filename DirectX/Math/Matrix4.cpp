@@ -123,137 +123,94 @@ Matrix4& Matrix4::operator*=(const Matrix4& right) {
 }
 
 void Matrix4::transpose() {
-    float src[16];
+    float temp[4][4] = { 0 };
+    memcpy_s(temp, sizeof(temp), m, sizeof(m));
 
-    // Transpose matrix
-    // row 1 to col 1
-    src[0] = m[0][0];
-    src[4] = m[0][1];
-    src[8] = m[0][2];
-    src[12] = m[0][3];
-
-    // row 2 to col 2
-    src[1] = m[1][0];
-    src[5] = m[1][1];
-    src[9] = m[1][2];
-    src[13] = m[1][3];
-
-    // row 3 to col 3
-    src[2] = m[2][0];
-    src[6] = m[2][1];
-    src[10] = m[2][2];
-    src[14] = m[2][3];
-
-    // row 4 to col 4
-    src[3] = m[3][0];
-    src[7] = m[3][1];
-    src[11] = m[3][2];
-    src[15] = m[3][3];
-
-    // Set it back
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            m[i][j] = src[i * 4 + j];
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            m[i][j] = temp[j][i];
         }
     }
 }
 
+Matrix4 Matrix4::transpose(const Matrix4& src) {
+    auto temp = src;
+    temp.transpose();
+    return temp;
+}
+
 void Matrix4::inverse() {
-    // Thanks slow math
-    // This is a really janky way to unroll everything...
-    float tmp[12];
-    float src[16];
-    float dst[16];
-    float det;
+    //転置行列
+    const auto& t = transpose(*this);
 
-    // Transpose matrix
-    // row 1 to col 1
-    src[0] = m[0][0];
-    src[4] = m[0][1];
-    src[8] = m[0][2];
-    src[12] = m[0][3];
+    float src[16] = { 0 };
+    memcpy_s(src, sizeof(src), t.m, sizeof(t.m));
 
-    // row 2 to col 2
-    src[1] = m[1][0];
-    src[5] = m[1][1];
-    src[9] = m[1][2];
-    src[13] = m[1][3];
+    //補因子を求める
+    float cofactors[12] = { 0 };
+    cofactors[0] = src[10] * src[15];
+    cofactors[1] = src[11] * src[14];
+    cofactors[2] = src[9] * src[15];
+    cofactors[3] = src[11] * src[13];
+    cofactors[4] = src[9] * src[14];
+    cofactors[5] = src[10] * src[13];
+    cofactors[6] = src[8] * src[15];
+    cofactors[7] = src[11] * src[12];
+    cofactors[8] = src[8] * src[14];
+    cofactors[9] = src[10] * src[12];
+    cofactors[10] = src[8] * src[13];
+    cofactors[11] = src[9] * src[12];
 
-    // row 3 to col 3
-    src[2] = m[2][0];
-    src[6] = m[2][1];
-    src[10] = m[2][2];
-    src[14] = m[2][3];
+    float dst[16] = { 0 };
+    dst[0] = cofactors[0] * src[5] + cofactors[3] * src[6] + cofactors[4] * src[7];
+    dst[0] -= cofactors[1] * src[5] + cofactors[2] * src[6] + cofactors[5] * src[7];
+    dst[1] = cofactors[1] * src[4] + cofactors[6] * src[6] + cofactors[9] * src[7];
+    dst[1] -= cofactors[0] * src[4] + cofactors[7] * src[6] + cofactors[8] * src[7];
+    dst[2] = cofactors[2] * src[4] + cofactors[7] * src[5] + cofactors[10] * src[7];
+    dst[2] -= cofactors[3] * src[4] + cofactors[6] * src[5] + cofactors[11] * src[7];
+    dst[3] = cofactors[5] * src[4] + cofactors[8] * src[5] + cofactors[11] * src[6];
+    dst[3] -= cofactors[4] * src[4] + cofactors[9] * src[5] + cofactors[10] * src[6];
+    dst[4] = cofactors[1] * src[1] + cofactors[2] * src[2] + cofactors[5] * src[3];
+    dst[4] -= cofactors[0] * src[1] + cofactors[3] * src[2] + cofactors[4] * src[3];
+    dst[5] = cofactors[0] * src[0] + cofactors[7] * src[2] + cofactors[8] * src[3];
+    dst[5] -= cofactors[1] * src[0] + cofactors[6] * src[2] + cofactors[9] * src[3];
+    dst[6] = cofactors[3] * src[0] + cofactors[6] * src[1] + cofactors[11] * src[3];
+    dst[6] -= cofactors[2] * src[0] + cofactors[7] * src[1] + cofactors[10] * src[3];
+    dst[7] = cofactors[4] * src[0] + cofactors[9] * src[1] + cofactors[10] * src[2];
+    dst[7] -= cofactors[5] * src[0] + cofactors[8] * src[1] + cofactors[11] * src[2];
 
-    // row 4 to col 4
-    src[3] = m[3][0];
-    src[7] = m[3][1];
-    src[11] = m[3][2];
-    src[15] = m[3][3];
+    cofactors[0] = src[2] * src[7];
+    cofactors[1] = src[3] * src[6];
+    cofactors[2] = src[1] * src[7];
+    cofactors[3] = src[3] * src[5];
+    cofactors[4] = src[1] * src[6];
+    cofactors[5] = src[2] * src[5];
+    cofactors[6] = src[0] * src[7];
+    cofactors[7] = src[3] * src[4];
+    cofactors[8] = src[0] * src[6];
+    cofactors[9] = src[2] * src[4];
+    cofactors[10] = src[0] * src[5];
+    cofactors[11] = src[1] * src[4];
 
-    // Calculate cofactors
-    tmp[0] = src[10] * src[15];
-    tmp[1] = src[11] * src[14];
-    tmp[2] = src[9] * src[15];
-    tmp[3] = src[11] * src[13];
-    tmp[4] = src[9] * src[14];
-    tmp[5] = src[10] * src[13];
-    tmp[6] = src[8] * src[15];
-    tmp[7] = src[11] * src[12];
-    tmp[8] = src[8] * src[14];
-    tmp[9] = src[10] * src[12];
-    tmp[10] = src[8] * src[13];
-    tmp[11] = src[9] * src[12];
-
-    dst[0] = tmp[0] * src[5] + tmp[3] * src[6] + tmp[4] * src[7];
-    dst[0] -= tmp[1] * src[5] + tmp[2] * src[6] + tmp[5] * src[7];
-    dst[1] = tmp[1] * src[4] + tmp[6] * src[6] + tmp[9] * src[7];
-    dst[1] -= tmp[0] * src[4] + tmp[7] * src[6] + tmp[8] * src[7];
-    dst[2] = tmp[2] * src[4] + tmp[7] * src[5] + tmp[10] * src[7];
-    dst[2] -= tmp[3] * src[4] + tmp[6] * src[5] + tmp[11] * src[7];
-    dst[3] = tmp[5] * src[4] + tmp[8] * src[5] + tmp[11] * src[6];
-    dst[3] -= tmp[4] * src[4] + tmp[9] * src[5] + tmp[10] * src[6];
-    dst[4] = tmp[1] * src[1] + tmp[2] * src[2] + tmp[5] * src[3];
-    dst[4] -= tmp[0] * src[1] + tmp[3] * src[2] + tmp[4] * src[3];
-    dst[5] = tmp[0] * src[0] + tmp[7] * src[2] + tmp[8] * src[3];
-    dst[5] -= tmp[1] * src[0] + tmp[6] * src[2] + tmp[9] * src[3];
-    dst[6] = tmp[3] * src[0] + tmp[6] * src[1] + tmp[11] * src[3];
-    dst[6] -= tmp[2] * src[0] + tmp[7] * src[1] + tmp[10] * src[3];
-    dst[7] = tmp[4] * src[0] + tmp[9] * src[1] + tmp[10] * src[2];
-    dst[7] -= tmp[5] * src[0] + tmp[8] * src[1] + tmp[11] * src[2];
-
-    tmp[0] = src[2] * src[7];
-    tmp[1] = src[3] * src[6];
-    tmp[2] = src[1] * src[7];
-    tmp[3] = src[3] * src[5];
-    tmp[4] = src[1] * src[6];
-    tmp[5] = src[2] * src[5];
-    tmp[6] = src[0] * src[7];
-    tmp[7] = src[3] * src[4];
-    tmp[8] = src[0] * src[6];
-    tmp[9] = src[2] * src[4];
-    tmp[10] = src[0] * src[5];
-    tmp[11] = src[1] * src[4];
-
-    dst[8] = tmp[0] * src[13] + tmp[3] * src[14] + tmp[4] * src[15];
-    dst[8] -= tmp[1] * src[13] + tmp[2] * src[14] + tmp[5] * src[15];
-    dst[9] = tmp[1] * src[12] + tmp[6] * src[14] + tmp[9] * src[15];
-    dst[9] -= tmp[0] * src[12] + tmp[7] * src[14] + tmp[8] * src[15];
-    dst[10] = tmp[2] * src[12] + tmp[7] * src[13] + tmp[10] * src[15];
-    dst[10] -= tmp[3] * src[12] + tmp[6] * src[13] + tmp[11] * src[15];
-    dst[11] = tmp[5] * src[12] + tmp[8] * src[13] + tmp[11] * src[14];
-    dst[11] -= tmp[4] * src[12] + tmp[9] * src[13] + tmp[10] * src[14];
-    dst[12] = tmp[2] * src[10] + tmp[5] * src[11] + tmp[1] * src[9];
-    dst[12] -= tmp[4] * src[11] + tmp[0] * src[9] + tmp[3] * src[10];
-    dst[13] = tmp[8] * src[11] + tmp[0] * src[8] + tmp[7] * src[10];
-    dst[13] -= tmp[6] * src[10] + tmp[9] * src[11] + tmp[1] * src[8];
-    dst[14] = tmp[6] * src[9] + tmp[11] * src[11] + tmp[3] * src[8];
-    dst[14] -= tmp[10] * src[11] + tmp[2] * src[8] + tmp[7] * src[9];
-    dst[15] = tmp[10] * src[10] + tmp[4] * src[8] + tmp[9] * src[9];
-    dst[15] -= tmp[8] * src[9] + tmp[11] * src[10] + tmp[5] * src[8];
+    dst[8] = cofactors[0] * src[13] + cofactors[3] * src[14] + cofactors[4] * src[15];
+    dst[8] -= cofactors[1] * src[13] + cofactors[2] * src[14] + cofactors[5] * src[15];
+    dst[9] = cofactors[1] * src[12] + cofactors[6] * src[14] + cofactors[9] * src[15];
+    dst[9] -= cofactors[0] * src[12] + cofactors[7] * src[14] + cofactors[8] * src[15];
+    dst[10] = cofactors[2] * src[12] + cofactors[7] * src[13] + cofactors[10] * src[15];
+    dst[10] -= cofactors[3] * src[12] + cofactors[6] * src[13] + cofactors[11] * src[15];
+    dst[11] = cofactors[5] * src[12] + cofactors[8] * src[13] + cofactors[11] * src[14];
+    dst[11] -= cofactors[4] * src[12] + cofactors[9] * src[13] + cofactors[10] * src[14];
+    dst[12] = cofactors[2] * src[10] + cofactors[5] * src[11] + cofactors[1] * src[9];
+    dst[12] -= cofactors[4] * src[11] + cofactors[0] * src[9] + cofactors[3] * src[10];
+    dst[13] = cofactors[8] * src[11] + cofactors[0] * src[8] + cofactors[7] * src[10];
+    dst[13] -= cofactors[6] * src[10] + cofactors[9] * src[11] + cofactors[1] * src[8];
+    dst[14] = cofactors[6] * src[9] + cofactors[11] * src[11] + cofactors[3] * src[8];
+    dst[14] -= cofactors[10] * src[11] + cofactors[2] * src[8] + cofactors[7] * src[9];
+    dst[15] = cofactors[10] * src[10] + cofactors[4] * src[8] + cofactors[9] * src[9];
+    dst[15] -= cofactors[8] * src[9] + cofactors[11] * src[10] + cofactors[5] * src[8];
 
     // Calculate determinant
-    det = src[0] * dst[0] + src[1] * dst[1] + src[2] * dst[2] + src[3] * dst[3];
+    float det = src[0] * dst[0] + src[1] * dst[1] + src[2] * dst[2] + src[3] * dst[3];
 
     // Inverse of matrix is divided by determinant
     det = 1 / det;
@@ -416,14 +373,71 @@ Matrix4 Matrix4::createPerspectiveFOV(int width, int height, float fov, float ne
     return Matrix4(temp);
 }
 
-Matrix4 Matrix4::createOrtho(float width, float height, float _near, float _far) {
+Matrix4 Matrix4::createPerspectiveLinearFOV(int width, int height, float fov, float nearClip, float farClip) {
+    float yScale = Math::cot(fov / 2.f);
+    float xScale = yScale * static_cast<float>(height) / static_cast<float>(width);
     float temp[4][4] = {
-        { 2.f / width, 0.f, 0.f, 0.f },
-        { 0.f, -2.f / height, 0.f, 0.f },
+        { xScale, 0.f, 0.f, 0.f },
+        { 0.f, yScale, 0.f, 0.f },
+        { 0.f, 0.f, 1.f / (farClip - nearClip), 1.f },
+        { 0.f, 0.f, -nearClip / (farClip - nearClip), 0.f }
+    };
+
+    return Matrix4(temp);
+}
+
+Matrix4 Matrix4::createOrtho(int width, int height, float _near, float _far) {
+    float w = static_cast<float>(width);
+    float h = static_cast<float>(height);
+
+    float temp[4][4] = {
+        { 2.f / w, 0.f, 0.f, 0.f },
+        { 0.f, -2.f / h, 0.f, 0.f },
         { 0.f, 0.f, 1.f / (_far - _near), 0.f },
         { -1.f, 1.f, _near / (_near - _far), 1.f }
     };
     return Matrix4(temp);
+}
+
+float Matrix4::createCofactor(const float src[4][4], int row, int column) {
+    float small[3][3] = { 0 };
+
+    for (int i = 0; i < row; ++i) {
+        for (int j = 0; j < column; ++j) {
+            small[i][j] = src[i][j];
+        }
+        for (int m = column + 1; m < 4; ++m) {
+            small[i][m - 1] = src[i][m];
+        }
+    }
+
+    for (int i = row + 1; i < 4; ++i) {
+        for (int j = 0; j < column; ++j) {
+            small[i - 1][j] = src[i][j];
+        }
+        for (int m = column + 1; m < 4; ++m) {
+            small[i - 1][m - 1] = src[i][m];
+        }
+    }
+
+    //行列式を取得する
+    float det = createDeterminant(small);
+
+    //行+列が奇数なら
+    if ((row + column) % 2 == 1) {
+        det *= -1.f;
+    }
+
+    return det;
+}
+
+float Matrix4::createDeterminant(const float src[3][3]) {
+    return src[0][0] * src[1][1] * src[2][2]
+        + src[0][1] * src[1][2] * src[2][0]
+        + src[0][2] * src[1][0] * src[2][1]
+        - src[0][2] * src[1][1] * src[2][0]
+        - src[0][1] * src[1][0] * src[2][2]
+        - src[0][0] * src[1][2] * src[2][1];
 }
 
 float m4Ident[4][4] = {

@@ -3,13 +3,27 @@
     {
       "type": "StageSelect",
       "properties": {
+        "spriteFileName": "stage_once.png",
+        "startPosition": [ 960.0, 256.0 ],
+        "nextSpace": [ 0.0, 64.0 ],
+        "scale": [ 0.75, 0.75 ],
+        "pivot": "CenterTop",
+        "selectingAlpha": 0.5
       }
     },
     {
       "type": "SpriteComponent",
       "properties": {
-        "fileName": "StageSelect.png",
-        "scale": [ 1.875, 1.875 ]
+        "drawOrder": -1,
+        "fileName": "stage_select_background.png"
+      }
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "fileName": "stage_select.png",
+        "position": [ 960.0, 0.0 ],
+        "pivot": "CenterTop"
       }
     }
   ]

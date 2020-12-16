@@ -37,6 +37,8 @@ void AABBCollider::start() {
 }
 
 void AABBCollider::lateUpdate() {
+    Collider::lateUpdate();
+
     //当たり判定が自動化設定されているなら
     if (mIsAutoUpdate) {
         updateAABB();
@@ -52,10 +54,14 @@ void AABBCollider::lateUpdate() {
 }
 
 void AABBCollider::onEnable(bool value) {
+    Collider::onEnable(value);
+
     setRenderCollision(value);
 }
 
 void AABBCollider::loadProperties(const rapidjson::Value& inObj) {
+    Collider::loadProperties(inObj);
+
     if (JsonHelper::getVector3(inObj, "min", &mDefaultMin)) {
         mAABB.min = mDefaultMin;
         mLoadedProperties = true;
@@ -68,6 +74,8 @@ void AABBCollider::loadProperties(const rapidjson::Value& inObj) {
 }
 
 void AABBCollider::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const {
+    Collider::saveProperties(alloc, inObj);
+
     JsonHelper::setVector3(alloc, inObj, "min", mDefaultMin);
     JsonHelper::setVector3(alloc, inObj, "max", mDefaultMax);
     JsonHelper::setBool(alloc, inObj, "isRenderCollision", mIsRenderCollision);

@@ -8,7 +8,7 @@ class IButton {
 public:
     virtual ~IButton() = default;
     //ボタンの機能を設定
-    virtual void setClickFunc(std::function<void()> onClick) = 0;
+    virtual void setClickFunc(const std::function<void()>& onClick) = 0;
     //ボタンの位置を返す
     virtual const Vector2& getPosition() const = 0;
     //ハイライト設定

@@ -1,0 +1,24 @@
+{
+  "components": [
+    {
+      "type": "StageFail",
+      "properties": {}
+    },
+    {
+      "type": "StageFailArrow",
+      "properties": {
+        "offsetY": 32.0,
+        "moveSpeed": 180.0,
+        "swingHeight": 64.0
+      }
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "fileName": "DownArrow.png",
+        "scale": [ 0.75, 0.75 ],
+        "pivot": "CenterBottom"
+      }
+    }
+  ]
+}

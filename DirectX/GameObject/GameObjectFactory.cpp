@@ -9,6 +9,7 @@
 #include "../Component/AI/ASCellManager.h"
 #include "../Component/Character/CharacterAction.h"
 #include "../Component/Character/CharacterCommonComponents.h"
+#include "../Component/Character/CharacterDead.h"
 #include "../Component/Character/CharacterManager.h"
 #include "../Component/Character/HitPointRenderer.h"
 #include "../Component/Character/OverlapPrevention.h"
@@ -32,12 +33,18 @@
 #include "../Component/Collider/SphereCollider.h"
 #include "../Component/EnemyOperation/EnemyCreater.h"
 #include "../Component/EnemyOperation/EnemyOperation.h"
+#include "../Component/GameState/GameClear.h"
+#include "../Component/GameState/GameJudge.h"
 #include "../Component/GameState/GameReset.h"
 #include "../Component/GameState/GameStart.h"
+#include "../Component/GameState/StageClear.h"
+#include "../Component/GameState/StageFail.h"
+#include "../Component/GameState/StageFailArrow.h"
 #include "../Component/Light/DirectionalLight.h"
 #include "../Component/Light/PointLightComponent.h"
 #include "../Component/Map/Map.h"
 #include "../Component/Mesh/MeshComponent.h"
+#include "../Component/Mesh/MeshMaterial.h"
 #include "../Component/Mesh/MeshOutLine.h"
 #include "../Component/Mesh/MeshRenderer.h"
 #include "../Component/Mesh/MeshShader.h"
@@ -54,10 +61,13 @@
 #include "../Component/Sound/SoundComponent.h"
 #include "../Component/Sound/WaveformRenderSample.h"
 #include "../Component/Sprite/Sprite3D.h"
+#include "../Component/Sprite/SpriteButtonComponent.h"
 #include "../Component/Sprite/SpriteComponent.h"
 #include "../Component/Text/Text.h"
 #include "../Component/Text/TextFloat.h"
 #include "../Component/Text/TextNumber.h"
+#include "../Component/UI/GameEnd.h"
+#include "../Component/UI/NextStageSelect.h"
 #include "../DebugLayer/Debug.h"
 #include "../System/GlobalFunction.h"
 #include "../Utility/LevelLoader.h"
@@ -77,6 +87,7 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(CharacterAction);
     ADD_COMPONENT(CharacterCommonComponents);
+    ADD_COMPONENT(CharacterDead);
     ADD_COMPONENT(CharacterManager);
     ADD_COMPONENT(HitPointRenderer);
     ADD_COMPONENT(OverlapPrevention);
@@ -105,8 +116,13 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(EnemyCreater);
     ADD_COMPONENT(EnemyOperation);
 
+    ADD_COMPONENT(GameClear);
+    ADD_COMPONENT(GameJudge);
     ADD_COMPONENT(GameReset);
     ADD_COMPONENT(GameStart);
+    ADD_COMPONENT(StageClear);
+    ADD_COMPONENT(StageFail);
+    ADD_COMPONENT(StageFailArrow);
 
     ADD_COMPONENT(DirectionalLight);
     ADD_COMPONENT(PointLightComponent);
@@ -114,6 +130,7 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(Map);
 
     ADD_COMPONENT(MeshComponent);
+    ADD_COMPONENT(MeshMaterial);
     ADD_COMPONENT(MeshOutLine);
     ADD_COMPONENT(MeshRenderer);
     ADD_COMPONENT(MeshShader);
@@ -135,11 +152,15 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(WaveformRenderSample);
 
     ADD_COMPONENT(Sprite3D);
+    ADD_COMPONENT(SpriteButtonComponent);
     ADD_COMPONENT(SpriteComponent);
 
     ADD_COMPONENT(Text);
     ADD_COMPONENT(TextFloat);
     ADD_COMPONENT(TextNumber);
+
+    ADD_COMPONENT(GameEnd);
+    ADD_COMPONENT(NextStageSelect);
 }
 
 GameObjectFactory::~GameObjectFactory() {

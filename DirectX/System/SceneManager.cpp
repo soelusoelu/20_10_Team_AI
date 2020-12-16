@@ -16,7 +16,6 @@
 #include "../GameObject/GameObject.h"
 #include "../GameObject/GameObjectFactory.h"
 #include "../GameObject/GameObjectManager.h"
-#include "../Input/Input.h"
 #include "../Light/LightManager.h"
 #include "../Mesh/MeshManager.h"
 #include "../Sprite/Sprite.h"
@@ -78,11 +77,6 @@ void SceneManager::update() {
     //アップデートの最初で文字列削除
     DebugUtility::drawStringClear();
     mShouldDraw = true;
-
-    //Escでゲーム終了
-    if (Input::keyboard().getKeyDown(KeyCode::Escape)) {
-        Game::quit();
-    }
 
     //ポーズ中はデバッグだけアップデートを行う
     if (DebugUtility::pause().isPausing()) {

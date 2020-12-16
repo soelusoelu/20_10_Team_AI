@@ -6,5 +6,9 @@ class Title : public Scene {
 public:
     Title(GameObject& gameObject);
     ~Title();
-    virtual void update() override;
+    virtual void awake() override;
+
+private:
+    Title(const Title&) = delete;
+    Title& operator=(const Title&) = delete;
 };

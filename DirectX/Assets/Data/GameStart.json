@@ -2,9 +2,7 @@
   "components": [
     {
       "type": "GameStart",
-      "properties": {
-
-      }
+      "properties": {}
     },
     {
       "type": "SpriteComponent",

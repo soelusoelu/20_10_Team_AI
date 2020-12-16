@@ -5,7 +5,6 @@
 #include "../../Mesh/IAnimation.h"
 #include "../../Mesh/IMesh.h"
 #include "../../Mesh/IMeshDrawer.h"
-#include "../../Mesh/Material.h"
 #include <memory>
 #include <string>
 #include <vector>
@@ -13,12 +12,6 @@
 class Mesh;
 
 class MeshComponent : public Component {
-    enum class State {
-        ACTIVE,
-        NON_ACTIVE,
-        DEAD
-    };
-
 public:
     MeshComponent(GameObject& gameObject);
     virtual ~MeshComponent();
@@ -37,26 +30,18 @@ public:
     bool isDraw() const;
 
     //状態
-    void destroy();
     void setActive(bool value);
     bool getActive() const;
-    bool isDead() const;
 
     //メッシュインターフェースを取得する
-    const IMesh* getMesh() const;
+    IMesh* getMesh() const;
     //アニメーションインターフェースを取得する
     IAnimation* getAnimation() const;
     //描画インターフェースを取得する
     const IMeshDrawer* getDrawer() const;
 
-    //使用する色の割合を設定する
-    void setColorRatio(const Vector3& color);
-    //使用する色の割合を取得する
-    const Vector3& getColorRatio() const;
-    //アルファ値を設定する
-    void setAlpha(float alpha);
-    //アルファ値を取得する
-    float getAlpha() const;
+    //影の処理をするか
+    bool handleShadow() const;
 
 private:
     MeshComponent(const MeshComponent&) = delete;
@@ -66,7 +51,6 @@ protected:
     std::shared_ptr<Mesh> mMesh;
     std::string mFileName;
     std::string mDirectoryPath;
-    State mState;
-    Vector3 mColor;
-    float mAlpha;
+    bool mIsActive;
+    bool mShadowHandle;
 };

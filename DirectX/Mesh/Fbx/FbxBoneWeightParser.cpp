@@ -5,8 +5,8 @@ FbxBoneWeightParser::FbxBoneWeightParser() = default;
 FbxBoneWeightParser::~FbxBoneWeightParser() = default;
 
 void FbxBoneWeightParser::parse(
-    MeshVertices& meshVertices,
-    const FbxMesh* fbxMesh
+    MeshVertices & meshVertices,
+    const FbxMesh * fbxMesh
 ) {
     FbxDeformer* fbxDeformer = fbxMesh->GetDeformer(0, FbxDeformer::eSkin);
     FbxSkin* fbxSkin = static_cast<FbxSkin*>(fbxDeformer);
@@ -19,22 +19,13 @@ void FbxBoneWeightParser::parse(
         int* weightIndices = bone->GetControlPointIndices();
         //重み
         double* weights = bone->GetControlPointWeights();
-        //頂点のインデックス
-        int* polygonVertices = fbxMesh->GetPolygonVertices();
 
         for (int i = 0; i < weightCount; ++i) {
             int index = weightIndices[i];
             float weight = static_cast<float>(weights[i]);
 
-            for (int j = 0; j < meshVertices.size(); ++j) {
-                //頂点番号と一致するのを探す
-                if (polygonVertices[j] != index) {
-                    continue;
-                }
-
-                //頂点にウェイト情報を追加する
-                addWeight(meshVertices[j], boneIndex, weight);
-            }
+            //頂点にウェイト情報を追加する
+            addWeight(meshVertices[index], boneIndex, weight);
         }
     }
 
@@ -43,7 +34,7 @@ void FbxBoneWeightParser::parse(
 }
 
 void FbxBoneWeightParser::addWeight(
-    MeshVertex& vertex,
+    MeshVertex & vertex,
     int boneIndex,
     float weight
 ) {
@@ -68,7 +59,7 @@ void FbxBoneWeightParser::addWeight(
 }
 
 void FbxBoneWeightParser::normalizeWeight(
-    MeshVertices& meshVertice
+    MeshVertices & meshVertice
 ) {
     //5本以上にまたっがてる場合のため
     for (size_t i = 0; i < meshVertice.size(); i++) {

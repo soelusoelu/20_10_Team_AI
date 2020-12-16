@@ -23,11 +23,11 @@ namespace Math {
     }
 
     inline bool nearZero(float val) {
-        return (fabs(val) <= epsilon);
+        return (fabsf(val) <= epsilon);
     }
 
     inline bool equal(float a, float b) {
-        return (fabs(a - b) <= epsilon);
+        return (fabsf(a - b) <= epsilon);
     }
 
     template <typename T>
@@ -46,7 +46,7 @@ namespace Math {
     }
 
     inline float abs(float value) {
-        return fabs(value);
+        return fabsf(value);
     }
 
     inline float cos(float degree) {

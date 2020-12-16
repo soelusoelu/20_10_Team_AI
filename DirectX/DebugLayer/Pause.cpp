@@ -1,5 +1,5 @@
 ﻿#include "Pause.h"
-#include "Button.h"
+#include "../Device/Button.h"
 #include "../Input/Input.h"
 #include "../System/Window.h"
 #include "../Utility/LevelLoader.h"

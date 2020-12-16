@@ -1,0 +1,31 @@
+{
+  "components": [
+    {
+      "type": "NextStageSelect",
+      "properties": {}
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "fileName": "stage_once.png",
+        "position": [ 960.0, 512.0 ],
+        "scale": [ 0.75, 0.75 ],
+        "pivot": "Center"
+      }
+    },
+    {
+      "type": "SpriteButtonComponent",
+      "properties": {
+        "selectingSpriteFileName": "stage_once_select.png"
+      }
+    },
+    {
+      "type": "Text",
+      "properties": {
+        "text": "Game Start",
+        "color": [ 0.0, 0.0, 0.0 ],
+        "pivot": "Center"
+      }
+    }
+  ]
+}

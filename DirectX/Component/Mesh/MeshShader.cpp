@@ -1,4 +1,5 @@
 ﻿#include "MeshShader.h"
+#include "MeshMaterial.h"
 #include "../Camera/Camera.h"
 #include "../Light/DirectionalLight.h"
 #include "../Mesh/MeshComponent.h"
@@ -14,6 +15,7 @@
 
 MeshShader::MeshShader(GameObject& gameObject)
     : Component(gameObject)
+    , mMeshMaterial(nullptr)
     , mMesh(nullptr)
     , mAnimation(nullptr)
     , mShader(nullptr)
@@ -21,6 +23,13 @@ MeshShader::MeshShader(GameObject& gameObject)
 }
 
 MeshShader::~MeshShader() = default;
+
+void MeshShader::start() {
+    mMeshMaterial = getComponent<MeshMaterial>();
+    if (!mMeshMaterial) {
+        mMeshMaterial = addComponent<MeshMaterial>("MeshMaterial");
+    }
+}
 
 void MeshShader::loadProperties(const rapidjson::Value& inObj) {
     std::string shader;
@@ -74,34 +83,18 @@ void MeshShader::setCommonValue(const Camera& camera, const DirectionalLight& di
     mShader->transferData(&meshcb, sizeof(meshcb), 0);
 }
 
-void MeshShader::setDefaultMaterial(const MeshComponent& mesh, unsigned materialIndex, unsigned constantBufferIndex) const {
-    MaterialConstantBuffer matcb;
-    const auto& mat = mMesh->getMaterial(materialIndex);
-    matcb.ambient = mat.ambient;
-    float alpha = mesh.getAlpha();
-    //アルファ値は0のときが多いから
-    if (!Math::nearZero(mat.transparency)) {
-        alpha *= mat.transparency;
+void MeshShader::setDefaultMaterial(unsigned materialIndex, unsigned constantBufferIndex) const {
+    if (mMeshMaterial->isSetMaterial(materialIndex)) {
+        //指定のインデックスのマテリアルが登録されてたらそっちを使う
+        setMaterial(mMeshMaterial->getMaterial(materialIndex), constantBufferIndex);
+    } else {
+        //登録されてなかったら、デフォルトを使う
+        setMaterial(mMesh->getMaterial(materialIndex), constantBufferIndex);
     }
-    matcb.diffuse = Vector4(mat.diffuse * mesh.getColorRatio(), alpha);
-    matcb.specular = mat.specular;
-    matcb.shininess = mat.shininess;
-    //データ転送
-    mShader->transferData(&matcb, sizeof(matcb), constantBufferIndex);
-
-    //テクスチャ登録
-    mat.texture->setTextureInfo();
 }
 
 void MeshShader::setTransferData(const void* data, unsigned size, unsigned constantBufferIndex) {
-    TransferData temp{ data, size };
-    if (mTransferDataMap.find(constantBufferIndex) == mTransferDataMap.end()) {
-        //未登録なら新規に登録する
-        mTransferDataMap.emplace(constantBufferIndex, temp);
-    } else {
-        //登録済みなら更新する
-        mTransferDataMap[constantBufferIndex] = temp;
-    }
+    mTransferDataMap[constantBufferIndex] = { data, size };
 }
 
 void MeshShader::setInterface(const IMesh* mesh, const IAnimation* anim) {
@@ -111,21 +104,36 @@ void MeshShader::setInterface(const IMesh* mesh, const IAnimation* anim) {
 }
 
 void MeshShader::setDefaultShader() {
-    //std::string shader = "Mesh.hlsl";
-    ////ボーンが有るなら
-    //if (mAnimation->getBoneCount() > 0) {
-    //    shader = "SkinMesh.hlsl";
-    //}
-    ////シェーダーを生成する
-    //mShader = AssetsManager::instance().createShader(shader);
-
-
-
-    std::string shader = "Shadow.hlsl";
-    //ボーンが有るなら
-    if (mAnimation->getBoneCount() > 0) {
-        shader = "SkinMeshShadow.hlsl";
+    std::string shader;
+    //影の影響を受けるか
+    if (getComponent<MeshComponent>()->handleShadow()) {
+        shader = "Shadow.hlsl";
+        //ボーンが有るなら
+        if (mAnimation->getBoneCount() > 0) {
+            shader = "SkinMeshShadow.hlsl";
+        }
+    } else {
+        shader = "Mesh.hlsl";
+        //ボーンが有るなら
+        if (mAnimation->getBoneCount() > 0) {
+            shader = "SkinMesh.hlsl";
+        }
     }
+
     //シェーダーを生成する
     mShader = AssetsManager::instance().createShader(shader);
+}
+
+void MeshShader::setMaterial(const Material& material, unsigned constantBufferIndex) const {
+    MaterialConstantBuffer matcb{};
+
+    matcb.ambient = material.ambient;
+    matcb.diffuse = Vector4(material.diffuse, material.transparency);
+    matcb.specular = material.specular;
+    matcb.shininess = material.shininess;
+    //テクスチャ登録
+    material.texture->setTextureInfo();
+
+    //データ転送
+    mShader->transferData(&matcb, sizeof(matcb), constantBufferIndex);
 }

@@ -31,8 +31,8 @@ VS_OUTPUT VS(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD
     output.WorldPos = mul(world, position).xyz;
 
     matrix mat = mul(lightView, world);
-    mat = mul(projection, mat);
-    output.ZCalcTex = mul(mat, pos);
+    mat = mul(lightProj, mat);
+    output.ZCalcTex = mul(mat, position);
 
     return output;
 }
@@ -51,7 +51,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
     //反射光ベクトル
     float3 reflect = normalize(lightDir + 2 * NL * normal);
     //鏡面反射光
-    float spec = pow(saturate(dot(reflect, viewDir)), shininess) * specular;
+    float3 spec = pow(saturate(dot(reflect, viewDir)), shininess) * specular;
 
     float3 color = saturate(ambient + diff + spec) * lightColor;
     float4 texColor = tex.Sample(samplerState, input.UV);
@@ -70,9 +70,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float SM_Z = depthTex.Sample(samplerState, transTexCoord).x;
 
     //算出点がシャドウマップのZ値よりも大きければ影と判断
-    if (ZValue > SM_Z + 0.005)
+    if (ZValue > SM_Z + 0.004)
     {
-        outColor.rgb *= 0.5;
+        outColor.rgb *= 0.2;
     }
 
     return outColor;

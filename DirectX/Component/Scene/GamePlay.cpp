@@ -3,8 +3,12 @@
 #include "../Character/CharacterManager.h"
 #include "../CharacterOperation/CharacterOperation.h"
 #include "../CharacterOperation/DragAndDropCharacter.h"
+#include "../GameState/GameClear.h"
+#include "../GameState/GameJudge.h"
 #include "../GameState/GameReset.h"
 #include "../GameState/GameStart.h"
+#include "../GameState/StageFail.h"
+#include "../GameState/StageFailArrow.h"
 #include "../Map/Map.h"
 #include "../../DebugLayer/Debug.h"
 #include "../../GameObject/GameObject.h"
@@ -18,6 +22,8 @@ GamePlay::GamePlay(GameObject& gameObject)
     , mCharacterManager(nullptr)
     , mGameStart(nullptr)
     , mGameReset(nullptr)
+    , mGameJudge(nullptr)
+    , mGameClear(nullptr)
     , mMap(nullptr)
     , mState(GameState::OPERATE_PHASE)
     , mStageNo(0)
@@ -30,21 +36,34 @@ void GamePlay::start() {
     mCharacterManager = getComponent<CharacterManager>();
     mMap = getComponent<Map>();
 
-    //GameObjectCreater::create("SphereMap");
+    GameObjectCreater::create("SphereMap");
 
-    auto gs = GameObjectCreater::create("GameStart");
-    mGameStart = gs->componentManager().getComponent<GameStart>();
+    mGameStart = GameObjectCreater::create("GameStart")->componentManager().getComponent<GameStart>();
 
-    auto gr = GameObjectCreater::create("GameReset");
-    mGameReset = gr->componentManager().getComponent<GameReset>();
+    mGameReset = GameObjectCreater::create("GameReset")->componentManager().getComponent<GameReset>();
+
+    mGameJudge = GameObjectCreater::create("GameJudge")->componentManager().getComponent<GameJudge>();
+    mGameJudge->setCharacterManager(mCharacterManager.get());
+
+    mGameClear = GameObjectCreater::create("GameClear")->componentManager().getComponent<GameClear>();
+    mGameClear->getStageFail().getFailArrow().setPosition(mGameStart->getCenterTopPosition());
+
+    mCharacterManager->callbackDeadCharacter([&] { mGameJudge->onDeadPlayerSide(); });
+    mCharacterManager->callbackDeadEnemy([&] { mGameJudge->onDeadEnemySide(); });
 
     mGameStart->callbackGameStart([&] { mState = GameState::ACTION_PHASE; });
     mGameStart->callbackGameStart([&] { mCharacterManager->onChangeActionPhase(); });
     mGameStart->callbackGameStart([&] { mGameReset->onChangeActionPhase(); });
+    mGameStart->callbackGameStart([&] { mGameJudge->onChangeActionPhase(); });
 
     mGameReset->callbackGameReset([&] { mState = GameState::OPERATE_PHASE; });
     mGameReset->callbackGameReset([&] { mCharacterManager->onChangeOperatePhase(); });
     mGameReset->callbackGameReset([&] { mGameStart->onChangeOperatePhase(); });
+    mGameReset->callbackGameReset([&] { mGameClear->initialize(); });
+
+    mGameJudge->callbackPlayerWin([&] { mGameClear->onWinPlayerSide(); });
+    mGameJudge->callbackEnemyWin([&] { mGameClear->onWinEnemySide(); });
+    mGameJudge->callbackSomeWin([&] { mState = GameState::STAGE_CLEAR; });
 }
 
 void GamePlay::update() {
@@ -53,18 +72,20 @@ void GamePlay::update() {
         mGameStart->originalUpdate();
     } else if (mState == GameState::ACTION_PHASE) {
         mGameReset->originalUpdate();
+    } else if (mState == GameState::STAGE_CLEAR) {
+        if (mGameJudge->isWinPlayerSide()) {
+            //プレイヤー側の勝利
+            mGameClear->updatePlayerWin();
+        } else {
+            //エネミー側の勝利
+            mGameClear->updateEnemyWin();
+            mGameReset->originalUpdate();
+        }
     }
 
     Debug::renderLine(Vector3::left * 100.f, Vector3::right * 100.f, ColorPalette::red);
     Debug::renderLine(Vector3::down * 100.f, Vector3::up * 100.f, ColorPalette::green);
     Debug::renderLine(Vector3::back * 100.f, Vector3::forward * 100.f, ColorPalette::blue);
-
-#ifdef _DEBUG
-    //リセット
-    if (Input::keyboard().getKeyDown(KeyCode::R)) {
-        next("GamePlay");
-    }
-#endif // _DEBUG
 }
 
 void GamePlay::getValueFromPreviousScene(const ValuePassMap& values) {
@@ -105,5 +126,5 @@ void GamePlay::loadStage() {
     JsonHelper::getInt(data, "cost", &cost);
 
     //情報を渡す
-    mCharacterManager->receiveExternalData(mMap, data, cost, mStageNo);
+    mCharacterManager->receiveExternalData(mMap.get(), data, cost, mStageNo);
 }

@@ -2,7 +2,21 @@
   "components": [
     {
       "type": "Title",
+      "properties": {}
+    },
+    {
+      "type": "SpriteComponent",
       "properties": {
+        "drawOrder": -1,
+        "fileName": "stage_select_background.png"
+      }
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "fileName": "Title.png",
+        "position": [ 960.0, 0.0 ],
+        "pivot": "CenterTop"
       }
     }
   ]

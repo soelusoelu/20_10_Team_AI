@@ -6,7 +6,6 @@
 
 class MeshComponent;
 class MeshShader;
-class ShadowMap;
 class Camera;
 class DirectionalLight;
 class MeshManager;
@@ -45,7 +44,6 @@ private:
     const IDrawBefore* mBeforeDrawer;
     std::shared_ptr<MeshComponent> mMeshComponent;
     std::shared_ptr<MeshShader> mMeshShader;
-    std::shared_ptr<ShadowMap> mShadowMap;
 
     static inline MeshManager* mMeshManager = nullptr;
 };

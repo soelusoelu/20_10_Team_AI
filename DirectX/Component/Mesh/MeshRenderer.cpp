@@ -1,11 +1,8 @@
 ﻿#include "MeshRenderer.h"
 #include "MeshComponent.h"
 #include "MeshShader.h"
-#include "ShadowMap.h"
 #include "SkinMeshComponent.h"
 #include "../../DebugLayer/Debug.h"
-#include "../../GameObject/GameObject.h"
-#include "../../GameObject/GameObjectManager.h"
 #include "../../Mesh/MeshManager.h"
 
 MeshRenderer::MeshRenderer(GameObject& gameObject)
@@ -13,7 +10,6 @@ MeshRenderer::MeshRenderer(GameObject& gameObject)
     , mBeforeDrawer(nullptr)
     , mMeshComponent(nullptr)
     , mMeshShader(nullptr)
-    , mShadowMap(nullptr)
 {
 }
 
@@ -29,9 +25,6 @@ void MeshRenderer::start() {
     }
     //値をセットする
     mMeshShader->setInterface(mMeshComponent->getMesh(), mMeshComponent->getAnimation());
-
-    const auto& shadow = gameObject().getGameObjectManager().find("Shadow");
-    mShadowMap = shadow->componentManager().getComponent<ShadowMap>();
 
     //スキンメッシュコンポーネントを作れたら作る
     createSkinMeshComponent();
@@ -81,13 +74,10 @@ void MeshRenderer::drawMesh(const Camera& camera, const DirectionalLight& dirLig
     //コンスタントバッファに転送する
     mMeshShader->transferData();
 
-    //深度テクスチャを転送する
-    mShadowMap->transferShadowTexture();
-
     const auto loopCount = mMeshComponent->getMesh()->getMeshCount();
     for (size_t i = 0; i < loopCount; ++i) {
         //マテリアルを設定する
-        mMeshShader->setDefaultMaterial(*mMeshComponent, i);
+        mMeshShader->setDefaultMaterial(i);
 
         //描画
         mMeshComponent->getDrawer()->draw(i);
@@ -126,5 +116,5 @@ void MeshRenderer::addToManager() {
     }
 
     //マネージャーに自身を登録する
-    mMeshManager->add(shared_from_this());
+    mMeshManager->add(shared_from_this(), mMeshComponent->handleShadow());
 }

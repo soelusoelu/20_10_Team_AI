@@ -87,4 +87,5 @@ struct OutLineConstantBuffer {
 //影
 struct ShadowConstantBuffer {
     Matrix4 lightView; //ライトの視点
+    Matrix4 lightProj; //ライトのプロジェクション行列
 };

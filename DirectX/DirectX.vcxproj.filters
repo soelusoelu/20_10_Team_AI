@@ -65,7 +65,6 @@
     <ClCompile Include="Component\Scene\Title.cpp" />
     <ClCompile Include="Input\InputUtility.cpp" />
     <ClCompile Include="DebugLayer\Pause.cpp" />
-    <ClCompile Include="DebugLayer\Button.cpp" />
     <ClCompile Include="Device\Subject.cpp" />
     <ClCompile Include="DirectX\BlendState.cpp" />
     <ClCompile Include="DirectX\Buffer.cpp" />
@@ -231,6 +230,17 @@
     <ClCompile Include="Mesh\VertexNormalSmoother.cpp" />
     <ClCompile Include="Component\Mesh\ShadowMap.cpp" />
     <ClCompile Include="Component\Mesh\MeshRenderer.cpp" />
+    <ClCompile Include="Component\Character\CharacterDead.cpp" />
+    <ClCompile Include="Component\Mesh\MeshMaterial.cpp" />
+    <ClCompile Include="Component\GameState\GameClear.cpp" />
+    <ClCompile Include="Component\GameState\GameJudge.cpp" />
+    <ClCompile Include="Component\GameState\StageClear.cpp" />
+    <ClCompile Include="Component\GameState\StageFail.cpp" />
+    <ClCompile Include="Component\GameState\StageFailArrow.cpp" />
+    <ClCompile Include="Device\Button.cpp" />
+    <ClCompile Include="Component\Sprite\SpriteButtonComponent.cpp" />
+    <ClCompile Include="Component\UI\GameEnd.cpp" />
+    <ClCompile Include="Component\UI\NextStageSelect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -282,8 +292,6 @@
     <ClInclude Include="Input\IKeyboard.h" />
     <ClInclude Include="Input\IMouse.h" />
     <ClInclude Include="DebugLayer\Pause.h" />
-    <ClInclude Include="DebugLayer\Button.h" />
-    <ClInclude Include="DebugLayer\IButton.h" />
     <ClInclude Include="Device\Subject.h" />
     <ClInclude Include="System\SystemInclude.h" />
     <ClInclude Include="System\GlobalFunction.h" />
@@ -502,6 +510,18 @@
     <ClInclude Include="Mesh\IMeshDrawer.h" />
     <ClInclude Include="Component\Mesh\IDrawBefore.h" />
     <ClInclude Include="Component\Mesh\MeshRenderer.h" />
+    <ClInclude Include="Component\Character\CharacterDead.h" />
+    <ClInclude Include="Component\Mesh\MeshMaterial.h" />
+    <ClInclude Include="Component\GameState\GameClear.h" />
+    <ClInclude Include="Component\GameState\GameJudge.h" />
+    <ClInclude Include="Component\GameState\StageClear.h" />
+    <ClInclude Include="Component\GameState\StageFail.h" />
+    <ClInclude Include="Component\GameState\StageFailArrow.h" />
+    <ClInclude Include="Device\Button.h" />
+    <ClInclude Include="Device\IButton.h" />
+    <ClInclude Include="Component\Sprite\SpriteButtonComponent.h" />
+    <ClInclude Include="Component\UI\GameEnd.h" />
+    <ClInclude Include="Component\UI\NextStageSelect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />
@@ -532,5 +552,12 @@
     <None Include="Assets\Data\Title.json" />
     <None Include="Assets\Data\Waveform.json" />
     <None Include="Shader\ShadowHeader.hlsli" />
+    <None Include="Assets\Data\RoughnessMap.json" />
+    <None Include="Assets\Data\GameClear.json" />
+    <None Include="Assets\Data\GameJudge.json" />
+    <None Include="Assets\Data\StageClear.json" />
+    <None Include="Assets\Data\StageFail.json" />
+    <None Include="Assets\Data\GameEnd.json" />
+    <None Include="Assets\Data\NextStageSelect.json" />
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 
 #include "../Component.h"
 #include "../Character/ICharacterManager.h"
+#include "../../Mesh/Material.h"
 #include <list>
 #include <memory>
 
@@ -34,4 +35,5 @@ private:
     CharacterPtrList mEnemys;
     const ICharacterManager* mManager;
     std::shared_ptr<EnemyCreater> mCreater;
+    std::shared_ptr<Material> mEnemyMaterial;
 };

@@ -130,10 +130,15 @@ void Mesh::createMesh(const std::string& filePath) {
     //メッシュを解析する
     mMesh->parse(filePath, mMeshesVertices, mMeshesIndices, mMaterials, mMotions, mBones);
 
-    //テクスチャがないマテリアルは白テクスチャを代替する
     for (auto&& mat : mMaterials) {
+        //テクスチャがないマテリアルは白テクスチャを代替する
         if (!mat.texture) {
             mat.texture = std::make_shared<TextureFromMemory>(1, 1);
+        }
+
+        //透明値が0のときは1にする
+        if (Math::nearZero(mat.transparency)) {
+            mat.transparency = 1.f;
         }
     }
 }

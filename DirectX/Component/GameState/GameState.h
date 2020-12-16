@@ -3,5 +3,6 @@
 //ゲームプレイでの状態
 enum class GameState {
     OPERATE_PHASE,
-    ACTION_PHASE
+    ACTION_PHASE,
+    STAGE_CLEAR
 };

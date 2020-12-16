@@ -21,18 +21,21 @@ public:
     ShadowMap(GameObject& gameObject);
     ~ShadowMap();
     virtual void awake() override;
-    virtual void start() override;
+    virtual void loadProperties(const rapidjson::Value& inObj) override;
+    virtual void drawInspector() override;
 
     //描画準備
-    void drawBegin(const DirectionalLight& dirLight);
+    void drawBegin(const Camera& camera, const DirectionalLight& dirLight);
     //描画
-    void draw(const MeshRenderer& renderer, const Camera& camera, const DirectionalLight& dirLight) const;
+    void draw(const MeshRenderer& renderer) const;
     //影描画に使用するコンスタントバッファを登録する
     void setShadowConstantBuffer(MeshRenderer& renderer);
     //描画終了処理
     void drawEnd() const;
     //深度を書き込んだテクスチャをGPUに送る
     void transferShadowTexture(unsigned constantBufferIndex = 1);
+    //レンダーターゲットテクスチャの使用後処理
+    void drawEndShadowTexture(unsigned constantBufferIndex = 1);
 
 private:
     ShadowMap(const ShadowMap&) = delete;
@@ -58,4 +61,7 @@ private:
     ShadowConstantBuffer mShadowConstBuffer;
     int mWidth;
     int mHeight;
+    float mLightDistance;
+    float mNearClip;
+    float mFarClip;
 };
