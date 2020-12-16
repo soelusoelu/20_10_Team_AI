@@ -218,7 +218,6 @@
     <ClCompile Include="Component\Mesh\MeshOutLine.cpp" />
     <ClCompile Include="Component\Mesh\MeshShader.cpp" />
     <ClCompile Include="Component\Character\CharacterCommonComponents.cpp" />
-    <ClCompile Include="Component\AI\ASMap.cpp" />
     <ClCompile Include="Component\Map\Map.cpp" />
     <ClCompile Include="Component\Character\CharacterManager.cpp" />
     <ClCompile Include="Component\Character\OverlapPrevention.cpp" />
@@ -484,7 +483,6 @@
     <ClInclude Include="Component\Mesh\MeshOutLine.h" />
     <ClInclude Include="Component\Mesh\MeshShader.h" />
     <ClInclude Include="Component\Character\CharacterCommonComponents.h" />
-    <ClInclude Include="Component\AI\ASMap.h" />
     <ClInclude Include="Component\Map\Map.h" />
     <ClInclude Include="Component\Character\CharacterManager.h" />
     <ClInclude Include="Component\Map\IMap.h" />

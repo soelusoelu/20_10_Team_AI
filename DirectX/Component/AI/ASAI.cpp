@@ -17,11 +17,13 @@ ASAI::~ASAI()
 
 void ASAI::Initialize()
 {
+	
 	Position start = VectorToPosition(transform().getPosition());
 	start.x = fmaxf(0,fminf( start.x, cellCountW - 1));
 	start.y = fmaxf(0, fminf(start.y,cellCountH-1));
-	Position goal = VectorToPosition(GetNearEnemy());
-	cellManager = std::make_unique<ASCellManager>(cellCountW, cellCountH, start, goal);
+	goal = VectorToPosition(GetNearEnemy());
+	cells = manager->getMap().GetCellsInfo();
+	cellManager = std::make_unique<ASCellManager>(cells,cellCountW, cellCountH, start, goal);
 	routes = cellManager->GetRoute();
 	routePhase = 0;
 	if (routes.size() != 0)
@@ -43,15 +45,15 @@ void ASAI::start()
 
 void ASAI::originalUpdate()
 {
-	//Position currentP = VectorToPosition(target->transform().getPosition());
-	//Position goalP = cellManager.GetGoalPosition();
-	if (routes.size() == 0/*||currentP.x!=goalP.x|| currentP.y != goalP.y*/)
+	if (routes.size() == 0/*||currentP.x!=goalP.x|| currentP.y != goalP.y*/
+		|| goal.x!= VectorToPosition(GetNearEnemy()).x
+		|| goal.y != VectorToPosition(GetNearEnemy()).y)
 	{
 		Initialize();
 	}
 	else
 	{
-		/*Vector3 v3 = routePoint - transform().getPosition();
+		Vector3 v3 = routePoint - transform().getPosition();
 		float distance = v3.length();
 		v3.normalize();
 		transform().translate(v3 / 3);
@@ -59,7 +61,7 @@ void ASAI::originalUpdate()
 		{
 			routePoint = CalcPosition(routePhase);
 			routePhase++;
-		}*/
+		}
 	}
 }
 
@@ -115,6 +117,6 @@ Position ASAI::VectorToPosition(const Vector3& v)
 	float cellSize = mapWidth / cellCountW;
 	p.x = (v.x + (mapWidth / 2)) / (cellSize);
 	cellSize = mapHeight / cellCountH;
-	p.y = (v.y + (mapHeight / 2)) / (cellSize);
+	p.y = (v.z + (mapHeight / 2)) / (cellSize);
 	return p;
 }

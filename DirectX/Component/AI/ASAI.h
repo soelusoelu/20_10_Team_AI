@@ -32,17 +32,19 @@ private:
 	std::unique_ptr < ASCellManager> target;
 	std::vector<Position> routes;
 	int routePhase=0;
-	float mapWidth = 200;
-	float mapHeight = 200;
-	int cellCountW= 10;
-	int cellCountH = 10;
+	float mapWidth = 110;
+	float mapHeight = 110;
+	int cellCountW= 22;
+	int cellCountH = 22;
 	Vector3 routePoint;
 	int startX=0, startY=0;
 	int goalX = 0, goalY = 0;
 	//ICharacterManager manager;
 	const ICharacterManager* manager;
+	std::vector<ASCell> cells;
 	//Position start;
-	//Position goal;
+	Position goal;
+	Vector3* targetPos;
 	//std::vector<ASCell>&cells;
 };
 

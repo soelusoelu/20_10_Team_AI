@@ -4,7 +4,7 @@
 
 
 ASCellManager::ASCellManager()
-{
+	{
 	Initialize();
 	//スタート地点とゴール地点仮置き
 	Position pos;
@@ -16,16 +16,17 @@ ASCellManager::ASCellManager()
 	SetGoalPosition(pos);
 	currentCell = startCell;
 	//探索開始
-	//StartSearch();
+	////StartSearch();
 
 }
 
-ASCellManager::ASCellManager(int width, int height, Position startPos, Position endPos)
-{	
+ASCellManager::ASCellManager(std::vector<ASCell>c, int width, int height, Position startPos, Position endPos)
+{
+	cells = c;
 	cellsWidth = width;
 	cellsHeight = height;
 	Initialize();
-	//スタート地点とゴール地点仮置き
+	//スタート地点とゴール地点
 	Position pos=startPos;
 	SetStartPosition(pos);
 	pos = endPos;
@@ -42,35 +43,44 @@ ASCellManager::~ASCellManager()
 
 void ASCellManager::Initialize()
 {
-	cells.resize(cellsWidth * cellsHeight);
-	for (int i = 0; i < cellsWidth * cellsHeight; i++)
+	//cells.resize(cellsWidth * cellsHeight);
+	//for (int i = 0; i < cellsWidth * cellsHeight; i++)
+	//{
+	//	cells[i].position.x = i % cellsWidth;
+	//	cells[i].position.y = (i - cells[i].position.x) / cellsWidth;
+	//	cells[i].posNum = i;
+	//}
+	//for (int i = 0; i < cellsWidth * cellsHeight; i++)
+	//{
+	//	int x = cells[i].position.x;
+	//	int y = cells[i].position.y;
+	//	cells[i].neighCells.resize(8);
+	//	int count = 0;
+	//	for (int j = fmaxf(x - 1, 0); j < fminf(x + 2, cellsWidth); j++)
+	//	{
+	//		for (int k = fmaxf(y - 1, 0); k < fminf(y + 2, cellsHeight); k++)
+	//		{
+	//			if (j != x || k != y)
+	//			{
+	//				Position nPos;
+	//				nPos.x = j;
+	//				nPos.y = k;
+	//				cells[i].neighCells[count] = GetCell(nPos);
+	//				cells[i].neighCells.push_back(GetCell(nPos));
+	//				count++;
+	//			}
+	//		}
+	//	}
+	//	cells[i].neighCells.resize(count);
+	//}
+	cellSearches.resize(cells.size());
+	for (int i = 0; i < cellStates.size(); i++)
 	{
-		cells[i].position.x = i % cellsWidth;
-		cells[i].position.y = (i - cells[i].position.x) / cellsWidth;
-		cells[i].posNum = i;
-	}
-	for (int i = 0; i < cellsWidth * cellsHeight; i++)
-	{
-		int x = cells[i].position.x;
-		int y = cells[i].position.y;
-		//cells[i].neighCells.resize(8);
-		int count = 0;
-		for (int j = fmaxf(x - 1, 0); j < fminf(x + 2, cellsWidth); j++)
-		{
-			for (int k = fmaxf(y - 1, 0); k < fminf(y + 2, cellsHeight); k++)
-			{
-				if (j != x || k != y)
-				{
-					Position nPos;
-					nPos.x = j;
-					nPos.y = k;
-					//cells[i].neighCells[count] = GetCell(nPos);
-					cells[i].neighCells.push_back(GetCell(nPos));
-					count++;
-				}
-			}
-		}
-		cells[i].neighCells.resize(count);
+		cellSearches[i].parent = nullptr;
+		cellSearches[i].score = 0;
+		cellSearches[i].scoreE = 0;
+		cellSearches[i].scoreR = 0;
+
 	}
 	cellStates.resize(cells.size());
 	for (int i = 0; i < cellStates.size(); i++)
@@ -91,12 +101,13 @@ void ASCellManager::OpenNeighCells(ASCell* cell)
 {
 	for (int i = 0; i < cell->neighCells.size(); i++)
 	{
-		if (cellStates[cell->neighCells[i]->posNum] == E_State::NONE&& cell->neighCells[i]->canMove)
+		if ((cellStates[cell->neighCells[i]->posNum] == E_State::NONE&& cell->neighCells[i]->canMove)
+			|| cell->neighCells[i]->position== goalCell->position)
 		{
 			//cell->neighCells[i]->state = E_State::OPEN;
 			cellStates[i] = E_State::OPEN;
-			cell->neighCells[i]->parent = cell;
-			SetCost(cell->neighCells[i]);
+			cellSearches[cell->neighCells[i]->posNum].parent = cell;
+			SetCost(cell->neighCells[i],&cellSearches[cell->neighCells[i]->posNum]);
 			openedCells.push_back(cell->neighCells[i]);
 		}
 	}
@@ -125,7 +136,7 @@ void ASCellManager::CheckOpenedCell()
 	ASCell* minScoreCell= openedCells[0];
 	for (int i = 1; i < openedCells.size(); i++)
 	{
-		if (openedCells[i]->score < minScoreCell->score)
+		if (cellSearches[openedCells[i]->posNum].score <cellSearches[ minScoreCell->posNum].score)
 		{
 			minScoreCell= openedCells[i];
 		}
@@ -138,13 +149,13 @@ void ASCellManager::SetGoalPosition(Position pos)
 	goalCell = GetCell(pos);
 }
 
-void ASCellManager::SetCost(ASCell* cells)
+void ASCellManager::SetCost(ASCell* cells,ASCellSearch* cSearch)
 {
 	int x = fabsf(cells->position.x- goalCell->position.x);
 	int y = fabsf(cells->position.y - goalCell->position.y);
-	cells->scoreE = fmax(x,y);
-	cells->scoreR = currentCell->scoreR + 1;
-	cells->score = cells->scoreE + cells->scoreR;
+	cSearch->scoreE = fmax(x,y);
+	cSearch->scoreR = cellSearches[ currentCell->posNum].scoreR + 1;
+	cSearch->score = cSearch->scoreE + cSearch->scoreR;
 }
 
 std::vector<Position> ASCellManager::GetRoute()
@@ -159,15 +170,18 @@ ASCell* ASCellManager::GetCell(Position pos)
 
 void ASCellManager::StartSearch()
 {
-	while (currentCell != goalCell)
+	while (currentCell->position.x != goalCell->position.x
+		|| currentCell->position.y != goalCell->position.y)
 	{
 		OpenNeighCells(currentCell);
 		CheckOpenedCell();
 	}
-	while (currentCell != startCell)
+	while (currentCell->position.x != startCell->position.x
+		|| currentCell->position.y != startCell->position.y)
 	{
 		routes.insert(routes.begin(), currentCell->position);
-		currentCell = currentCell->parent;
+		//currentCell = currentCell->parent;
+		currentCell = cellSearches[currentCell->posNum].parent;
 	}
 }
 

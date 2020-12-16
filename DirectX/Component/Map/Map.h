@@ -15,11 +15,12 @@ public:
     ~Map();
     virtual const IMesh& getMeshData() const override;
     virtual const Transform3D& getTransform() const override;
+    //Cell情報を渡す
+    virtual const std::vector<ASCell>& GetCellsInfo()const override;
+
 
     //外部からデータを受け取る
     void receiveMapData(const std::string& mapName);
-    //Cell情報を渡す
-    virtual const std::vector<ASCell>& GetCellsInfo() override;
 
 
 private:
@@ -28,5 +29,9 @@ private:
 
 private:
     std::shared_ptr<MeshComponent> mGroundMesh;
-    ASMap asmap;
+    std::vector<ASCell> cells;
+    int cellsWidth = 22, cellsHeight = 22;
+    float mapWidth = 110;float mapHeight = 110;
+private:
+    bool cellCanMoveCreated = false;
 };

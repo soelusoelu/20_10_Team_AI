@@ -166,7 +166,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Component\CharacterOperation\CharacterCreateSpriteOperation.cpp" />
-    <ClCompile Include="Component\AI\ASMap.cpp" />
     <ClCompile Include="Component\Character\CharacterManager.cpp" />
     <ClCompile Include="Component\Character\CharacterCommonComponents.cpp" />
     <ClCompile Include="Component\Character\CharacterAction.cpp" />
@@ -379,7 +378,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\CharacterOperation\CharacterCreateSpriteOperation.h" />
-    <ClInclude Include="Component\AI\ASMap.h" />
     <ClInclude Include="Component\CharacterOperation\ICharacterCreateInfo.h" />
     <ClInclude Include="Component\Character\CharacterManager.h" />
     <ClInclude Include="Component\Character\CharacterCommonComponents.h" />

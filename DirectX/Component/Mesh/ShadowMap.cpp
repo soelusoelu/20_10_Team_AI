@@ -46,10 +46,10 @@ void ShadowMap::awake() {
 }
 
 void ShadowMap::start() {
-    const auto& desc = mDepthTexture->desc();
-    const auto& texSize = Vector2(desc.width, desc.height);
-    const auto& tex = std::make_shared<Texture>(mDepthShaderResourceView, texSize);
-    getComponent<SpriteComponent>()->setTexture(tex);
+    //const auto& desc = mDepthTexture->desc();
+    //const auto& texSize = Vector2(desc.width, desc.height);
+    //const auto& tex = std::make_shared<Texture>(mDepthShaderResourceView, texSize);
+    //getComponent<SpriteComponent>()->setTexture(tex);
 }
 
 void ShadowMap::drawBegin(const DirectionalLight& dirLight) {
