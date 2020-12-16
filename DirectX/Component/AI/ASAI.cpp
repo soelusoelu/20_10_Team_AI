@@ -22,7 +22,7 @@ void ASAI::Initialize()
 	start.x = fmaxf(0,fminf( start.x, cellCountW - 1));
 	start.y = fmaxf(0, fminf(start.y,cellCountH-1));
 	goal = VectorToPosition(GetNearEnemy());
-	cells = manager->getMap().GetCellsInfo();
+	cells = manager->getMap()->GetCellsInfo();
 	cellManager = std::make_unique<ASCellManager>(cells,cellCountW, cellCountH, start, goal);
 	routes = cellManager->GetRoute();
 	routePhase = 0;
