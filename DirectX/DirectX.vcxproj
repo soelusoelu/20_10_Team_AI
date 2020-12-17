@@ -211,9 +211,11 @@
     <ClCompile Include="Component\GameState\GameClear.cpp" />
     <ClCompile Include="Component\GameState\GameJudge.cpp" />
     <ClCompile Include="Component\UI\GameEnd.cpp" />
-    <ClCompile Include="Component\UI\Menu.cpp" />
-    <ClCompile Include="Component\UI\MenuWindow.cpp" />
-    <ClCompile Include="Component\UI\MenuToStageSelect.cpp" />
+    <ClCompile Include="Component\UI\Menu\Menu.cpp" />
+    <ClCompile Include="Component\UI\Menu\MenuWindow.cpp" />
+    <ClCompile Include="Component\UI\Menu\MenuToStageSelect.cpp" />
+    <ClCompile Include="Component\UI\Menu\MenuClose.cpp" />
+    <ClCompile Include="Component\UI\Menu\MenuWindowInitializer.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxUtility.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMotionParser.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
@@ -425,6 +427,7 @@
     <ClInclude Include="Component\GameState\GameState.h" />
     <ClInclude Include="Component\Map\IMap.h" />
     <ClInclude Include="Component\Mesh\IDrawBefore.h" />
+    <ClInclude Include="Component\UI\Menu\IMenuButton.h" />
     <ClInclude Include="DebugLayer\ImGuiInspector.h" />
     <ClInclude Include="DebugLayer\ImGuiWrapper.h" />
     <ClInclude Include="Component\Other\GameObjectSaveAndLoader.h" />
@@ -441,9 +444,11 @@
     <ClInclude Include="Component\GameState\GameClear.h" />
     <ClInclude Include="Component\GameState\GameJudge.h" />
     <ClInclude Include="Component\UI\GameEnd.h" />
-    <ClInclude Include="Component\UI\Menu.h" />
-    <ClInclude Include="Component\UI\MenuWindow.h" />
-    <ClInclude Include="Component\UI\MenuToStageSelect.h" />
+    <ClInclude Include="Component\UI\Menu\Menu.h" />
+    <ClInclude Include="Component\UI\Menu\MenuWindow.h" />
+    <ClInclude Include="Component\UI\Menu\MenuToStageSelect.h" />
+    <ClInclude Include="Component\UI\Menu\MenuClose.h" />
+    <ClInclude Include="Component\UI\Menu\MenuWindowInitializer.h" />
     <ClInclude Include="Mesh\Fbx\FbxUtility.h" />
     <ClInclude Include="Mesh\Fbx\FbxMotionParser.h" />
     <ClInclude Include="Imgui\imconfig.h" />
@@ -866,6 +871,7 @@
     <None Include="Assets\Data\GameStart.json" />
     <None Include="Assets\Data\Global.json" />
     <None Include="Assets\Data\Menu.json" />
+    <None Include="Assets\Data\MenuClose.json" />
     <None Include="Assets\Data\MenuToStageSelect.json" />
     <None Include="Assets\Data\MenuWindow.json" />
     <None Include="Assets\Data\NextStageSelect.json" />

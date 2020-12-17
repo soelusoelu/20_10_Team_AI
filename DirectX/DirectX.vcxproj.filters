@@ -240,11 +240,13 @@
     <ClCompile Include="Device\Button.cpp" />
     <ClCompile Include="Component\Sprite\SpriteButtonComponent.cpp" />
     <ClCompile Include="Component\UI\GameEnd.cpp" />
-    <ClCompile Include="Component\UI\NextStageSelect.cpp" />
     <ClCompile Include="Component\UI\CharacterPlacementWarning.cpp" />
-    <ClCompile Include="Component\UI\Menu.cpp" />
-    <ClCompile Include="Component\UI\MenuWindow.cpp" />
-    <ClCompile Include="Component\UI\MenuToStageSelect.cpp" />
+    <ClCompile Include="Component\UI\Menu\Menu.cpp" />
+    <ClCompile Include="Component\UI\Menu\MenuClose.cpp" />
+    <ClCompile Include="Component\UI\Menu\MenuToStageSelect.cpp" />
+    <ClCompile Include="Component\UI\Menu\MenuWindow.cpp" />
+    <ClCompile Include="Component\UI\NextStageSelect.cpp" />
+    <ClCompile Include="Component\UI\Menu\MenuWindowInitializer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -525,11 +527,14 @@
     <ClInclude Include="Device\IButton.h" />
     <ClInclude Include="Component\Sprite\SpriteButtonComponent.h" />
     <ClInclude Include="Component\UI\GameEnd.h" />
-    <ClInclude Include="Component\UI\NextStageSelect.h" />
     <ClInclude Include="Component\UI\CharacterPlacementWarning.h" />
-    <ClInclude Include="Component\UI\Menu.h" />
-    <ClInclude Include="Component\UI\MenuWindow.h" />
-    <ClInclude Include="Component\UI\MenuToStageSelect.h" />
+    <ClInclude Include="Component\UI\Menu\Menu.h" />
+    <ClInclude Include="Component\UI\Menu\MenuClose.h" />
+    <ClInclude Include="Component\UI\Menu\MenuToStageSelect.h" />
+    <ClInclude Include="Component\UI\Menu\MenuWindow.h" />
+    <ClInclude Include="Component\UI\Menu\IMenuButton.h" />
+    <ClInclude Include="Component\UI\NextStageSelect.h" />
+    <ClInclude Include="Component\UI\Menu\MenuWindowInitializer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />
@@ -571,5 +576,6 @@
     <None Include="Assets\Data\Menu.json" />
     <None Include="Assets\Data\MenuWindow.json" />
     <None Include="Assets\Data\MenuToStageSelect.json" />
+    <None Include="Assets\Data\MenuClose.json" />
   </ItemGroup>
 </Project>

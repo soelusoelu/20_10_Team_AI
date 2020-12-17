@@ -1,0 +1,32 @@
+﻿#include "Menu.h"
+#include "MenuWindow.h"
+#include "../../Sprite/SpriteButtonComponent.h"
+#include "../../Sprite/SpriteComponent.h"
+#include "../../../GameObject/GameObject.h"
+#include "../../../GameObject/GameObjectFactory.h"
+#include "../../../Sprite/SpriteUtility.h"
+
+Menu::Menu(GameObject& gameObject)
+    : Component(gameObject)
+    , mMenuWindow(nullptr)
+{
+}
+
+Menu::~Menu() = default;
+
+void Menu::start() {
+    mMenuWindow = GameObjectCreater::create("MenuWindow")->componentManager().getComponent<MenuWindow>();
+
+    const auto& button = getComponent<SpriteButtonComponent>();
+    button->callbackClick([&] { onClickMenuButton(); });
+}
+
+void Menu::onClickMenuButton() {
+    if (mMenuWindow->isOpen()) {
+        //メニューウィンドウが開かれている状態で押されたら、ウィンドウを閉じる
+        mMenuWindow->close();
+    } else {
+        //メニューウィンドウが閉じている状態で押されたら、ウィンドウを開く
+        mMenuWindow->open();
+    }
+}

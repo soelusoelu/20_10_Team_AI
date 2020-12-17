@@ -68,10 +68,12 @@
 #include "../Component/Text/TextNumber.h"
 #include "../Component/UI/CharacterPlacementWarning.h"
 #include "../Component/UI/GameEnd.h"
-#include "../Component/UI/Menu.h"
-#include "../Component/UI/MenuToStageSelect.h"
-#include "../Component/UI/MenuWindow.h"
 #include "../Component/UI/NextStageSelect.h"
+#include "../Component/UI/Menu/Menu.h"
+#include "../Component/UI/Menu/MenuClose.h"
+#include "../Component/UI/Menu/MenuToStageSelect.h"
+#include "../Component/UI/Menu/MenuWindow.h"
+#include "../Component/UI/Menu/MenuWindowInitializer.h"
 #include "../DebugLayer/Debug.h"
 #include "../System/GlobalFunction.h"
 #include "../Utility/LevelLoader.h"
@@ -165,10 +167,12 @@ GameObjectFactory::GameObjectFactory() {
 
     ADD_COMPONENT(CharacterPlacementWarning);
     ADD_COMPONENT(GameEnd);
+    ADD_COMPONENT(NextStageSelect);
     ADD_COMPONENT(Menu);
+    ADD_COMPONENT(MenuClose);
     ADD_COMPONENT(MenuToStageSelect);
     ADD_COMPONENT(MenuWindow);
-    ADD_COMPONENT(NextStageSelect);
+    ADD_COMPONENT(MenuWindowInitializer);
 }
 
 GameObjectFactory::~GameObjectFactory() {

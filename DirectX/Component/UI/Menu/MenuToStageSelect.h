@@ -1,18 +1,20 @@
 ﻿#pragma once
 
-#include "../Component.h"
+#include "IMenuButton.h"
+#include "../../Component.h"
 #include <memory>
 
 class Scene;
 class SpriteButtonComponent;
 
-class MenuToStageSelect : public Component {
+class MenuToStageSelect : public Component, public IMenuButton {
 public:
     MenuToStageSelect(GameObject& gameObject);
     ~MenuToStageSelect();
     virtual void start() override;
-    //メニューボタンが押された際の処理
-    void onClickMenuButton();
+
+    virtual void onOpenMenuWindow() override;
+    virtual void onCloseMenuWindow() override;
 
 private:
     MenuToStageSelect(const MenuToStageSelect&) = delete;

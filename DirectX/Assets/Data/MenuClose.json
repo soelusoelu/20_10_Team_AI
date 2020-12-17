@@ -1,0 +1,23 @@
+{
+  "components": [
+    {
+      "type": "MenuClose",
+      "properties": {}
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "drawOrder": 15,
+        "fileName": "close_menu.png",
+        "position": [ 960.0, 816.0 ],
+        "pivot": "Center"
+      }
+    },
+    {
+      "type": "SpriteButtonComponent",
+      "properties": {
+        "selectingSpriteFileName": "close_menu_dark.png"
+      }
+    }
+  ]
+}

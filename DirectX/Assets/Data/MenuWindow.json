@@ -5,6 +5,10 @@
       "properties": {}
     },
     {
+      "type": "MenuWindowInitializer",
+      "properties": {}
+    },
+    {
       "type": "SpriteComponent",
       "properties": {
         "drawOrder": 5,

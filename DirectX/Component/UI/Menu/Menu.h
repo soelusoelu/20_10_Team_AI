@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "../Component.h"
+#include "../../Component.h"
 #include <memory>
 
 class MenuWindow;
@@ -14,6 +14,9 @@ public:
 private:
     Menu(const Menu&) = delete;
     Menu& operator=(const Menu&) = delete;
+
+    //メニューボタンが押された際の処理
+    void onClickMenuButton();
 
 private:
     std::shared_ptr<MenuWindow> mMenuWindow;
