@@ -5,6 +5,7 @@
 
 class StageClear;
 class StageFail;
+class ClearToStageSelect;
 
 //ステージクリア時の状態管理クラス
 class GameClear : public Component {
@@ -33,4 +34,5 @@ private:
 private:
     std::shared_ptr<StageClear> mStageClear;
     std::shared_ptr<StageFail> mStageFail;
+    std::shared_ptr<ClearToStageSelect> mClearToStageSelect;
 };

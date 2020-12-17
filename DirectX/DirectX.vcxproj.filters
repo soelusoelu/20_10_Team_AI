@@ -249,6 +249,7 @@
     <ClCompile Include="Component\UI\Menu\MenuWindowInitializer.cpp" />
     <ClCompile Include="Component\UI\Menu\MenuToTitle.cpp" />
     <ClCompile Include="Component\UI\Menu\MenuGameEnd.cpp" />
+    <ClCompile Include="Component\UI\ClearToStageSelect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -539,6 +540,7 @@
     <ClInclude Include="Component\UI\Menu\MenuWindowInitializer.h" />
     <ClInclude Include="Component\UI\Menu\MenuToTitle.h" />
     <ClInclude Include="Component\UI\Menu\MenuGameEnd.h" />
+    <ClInclude Include="Component\UI\ClearToStageSelect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />
@@ -583,5 +585,6 @@
     <None Include="Assets\Data\MenuClose.json" />
     <None Include="Assets\Data\MenuToTitle.json" />
     <None Include="Assets\Data\MenuGameEnd.json" />
+    <None Include="Assets\Data\ClearToStageSelect.json" />
   </ItemGroup>
 </Project>

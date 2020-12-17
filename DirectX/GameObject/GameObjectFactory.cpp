@@ -67,6 +67,7 @@
 #include "../Component/Text/TextFloat.h"
 #include "../Component/Text/TextNumber.h"
 #include "../Component/UI/CharacterPlacementWarning.h"
+#include "../Component/UI/ClearToStageSelect.h"
 #include "../Component/UI/GameEnd.h"
 #include "../Component/UI/NextStageSelect.h"
 #include "../Component/UI/Menu/Menu.h"
@@ -168,6 +169,7 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(TextNumber);
 
     ADD_COMPONENT(CharacterPlacementWarning);
+    ADD_COMPONENT(ClearToStageSelect);
     ADD_COMPONENT(GameEnd);
     ADD_COMPONENT(NextStageSelect);
     ADD_COMPONENT(Menu);

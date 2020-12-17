@@ -1,6 +1,7 @@
 ﻿#include "GameClear.h"
 #include "StageClear.h"
 #include "StageFail.h"
+#include "../UI/ClearToStageSelect.h"
 #include "../../GameObject/GameObject.h"
 #include "../../GameObject/GameObjectFactory.h"
 
@@ -8,6 +9,7 @@ GameClear::GameClear(GameObject& gameObject)
     : Component(gameObject)
     , mStageClear(nullptr)
     , mStageFail(nullptr)
+    , mClearToStageSelect(nullptr)
 {
 }
 
@@ -16,6 +18,7 @@ GameClear::~GameClear() = default;
 void GameClear::start() {
     mStageClear = GameObjectCreater::create("StageClear")->componentManager().getComponent<StageClear>();
     mStageFail = GameObjectCreater::create("StageFail")->componentManager().getComponent<StageFail>();
+    mClearToStageSelect = GameObjectCreater::create("ClearToStageSelect")->componentManager().getComponent<ClearToStageSelect>();
 
     //最初は使用しない
     gameObject().setActive(false);
@@ -38,6 +41,7 @@ void GameClear::updateEnemyWin() {
 void GameClear::onWinPlayerSide() {
     gameObject().setActive(true);
     mStageClear->onWinPlayerSide();
+    mClearToStageSelect->onStageClear();
 }
 
 void GameClear::onWinEnemySide() {

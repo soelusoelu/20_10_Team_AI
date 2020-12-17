@@ -1,0 +1,24 @@
+{
+  "components": [
+    {
+      "type": "ClearToStageSelect",
+      "properties": {}
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "drawOrder": 105,
+        "fileName": "toSelect.png",
+        "position": [ 960.0, 720.0 ],
+        "scale": [ 1.25, 1.25 ],
+        "pivot": "Center"
+      }
+    },
+    {
+      "type": "SpriteButtonComponent",
+      "properties": {
+        "selectingSpriteFileName": "toSelect_dark.png"
+      }
+    }
+  ]
+}
