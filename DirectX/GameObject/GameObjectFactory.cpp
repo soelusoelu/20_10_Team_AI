@@ -72,6 +72,7 @@
 #include "../Component/UI/Menu/Menu.h"
 #include "../Component/UI/Menu/MenuClose.h"
 #include "../Component/UI/Menu/MenuToStageSelect.h"
+#include "../Component/UI/Menu/MenuToTitle.h"
 #include "../Component/UI/Menu/MenuWindow.h"
 #include "../Component/UI/Menu/MenuWindowInitializer.h"
 #include "../DebugLayer/Debug.h"
@@ -171,6 +172,7 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(Menu);
     ADD_COMPONENT(MenuClose);
     ADD_COMPONENT(MenuToStageSelect);
+    ADD_COMPONENT(MenuToTitle);
     ADD_COMPONENT(MenuWindow);
     ADD_COMPONENT(MenuWindowInitializer);
 }

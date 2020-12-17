@@ -10,6 +10,7 @@
         "drawOrder": 15,
         "fileName": "toSelect.png",
         "position": [ 960.0, 560.0 ],
+        "scale": [ 1.25, 1.25 ],
         "pivot": "Center"
       }
     },

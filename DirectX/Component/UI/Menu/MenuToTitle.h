@@ -2,23 +2,22 @@
 
 #include "IMenuButton.h"
 #include "../../Component.h"
-#include <memory>
 
 class Scene;
 class SpriteButtonComponent;
 
-class MenuToStageSelect : public Component, public IMenuButton {
+class MenuToTitle : public Component, public IMenuButton {
 public:
-    MenuToStageSelect(GameObject& gameObject);
-    ~MenuToStageSelect();
+    MenuToTitle(GameObject& gameObject);
+    ~MenuToTitle();
     virtual void start() override;
 
     virtual void onOpenMenuWindow() override;
     virtual void onCloseMenuWindow() override;
 
 private:
-    MenuToStageSelect(const MenuToStageSelect&) = delete;
-    MenuToStageSelect& operator=(const MenuToStageSelect&) = delete;
+    MenuToTitle(const MenuToTitle&) = delete;
+    MenuToTitle& operator=(const MenuToTitle&) = delete;
 
 private:
     std::shared_ptr<Scene> mCurrentScene;

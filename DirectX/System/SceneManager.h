@@ -40,5 +40,4 @@ private:
     DrawString* mTextDrawer;
     std::string mBeginScene;
     std::unordered_set<std::string> mRemoveExclusionTags;
-    bool mShouldDraw;
 };

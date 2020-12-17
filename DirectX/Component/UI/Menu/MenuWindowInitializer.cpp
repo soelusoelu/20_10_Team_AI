@@ -2,6 +2,7 @@
 #include "MenuWindow.h"
 #include "MenuClose.h"
 #include "MenuToStageSelect.h"
+#include "MenuToTitle.h"
 #include "../../../GameObject/GameObject.h"
 #include "../../../GameObject/GameObjectFactory.h"
 
@@ -16,9 +17,11 @@ void MenuWindowInitializer::start() {
     const auto& menuWindow = getComponent<MenuWindow>();
 
     const auto& toStageSelect = GameObjectCreater::create("MenuToStageSelect")->componentManager().getComponent<MenuToStageSelect>();
+    const auto& toTitle = GameObjectCreater::create("MenuToTitle")->componentManager().getComponent<MenuToTitle>();
     const auto& menuClose = GameObjectCreater::create("MenuClose")->componentManager().getComponent<MenuClose>();
     menuClose->setMenuWindow(menuWindow);
 
     menuWindow->addMenuButton(toStageSelect.get());
+    menuWindow->addMenuButton(toTitle.get());
     menuWindow->addMenuButton(menuClose.get());
 }

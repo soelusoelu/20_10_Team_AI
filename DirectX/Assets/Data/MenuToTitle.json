@@ -1,15 +1,15 @@
 {
   "components": [
     {
-      "type": "MenuClose",
+      "type": "MenuToTitle",
       "properties": {}
     },
     {
       "type": "SpriteComponent",
       "properties": {
         "drawOrder": 15,
-        "fileName": "close_menu.png",
-        "position": [ 960.0, 816.0 ],
+        "fileName": "toTitle.png",
+        "position": [ 960.0, 432.0 ],
         "scale": [ 1.25, 1.25 ],
         "pivot": "Center"
       }
@@ -17,7 +17,7 @@
     {
       "type": "SpriteButtonComponent",
       "properties": {
-        "selectingSpriteFileName": "close_menu_dark.png"
+        "selectingSpriteFileName": "toTitle_dark.png"
       }
     }
   ]

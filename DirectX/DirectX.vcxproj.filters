@@ -247,6 +247,7 @@
     <ClCompile Include="Component\UI\Menu\MenuWindow.cpp" />
     <ClCompile Include="Component\UI\NextStageSelect.cpp" />
     <ClCompile Include="Component\UI\Menu\MenuWindowInitializer.cpp" />
+    <ClCompile Include="Component\UI\Menu\MenuToTitle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -535,6 +536,7 @@
     <ClInclude Include="Component\UI\Menu\IMenuButton.h" />
     <ClInclude Include="Component\UI\NextStageSelect.h" />
     <ClInclude Include="Component\UI\Menu\MenuWindowInitializer.h" />
+    <ClInclude Include="Component\UI\Menu\MenuToTitle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />
@@ -577,5 +579,6 @@
     <None Include="Assets\Data\MenuWindow.json" />
     <None Include="Assets\Data\MenuToStageSelect.json" />
     <None Include="Assets\Data\MenuClose.json" />
+    <None Include="Assets\Data\MenuToTitle.json" />
   </ItemGroup>
 </Project>

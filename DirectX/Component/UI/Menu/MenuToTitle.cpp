@@ -1,33 +1,32 @@
-﻿#include "MenuToStageSelect.h"
+﻿#include "MenuToTitle.h"
 #include "../../Sprite/SpriteButtonComponent.h"
 #include "../../Scene/Scene.h"
 #include "../../../GameObject/GameObject.h"
 #include "../../../GameObject/GameObjectManager.h"
 
-MenuToStageSelect::MenuToStageSelect(GameObject& gameObject)
+MenuToTitle::MenuToTitle(GameObject& gameObject)
     : Component(gameObject)
     , mCurrentScene(nullptr)
-    , mButton(nullptr)
-{
+    , mButton(nullptr) {
 }
 
-MenuToStageSelect::~MenuToStageSelect() = default;
+MenuToTitle::~MenuToTitle() = default;
 
-void MenuToStageSelect::start() {
+void MenuToTitle::start() {
     mCurrentScene = gameObject().getGameObjectManager().find("Scene")->componentManager().getComponent<Scene>();
 
     mButton = getComponent<SpriteButtonComponent>();
-    mButton->callbackClick([&] { mCurrentScene->next("StageSelect"); });
+    mButton->callbackClick([&] { mCurrentScene->next("Title"); });
 
     //最初は使用しない
     gameObject().setActive(false);
 }
 
-void MenuToStageSelect::onOpenMenuWindow() {
+void MenuToTitle::onOpenMenuWindow() {
     gameObject().setActive(true);
     mButton->initialize();
 }
 
-void MenuToStageSelect::onCloseMenuWindow() {
+void MenuToTitle::onCloseMenuWindow() {
     gameObject().setActive(false);
 }
