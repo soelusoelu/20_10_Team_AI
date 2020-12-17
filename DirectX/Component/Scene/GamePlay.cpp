@@ -67,9 +67,12 @@ void GamePlay::start() {
     mGameReset->callbackGameReset([&] { mGameClear->initialize(); });
 
     mGameJudge->callbackPlayerWin([&] { mGameClear->onWinPlayerSide(); });
+    mGameJudge->callbackPlayerWin([&] { mGameReset->onWinPlayerSide(); });
+    mGameJudge->callbackPlayerWin([&] { mMenu->onWinPlayerSide(); });
     mGameJudge->callbackEnemyWin([&] { mGameClear->onWinEnemySide(); });
+    mGameJudge->callbackEnemyWin([&] { mGameReset->onWinEnemySide(); });
+    mGameJudge->callbackEnemyWin([&] { mMenu->onWinEnemySide(); });
     mGameJudge->callbackSomeWin([&] { mState = GameState::STAGE_CLEAR; });
-    mGameJudge->callbackSomeWin([&] { mMenu->onChangeStageClearPhase(); });
 }
 
 void GamePlay::update() {
@@ -77,7 +80,7 @@ void GamePlay::update() {
         mCharacterManager->updateForOperatePhase();
         mGameStart->originalUpdate();
     } else if (mState == GameState::ACTION_PHASE) {
-        mGameReset->originalUpdate();
+
     } else if (mState == GameState::STAGE_CLEAR) {
         if (mGameJudge->isWinPlayerSide()) {
             //プレイヤー側の勝利
@@ -85,7 +88,6 @@ void GamePlay::update() {
         } else {
             //エネミー側の勝利
             mGameClear->updateEnemyWin();
-            mGameReset->originalUpdate();
         }
     }
 

@@ -15,6 +15,7 @@ SpriteButtonComponent::SpriteButtonComponent(GameObject& gameObject)
     , mCallbackClick(std::make_unique<Subject>())
     , mEnableFunction(true)
     , mPreviousContains(false)
+    , mWaitOneFrame(true)
 {
 }
 
@@ -28,6 +29,10 @@ void SpriteButtonComponent::start() {
 }
 
 void SpriteButtonComponent::update() {
+    //1フレーム経過してないなら終了
+    if (!mWaitOneFrame) {
+        return;
+    }
     //ボタン機能が無効なら何もしない
     if (!mEnableFunction) {
         return;
@@ -46,6 +51,13 @@ void SpriteButtonComponent::update() {
 
     mPreviousContains = contains;
 }
+
+void SpriteButtonComponent::lateUpdate() {
+    if (!mWaitOneFrame) {
+        mWaitOneFrame = true;
+    }
+}
+
 void SpriteButtonComponent::loadProperties(const rapidjson::Value& inObj) {
     if (std::string fileName;  JsonHelper::getString(inObj, "selectingSpriteFileName", &fileName)) {
         mSelectingSprite = addComponent<SpriteComponent>("SpriteComponent");
@@ -55,6 +67,12 @@ void SpriteButtonComponent::loadProperties(const rapidjson::Value& inObj) {
 
 void SpriteButtonComponent::drawInspector() {
     ImGui::Checkbox("EnableFunction", &mEnableFunction);
+}
+
+void SpriteButtonComponent::onEnable(bool value) {
+    if (value) {
+        mWaitOneFrame = false;
+    }
 }
 
 void SpriteButtonComponent::initialize() {
@@ -68,6 +86,7 @@ void SpriteButtonComponent::setSprite(const SpritePtr& sprite) {
 
 void SpriteButtonComponent::enableButtonFunction(bool value) {
     mEnableFunction = value;
+    mWaitOneFrame = false;
 }
 
 void SpriteButtonComponent::callbackClick(const std::function<void()>& onClick) {

@@ -4,25 +4,27 @@
 #include <functional>
 #include <memory>
 
-class Subject;
-class SpriteComponent;
+class SpriteButtonComponent;
 
 class GameReset : public Component {
 public:
     GameReset(GameObject& gameObject);
     ~GameReset();
     virtual void start() override;
-    void originalUpdate();
+
     //アクションからリセットした際のコールバック
     void callbackGameReset(const std::function<void()>& callback);
     //アクションフェーズ移行時の処理
     void onChangeActionPhase();
+    //プレイヤー側がステージクリアした際の処理
+    void onWinPlayerSide();
+    //エネミー側がステージクリアした際の処理
+    void onWinEnemySide();
 
 private:
     GameReset(const GameReset&) = delete;
     GameReset& operator=(const GameReset&) = delete;
 
 private:
-    std::unique_ptr<Subject> mCallbackClickSprite;
-    std::shared_ptr<SpriteComponent> mSprite;
+    std::shared_ptr<SpriteButtonComponent> mButton;
 };

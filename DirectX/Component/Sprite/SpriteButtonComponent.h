@@ -16,8 +16,10 @@ public:
     ~SpriteButtonComponent();
     virtual void start() override;
     virtual void update() override;
+    virtual void lateUpdate() override;
     virtual void loadProperties(const rapidjson::Value& inObj) override;
     virtual void drawInspector() override;
+    virtual void onEnable(bool value) override;
 
     //初期化
     void initialize();
@@ -47,4 +49,5 @@ private:
     std::unique_ptr<Subject> mCallbackClick;
     bool mEnableFunction;
     bool mPreviousContains;
+    bool mWaitOneFrame;
 };

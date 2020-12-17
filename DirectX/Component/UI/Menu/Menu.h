@@ -12,8 +12,10 @@ public:
     ~Menu();
     virtual void start() override;
 
-    //ステージクリアした際の処理
-    void onChangeStageClearPhase();
+    //プレイヤー側がステージクリアした際の処理
+    void onWinPlayerSide();
+    //エネミー側がステージクリアした際の処理
+    void onWinEnemySide();
 
 private:
     Menu(const Menu&) = delete;

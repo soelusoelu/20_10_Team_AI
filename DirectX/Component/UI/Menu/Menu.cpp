@@ -22,8 +22,12 @@ void Menu::start() {
     mButton->callbackClick([&] { onClickMenuButton(); });
 }
 
-void Menu::onChangeStageClearPhase() {
+void Menu::onWinPlayerSide() {
     mButton->enableButtonFunction(false);
+}
+
+void Menu::onWinEnemySide() {
+    mButton->enableButtonFunction(true);
 }
 
 void Menu::onClickMenuButton() {
