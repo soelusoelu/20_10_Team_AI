@@ -217,6 +217,7 @@
     <ClCompile Include="Component\UI\Menu\MenuClose.cpp" />
     <ClCompile Include="Component\UI\Menu\MenuWindowInitializer.cpp" />
     <ClCompile Include="Component\UI\Menu\MenuToTitle.cpp" />
+    <ClCompile Include="Component\UI\Menu\MenuGameEnd.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxUtility.cpp" />
     <ClCompile Include="Mesh\Fbx\FbxMotionParser.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
@@ -451,6 +452,7 @@
     <ClInclude Include="Component\UI\Menu\MenuClose.h" />
     <ClInclude Include="Component\UI\Menu\MenuWindowInitializer.h" />
     <ClInclude Include="Component\UI\Menu\MenuToTitle.h" />
+    <ClInclude Include="Component\UI\Menu\MenuGameEnd.h" />
     <ClInclude Include="Mesh\Fbx\FbxUtility.h" />
     <ClInclude Include="Mesh\Fbx\FbxMotionParser.h" />
     <ClInclude Include="Imgui\imconfig.h" />
@@ -874,6 +876,7 @@
     <None Include="Assets\Data\Global.json" />
     <None Include="Assets\Data\Menu.json" />
     <None Include="Assets\Data\MenuClose.json" />
+    <None Include="Assets\Data\MenuGameEnd.json" />
     <None Include="Assets\Data\MenuToStageSelect.json" />
     <None Include="Assets\Data\MenuToTitle.json" />
     <None Include="Assets\Data\MenuWindow.json" />

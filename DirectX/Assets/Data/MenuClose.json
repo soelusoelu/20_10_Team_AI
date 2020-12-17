@@ -9,7 +9,7 @@
       "properties": {
         "drawOrder": 15,
         "fileName": "close_menu.png",
-        "position": [ 960.0, 816.0 ],
+        "position": [ 960.0, 806.0 ],
         "scale": [ 1.25, 1.25 ],
         "pivot": "Center"
       }

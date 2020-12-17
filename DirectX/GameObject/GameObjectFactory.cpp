@@ -71,6 +71,7 @@
 #include "../Component/UI/NextStageSelect.h"
 #include "../Component/UI/Menu/Menu.h"
 #include "../Component/UI/Menu/MenuClose.h"
+#include "../Component/UI/Menu/MenuGameEnd.h"
 #include "../Component/UI/Menu/MenuToStageSelect.h"
 #include "../Component/UI/Menu/MenuToTitle.h"
 #include "../Component/UI/Menu/MenuWindow.h"
@@ -171,6 +172,7 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(NextStageSelect);
     ADD_COMPONENT(Menu);
     ADD_COMPONENT(MenuClose);
+    ADD_COMPONENT(MenuGameEnd);
     ADD_COMPONENT(MenuToStageSelect);
     ADD_COMPONENT(MenuToTitle);
     ADD_COMPONENT(MenuWindow);

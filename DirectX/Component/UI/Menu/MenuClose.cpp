@@ -2,7 +2,6 @@
 #include "MenuWindow.h"
 #include "../../Sprite/SpriteButtonComponent.h"
 #include "../../../GameObject/GameObject.h"
-#include "../../../GameObject/GameObjectManager.h"
 
 MenuClose::MenuClose(GameObject& gameObject)
     : Component(gameObject)
