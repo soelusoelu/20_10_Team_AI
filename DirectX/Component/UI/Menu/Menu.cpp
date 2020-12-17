@@ -9,6 +9,7 @@
 Menu::Menu(GameObject& gameObject)
     : Component(gameObject)
     , mMenuWindow(nullptr)
+    , mButton(nullptr)
 {
 }
 
@@ -17,8 +18,12 @@ Menu::~Menu() = default;
 void Menu::start() {
     mMenuWindow = GameObjectCreater::create("MenuWindow")->componentManager().getComponent<MenuWindow>();
 
-    const auto& button = getComponent<SpriteButtonComponent>();
-    button->callbackClick([&] { onClickMenuButton(); });
+    mButton = getComponent<SpriteButtonComponent>();
+    mButton->callbackClick([&] { onClickMenuButton(); });
+}
+
+void Menu::onChangeStageClearPhase() {
+    mButton->enableButtonFunction(false);
 }
 
 void Menu::onClickMenuButton() {

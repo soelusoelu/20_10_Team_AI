@@ -4,12 +4,16 @@
 #include <memory>
 
 class MenuWindow;
+class SpriteButtonComponent;
 
 class Menu : public Component {
 public:
     Menu(GameObject& gameObject);
     ~Menu();
     virtual void start() override;
+
+    //ステージクリアした際の処理
+    void onChangeStageClearPhase();
 
 private:
     Menu(const Menu&) = delete;
@@ -20,4 +24,5 @@ private:
 
 private:
     std::shared_ptr<MenuWindow> mMenuWindow;
+    std::shared_ptr<SpriteButtonComponent> mButton;
 };

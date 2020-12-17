@@ -24,10 +24,6 @@
     {
       "type": "CharacterDead",
       "properties": {}
-    },
-    {
-      "type": "ASAI",
-      "properties": {}
     }
   ]
 }

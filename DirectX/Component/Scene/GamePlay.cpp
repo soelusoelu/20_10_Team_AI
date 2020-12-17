@@ -69,6 +69,7 @@ void GamePlay::start() {
     mGameJudge->callbackPlayerWin([&] { mGameClear->onWinPlayerSide(); });
     mGameJudge->callbackEnemyWin([&] { mGameClear->onWinEnemySide(); });
     mGameJudge->callbackSomeWin([&] { mState = GameState::STAGE_CLEAR; });
+    mGameJudge->callbackSomeWin([&] { mMenu->onChangeStageClearPhase(); });
 }
 
 void GamePlay::update() {

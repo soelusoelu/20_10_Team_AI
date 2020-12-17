@@ -1,6 +1,7 @@
 ﻿#include "SpriteButtonComponent.h"
 #include "../Sprite/SpriteComponent.h"
 #include "../../Device/Subject.h"
+#include "../../Imgui/imgui.h"
 #include "../../Input/Input.h"
 #include "../../Sprite/SpriteUtility.h"
 #include "../../Transform/Transform2D.h"
@@ -12,6 +13,7 @@ SpriteButtonComponent::SpriteButtonComponent(GameObject& gameObject)
     , mSprite(nullptr)
     , mSelectingSprite(nullptr)
     , mCallbackClick(std::make_unique<Subject>())
+    , mEnableFunction(true)
     , mPreviousContains(false)
 {
 }
@@ -26,6 +28,11 @@ void SpriteButtonComponent::start() {
 }
 
 void SpriteButtonComponent::update() {
+    //ボタン機能が無効なら何もしない
+    if (!mEnableFunction) {
+        return;
+    }
+
     const auto& mouse = Input::mouse();
 
     auto contains = SpriteUtility::contains(*mSprite, mouse.getMousePosition());
@@ -46,6 +53,10 @@ void SpriteButtonComponent::loadProperties(const rapidjson::Value& inObj) {
     }
 }
 
+void SpriteButtonComponent::drawInspector() {
+    ImGui::Checkbox("EnableFunction", &mEnableFunction);
+}
+
 void SpriteButtonComponent::initialize() {
     activeSpriteSettings(mSprite, mSelectingSprite);
     mPreviousContains = false;
@@ -53,6 +64,10 @@ void SpriteButtonComponent::initialize() {
 
 void SpriteButtonComponent::setSprite(const SpritePtr& sprite) {
     mSprite = sprite;
+}
+
+void SpriteButtonComponent::enableButtonFunction(bool value) {
+    mEnableFunction = value;
 }
 
 void SpriteButtonComponent::callbackClick(const std::function<void()>& onClick) {

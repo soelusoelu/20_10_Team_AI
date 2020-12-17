@@ -17,11 +17,14 @@ public:
     virtual void start() override;
     virtual void update() override;
     virtual void loadProperties(const rapidjson::Value& inObj) override;
+    virtual void drawInspector() override;
 
     //初期化
     void initialize();
     //スプライトを設定する
     void setSprite(const SpritePtr& sprite);
+    //ボタン機能の有効化を設定する
+    void enableButtonFunction(bool value);
     //クリックした際のコールバック
     void callbackClick(const std::function<void()>& onClick);
 
@@ -42,5 +45,6 @@ private:
     SpritePtr mSprite;
     SpritePtr mSelectingSprite;
     std::unique_ptr<Subject> mCallbackClick;
+    bool mEnableFunction;
     bool mPreviousContains;
 };
