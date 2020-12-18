@@ -20,6 +20,6 @@ private:
     ClearToStageSelect& operator=(const ClearToStageSelect&) = delete;
 
 private:
-    std::shared_ptr<Scene> mCurrentScene;
+    std::weak_ptr<Scene> mCurrentScene;
     std::shared_ptr<SpriteButtonComponent> mButton;
 };

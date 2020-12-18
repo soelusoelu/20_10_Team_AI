@@ -6,6 +6,7 @@
 
 ClearToStageSelect::ClearToStageSelect(GameObject& gameObject)
     : Component(gameObject)
+    , mButton(nullptr)
 {
 }
 
@@ -15,7 +16,7 @@ void ClearToStageSelect::start() {
     mCurrentScene = gameObject().getGameObjectManager().find("Scene")->componentManager().getComponent<Scene>();
 
     mButton = getComponent<SpriteButtonComponent>();
-    mButton->callbackClick([&] { mCurrentScene->next("StageSelect"); });
+    mButton->callbackClick([&] { mCurrentScene.lock()->next("StageSelect"); });
 
     //最初は使用しない
     gameObject().setActive(false);
