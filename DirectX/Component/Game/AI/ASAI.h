@@ -3,6 +3,7 @@
 #include "ASCell.h"
 #include "ASCellManager.h"
 #include "../../Component.h"
+#include "../../Engine/Collider/AABBCollider.h"
 #include "../../../Math/Vector3.h"
 #include "../Character/ICharacterManager.h"
 class CharacterCommonComponents;
@@ -21,8 +22,8 @@ public:
 	Vector3 GetNearEnemy();
 
 	//float JudgeCharacter(CharacterPtr chara, float distance);
-
-
+private:
+	std::shared_ptr<Collider> collider;
 private:
 	Vector3 CalcPosition(int phase);
 
@@ -46,5 +47,6 @@ private:
 	Position goal;
 	Vector3* targetPos;
 	//std::vector<ASCell>&cells;
+	bool avoidObstacle;
 };
 

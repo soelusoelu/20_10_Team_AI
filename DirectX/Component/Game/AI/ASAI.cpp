@@ -1,10 +1,15 @@
 #include "ASAI.h"
 #include "../../../Transform/Transform3D.h"
+#include "../../Engine/Collider/AABBCollider.h"
+
 #include "../../../Math/Vector3.h"
 #include "ASCellManager.h"
 #include "../../../GameObject/GameObject.h"
 #include "../Character/CharacterCommonComponents.h"
 #include "../Character/ICharacterManager.h"
+#include "../Other/HitPointComponent.h"
+#include "../../../Math/Math.h"
+
 
 ASAI::ASAI(GameObject& obj):Component(obj)
 {
@@ -21,16 +26,19 @@ void ASAI::Initialize()
 	Position start = VectorToPosition(transform().getPosition());
 	start.x = fmaxf(0,fminf( start.x, cellCountW - 1));
 	start.y = fmaxf(0, fminf(start.y,cellCountH-1));
-	goal = VectorToPosition(GetNearEnemy());
+	routePoint = GetNearEnemy();
+	goal = VectorToPosition(routePoint);
 	cells = manager->getMap()->GetCellsInfo();
 	cellManager = std::make_unique<ASCellManager>(cells,cellCountW, cellCountH, start, goal);
 	routes = cellManager->GetRoute();
 	routePhase = 0;
-	if (routes.size() != 0)
+	avoidObstacle = cellManager->avoidObstacle;
+	if (avoidObstacle)
 	{
 		routePoint = CalcPosition(routePhase);
 		routePhase++;
 	}
+
 }
 
 void ASAI::start()
@@ -41,6 +49,7 @@ void ASAI::start()
 		 ccc->callbackSetManager([&] { manager = getComponent<CharacterCommonComponents>()->getManager(); });
      }
 	//transform().setPosition(Vector3(-90, 0, -90));
+	collider=getComponent<AABBCollider>();
 }
 
 void ASAI::originalUpdate()
@@ -56,13 +65,35 @@ void ASAI::originalUpdate()
 		Vector3 v3 = routePoint - transform().getPosition();
 		float distance = v3.length();
 		v3.normalize();
-		transform().translate(v3 / 3);
-		if (distance < 1 && routePhase < routes.size())
+		if (distance > 1)
+		{
+			transform().translate(v3 / 2);
+		}
+		if (distance < 1 && routePhase < routes.size()&&avoidObstacle)
 		{
 			routePoint = CalcPosition(routePhase);
 			routePhase++;
 		}
+		if (!avoidObstacle)
+		{
+			routePoint = GetNearEnemy();
+		}
+		std::list<std::shared_ptr<Collider>> cols = collider->onCollisionStay();
+		for (auto itr = cols.begin(); itr != cols.end(); ++itr)
+		{
+			if (cols.front()->gameObject().tag() != gameObject().tag())
+			{
+				cols.front()->getComponent<HitPointComponent>()->takeDamage(10);
+				//break;
+			}
+		}
+		if (!collider->onCollisionExit().empty())
+		{
+			Initialize();
+		}
+
 	}
+	
 }
 
 Vector3 ASAI::GetNearEnemy()

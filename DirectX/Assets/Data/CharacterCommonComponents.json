@@ -28,6 +28,17 @@
     {
       "type": "ASAI",
       "properties": {}
+    },
+    {
+      "type": "AABBCollider",
+      "properties": {}
+    },
+        {
+      "type": "HitPointComponent",
+      "properties": {
+        "HP": 100
+      }
     }
+
   ]
 }

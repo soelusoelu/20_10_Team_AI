@@ -37,6 +37,8 @@ public:
 
 	Position GetGoalPosition();
 
+	bool avoidObstacle = false;
+
 	std::vector<E_State> cellStates;
 	//Map‚©‚çæ“¾‚µ‚½Cellî•ñ
 	std::vector<ASCell> cells;
@@ -53,6 +55,7 @@ private:
 
 private:
 	int cellsWidth=22, cellsHeight=22;
+
 };
 
 #endif
