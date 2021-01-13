@@ -62,7 +62,7 @@ void Map::receiveMapData(const std::string& mapName) {
 	{
 		Triangle mp = mGroundMesh->getMesh()->getPolygon(0, i,mv);
 		float pHeight = mp.p0.y + mp.p1.y + mp.p2.y;
-		if (pHeight > 0) {
+		if (pHeight > 1) {
 			float xMax = fmaxf(mp.p0.x, fmaxf(mp.p1.x, mp.p2.x));
 			float xMin = fminf(mp.p0.x, fminf(mp.p1.x, mp.p2.x));
 			float zMax = fmaxf(mp.p0.z, fmaxf(mp.p1.z, mp.p2.z));
