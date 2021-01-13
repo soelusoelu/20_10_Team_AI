@@ -1,6 +1,6 @@
 ﻿#include "SpriteManager.h"
-#include "../Component/Sprite/Sprite3D.h"
-#include "../Component/Sprite/SpriteComponent.h"
+#include "../Component/Engine/Sprite/Sprite3D.h"
+#include "../Component/Engine/Sprite/SpriteComponent.h"
 #include <algorithm>
 
 SpriteManager::SpriteManager() {

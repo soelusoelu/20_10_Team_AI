@@ -1,5 +1,5 @@
 ﻿#include "WAV.h"
-#include "../../DebugLayer/Debug.h"
+#include "../../Engine/DebugManager/DebugUtility/Debug.h"
 
 WAV::WAV() :
     mHMmio(nullptr),

@@ -39,6 +39,13 @@ enum class KeyCode {
     RightAlt = DIK_RALT,
     Tab = DIK_TAB,
     Escape = DIK_ESCAPE,
+    Backspace = DIK_BACKSPACE,
+    Insert = DIK_INSERT,
+    Delete = DIK_DELETE,
+    Home = DIK_HOME,
+    End = DIK_END,
+    PageUp = DIK_PGUP,
+    PageDown = DIK_PGDN,
     UpArrow = DIK_UPARROW,
     DownArrow = DIK_DOWNARROW,
     LeftArrow = DIK_LEFTARROW,
@@ -81,6 +88,9 @@ public:
     //縦横
     virtual int horizontal() const = 0;
     virtual int vertical() const = 0;
+    //キーが押された瞬間の対応する数字を取得する
+    //押されなかったら-1
+    virtual int getNumber() const = 0;
     //決定キーが押された瞬間か
     virtual bool getEnter() const = 0;
 };

@@ -1,4 +1,6 @@
 ﻿#include "Button.h"
+#include "../Collision/Collision.h"
+#include "../Input/Input.h"
 #include "../Sprite/Sprite.h"
 #include "../Transform/Transform2D.h"
 
@@ -35,7 +37,20 @@ bool Button::containsPoint(const Vector2& pt) const {
     return !no;
 }
 
-void Button::onClick() {
+bool Button::clickButton(const Vector2& pt) const {
+    if (!Input::mouse().getMouseButtonDown(MouseCode::LeftButton)) {
+        return false;
+    }
+
+    if (!containsPoint(pt)) {
+        return false;
+    }
+
+    onClick();
+    return true;
+}
+
+void Button::onClick() const {
     if (mOnClick) {
         mOnClick();
     }
@@ -69,17 +84,34 @@ bool SpriteButton::getHighlighted() const {
 }
 
 bool SpriteButton::containsPoint(const Vector2& pt) const {
-    const auto& pos = mSprite->transform().getPosition();
-    const auto& size = mSprite->getTextureSize();
+    //計算に必要な要素を取得する
+    const auto& t = mSprite->transform();
+    const auto& scale = t.getScale();
+    const auto& pivot = t.getPivot() * scale;
+    const auto& compenPos = t.getPosition() - pivot;
+    const auto& texSize = mSprite->getTextureSize() * scale;
 
-    bool no = pt.x < (pos.x) ||
-        pt.x >(pos.x + size.x) ||
-        pt.y < (pos.y) ||
-        pt.y >(pos.y + size.y);
-    return !no;
+    //スプライトをもとに矩形作成
+    Square square(compenPos, compenPos + texSize);
+
+    //矩形の中にマウスの座標が含まれているか
+    return square.contains(pt);
 }
 
-void SpriteButton::onClick() {
+bool SpriteButton::clickButton(const Vector2& pt) const {
+    if (!Input::mouse().getMouseButtonDown(MouseCode::LeftButton)) {
+        return false;
+    }
+
+    if (!containsPoint(pt)) {
+        return false;
+    }
+
+    onClick();
+    return true;
+}
+
+void SpriteButton::onClick() const {
     if (mOnClick) {
         mOnClick();
     }

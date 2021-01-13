@@ -1,7 +1,7 @@
 ﻿#include "MP3.h"
 #include "FrameHeader.h"
 #include "SoundFormatConverter.h"
-#include "../../DebugLayer/Debug.h"
+#include "../../Engine/DebugManager/DebugUtility/Debug.h"
 #include <cassert>
 #include <filesystem>
 #include <string>

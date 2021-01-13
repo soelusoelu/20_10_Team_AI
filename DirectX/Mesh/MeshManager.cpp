@@ -1,15 +1,14 @@
 ﻿#include "MeshManager.h"
-#include "../Component/Camera/Camera.h"
-#include "../Component/Mesh/MeshComponent.h"
-#include "../Component/Mesh/MeshRenderer.h"
-#include "../Component/Mesh/ShadowMap.h"
+#include "../Component/Engine/Mesh/MeshComponent.h"
+#include "../Component/Engine/Mesh/MeshRenderer.h"
+#include "../Component/Engine/Mesh/ShadowMap.h"
 #include "../DirectX/DirectXInclude.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/GameObjectFactory.h"
 #include "../Transform/Transform3D.h"
 
 MeshManager::MeshManager()
-    : mShadowMap(nullptr)
+    : mShadowMap(std::make_unique<ShadowMap>())
 {
     MeshRenderer::setMeshManager(this);
 }
@@ -18,27 +17,8 @@ MeshManager::~MeshManager() {
     MeshRenderer::setMeshManager(nullptr);
 }
 
-void MeshManager::createShadowMap() {
-    auto sm = GameObjectCreater::create("ShadowMap");
-    mShadowMap = sm->componentManager().getComponent<ShadowMap>();
-}
-
-void MeshManager::update() {
-    remove();
-}
-
-void MeshManager::draw(const Camera& camera, const DirectionalLight& dirLight) const {
-    if (mShadowMeshes.empty()) {
-        return;
-    }
-
-    MyDirectX::DirectX::instance().rasterizerState()->setCulling(CullMode::BACK);
-
-    if (mShadowMap) {
-        drawShadow(camera, dirLight);
-    }
-
-    drawMeshes(camera, dirLight);
+const MeshPtrList& MeshManager::getMeshes() const {
+    return mShadowMeshes;
 }
 
 void MeshManager::add(const MeshPtr& mesh, bool handleShadow) {
@@ -49,8 +29,53 @@ void MeshManager::add(const MeshPtr& mesh, bool handleShadow) {
     }
 }
 
+void MeshManager::loadProperties(const rapidjson::Value& inObj) {
+    mShadowMap->loadProperties(inObj);
+}
+
+void MeshManager::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) {
+    mShadowMap->saveProperties(alloc, inObj);
+}
+
+void MeshManager::initialize() {
+    mShadowMap->initialize();
+}
+
+void MeshManager::update() {
+    remove();
+}
+
+void MeshManager::draw(
+    const Matrix4& view,
+    const Matrix4& projection,
+    const Vector3& cameraPosition,
+    const Vector3& dirLightDirection,
+    const Vector3& dirLightColor
+) const {
+    if (mShadowMeshes.empty() && mMeshes.empty()) {
+        return;
+    }
+
+    MyDirectX::DirectX::instance().rasterizerState()->setCulling(CullMode::BACK);
+
+    if (mShadowMap) {
+        drawShadow(view, projection, cameraPosition, dirLightDirection, dirLightColor);
+    }
+
+    drawMeshes(view, projection, cameraPosition, dirLightDirection, dirLightColor);
+}
+
 void MeshManager::clear() {
     remove();
+}
+
+void MeshManager::erase(const MeshPtr& mesh) {
+    mShadowMeshes.remove(mesh);
+    mMeshes.remove(mesh);
+}
+
+void MeshManager::registerThisToMeshRenderer() {
+    MeshRenderer::setMeshManager(this);
 }
 
 void MeshManager::remove() {
@@ -73,7 +98,7 @@ void MeshManager::remove() {
     }
 }
 
-bool MeshManager::isDraw(const MeshRenderer& mesh, const Camera& camera) const {
+bool MeshManager::isDraw(const MeshRenderer& mesh) const {
     if (mesh.isDead()) {
         return false;
     }
@@ -86,17 +111,23 @@ bool MeshManager::isDraw(const MeshRenderer& mesh, const Camera& camera) const {
     return true;
 }
 
-void MeshManager::drawMeshes(const Camera& camera, const DirectionalLight& dirLight) const {
+void MeshManager::drawMeshes(
+    const Matrix4& view,
+    const Matrix4& projection,
+    const Vector3& cameraPosition,
+    const Vector3& dirLightDirection,
+    const Vector3& dirLightColor
+) const {
     //影の影響を受けるメッシュの描画
     for (const auto& mesh : mShadowMeshes) {
-        if (!isDraw(*mesh, camera)) {
+        if (!isDraw(*mesh)) {
             continue;
         }
 
         //深度テクスチャを転送する
         mShadowMap->transferShadowTexture();
 
-        mesh->draw(camera, dirLight);
+        mesh->draw(view, projection, cameraPosition, dirLightDirection, dirLightColor);
 
         //深度テクスチャの後処理
         mShadowMap->drawEndShadowTexture();
@@ -104,21 +135,27 @@ void MeshManager::drawMeshes(const Camera& camera, const DirectionalLight& dirLi
 
     //影の影響を受けないメッシュの描画
     for (const auto& mesh : mMeshes) {
-        if (!isDraw(*mesh, camera)) {
+        if (!isDraw(*mesh)) {
             continue;
         }
 
-        mesh->draw(camera, dirLight);
+        mesh->draw(view, projection, cameraPosition, dirLightDirection, dirLightColor);
     }
 }
 
-void MeshManager::drawShadow(const Camera& camera, const DirectionalLight& dirLight) const {
+void MeshManager::drawShadow(
+    const Matrix4& view,
+    const Matrix4& projection,
+    const Vector3& cameraPosition,
+    const Vector3& dirLightDirection,
+    const Vector3& dirLightColor
+) const {
     //描画準備
-    mShadowMap->drawBegin(camera, dirLight);
+    mShadowMap->drawBegin(dirLightDirection);
 
     for (const auto& mesh : mShadowMeshes) {
         //描画できないなら次へ
-        if (!isDraw(*mesh, camera)) {
+        if (!isDraw(*mesh)) {
             continue;
         }
 

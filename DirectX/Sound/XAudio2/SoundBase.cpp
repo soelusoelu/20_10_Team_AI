@@ -1,7 +1,7 @@
 ﻿#include "SoundBase.h"
 #include "XAudio2.h"
 #include "../Voice/MasteringVoice/MasteringVoice.h"
-#include "../../DebugLayer/Debug.h"
+#include "../../Engine/DebugManager/DebugUtility/Debug.h"
 #include "../../System/GlobalFunction.h"
 #include <xaudio2.h>
 #include <cassert>

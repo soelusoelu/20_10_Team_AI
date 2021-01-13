@@ -1,6 +1,6 @@
 ﻿#include "BufferSubmitter.h"
 #include "../../Voice/SourceVoice/SourceVoice.h"
-#include "../../../DebugLayer/Debug.h"
+#include "../../../Engine/DebugManager/DebugUtility/Debug.h"
 
 BufferSubmitter::BufferSubmitter(SourceVoice& sourceVoice) :
     mSourceVoice(sourceVoice) {

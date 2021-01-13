@@ -7,7 +7,7 @@
 #include "../Voice/SourceVoice/SourceVoice.h"
 #include "../Volume/SoundFade.h"
 #include "../Volume/SoundVolume.h"
-#include "../../DebugLayer/Debug.h"
+#include "../../Engine/DebugManager/DebugUtility/Debug.h"
 
 SoundPlayer::SoundPlayer(SourceVoice& sourceVoice, std::unique_ptr<ISoundLoader>& loader, const WaveFormat& format, float maxFrequencyRatio) :
     mSourceVoice(sourceVoice),

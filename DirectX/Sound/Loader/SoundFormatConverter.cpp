@@ -1,5 +1,5 @@
 ﻿#include "SoundFormatConverter.h"
-#include "../../DebugLayer/Debug.h"
+#include "../../Engine/DebugManager/DebugUtility/Debug.h"
 #include "../../System/GlobalFunction.h"
 
 SoundFormatConverter::SoundFormatConverter() :

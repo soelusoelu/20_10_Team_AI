@@ -5,7 +5,7 @@
 #include "../Voice/SubmixVoice/SubmixVoice.h"
 #include "../XAudio2/SoundBase.h"
 #include "../XAudio2/XAudio2.h"
-#include "../../DebugLayer/Debug.h"
+#include "../../Engine/DebugManager/DebugUtility/Debug.h"
 #include "../../Utility/FileUtil.h"
 
 SoundCreater::SoundCreater(const SoundBase& base) :

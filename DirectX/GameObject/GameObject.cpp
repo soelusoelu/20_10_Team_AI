@@ -4,8 +4,8 @@
 #include "../Component/ComponentManager.h"
 
 GameObject::GameObject() :
-    mTransform(nullptr),
-    mComponentManager(nullptr),
+    mTransform(std::make_unique<Transform3D>(this)),
+    mComponentManager(std::make_unique<ComponentManager>()),
     mName(),
     mTag(),
     mIsActive(true) {
@@ -48,6 +48,10 @@ bool GameObject::getActive() const {
     return mIsActive;
 }
 
+void GameObject::setName(const std::string& name) {
+    mName = name;
+}
+
 const std::string& GameObject::name() const {
     return mName;
 }
@@ -78,20 +82,14 @@ GameObjectManager& GameObject::getGameObjectManager() {
 
 std::shared_ptr<GameObject> GameObject::create(const std::string& name, const std::string& tag) {
     auto obj = std::make_shared<GameObject>();
-    //名前とタグをそれぞれ設定
+    //名前を設定
     obj->mName = name;
+    //タグを設定
     obj->mTag = tag;
-    //初期化
-    obj->initialize();
-
-    return obj;
-}
-
-void GameObject::initialize() {
+    //マネージャーに登録
     if (mGameObjectManager) {
-        mGameObjectManager->add(shared_from_this());
+        mGameObjectManager->add(obj);
     }
 
-    mTransform = std::make_unique<Transform3D>();
-    mComponentManager = std::make_unique<ComponentManager>();
+    return obj;
 }

@@ -1,6 +1,6 @@
 ﻿#include "InputElementManager.h"
 #include "../SystemInclude.h"
-#include "../../DebugLayer/Debug.h"
+#include "../../Engine/DebugManager/DebugUtility/Debug.h"
 
 InputElementManager::InputElementManager() {
     mInputLayouts.emplace("Texture.hlsl", InputLayout{
@@ -65,6 +65,12 @@ InputElementManager::InputElementManager() {
     });
 
     mInputLayouts.emplace("SimpleMesh.hlsl", InputLayout{
+        { "POSITION", 0, VertexType::VERTEX_TYPE_FLOAT3, 0, 0, SlotClass::SLOT_CLASS_VERTEX_DATA, 0 },
+        { "NORMAL", 0, VertexType::VERTEX_TYPE_FLOAT3, 0, D3D11_APPEND_ALIGNED_ELEMENT, SlotClass::SLOT_CLASS_VERTEX_DATA, 0 },
+        { "TEXCOORD", 0, VertexType::VERTEX_TYPE_FLOAT2, 0, D3D11_APPEND_ALIGNED_ELEMENT, SlotClass::SLOT_CLASS_VERTEX_DATA, 0 }
+    });
+
+    mInputLayouts.emplace("SimpleMeshTexture.hlsl", InputLayout{
         { "POSITION", 0, VertexType::VERTEX_TYPE_FLOAT3, 0, 0, SlotClass::SLOT_CLASS_VERTEX_DATA, 0 },
         { "NORMAL", 0, VertexType::VERTEX_TYPE_FLOAT3, 0, D3D11_APPEND_ALIGNED_ELEMENT, SlotClass::SLOT_CLASS_VERTEX_DATA, 0 },
         { "TEXCOORD", 0, VertexType::VERTEX_TYPE_FLOAT2, 0, D3D11_APPEND_ALIGNED_ELEMENT, SlotClass::SLOT_CLASS_VERTEX_DATA, 0 }

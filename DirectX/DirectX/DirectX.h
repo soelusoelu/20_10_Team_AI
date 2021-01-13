@@ -21,6 +21,7 @@ enum class PrimitiveType {
 
 class BlendState;
 class DepthStencilState;
+class DepthStencilView;
 class RasterizerState;
 class RenderTargetView;
 
@@ -37,9 +38,9 @@ public:
 
     ID3D11Device* device() const;
     ID3D11DeviceContext* deviceContext() const;
-    ID3D11DepthStencilView* depthStencilView() const;
     const std::shared_ptr<BlendState>& blendState() const;
     const std::shared_ptr<DepthStencilState>& depthStencilState() const;
+    const std::shared_ptr<DepthStencilView>& depthStencilView() const;
     const std::shared_ptr<RasterizerState>& rasterizerState() const;
 
     void setViewport(float width, float height, float x = 0.f, float y = 0.f) const;
@@ -71,12 +72,12 @@ private:
     Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
     Microsoft::WRL::ComPtr<IDXGIFactory6> mDXGIFactory;
     Microsoft::WRL::ComPtr<IDXGISwapChain4> mSwapChain;
-    Microsoft::WRL::ComPtr<ID3D11DepthStencilView> mDepthStencilView;
 
     std::unique_ptr<RenderTargetView> mRenderTargetView;
     std::unique_ptr<RenderTargetView> mDebugRenderTargetView;
     std::shared_ptr<BlendState> mBlendState;
     std::shared_ptr<DepthStencilState> mDepthStencilState;
+    std::shared_ptr<DepthStencilView> mDepthStencilView;
     std::shared_ptr<RasterizerState> mRasterizerState;
 };
 

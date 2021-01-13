@@ -1,5 +1,5 @@
 #include "TestEffectParameters.h"
-#include "../../DebugLayer/Debug.h"
+#include "../../Engine/DebugManager/DebugUtility/Debug.h"
 
 TestEffectParameters::TestEffectParameters() :
     CXAPOParametersBase(&xapoRegProp_, (BYTE*)mParams, sizeof(float), FALSE),

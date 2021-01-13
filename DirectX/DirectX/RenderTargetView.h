@@ -6,20 +6,27 @@
 #include <vector>
 
 class Texture2D;
+class DepthStencilView;
 
 class RenderTargetView {
 public:
     RenderTargetView(const Texture2D& texture2D, const RenderTargetViewDesc* desc = nullptr);
     ~RenderTargetView();
-    //レンダーターゲットを設定する
-    void setRenderTarget(ID3D11DepthStencilView* depthStencilView = nullptr) const;
+    //デフォルトの深度ステンシルビューを使用して、レンダーターゲットを設定する
+    void setRenderTarget() const;
+    //深度ステンシルビューを使用して、レンダーターゲットを設定する
+    void setRenderTarget(const DepthStencilView& depthStencilView) const;
     //レンダーターゲットをクリアする
-    void clearRenderTarget(float r = 0.f, float g = 0.f, float b = 1.f, float a = 1.f) const;
+    void clear(float r = 0.f, float g = 0.f, float b = 1.f, float a = 1.f) const;
 
-    //複数のレンダーターゲットを設定する
+    //デフォルトの深度ステンシルビューを使用して、複数のレンダーターゲットを設定する
+    static void setRenderTargets(
+        const std::vector<std::unique_ptr<RenderTargetView>>& targets
+    );
+    //深度ステンシルビューを使用して、レンダーターゲットを設定する
     static void setRenderTargets(
         const std::vector<std::unique_ptr<RenderTargetView>>& targets,
-        ID3D11DepthStencilView* depthStencilView = nullptr
+        const DepthStencilView& depthStencilView
     );
 
 private:

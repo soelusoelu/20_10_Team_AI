@@ -1,5 +1,5 @@
 ﻿#include "Transform2D.h"
-#include "../DebugLayer/ImGuiWrapper.h"
+#include "../Engine/DebugManager/DebugLayer/Inspector/ImGuiWrapper.h"
 #include "../System/Window.h"
 
 Transform2D::Transform2D() :

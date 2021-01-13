@@ -1,5 +1,5 @@
 ﻿#include "Echo.h"
-#include "../../../DebugLayer/Debug.h"
+#include "../../../Engine/DebugManager/DebugUtility/Debug.h"
 
 Echo::Echo() :
     mXAPO(nullptr) {

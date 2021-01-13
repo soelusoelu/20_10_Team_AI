@@ -2,7 +2,7 @@
 #include "SoundPlayer.h"
 #include "SoundPlayTimer.h"
 #include "../Voice/SourceVoice/SourceVoice.h"
-#include "../../DebugLayer/Debug.h"
+#include "../../Engine/DebugManager/DebugUtility/Debug.h"
 
 Frequency::Frequency(SourceVoice& sourceVoice, SoundPlayer& player, float maxFrequencyRatio) :
     mSourceVoice(sourceVoice),

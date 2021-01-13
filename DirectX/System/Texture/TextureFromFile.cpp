@@ -1,6 +1,6 @@
 ﻿#include "TextureFromFile.h"
-#include "../../DebugLayer/Debug.h"
 #include "../../DirectX/DirectXInclude.h"
+#include "../../Engine/DebugManager/DebugUtility/Debug.h"
 #include "../../System/SystemInclude.h"
 #include "../../Utility/StringUtil.h"
 #include <DirectXTex.h>

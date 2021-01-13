@@ -1,7 +1,7 @@
 ﻿#include "ConstantBufferManager.h"
 #include "ConstantBuffers.h"
-#include "../../DebugLayer/Debug.h"
 #include "../../DirectX/DirectXInclude.h"
+#include "../../Engine/DebugManager/DebugUtility/Debug.h"
 
 ConstantBufferManager::ConstantBufferManager() {
     mConstantBuffers.emplace("Texture.hlsl", BuffersSize{ sizeof(TextureConstantBuffer) });
@@ -16,6 +16,7 @@ ConstantBufferManager::ConstantBufferManager() {
     mConstantBuffers.emplace("Line3D.hlsl", BuffersSize{ sizeof(LineConstantBuffer) });
     mConstantBuffers.emplace("PointLight.hlsl", BuffersSize{ sizeof(PointLightConstantBuffer) });
     mConstantBuffers.emplace("SimpleMesh.hlsl", BuffersSize{ sizeof(SimpleMeshConstantBuffer) });
+    mConstantBuffers.emplace("SimpleMeshTexture.hlsl", BuffersSize{ sizeof(SimpleMeshConstantBuffer), sizeof(MaterialConstantBuffer) });
     mConstantBuffers.emplace("OutLine.hlsl", BuffersSize{ sizeof(OutLineConstantBuffer) });
     mConstantBuffers.emplace("SkinMeshOutLine.hlsl", BuffersSize{ sizeof(OutLineConstantBuffer), sizeof(SkinMeshConstantBuffer) });
     mConstantBuffers.emplace("ShadowDepthTextureCreater.hlsl", BuffersSize{ sizeof(SimpleMeshConstantBuffer) });

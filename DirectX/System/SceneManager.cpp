@@ -2,17 +2,20 @@
 #include "Game.h"
 #include "GlobalFunction.h"
 #include "../Component/ComponentManager.h"
-#include "../Component/Camera/Camera.h"
-#include "../Component/Scene/Scene.h"
-#include "../Component/Text/TextBase.h"
-#include "../DebugLayer/DebugUtility.h"
-#include "../DebugLayer/LineRenderer/LineRenderer2D.h"
-#include "../DebugLayer/LineRenderer/LineRenderer3D.h"
-#include "../DebugLayer/Pause.h"
-#include "../DebugLayer/PointRenderer.h"
+#include "../Component/Engine/Camera/Camera.h"
+#include "../Component/Engine/Light/DirectionalLight.h"
+#include "../Component/Engine/Scene/Scene.h"
+#include "../Component/Engine/Text/TextBase.h"
 #include "../Device/DrawString.h"
 #include "../Device/Physics.h"
 #include "../Device/Renderer.h"
+#include "../Engine/EngineFunctionManager.h"
+#include "../Engine/DebugManager/DebugManager.h"
+#include "../Engine/DebugManager/DebugLayer/DebugLayer.h"
+#include "../Engine/DebugManager/DebugLayer/Hierarchy.h"
+#include "../Engine/DebugManager/DebugLayer/Inspector/ImGuiInspector.h"
+#include "../Engine/MapEditor/MapEditorMeshManager.h"
+#include "../Engine/Pause/Pause.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/GameObjectFactory.h"
 #include "../GameObject/GameObjectManager.h"
@@ -27,6 +30,7 @@ SceneManager::SceneManager()
     : mRenderer(std::make_unique<Renderer>())
     , mCurrentScene(nullptr)
     , mCamera(nullptr)
+    , mEngineManager(std::make_unique<EngineFunctionManager>())
     , mGameObjectManager(std::make_unique<GameObjectManager>())
     , mMeshManager(std::make_unique<MeshManager>())
     , mSpriteManager(std::make_unique<SpriteManager>())
@@ -34,6 +38,8 @@ SceneManager::SceneManager()
     , mLightManager(std::make_unique<LightManager>())
     , mTextDrawer(new DrawString())
     , mBeginScene()
+    , mReleaseScene()
+    , mMode(EngineMode::GAME)
 {
 }
 
@@ -44,75 +50,97 @@ SceneManager::~SceneManager() {
 }
 
 void SceneManager::loadProperties(const rapidjson::Value& inObj) {
-    JsonHelper::getString(inObj, "beginScene", &mBeginScene);
+    const auto& sceneObj = inObj["sceneManager"];
+    if (sceneObj.IsObject()) {
+        JsonHelper::getString(sceneObj, "beginScene", &mBeginScene);
+        JsonHelper::getString(sceneObj, "releaseScene", &mReleaseScene);
+        JsonHelper::getStringArray(sceneObj, "removeExclusionTag", &mRemoveExclusionTags);
+    }
+
+    mEngineManager->loadProperties(inObj);
+    mMeshManager->loadProperties(inObj);
     mLightManager->loadProperties(inObj);
     mTextDrawer->loadProperties(inObj);
-
-    std::vector<std::string> tags;
-    JsonHelper::getStringArray(inObj, "removeExclusionTag", &tags);
-    for (const auto& tag : tags) {
-        mRemoveExclusionTags.emplace(tag);
-    }
 }
 
-void SceneManager::initialize() {
+void SceneManager::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const {
+    rapidjson::Value props(rapidjson::kObjectType);
+    JsonHelper::setString(alloc, &props, "beginScene", mBeginScene);
+    JsonHelper::setString(alloc, &props, "releaseScene", mReleaseScene);
+    JsonHelper::setStringArray(alloc, &props, "removeExclusionTag", mRemoveExclusionTags);
+    inObj.AddMember("sceneManager", props, alloc);
+
+    mEngineManager->saveProperties(alloc, inObj);
+    mMeshManager->saveProperties(alloc, inObj);
+    mLightManager->saveProperties(alloc, inObj);
+    mTextDrawer->saveProperties(alloc, inObj);
+}
+
+void SceneManager::initialize(const IFpsGetter* fpsGetter) {
+    //デフォルトカメラを作成する
+    auto cam = GameObjectCreater::create("Camera");
+    mCamera = cam->componentManager().getComponent<Camera>();
+
     mRenderer->initialize();
+    mEngineManager->initialize(mCamera, this, this, mGameObjectManager.get(), mMeshManager.get(), fpsGetter);
+    mMeshManager->initialize();
     mLightManager->initialize();
     mTextDrawer->initialize();
 
     TextBase::setDrawString(mTextDrawer);
 
-    auto cam = GameObjectCreater::create("Camera");
-    mCamera = cam->componentManager().getComponent<Camera>();
-
-    mMeshManager->createShadowMap();
+    //デフォルトのインスペクターの対象に設定する
+    mEngineManager->debug().getDebugLayer().inspector()->setTarget(cam);
 
     mLightManager->createDirectionalLight();
 
     //初期シーンの設定
-    createScene(mBeginScene);
+#ifdef _DEBUG
+    choiceBeginScene();
+#else
+    createScene(mReleaseScene);
+#endif // _DEBUG
 }
 
 void SceneManager::update() {
-    //アップデートの最初で文字列削除
-    DebugUtility::drawStringClear();
+    //アップデート前処理
+    mEngineManager->preUpdateProcess();
+    //デバッグ
+    mEngineManager->update(mMode);
 
     //ポーズ中はデバッグだけアップデートを行う
-    if (DebugUtility::pause().isPausing()) {
-        DebugUtility::update();
+    if (mEngineManager->pause().isPausing()) {
         return;
     }
 
-    //描画情報を削除
-    DebugUtility::pointRenderer().clear();
-    DebugUtility::lineRenderer2D().clear();
-    DebugUtility::lineRenderer3D().clear();
-    //保有しているテキストを全削除
-    mTextDrawer->clear();
-    //全ゲームオブジェクトの更新
-    mGameObjectManager->update();
-    //総当たり判定
-    mPhysics->sweepAndPrune();
-    //各マネージャークラスを更新
-    mMeshManager->update();
-    mSpriteManager->update();
-    //デバッグ
-    DebugUtility::update();
+    //ゲーム中なら
+    if (isGameMode()) {
+        //保有しているテキストを全削除
+        mTextDrawer->clear();
+        //全ゲームオブジェクトの更新
+        mGameObjectManager->update();
+        //総当たり判定
+        mPhysics->sweepAndPrune();
+        //各マネージャークラスを更新
+        mMeshManager->update();
+        mSpriteManager->update();
 
-    //シーン移行
-    const auto& next = mCurrentScene->getNext();
-    if (!next.empty()) {
-        change();
-        //次のシーンに渡す値を避難させとく
-        const auto& toNextValues = mCurrentScene->getValuePassToNextScene();
-        //シーン遷移
-        createScene(next);
-        //新しいシーンに前のシーンの値を渡す
-        mCurrentScene->getValueFromPreviousScene(toNextValues);
+        //シーン移行
+        const auto& next = mCurrentScene->getNext();
+        if (!next.empty()) {
+            change();
+            //次のシーンに渡す値を避難させとく
+            const auto& toNextValues = mCurrentScene->getValuePassToNextScene();
+            //シーン遷移
+            createScene(next);
+            //新しいシーンに前のシーンの値を渡す
+            mCurrentScene->getValueFromPreviousScene(toNextValues);
+        }
     }
 }
 
 void SceneManager::draw() const {
+#pragma region 遅延シェーディング
     //各テクスチャ上にレンダリング
     //mRenderer->renderToTexture();
     ////メッシュ描画準備
@@ -125,41 +153,65 @@ void SceneManager::draw() const {
     //mRenderer->renderPointLight();
     ////ポイントライトの一括描画
     //mLightManager->drawPointLights(*mCamera);
+#pragma endregion
 
     //メッシュ描画準備
     mRenderer->renderMesh();
-    //メッシュの描画
-    mMeshManager->draw(*mCamera, mLightManager->getDirectionalLight());
+
+    if (isGameMode()) {
+        //メッシュの描画
+        const auto& dirLight = mLightManager->getDirectionalLight();
+        mMeshManager->draw(mCamera->getView(), mCamera->getProjection(), mCamera->getPosition(), dirLight.getDirection(), dirLight.getLightColor());
+    }
+
+#ifdef _DEBUG
+    mEngineManager->draw3D(mMode, *mRenderer, *mCamera, mLightManager->getDirectionalLight());
+#endif // _DEBUG
 
     //スプライト描画準備
     mRenderer->renderSprite();
     //3Dスプライト
     mRenderer->renderSprite3D();
-    mSpriteManager->draw3Ds(mCamera->getView(), mCamera->getProjection());
+
+    if (isGameMode()) {
+        mSpriteManager->draw3Ds(mCamera->getView(), mCamera->getProjection());
+    }
+
     //2Dスプライト
     auto proj = Matrix4::identity;
-    mRenderer->renderSprite2D(&proj);
-    mSpriteManager->drawComponents(proj);
+    mRenderer->renderSprite2D(proj);
 
-    //テキスト一括描画
-    mTextDrawer->drawAll(proj);
+    if (isGameMode()) {
+        //2Dスプライト描画
+        mSpriteManager->drawComponents(proj);
+        //テキスト描画
+        mTextDrawer->drawAll(proj);
+    }
 
 #ifdef _DEBUG
-    //レンダリング領域をデバッグに変更
-    mRenderer->renderToDebug(&proj);
-    //デバッグ表示
-    DebugUtility::draw(proj);
+    mEngineManager->draw(mMode, *mRenderer, proj);
 #endif // _DEBUG
+}
 
-    //3Dポイント
-    mRenderer->renderPoint3D();
-    DebugUtility::pointRenderer().draw(mCamera->getViewProjection());
-    //3Dライン
-    mRenderer->renderLine3D();
-    DebugUtility::lineRenderer3D().draw(mCamera->getViewProjection());
-    //2Dライン
-    mRenderer->renderLine2D(&proj);
-    DebugUtility::lineRenderer2D().draw(proj);
+void SceneManager::onChangeGameMode() {
+    mMode = EngineMode::GAME;
+    mMeshManager->registerThisToMeshRenderer();
+    mEngineManager->debug().getDebugLayer().hierarchy().setGameObjectsGetter(mGameObjectManager.get());
+}
+
+void SceneManager::onChangeMapEditorMode() {
+    mMode = EngineMode::MAP_EDITOR;
+    mEngineManager->onChangeMapEditorMode();
+    mEngineManager->debug().getDebugLayer().hierarchy().setGameObjectsGetter(mEngineManager->getMapEditorMeshManager().getGameObjects());
+}
+
+void SceneManager::onChangeModelViewerMode() {
+    mMode = EngineMode::MODEL_VIEWER;
+    mEngineManager->onChangeModelViewerMode();
+}
+
+EngineMode SceneManager::getMode() const {
+    return mMode;
 }
 
 void SceneManager::change() {
@@ -173,4 +225,19 @@ void SceneManager::createScene(const std::string& name) {
     auto scene = GameObjectCreater::create(name);
     //シーンコンポーネント取得
     mCurrentScene = scene->componentManager().getComponent<Scene>();
+}
+
+void SceneManager::choiceBeginScene() {
+    if (mBeginScene == EngineModeName::MAP_EDITOR) {
+        onChangeMapEditorMode();
+    } else if (mBeginScene == EngineModeName::MODEL_VIEWER) {
+        onChangeModelViewerMode();
+    } else {
+        onChangeGameMode();
+    }
+    createScene(mReleaseScene);
+}
+
+bool SceneManager::isGameMode() const {
+    return (mMode == EngineMode::GAME);
 }

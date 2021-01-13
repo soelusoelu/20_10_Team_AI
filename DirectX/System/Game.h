@@ -16,6 +16,8 @@ public:
     void run(HINSTANCE hInstance);
     //グローバルファイルを読み込む
     void loadProperties(const rapidjson::Value& inObj);
+    //グローバルファイルを書き込む
+    void saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const;
 
     //アプリケーションの終了
     static void quit();
@@ -31,4 +33,6 @@ private:
     std::unique_ptr<FPSCounter> mFPSCounter;
     SceneManager* mSceneManager;
     HINSTANCE mInstance;
+
+    static inline const char* GLOBAL_DATA_FILE_NAME = "Global.json";
 };

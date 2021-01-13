@@ -3,7 +3,7 @@
 #include "SoundPlayTimer.h"
 #include "../Data/SoundData.h"
 #include "../Voice/SourceVoice/SourceVoice.h"
-#include "../../DebugLayer/Debug.h"
+#include "../../Engine/DebugManager/DebugUtility/Debug.h"
 #include "../../Math/Math.h"
 
 SoundLoop::SoundLoop(SourceVoice& sourceVoice, SoundPlayer& player) :

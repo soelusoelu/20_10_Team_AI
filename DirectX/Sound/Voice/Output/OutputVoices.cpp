@@ -1,5 +1,5 @@
 ﻿#include "OutputVoices.h"
-#include "../../../DebugLayer/Debug.h"
+#include "../../../Engine/DebugManager/DebugUtility/Debug.h"
 #include <cassert>
 
 OutputVoices::OutputVoices(IVoice& voice) :

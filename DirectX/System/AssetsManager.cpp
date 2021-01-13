@@ -1,8 +1,9 @@
 ﻿#include "AssetsManager.h"
+#include "GlobalFunction.h"
+#include "Shader/Shader.h"
+#include "Texture/TextureFromFile.h"
 #include "../Mesh/Mesh.h"
-#include "../System/GlobalFunction.h"
-#include "../System/Shader/Shader.h"
-#include "../System/Texture/TextureFromFile.h"
+#include "../Utility/FileUtil.h"
 
 AssetsManager::AssetsManager() = default;
 
@@ -42,9 +43,10 @@ std::shared_ptr<TextureFromFile> AssetsManager::createTexture(const std::string 
 }
 
 void AssetsManager::loadMesh(const std::string& fileName, const std::string& directoryPath) {
-    //ディレクトパスとファイル名を結合する
-    auto filePath = directoryPath + fileName;
+    loadMeshFromFilePath(directoryPath + fileName);
+}
 
+void AssetsManager::loadMeshFromFilePath(const std::string& filePath) {
     //読み込み済みなら何もしない
     if (loadedMesh(filePath)) {
         return;
@@ -62,6 +64,14 @@ std::shared_ptr<Mesh> AssetsManager::createMesh(const std::string& fileName, con
 
     //読み込んだメッシュを返す
     return mMeshes[directoryPath + fileName];
+}
+
+std::shared_ptr<Mesh> AssetsManager::createMeshFromFilePath(const std::string& filePath) {
+    //メッシュを読み込む
+    loadMeshFromFilePath(filePath);
+
+    //読み込んだメッシュを返す
+    return mMeshes[filePath];
 }
 
 std::shared_ptr<Shader> AssetsManager::createShader(const std::string& fileName, const std::string& directoryPath) {

@@ -16,7 +16,6 @@ public:
     explicit Quaternion(const Vector3& axis, float angle);
     explicit Quaternion(const Vector3& euler);
 
-    // Directly set the internal components
     void set(float inX, float inY, float inZ, float inW);
 
     void conjugate();
@@ -33,19 +32,17 @@ public:
     //クォータニオンからオイラー角を取得する
     Vector3 euler() const;
 
-    // Normalize the provided quaternion
+    //正規化
     static Quaternion normalize(const Quaternion& q);
 
-    // Linear interpolation
+    //線形補間
     static Quaternion lerp(const Quaternion& a, const Quaternion& b, float f);
 
     static float dot(const Quaternion& a, const Quaternion& b);
 
-    // Spherical Linear Interpolation
+    //球面線形補間
     static Quaternion slerp(const Quaternion& a, const Quaternion& b, float f);
 
-    // Concatenate
-    // Rotate by q FOLLOWED BY p
     //掛け算
     static Quaternion concatenate(const Quaternion& q, const Quaternion& p);
 

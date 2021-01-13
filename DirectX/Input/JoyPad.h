@@ -27,6 +27,7 @@ public:
     ~JoyPad();
     bool initialize(const HWND& hWnd, IDirectInput8* directInput);
     void loadProperties(const rapidjson::Value& inObj);
+    void saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const;
     void update();
     //キーが押された瞬間
     bool getJoyDown(JoyCode joy) const;
@@ -50,5 +51,6 @@ private:
     DIJOYSTATE2 mCurrentJoyState;
     DIJOYSTATE2 mPreviousJoyState;
     JoyCode mEnterPad;
+    std::string mEnterPadStr;
     static constexpr float DEAD_ZONE = 100.f;
 };

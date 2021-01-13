@@ -93,10 +93,6 @@ Vector3& Vector3::operator-=(const Vector3& right) {
     return *this;
 }
 
-bool Vector3::equal(const Vector3& right) const {
-    return (Math::equal(x, right.x) && Math::equal(y, right.y) && Math::equal(z, right.z));
-}
-
 bool Vector3::equal(const Vector3& left, const Vector3& right) {
     return (Math::equal(left.x, right.x) && Math::equal(left.y, right.y) && Math::equal(left.z, right.z));
 }
@@ -112,6 +108,22 @@ float Vector3::length() const {
 float Vector3::distance(const Vector3& a, const Vector3& b) {
     auto dist = a - b;
     return dist.length();
+}
+
+Vector3 Vector3::Min(const Vector3& a, const Vector3& b) {
+    Vector3 result;
+    result.x = Math::Min<float>(a.x, b.x);
+    result.y = Math::Min<float>(a.y, b.y);
+    result.z = Math::Min<float>(a.z, b.z);
+    return result;
+}
+
+Vector3 Vector3::Max(const Vector3& a, const Vector3& b) {
+    Vector3 result;
+    result.x = Math::Max<float>(a.x, b.x);
+    result.y = Math::Max<float>(a.y, b.y);
+    result.z = Math::Max<float>(a.z, b.z);
+    return result;
 }
 
 void Vector3::clamp(const Vector3& min, const Vector3& max) {

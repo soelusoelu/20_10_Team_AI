@@ -3,8 +3,8 @@
 #include "Window.h"
 #include "Shader/ConstantBuffers.h"
 #include "Shader/Shader.h"
-#include "../Component/Camera/Camera.h"
-#include "../Component/Light/DirectionalLight.h"
+#include "../Component/Engine/Camera/Camera.h"
+#include "../Component/Engine/Light/DirectionalLight.h"
 #include "../DirectX/DirectXInclude.h"
 #include "../Light/LightManager.h"
 #include "../Mesh/Vertex.h"
@@ -90,7 +90,7 @@ void GBuffer::renderToTexture() {
 
     //クリア
     for (const auto& rt : mRenderTargets) {
-        rt->clearRenderTarget();
+        rt->clear();
     }
     dx.clearDepthStencilView();
 

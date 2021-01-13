@@ -1,5 +1,5 @@
 ﻿#include "BiQuadFilter.h"
-#include "../../../DebugLayer/Debug.h"
+#include "../../../Engine/DebugManager/DebugUtility/Debug.h"
 #include "../../../Math/Math.h"
 
 BiQuadFilter::BiQuadFilter(FilterType type) :

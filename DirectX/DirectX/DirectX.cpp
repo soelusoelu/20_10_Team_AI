@@ -1,6 +1,7 @@
 ﻿#include "DirectX.h"
 #include "BlendState.h"
 #include "DepthStencilState.h"
+#include "DepthStencilView.h"
 #include "RasterizerState.h"
 #include "RenderTargetView.h"
 #include "Texture2D.h"
@@ -14,11 +15,11 @@ DirectX::DirectX() :
     mDeviceContext(nullptr),
     mDXGIFactory(nullptr),
     mSwapChain(nullptr),
-    mDepthStencilView(nullptr),
     mRenderTargetView(nullptr),
     mDebugRenderTargetView(nullptr),
     mBlendState(nullptr),
     mDepthStencilState(nullptr),
+    mDepthStencilView(nullptr),
     mRasterizerState(nullptr) {
 }
 
@@ -56,10 +57,6 @@ ID3D11DeviceContext* DirectX::deviceContext() const {
     return mDeviceContext.Get();
 }
 
-ID3D11DepthStencilView* DirectX::depthStencilView() const {
-    return mDepthStencilView.Get();
-}
-
 const std::shared_ptr<BlendState>& DirectX::blendState() const {
     return mBlendState;
 }
@@ -68,13 +65,17 @@ const std::shared_ptr<DepthStencilState>& DirectX::depthStencilState() const {
     return mDepthStencilState;
 }
 
+const std::shared_ptr<DepthStencilView>& DirectX::depthStencilView() const {
+    return mDepthStencilView;
+}
+
 const std::shared_ptr<RasterizerState>& DirectX::rasterizerState() const {
     return mRasterizerState;
 }
 
 void DirectX::setViewport(float width, float height, float x, float y) const {
     //ビューポートの設定
-    D3D11_VIEWPORT vp;
+    D3D11_VIEWPORT vp{};
     vp.Width = width;
     vp.Height = height;
     vp.MinDepth = 0.f;
@@ -105,19 +106,12 @@ void DirectX::drawIndexed(unsigned numIndices, unsigned startIndex, int startVer
 }
 
 void DirectX::clearRenderTarget(float r, float g, float b, float a) const {
-    mRenderTargetView->clearRenderTarget(r, g, b, a);
-    mDebugRenderTargetView->clearRenderTarget(0.1f, 0.1f, 0.1f, 1.f);
+    mRenderTargetView->clear(r, g, b, a);
+    mDebugRenderTargetView->clear(0.1f, 0.1f, 0.1f, 1.f);
 }
 
 void DirectX::clearDepthStencilView(bool depth, bool stencil) {
-    unsigned mask = 0;
-    if (depth) {
-        mask |= D3D11_CLEAR_DEPTH;
-    }
-    if (stencil) {
-        mask |= D3D11_CLEAR_STENCIL;
-    }
-    mDeviceContext->ClearDepthStencilView(mDepthStencilView.Get(), mask, 1.f, 0); //深度バッファクリア
+    mDepthStencilView->clear(depth, stencil);
 }
 
 void DirectX::present() {
@@ -216,7 +210,7 @@ void DirectX::createRenderTargetView() {
 }
 
 void DirectX::createDepthStencilView() {
-    Texture2DDesc desc;
+    Texture2DDesc desc{};
 #ifdef _DEBUG
     desc.width = Window::debugWidth();
     desc.height = Window::debugHeight();
@@ -228,7 +222,7 @@ void DirectX::createDepthStencilView() {
     desc.bindFlags = static_cast<unsigned>(Texture2DBind::TEXTURE_BIND_DEPTH_STENCIL);
 
     auto tex = std::make_unique<Texture2D>(desc);
-    mDevice->CreateDepthStencilView(tex->texture2D(), nullptr, &mDepthStencilView);
+    mDepthStencilView = std::make_shared<DepthStencilView>(*tex);
 }
 
 D3D11_PRIMITIVE_TOPOLOGY DirectX::toPrimitiveMode(PrimitiveType primitive) const {

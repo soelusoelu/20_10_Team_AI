@@ -1,7 +1,7 @@
 ﻿#include "LevelLoader.h"
 #include "FileUtil.h"
 #include "../Component/ComponentManager.h"
-#include "../DebugLayer/Debug.h"
+#include "../Engine/DebugManager/DebugUtility/Debug.h"
 #include "../GameObject/GameObject.h"
 #include "../System/Game.h"
 #include <rapidjson/stringbuffer.h>
@@ -50,6 +50,32 @@ void LevelLoader::loadGlobal(Game* root, const std::string& filePath) {
     }
 
     root->loadProperties(globals);
+}
+
+void LevelLoader::saveGlobal(const Game* root, const std::string& fileName, const std::string& directoryPath) {
+    //ドキュメントとルートオブジェクトを生成
+    rapidjson::Document doc;
+    doc.SetObject();
+
+    //アロケータの取得
+    rapidjson::Document::AllocatorType& alloc = doc.GetAllocator();
+
+    rapidjson::Value props(rapidjson::kObjectType);
+    root->saveProperties(alloc, props);
+    doc.AddMember("globalProperties", props, alloc);
+
+    //jsonを文字列バッファに保存
+    rapidjson::StringBuffer buffer;
+    //整形出力用にPrettyWriterを使う(もしくはWriter)
+    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
+    doc.Accept(writer);
+    const char* output = buffer.GetString();
+
+    //文字列をファイルに書き込む
+    std::ofstream outFile(directoryPath + fileName);
+    if (outFile.is_open()) {
+        outFile << output;
+    }
 }
 
 void LevelLoader::saveGameObject(const GameObject& gameObject, const std::string& directoryPath) {
@@ -276,6 +302,30 @@ bool JsonHelper::getStringArray(const rapidjson::Value& inObject, const char* in
     return true;
 }
 
+bool JsonHelper::getStringArray(const rapidjson::Value& inObject, const char* inProperty, std::unordered_set<std::string>* out) {
+    auto itr = inObject.FindMember(inProperty);
+    if (itr == inObject.MemberEnd()) {
+        return false;
+    }
+
+    auto& property = itr->value;
+    if (!property.IsArray()) {
+        return false;
+    }
+
+    std::unordered_set<std::string> temp;
+    for (rapidjson::SizeType i = 0; i < property.Size(); i++) {
+        if (!property[i].IsString()) {
+            return false;
+        }
+        temp.emplace(property[i].GetString());
+    }
+
+    *out = temp;
+
+    return true;
+}
+
 void JsonHelper::setInt(rapidjson::Document::AllocatorType & alloc, rapidjson::Value * inObject, const char* name, int value) {
     rapidjson::Value v(value);
     inObject->AddMember(rapidjson::StringRef(name), v, alloc);
@@ -347,6 +397,21 @@ void JsonHelper::setQuaternion(rapidjson::Document::AllocatorType & alloc, rapid
 }
 
 void JsonHelper::setStringArray(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObject, const char* name, const std::vector<std::string>& values) {
+    //配列を生成
+    rapidjson::Value v(rapidjson::kArrayType);
+
+    //配列要素を順に追加していく
+    rapidjson::Value temp;
+    for (const auto& value : values) {
+        temp.SetString(value.c_str(), static_cast<rapidjson::SizeType>(value.length()), alloc);
+        v.PushBack(temp, alloc);
+    }
+
+    //inObjectに配列として追加
+    inObject->AddMember(rapidjson::StringRef(name), v, alloc);
+}
+
+void JsonHelper::setStringArray(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObject, const char* name, const std::unordered_set<std::string>& values) {
     //配列を生成
     rapidjson::Value v(rapidjson::kArrayType);
 
