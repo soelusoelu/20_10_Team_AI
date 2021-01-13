@@ -1,35 +1,32 @@
 ﻿#include "Transform3D.h"
-#include "../DebugLayer/ImGuiWrapper.h"
+#include "ParentChildRelationship.h"
+#include "../Engine/DebugManager/DebugLayer/Inspector/ImGuiWrapper.h"
 #include "../GameObject/GameObject.h"
 #include "../Imgui/imgui.h"
 #include "../Utility/LevelLoader.h"
 
-Transform3D::Transform3D() :
+Transform3D::Transform3D(GameObject* gameObject) :
+    mGameObject(gameObject),
+    mParentChildRelation(std::make_unique<ParentChildRelationship>(this)),
     mWorldTransform(Matrix4::identity),
     mPosition(Vector3::zero),
     mRotation(Quaternion::identity),
     mPivot(Vector3::zero),
-    mScale(Vector3::one), 
-    mParent(nullptr) {
+    mScale(Vector3::one) {
 }
 
-Transform3D::~Transform3D() {
-    if (mParent) {
-        mParent.reset();
-    }
-    if (mChildren.empty()) {
-        return;
-    }
-    for (const auto& child : mChildren) {
-        //child->gameObject().destroy();
-    }
-}
+Transform3D::~Transform3D() = default;
 
 void Transform3D::computeWorldTransform() {
-    mWorldTransform = Matrix4::createTranslation(-mPivot); //ピボットを原点に
-    mWorldTransform *= Matrix4::createScale(getScale());
-    mWorldTransform *= Matrix4::createFromQuaternion(getRotation());
-    mWorldTransform *= Matrix4::createTranslation(getPosition());
+    //親がいる場合は親に任せる
+    if (mParentChildRelation->parent()) {
+        return;
+    }
+
+    //自身のワールド行列を計算する
+    computeWorld();
+    //子のワールド行列を計算する
+    computeChildrenTransform();
 }
 
 const Matrix4& Transform3D::getWorldTransform() const {
@@ -41,11 +38,11 @@ void Transform3D::setPosition(const Vector3& pos) {
 }
 
 Vector3 Transform3D::getPosition() const {
-    auto root = mParent;
+    auto parent = mParentChildRelation->parent();
     auto pos = mPosition;
-    while (root) {
-        pos += root->mPosition;
-        root = root->mParent;
+    while (parent) {
+        pos += parent->transform().mPosition;
+        parent = parent->parent();
     }
     return pos;
 }
@@ -83,11 +80,11 @@ void Transform3D::setRotation(const Vector3& eulers) {
 }
 
 Quaternion Transform3D::getRotation() const {
-    auto root = mParent;
+    auto parent = mParentChildRelation->parent();
     auto rotation = mRotation;
-    while (root) {
-        rotation = Quaternion::concatenate(rotation, root->mRotation);
-        root = root->mParent;
+    while (parent) {
+        rotation = Quaternion::concatenate(rotation, parent->transform().mRotation);
+        parent = parent->parent();
     }
     return rotation;
 }
@@ -134,13 +131,11 @@ void Transform3D::setScale(float scale) {
 }
 
 Vector3 Transform3D::getScale() const {
-    auto root = mParent;
+    auto parent = mParentChildRelation->parent();
     auto scale = mScale;
-    while (root) {
-        scale.x *= root->mScale.x;
-        scale.y *= root->mScale.y;
-        scale.z *= root->mScale.z;
-        root = root->mParent;
+    while (parent) {
+        scale *= parent->transform().mScale;
+        parent = parent->parent();
     }
     return scale;
 }
@@ -161,33 +156,12 @@ Vector3 Transform3D::right() const {
     return Vector3::transform(Vector3::right, mRotation);
 }
 
-void Transform3D::addChild(std::shared_ptr<Transform3D>& child) {
-    mChildren.emplace_back(child);
-    child->setParent(shared_from_this());
+GameObject& Transform3D::gameObject() const {
+    return *mGameObject;
 }
 
-std::list<std::shared_ptr<Transform3D>> Transform3D::getChildren() const {
-    return mChildren;
-}
-
-Transform3D& Transform3D::parent() const {
-    return *mParent;
-}
-
-Transform3D& Transform3D::root() const {
-    auto root = mParent;
-    while (root) {
-        auto p = root->mParent;
-        if (!p) {
-            break;
-        }
-        root = p;
-    }
-    return *root;
-}
-
-size_t Transform3D::getChildCount() const {
-    return mChildren.size();
+ParentChildRelationship& Transform3D::getParentChildRelation() const {
+    return *mParentChildRelation;
 }
 
 void Transform3D::loadProperties(const rapidjson::Value& inObj) {
@@ -222,6 +196,32 @@ void Transform3D::drawInspector() {
     ImGuiWrapper::dragVector3("Scale", mScale, 0.01f);
 }
 
-void Transform3D::setParent(const std::shared_ptr<Transform3D>& parent) {
-    mParent = parent;
+void Transform3D::computeWorld() {
+    mWorldTransform = Matrix4::createTranslation(-mPivot); //ピボットを原点に
+    mWorldTransform *= Matrix4::createScale(getLocalScale());
+    mWorldTransform *= Matrix4::createFromQuaternion(getLocalRotation());
+    mWorldTransform *= Matrix4::createTranslation(getLocalPosition());
+}
+
+void Transform3D::multiplyParentWorldTransform() {
+    auto parent = mParentChildRelation->parent();
+    while (parent) {
+        mWorldTransform *= parent->transform().mWorldTransform;
+        parent = parent->parent();
+    }
+}
+
+void Transform3D::computeChildrenTransform() {
+    const auto& children = mParentChildRelation->getChildren();
+    for (const auto& child : children) {
+        auto& childTransform = child->transform();
+        //子のワールド行列を計算する
+        childTransform.computeWorld();
+
+        //さらに子へ降りていく
+        child->transform().computeChildrenTransform();
+    }
+
+    //子のワールド行列に親のワールド行列を掛け合わせる
+    multiplyParentWorldTransform();
 }

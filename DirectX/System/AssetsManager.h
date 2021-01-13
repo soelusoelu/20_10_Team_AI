@@ -26,8 +26,12 @@ public:
 
     //メッシュを読み込む
     void loadMesh(const std::string& fileName, const std::string& directoryPath = "Assets\\Model\\");
+    //メッシュを読み込む
+    void loadMeshFromFilePath(const std::string& filePath);
     //ファイルパスからメッシュを取得する
     std::shared_ptr<Mesh> createMesh(const std::string& fileName, const std::string& directoryPath = "Assets\\Model\\");
+    //ファイルパスからメッシュを取得する
+    std::shared_ptr<Mesh> createMeshFromFilePath(const std::string& filePath);
 
     //ファイルパスからシェーダーを取得する
     std::shared_ptr<Shader> createShader(const std::string& fileName, const std::string& directoryPath = "Shader\\");

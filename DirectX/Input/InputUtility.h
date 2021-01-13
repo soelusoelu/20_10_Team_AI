@@ -18,6 +18,7 @@ public:
     static bool initialize(const HWND& hWnd);
     //ファイルから読み取り
     static void loadProperties(const rapidjson::Value& inObj);
+    static void saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj);
     //終了処理
     static void finalize();
     //毎フレーム更新

@@ -7,6 +7,8 @@
 #include "../DirectX/ComparisonFunc.h"
 #include "../DirectX/DepthStencilDesc.h"
 #include "../DirectX/DepthStencilState.h"
+#include "../DirectX/DepthStencilView.h"
+#include "../DirectX/DepthStencilViewDesc.h"
 #include "../DirectX/DirectX.h"
 #include "../DirectX/Format.h"
 #include "../DirectX/IndexBuffer.h"

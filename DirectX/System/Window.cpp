@@ -101,11 +101,11 @@ void Window::update() {
 }
 
 int Window::width() {
-    return mWidth;
+    return mGameWidth;
 }
 
 int Window::height() {
-    return mHeight;
+    return mGameHeight;
 }
 
 int Window::standardWidth() {
@@ -130,8 +130,8 @@ Vector2 Window::windowToClientSize() {
 
 Vector2 Window::getWindowCompensate() {
     Vector2 compen;
-    compen.x = static_cast<float>(Window::width()) / static_cast<float>(Window::standardWidth());
-    compen.y = static_cast<float>(Window::height()) / static_cast<float>(Window::standardHeight());
+    compen.x = static_cast<float>(mGameWidth) / static_cast<float>(mStandardWidth);
+    compen.y = static_cast<float>(mGameHeight) / static_cast<float>(mStandardHeight);
     return compen;
 }
 
@@ -139,18 +139,38 @@ void Window::loadProperties(const rapidjson::Value& inObj) {
     const auto& windowObj = inObj["window"];
     if (windowObj.IsObject()) {
         JsonHelper::getString(windowObj, "title", &mTitle);
-#ifdef _DEBUG
         JsonHelper::getInt(windowObj, "windowWidth", &mWidth);
         JsonHelper::getInt(windowObj, "windowHeight", &mHeight);
-#else
-        JsonHelper::getInt(windowObj, "releaseWindowWidth", &mWidth);
-        JsonHelper::getInt(windowObj, "releaseWindowHeight", &mHeight);
-#endif // _DEBUG
+        JsonHelper::getInt(windowObj, "releaseWindowWidth", &mReleaseWidth);
+        JsonHelper::getInt(windowObj, "releaseWindowHeight", &mReleaseHeight);
         JsonHelper::getInt(windowObj, "windowStandardWidth", &mStandardWidth);
         JsonHelper::getInt(windowObj, "windowStandardHeight", &mStandardHeight);
         JsonHelper::getInt(windowObj, "windowDebugWidth", &mDebugWidth);
         JsonHelper::getInt(windowObj, "windowDebugHeight", &mDebugHeight);
+
+#ifdef _DEBUG
+        mGameWidth = mWidth;
+        mGameHeight = mHeight;
+#else
+        mGameWidth = mReleaseWidth;
+        mGameHeight = mReleaseHeight;
+#endif // _DEBUG
     }
+}
+
+void Window::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const {
+    rapidjson::Value props(rapidjson::kObjectType);
+    JsonHelper::setString(alloc, &props, "title", mTitle);
+    JsonHelper::setInt(alloc, &props, "windowWidth", mWidth);
+    JsonHelper::setInt(alloc, &props, "windowHeight", mHeight);
+    JsonHelper::setInt(alloc, &props, "releaseWindowWidth", mReleaseWidth);
+    JsonHelper::setInt(alloc, &props, "releaseWindowHeight", mReleaseHeight);
+    JsonHelper::setInt(alloc, &props, "windowStandardWidth", mStandardWidth);
+    JsonHelper::setInt(alloc, &props, "windowStandardHeight", mStandardHeight);
+    JsonHelper::setInt(alloc, &props, "windowDebugWidth", mDebugWidth);
+    JsonHelper::setInt(alloc, &props, "windowDebugHeight", mDebugHeight);
+
+    inObj.AddMember("window", props, alloc);
 }
 
 void Window::updateWindowToClientSize() {
@@ -171,7 +191,7 @@ void Window::updateWindowToClientSize() {
     mWindowToClientSize.x = static_cast<float>(mDebugWidth) / static_cast<float>(cw);
     mWindowToClientSize.y = static_cast<float>(mDebugHeight) / static_cast<float>(ch);
 #else
-    mWindowToClientSize.x = static_cast<float>(mWidth) / static_cast<float>(cw);
-    mWindowToClientSize.y = static_cast<float>(mHeight) / static_cast<float>(ch);
+    mWindowToClientSize.x = static_cast<float>(mReleaseWidth) / static_cast<float>(cw);
+    mWindowToClientSize.y = static_cast<float>(mReleaseHeight) / static_cast<float>(ch);
 #endif // _DEBUG
 }

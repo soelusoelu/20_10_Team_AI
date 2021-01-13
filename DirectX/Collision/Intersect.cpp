@@ -1,10 +1,14 @@
 ﻿#include "Intersect.h"
 #include "AABB.h"
 #include "Circle.h"
+#include "IntersectHelper.h"
 #include "Ray.h"
+#include "RaycastHit.h"
 #include "Sphere.h"
 #include "Square.h"
 #include "Triangle.h"
+#include "../Component/Engine/Mesh/MeshComponent.h"
+#include "../Component/Engine/Mesh/MeshRenderer.h"
 #include "../Mesh/IMesh.h"
 #include "../Transform/Transform3D.h"
 #include <algorithm>
@@ -127,28 +131,6 @@ bool Intersect::intersectRaySphere(const Ray& ray, const Sphere& sphere, Vector3
     return false;
 }
 
-bool Intersect::intersectRaySphere(const Ray& ray, const Sphere& sphere, int numDivision) {
-    Vector3 intersectPoint;
-
-    //分割数が0以下なら1回で終了
-    if (numDivision <= 0) {
-        return intersectRaySphere(ray, sphere, intersectPoint);
-    }
-
-    Ray r;
-    //レイを分割する
-    auto rayDiv = (ray.end - ray.start) / numDivision;
-    for (int i = 0; i < numDivision; ++i) {
-        r.start = ray.start + rayDiv * i;
-        r.end = r.start + rayDiv;
-        if (intersectRaySphere(r, sphere, intersectPoint)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 bool testSidePlane(float start, float end, float negd, std::vector<float>& out) {
     float denom = end - start;
     if (Math::nearZero(denom)) {
@@ -206,16 +188,9 @@ bool Intersect::intersectRayAABB(const Ray& ray, const AABB& aabb, Vector3& inte
     return false;
 }
 
-bool Intersect::intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transform3D& transform, Vector3* intersectPoint, Triangle* intersectPolygon) {
+bool Intersect::intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transform3D& transform, RaycastHit* raycastHit) {
     //ワールド行列を先に取得しておく
     const auto& world = transform.getWorldTransform();
-
-    //衝突した点との最小距離、点
-    float minDistance = FLT_MAX;
-    Vector3 minPoint{};
-    Triangle minPoly{};
-    //一回でも衝突したか
-    bool isIntersect = false;
 
     //すべてのメッシュとレイによる判定を行う
     for (unsigned i = 0; i < mesh.getMeshCount(); ++i) {
@@ -226,31 +201,45 @@ bool Intersect::intersectRayMesh(const Ray& ray, const IMesh& mesh, const Transf
             //ワールド行列乗算済みポリゴンを取得する
             const auto& polygon = mesh.getPolygon(i, j, world);
 
-            //ポリゴンとレイの衝突判定
-            if (Vector3 interPoint{}; Intersect::intersectRayPolygon(ray, polygon, &interPoint)) {
-                float dist = (interPoint - ray.start).lengthSq();
-                //既存の距離より近いなら
-                if (dist < minDistance) {
-                    //最小記録を更新
-                    minDistance = dist;
-                    minPoint = interPoint;
-                    minPoly = polygon;
-                }
+            Vector3 interPoint{};
+            //ポリゴンとレイが衝突していないなら次へ
+            if (!Intersect::intersectRayPolygon(ray, polygon, &interPoint)) {
+                continue;
+            }
 
-                isIntersect = true;
+            if (raycastHit) {
+                //衝突情報を記録する
+                float dist = (interPoint - ray.start).lengthSq();
+                IntersectHelper::updateRaycastHit(*raycastHit, &transform.gameObject(), dist, interPoint, polygon);
+            } else {
+                //衝突情報を記録する必要がなければ即終了
+                return true;
             }
         }
     }
 
-    //一回でも衝突してたら最小距離の点を設定し終了
-    if (!Math::equal(minDistance, FLT_MAX)) {
-        if (intersectPoint) {
-            *intersectPoint = minPoint;
-        }
-        if (intersectPolygon) {
-            *intersectPolygon = minPoly;
+    return (raycastHit) ? raycastHit->isHit : false;
+}
+
+bool Intersect::intersectRayMeshes(const Ray& ray, const IMeshesGetter& meshesGetter, RaycastHit* raycastHit) {
+    const auto& meshes = meshesGetter.getMeshes();
+    for (const auto& mesh : meshes) {
+        if (RaycastHit hit{}; intersectRayMesh(
+            ray,
+            *mesh->getMeshComponent().getMesh(),
+            mesh->transform(),
+            &hit
+        )) {
+            if (raycastHit) {
+                //衝突情報を記録する
+                float dist = (hit.point - ray.start).lengthSq();
+                IntersectHelper::updateRaycastHit(*raycastHit, hit);
+            } else {
+                //衝突情報を記録する必要がなければ即終了
+                return true;
+            }
         }
     }
 
-    return isIntersect;
+    return (raycastHit) ? raycastHit->isHit : false;
 }

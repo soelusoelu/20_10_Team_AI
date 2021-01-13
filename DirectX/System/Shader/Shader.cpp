@@ -2,8 +2,8 @@
 #include "ConstantBufferManager.h"
 #include "InputElementManager.h"
 #include "../GlobalFunction.h"
-#include "../../DebugLayer/Debug.h"
 #include "../../DirectX/DirectXInclude.h"
+#include "../../Engine/DebugManager/DebugUtility/Debug.h"
 #include "../../Utility/FileUtil.h"
 #include "../../Utility/StringUtil.h"
 #include <d3dcompiler.h>

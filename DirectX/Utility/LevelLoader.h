@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 class Game;
@@ -17,6 +18,8 @@ public:
     static bool loadJSON(rapidjson::Document& outDoc, const std::string& fileName, const std::string& directoryPath = "Assets\\Data\\");
     //グローバルデータを読み込む
     static void loadGlobal(Game* root, const std::string& filePath);
+    //グローバルデータを書き込む
+    static void saveGlobal(const Game* root, const std::string& fileName, const std::string& directoryPath = "Assets\\Data\\");
     //ゲームオブジェクトを保存する
     static void saveGameObject(const GameObject& gameObject, const std::string& directoryPath = "Assets\\Data\\");
 
@@ -41,6 +44,7 @@ public:
     static bool getVector4(const rapidjson::Value& inObject, const char* inProperty, Vector4* out);
     static bool getQuaternion(const rapidjson::Value& inObject, const char* inProperty, Quaternion* out);
     static bool getStringArray(const rapidjson::Value& inObject, const char* inProperty, std::vector<std::string>* out);
+    static bool getStringArray(const rapidjson::Value& inObject, const char* inProperty, std::unordered_set<std::string>* out);
 
     static void setInt(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObject, const char* name, int value);
     static void setFloat(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObject, const char* name, float value);
@@ -51,4 +55,5 @@ public:
     static void setVector4(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObject, const char* name, const Vector4& value);
     static void setQuaternion(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObject, const char* name, const Quaternion& value);
     static void setStringArray(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObject, const char* name, const std::vector<std::string>& values);
+    static void setStringArray(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObject, const char* name, const std::unordered_set<std::string>& values);
 };

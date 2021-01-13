@@ -1,8 +1,8 @@
 ﻿#include "Mesh.h"
 #include "OBJ.h"
 #include "FBX/FBX.h"
-#include "../DebugLayer/Debug.h"
 #include "../DirectX/DirectXInclude.h"
+#include "../Engine/DebugManager/DebugUtility/Debug.h"
 #include "../System/Texture/TextureFromMemory.h"
 #include "../Utility/FileUtil.h"
 #include <cassert>
@@ -117,7 +117,7 @@ void Mesh::initialize(const std::string& filePath) {
 
 void Mesh::createMesh(const std::string& filePath) {
     //拡張子によって処理を分ける
-    auto ext = FileUtil::getFileExtension(filePath);
+    const auto& ext = FileUtil::getFileExtension(filePath);
     if (ext == ".obj") {
         mMesh = std::make_unique<OBJ>();
     } else if (ext == ".fbx") {

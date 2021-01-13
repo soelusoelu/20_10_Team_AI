@@ -1,5 +1,5 @@
 ﻿#include "SurroundStereoConverter.h"
-#include "../../../DebugLayer/Debug.h"
+#include "../../../Engine/DebugManager/DebugUtility/Debug.h"
 
 SurroundStereoConverter::SurroundStereoConverter() :
     CXAPOBase(&xapoRegProp_),

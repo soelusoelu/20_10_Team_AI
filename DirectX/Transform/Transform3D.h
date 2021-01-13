@@ -2,13 +2,14 @@
 
 #include "../Math/Math.h"
 #include <rapidjson/document.h>
-#include <list>
 #include <memory>
-#include <string>
 
-class Transform3D : public std::enable_shared_from_this<Transform3D> {
+class GameObject;
+class ParentChildRelationship;
+
+class Transform3D {
 public:
-    Transform3D();
+    Transform3D(GameObject* gameObject = nullptr);
     ~Transform3D();
 
     //ワールド行列更新
@@ -63,12 +64,10 @@ public:
     //回転量に応じた右ベクトルの取得
     Vector3 right() const;
 
-    //親子関係
-    void addChild(std::shared_ptr<Transform3D>& child);
-    std::list<std::shared_ptr<Transform3D>> getChildren() const;
-    Transform3D& parent() const;
-    Transform3D& root() const;
-    size_t getChildCount() const;
+    //ゲームオブジェクトを取得する
+    GameObject& gameObject() const;
+    //親子関係統括クラスを取得する
+    ParentChildRelationship& getParentChildRelation() const;
 
     //ロード/セーブ
     void loadProperties(const rapidjson::Value& inObj);
@@ -81,15 +80,19 @@ private:
     Transform3D(const Transform3D&) = delete;
     Transform3D& operator=(const Transform3D&) = delete;
 
-    //親の設定
-    void setParent(const std::shared_ptr<Transform3D>& parent);
+    //ワールド行列を計算する
+    void computeWorld();
+    //親のワールド行列を掛け合わせる
+    void multiplyParentWorldTransform();
+    //子のワールド行列を計算する
+    void computeChildrenTransform();
 
 private:
+    GameObject* mGameObject;
+    std::unique_ptr<ParentChildRelationship> mParentChildRelation;
     Matrix4 mWorldTransform;
     Vector3 mPosition;
     Quaternion mRotation;
     Vector3 mPivot;
     Vector3 mScale;
-    std::shared_ptr<Transform3D> mParent;
-    std::list<std::shared_ptr<Transform3D>> mChildren;
 };

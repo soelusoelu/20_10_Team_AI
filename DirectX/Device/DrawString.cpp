@@ -18,7 +18,7 @@ void DrawString::initialize() {
     mFontSprite = std::make_unique<Sprite>(mFontFileName);
 }
 
-void DrawString::loadProperties(const rapidjson::Value & inObj) {
+void DrawString::loadProperties(const rapidjson::Value& inObj) {
     const auto& obj = inObj["drawString"];
     if (obj.IsObject()) {
         JsonHelper::getString(obj, "number", &mNumberFileName);
@@ -26,7 +26,15 @@ void DrawString::loadProperties(const rapidjson::Value & inObj) {
     }
 }
 
-void DrawString::drawAll(const Matrix4 & proj) const {
+void DrawString::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const {
+    rapidjson::Value props(rapidjson::kObjectType);
+    JsonHelper::setString(alloc, &props, "number", mNumberFileName);
+    JsonHelper::setString(alloc, &props, "font", mFontFileName);
+
+    inObj.AddMember("drawString", props, alloc);
+}
+
+void DrawString::drawAll(const Matrix4& proj) const {
     for (const auto& param : mParamsInt) {
         drawInt(param, proj);
     }
@@ -44,7 +52,7 @@ void DrawString::clear() {
     mParamsString.clear();
 }
 
-void DrawString::drawNumber(int number, const Vector2 & position, const Vector2 & scale, const Vector3& color, float alpha, Pivot pivot) {
+void DrawString::drawNumber(int number, const Vector2& position, const Vector2& scale, const Vector3& color, float alpha, Pivot pivot) {
     ParamInt param;
     param.number = number;
     param.position = position;

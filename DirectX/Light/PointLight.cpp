@@ -15,10 +15,17 @@ PointLight::PointLight() :
 PointLight::~PointLight() = default;
 
 void PointLight::loadProperties(const rapidjson::Value & inObj) {
-    const auto& obj = inObj["light"];
+    const auto& obj = inObj["pointLight"];
     if (obj.IsObject()) {
         JsonHelper::getString(obj, "pointLightMeshFileName", &mMeshFileName);
     }
+}
+
+void PointLight::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const {
+    rapidjson::Value props(rapidjson::kObjectType);
+    JsonHelper::setString(alloc, &props, "pointLightMeshFileName", mMeshFileName);
+
+    inObj.AddMember("pointLight", props, alloc);
 }
 
 void PointLight::initialize() {

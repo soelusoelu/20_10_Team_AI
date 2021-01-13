@@ -12,86 +12,65 @@ public:
 
 public:
     Vector3();
-
     explicit Vector3(float inX, float inY, float inZ);
+    explicit Vector3(const Vector2& vec2, float inZ);
 
-    Vector3(const Vector2& vec2, float inZ);
-
-    // Set all three components in one line
+    //ベクトルのそれぞれの要素を設定する
     void set(float inX, float inY, float inZ);
 
     Vector3& operator=(const Vector3& vec);
-
     Vector3 operator-() const;
-
-    // Vector addition (a + b)
     friend Vector3 operator+(const Vector3& a, const Vector3& b);
-
-    // Vector subtraction (a - b)
     friend Vector3 operator-(const Vector3& a, const Vector3& b);
-
-    // Component-wise multiplication
     friend Vector3 operator*(const Vector3& left, const Vector3& right);
-
-    // Scalar multiplication
     friend Vector3 operator*(const Vector3& vec, float scalar);
-
-    // Scalar multiplication
     friend Vector3 operator*(float scalar, const Vector3& vec);
-
     friend Vector3 operator/(const Vector3& vec, float scalar);
-
-    // Scalar *=
     Vector3& operator*=(float scalar);
-
     Vector3& operator*=(const Vector3& right);
-
-    // Vector +=
     Vector3& operator+=(const Vector3& right);
-
-    // Vector -=
     Vector3& operator-=(const Vector3& right);
 
-    //ほぼ同じ値のVector3か
-    bool equal(const Vector3& right) const;
-
+    //2つのベクトルがほぼ同じか
     static bool equal(const Vector3& left, const Vector3& right);
 
-    // Length squared of vector
+    //ベクトルの長さの2乗を求める
     float lengthSq() const;
-
-    // Length of vector
+    //ベクトルの長さを求める
     float length() const;
-
+    //2つのベクトルの距離を求める
     static float distance(const Vector3& a, const Vector3& b);
 
-    void clamp(const Vector3& min, const Vector3& max);
+    //2つのベクトルから最小のベクトルを求める
+    static Vector3 Min(const Vector3& a, const Vector3& b);
+    //2つのベクトルから最大のベクトルを求める
+    static Vector3 Max(const Vector3& a, const Vector3& b);
 
+    //2つのベクトルの範囲内に収める
+    void clamp(const Vector3& min, const Vector3& max);
+    //2つのベクトルの範囲内に収める
     static Vector3 clamp(const Vector3& value, const Vector3& min, const Vector3& max);
 
-    // Normalize this vector
+    //ベクトルを正規化する
     void normalize();
-
-    // Normalize the provided vector
+    //ベクトルを正規化する
     static Vector3 normalize(const Vector3& vec);
 
-    // Dot product between two vectors (a dot b)
+    //2つのベクトルの内積を求める
     static float dot(const Vector3& a, const Vector3& b);
-
-    // Cross product between two vectors (a cross b)
+    //2つのベクトルの外積を求める
     static Vector3 cross(const Vector3& a, const Vector3& b);
 
-    // Lerp from A to B by f
+    //2つのベクトルを線形補間する
     static Vector3 lerp(const Vector3& a, const Vector3& b, float f);
 
-    // Reflect V about (normalized) N
+    //反射ベクトルを求める
     static Vector3 reflect(const Vector3& v, const Vector3& n);
 
+    //ベクトルと行列の掛け算
     static Vector3 transform(const Vector3& vec, const Matrix4& mat, float w = 1.0f);
-    // This will transform the vector and renormalize the w component
     static Vector3 transformWithPerspDiv(const Vector3& vec, const Matrix4& mat, float w = 1.0f);
-
-    // Transform a Vector3 by a quaternion
+    //ベクトルとクォータニオンの掛け算
     static Vector3 transform(const Vector3& v, const Quaternion& q);
 
     static const Vector3 zero;

@@ -9,7 +9,7 @@ class ComponentManager;
 class GameObjectManager;
 class Transform3D;
 
-class GameObject final : public Object, public std::enable_shared_from_this<GameObject> {
+class GameObject final : public Object {
 public:
     GameObject();
     ~GameObject();
@@ -28,6 +28,8 @@ public:
     //アクティブ状態の取得
     bool getActive() const;
 
+    //名前を設定する
+    void setName(const std::string& name);
     //名前の取得
     const std::string& name() const;
     //タグを設定する
@@ -51,9 +53,6 @@ public:
 private:
     GameObject(const GameObject&) = delete;
     GameObject& operator=(const GameObject&) = delete;
-
-    //初期化
-    void initialize();
 
 private:
     std::unique_ptr<Transform3D> mTransform;

@@ -16,7 +16,8 @@ public:
     virtual void setHighlighted(bool set) override;
     virtual bool getHighlighted() const override;
     virtual bool containsPoint(const Vector2& pt) const override;
-    virtual void onClick() override;
+    virtual bool clickButton(const Vector2& pt) const override;
+    virtual void onClick() const override;
 
 private:
     std::function<void()> mOnClick;
@@ -37,7 +38,8 @@ public:
     virtual void setHighlighted(bool set) override;
     virtual bool getHighlighted() const override;
     virtual bool containsPoint(const Vector2& pt) const override;
-    virtual void onClick() override;
+    virtual bool clickButton(const Vector2& pt) const override;
+    virtual void onClick() const override;
 
     void draw(const Matrix4& proj) const;
 

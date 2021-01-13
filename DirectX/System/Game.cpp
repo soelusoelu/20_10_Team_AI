@@ -3,10 +3,9 @@
 #include "GlobalFunction.h"
 #include "SceneManager.h"
 #include "Window.h"
+#include "FpsCounter/FPSCounter.h"
 #include "Shader/Shader.h"
 #include "Texture/Texture.h"
-#include "../DebugLayer/DebugUtility.h"
-#include "../Device/FPSCounter.h"
 #include "../DirectX/DirectX.h"
 #include "../GameObject/GameObjectFactory.h"
 #include "../Imgui/imgui.h"
@@ -25,6 +24,8 @@ Game::Game() :
 }
 
 Game::~Game() {
+    LevelLoader::saveGlobal(this, GLOBAL_DATA_FILE_NAME);
+
     safeDelete(mSceneManager);
 
     //imguiの終了処理
@@ -36,7 +37,6 @@ Game::~Game() {
     Texture::finalize();
     GameObjectCreater::finalize();
     InputUtility::finalize();
-    DebugUtility::finalize();
     SoundEngine::instance().finalize();
     AssetsManager::instance().finalize();
     MyDirectX::DirectX::instance().finalize();
@@ -61,9 +61,15 @@ void Game::run(HINSTANCE hInstance) {
 void Game::loadProperties(const rapidjson::Value& inObj) {
     mWindow->loadProperties(inObj);
     mFPSCounter->loadProperties(inObj);
-    DebugUtility::loadProperties(inObj);
     InputUtility::loadProperties(inObj);
     mSceneManager->loadProperties(inObj);
+}
+
+void Game::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const {
+    mWindow->saveProperties(alloc, inObj);
+    mFPSCounter->saveProperties(alloc, inObj);
+    InputUtility::saveProperties(alloc, inObj);
+    mSceneManager->saveProperties(alloc, inObj);
 }
 
 void Game::quit() {
@@ -74,12 +80,11 @@ void Game::initialize() {
     mWindow = std::make_unique<Window>();
 
     mFPSCounter = std::make_unique<FPSCounter>();
-    DebugUtility::create();
     InputUtility::create();
     mSceneManager = new SceneManager();
 
     //ファイルから値を読み込む
-    LevelLoader::loadGlobal(this, "Global.json");
+    LevelLoader::loadGlobal(this, GLOBAL_DATA_FILE_NAME);
 
     mWindow->createWindow(mInstance);
     const auto& hwnd = mWindow->gethWnd();
@@ -92,10 +97,9 @@ void Game::initialize() {
     ImGui_ImplDX11_Init(MyDirectX::DirectX::instance().device(), MyDirectX::DirectX::instance().deviceContext());
 
     Random::initialize();
-    DebugUtility::initialize();
     InputUtility::initialize(hwnd);
     GameObjectCreater::initialize();
-    mSceneManager->initialize();
+    mSceneManager->initialize(mFPSCounter.get());
 }
 
 void Game::mainLoop() {

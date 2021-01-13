@@ -1,7 +1,7 @@
 ﻿#include "SoundVolume.h"
 #include "SoundFade.h"
 #include "SoundPan.h"
-#include "../../DebugLayer/Debug.h"
+#include "../../Engine/DebugManager/DebugUtility/Debug.h"
 #include "../../Math/Math.h"
 
 SoundVolume::SoundVolume(IVoice& voice, unsigned inChannels, unsigned outChannels) :

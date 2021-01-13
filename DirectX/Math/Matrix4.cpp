@@ -305,27 +305,22 @@ Matrix4 Matrix4::createRotationZ(float theta) {
 }
 
 Matrix4 Matrix4::createFromQuaternion(const Quaternion& q) {
-    float mat[4][4];
+    float xx = 2.f * q.x * q.x;
+    float yy = 2.f * q.y * q.y;
+    float zz = 2.f * q.z * q.z;
+    float xy = 2.f * q.x * q.y;
+    float xz = 2.f * q.x * q.z;
+    float yz = 2.f * q.y * q.z;
+    float wx = 2.f * q.w * q.x;
+    float wy = 2.f * q.w * q.y;
+    float wz = 2.f * q.w * q.z;
 
-    mat[0][0] = 1.f - 2.f * q.y * q.y - 2.f * q.z * q.z;
-    mat[0][1] = 2.f * q.x * q.y + 2.f * q.w * q.z;
-    mat[0][2] = 2.f * q.x * q.z - 2.f * q.w * q.y;
-    mat[0][3] = 0.f;
-
-    mat[1][0] = 2.f * q.x * q.y - 2.f * q.w * q.z;
-    mat[1][1] = 1.f - 2.f * q.x * q.x - 2.f * q.z * q.z;
-    mat[1][2] = 2.f * q.y * q.z + 2.f * q.w * q.x;
-    mat[1][3] = 0.f;
-
-    mat[2][0] = 2.f * q.x * q.z + 2.f * q.w * q.y;
-    mat[2][1] = 2.f * q.y * q.z - 2.f * q.w * q.x;
-    mat[2][2] = 1.f - 2.f * q.x * q.x - 2.f * q.y * q.y;
-    mat[2][3] = 0.f;
-
-    mat[3][0] = 0.f;
-    mat[3][1] = 0.f;
-    mat[3][2] = 0.f;
-    mat[3][3] = 1.f;
+    float mat[4][4] = {
+        1.f - yy - zz, xy + wz, xz - wy, 0.f,
+        xy - wz, 1.f - xx - zz, yz + wx, 0.f,
+        xz + wy, yz - wx, 1.f - xx - yy, 0.f,
+        0.f, 0.f, 0.f, 1.f
+    };
 
     return Matrix4(mat);
 }
@@ -361,8 +356,12 @@ Matrix4 Matrix4::createLookAt(const Vector3& pos, const Vector3& lookAt, const V
 }
 
 Matrix4 Matrix4::createPerspectiveFOV(int width, int height, float fov, float nearClip, float farClip) {
+    return createPerspectiveFOV(static_cast<float>(height) / static_cast<float>(width), fov, nearClip, farClip);
+}
+
+Matrix4 Matrix4::createPerspectiveFOV(float aspectYDivX, float fov, float nearClip, float farClip) {
     float yScale = Math::cot(fov / 2.f);
-    float xScale = yScale * static_cast<float>(height) / static_cast<float>(width);
+    float xScale = yScale * aspectYDivX;
     float temp[4][4] = {
         { xScale, 0.f, 0.f, 0.f },
         { 0.f, yScale, 0.f, 0.f },
@@ -374,8 +373,12 @@ Matrix4 Matrix4::createPerspectiveFOV(int width, int height, float fov, float ne
 }
 
 Matrix4 Matrix4::createPerspectiveLinearFOV(int width, int height, float fov, float nearClip, float farClip) {
+    return createPerspectiveLinearFOV(static_cast<float>(height) / static_cast<float>(width), fov, nearClip, farClip);
+}
+
+Matrix4 Matrix4::createPerspectiveLinearFOV(float aspectYDivX, float fov, float nearClip, float farClip) {
     float yScale = Math::cot(fov / 2.f);
-    float xScale = yScale * static_cast<float>(height) / static_cast<float>(width);
+    float xScale = yScale * aspectYDivX;
     float temp[4][4] = {
         { xScale, 0.f, 0.f, 0.f },
         { 0.f, yScale, 0.f, 0.f },
@@ -386,15 +389,15 @@ Matrix4 Matrix4::createPerspectiveLinearFOV(int width, int height, float fov, fl
     return Matrix4(temp);
 }
 
-Matrix4 Matrix4::createOrtho(int width, int height, float _near, float _far) {
+Matrix4 Matrix4::createOrtho(int width, int height, float nearClip, float farClip) {
     float w = static_cast<float>(width);
     float h = static_cast<float>(height);
 
     float temp[4][4] = {
         { 2.f / w, 0.f, 0.f, 0.f },
-        { 0.f, -2.f / h, 0.f, 0.f },
-        { 0.f, 0.f, 1.f / (_far - _near), 0.f },
-        { -1.f, 1.f, _near / (_near - _far), 1.f }
+        { 0.f, 2.f / h, 0.f, 0.f },
+        { 0.f, 0.f, 1.f / (farClip - nearClip), 0.f },
+        { 0.f, 0.f, -nearClip / (farClip - nearClip), 1.f }
     };
     return Matrix4(temp);
 }

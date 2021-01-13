@@ -15,6 +15,7 @@ public:
     ~DrawString();
     void initialize();
     void loadProperties(const rapidjson::Value& inObj);
+    void saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const;
     //保持してる文字列を一括描画
     void drawAll(const Matrix4& proj) const;
     //保持してる文字列をすべて削除

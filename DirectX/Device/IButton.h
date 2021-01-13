@@ -17,6 +17,8 @@ public:
     virtual bool getHighlighted() const = 0;
     //ptがボタンの範囲内ならtrueを返す
     virtual bool containsPoint(const Vector2& pt) const = 0;
+    //ボタンがクリックされたら
+    virtual bool clickButton(const Vector2& pt) const = 0;
     //ボタンが押されたときに呼び出される
-    virtual void onClick() = 0;
+    virtual void onClick() const = 0;
 };

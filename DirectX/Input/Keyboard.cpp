@@ -2,11 +2,13 @@
 #include "../System/GlobalFunction.h"
 #include "../Utility/LevelLoader.h"
 
-Keyboard::Keyboard() :
-    mKeyDevice(nullptr),
-    mCurrentKeys(),
-    mPreviousKeys(),
-    mEnterKey(KeyCode::None) {
+Keyboard::Keyboard()
+    : mKeyDevice(nullptr)
+    , mCurrentKeys()
+    , mPreviousKeys()
+    , mEnterKey(KeyCode::None)
+    , mEnterKeyStr()
+{
 }
 
 Keyboard::~Keyboard() {
@@ -45,6 +47,32 @@ int Keyboard::vertical() const {
     }
 }
 
+int Keyboard::getNumber() const {
+    if (getKeyDown(KeyCode::Alpha0)) {
+        return 0;
+    } else if (getKeyDown(KeyCode::Alpha1)) {
+        return 1;
+    } else if (getKeyDown(KeyCode::Alpha2)) {
+        return 2;
+    } else if (getKeyDown(KeyCode::Alpha3)) {
+        return 3;
+    } else if (getKeyDown(KeyCode::Alpha4)) {
+        return 4;
+    } else if (getKeyDown(KeyCode::Alpha5)) {
+        return 5;
+    } else if (getKeyDown(KeyCode::Alpha6)) {
+        return 6;
+    } else if (getKeyDown(KeyCode::Alpha7)) {
+        return 7;
+    } else if (getKeyDown(KeyCode::Alpha8)) {
+        return 8;
+    } else if (getKeyDown(KeyCode::Alpha9)) {
+        return 9;
+    }
+
+    return -1;
+}
+
 bool Keyboard::getEnter() const {
     return getKeyDown(mEnterKey);
 }
@@ -69,10 +97,19 @@ bool Keyboard::initialize(const HWND& hWnd, IDirectInput8* directInput) {
 }
 
 void Keyboard::loadProperties(const rapidjson::Value& inObj) {
-    std::string src;
-    if (JsonHelper::getString(inObj, "enterKey", &src)) {
-        stringToKeyCode(src, &mEnterKey);
+    const auto& keyObj = inObj["keyboard"];
+    if (keyObj.IsObject()) {
+        if (JsonHelper::getString(keyObj, "enterKey", &mEnterKeyStr)) {
+            stringToKeyCode(mEnterKeyStr, &mEnterKey);
+        }
     }
+}
+
+void Keyboard::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const {
+    rapidjson::Value props(rapidjson::kObjectType);
+    JsonHelper::setString(alloc, &props, "enterKey", mEnterKeyStr);
+
+    inObj.AddMember("keyboard", props, alloc);
 }
 
 void Keyboard::update() {

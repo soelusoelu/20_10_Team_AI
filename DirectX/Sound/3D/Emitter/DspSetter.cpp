@@ -8,7 +8,7 @@
 #include "../../Voice/SubmixVoice/SubmixVoice.h"
 #include "../../Volume/SoundPan.h"
 #include "../../Volume/SoundVolume.h"
-#include "../../../DebugLayer/Debug.h"
+#include "../../../Engine/DebugManager/DebugUtility/Debug.h"
 #include "../../../Math/Math.h"
 #include <algorithm>
 

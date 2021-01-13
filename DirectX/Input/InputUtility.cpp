@@ -28,6 +28,11 @@ void InputUtility::loadProperties(const rapidjson::Value& inObj) {
     mJoyPad->loadProperties(inObj);
 }
 
+void InputUtility::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) {
+    mKeyboard->saveProperties(alloc, inObj);
+    mJoyPad->saveProperties(alloc, inObj);
+}
+
 void InputUtility::finalize() {
     safeRelease(mDirectInput);
     safeDelete(mKeyboard);

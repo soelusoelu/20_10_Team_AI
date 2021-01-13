@@ -1,8 +1,8 @@
 ﻿#include "LightManager.h"
 #include "PointLight.h"
 #include "../Component/ComponentManager.h"
-#include "../Component/Light/DirectionalLight.h"
-#include "../Component/Light/PointLightComponent.h"
+#include "../Component/Engine/Light/DirectionalLight.h"
+#include "../Component/Engine/Light/PointLightComponent.h"
 #include "../DirectX/DirectXInclude.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/GameObjectFactory.h"
@@ -28,14 +28,25 @@ void LightManager::initialize() {
 void LightManager::createDirectionalLight() {
     auto dirLight = GameObjectCreater::create("DirectionalLight");
     mDirectionalLight = dirLight->componentManager().getComponent<DirectionalLight>();
+    //向き計算のために
+    mDirectionalLight->lateUpdate();
 }
 
 void LightManager::loadProperties(const rapidjson::Value & inObj) {
-    const auto& obj = inObj["light"];
+    const auto& obj = inObj["lightManager"];
     if (obj.IsObject()) {
         JsonHelper::getVector3(obj, "ambientLight", &mAmbientLight);
     }
+
     mPointLight->loadProperties(inObj);
+}
+
+void LightManager::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const {
+    rapidjson::Value props(rapidjson::kObjectType);
+    JsonHelper::setVector3(alloc, &props, "ambientLight", mAmbientLight);
+    inObj.AddMember("lightManager", props, alloc);
+
+    mPointLight->saveProperties(alloc, inObj);
 }
 
 const DirectionalLight& LightManager::getDirectionalLight() const {

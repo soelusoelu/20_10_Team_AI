@@ -4,7 +4,6 @@
 #include "../Player/SoundPlayTimer.h"
 #include "../Player/Buffer/BufferSubmitter.h"
 #include "../Voice/SourceVoice/SourceVoice.h"
-#include "../../DebugLayer/Debug.h"
 #include "../../Math/Math.h"
 #include "../../System/GlobalFunction.h"
 #include <utility>

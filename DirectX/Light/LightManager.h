@@ -20,6 +20,7 @@ public:
     void initialize();
     void createDirectionalLight();
     void loadProperties(const rapidjson::Value& inObj);
+    void saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const;
     //ディレクショナルライト
     const DirectionalLight& getDirectionalLight() const;
     //アンビエントライト

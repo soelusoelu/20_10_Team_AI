@@ -1,5 +1,5 @@
 ﻿#include "HighPassOnePoleFilter.h"
-#include "../../../DebugLayer/Debug.h"
+#include "../../../Engine/DebugManager/DebugUtility/Debug.h"
 #include "../../../Math/Math.h"
 
 MyFilter::HighPassOnePoleFilter::HighPassOnePoleFilter() :

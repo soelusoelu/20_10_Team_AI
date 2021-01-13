@@ -1,16 +1,30 @@
 ﻿#include "GameObjectManager.h"
 #include "GameObject.h"
-#include "../DebugLayer/DebugUtility.h"
-#include "../DebugLayer/Hierarchy.h"
 #include "../Utility/LevelLoader.h"
 #include "../Utility/StringUtil.h"
 
-GameObjectManager::GameObjectManager() {
-    GameObject::setGameObjectManager(this);
+GameObjectManager::GameObjectManager(bool forGame)
+    : mForGame(forGame)
+{
+    //ゲームシーン用のマネージャーなら
+    if (forGame) {
+        GameObject::setGameObjectManager(this);
+    }
 }
 
 GameObjectManager::~GameObjectManager() {
-    GameObject::setGameObjectManager(nullptr);
+    if (mForGame) {
+        GameObject::setGameObjectManager(nullptr);
+    }
+}
+
+const GameObjectPtrList& GameObjectManager::getGameObjects() const {
+    return mGameObjects;
+}
+
+void GameObjectManager::add(const GameObjectPtr& newGameObject) {
+    setNameNumber(*newGameObject);
+    mGameObjects.emplace_back(newGameObject);
 }
 
 void GameObjectManager::update() {
@@ -22,12 +36,6 @@ void GameObjectManager::update() {
     }
 
     remove();
-
-    DebugUtility::hierarchy().setGameObjectToButton(mGameObjects);
-}
-
-void GameObjectManager::add(const GameObjectPtr& add) {
-    mGameObjects.emplace_back(add);
 }
 
 void GameObjectManager::clear(const std::unordered_set<std::string>& tags) {
@@ -68,11 +76,6 @@ std::vector<std::shared_ptr<GameObject>> GameObjectManager::findGameObjects(cons
     return gameObjectArray;
 }
 
-void GameObjectManager::setNameNumber(std::string& name) const {
-    bool isEnd = false;
-    checkNameNumber(name, isEnd);
-}
-
 void GameObjectManager::remove() {
     auto itr = mGameObjects.begin();
     while (itr != mGameObjects.end()) {
@@ -82,6 +85,13 @@ void GameObjectManager::remove() {
             ++itr;
         }
     }
+}
+
+void GameObjectManager::setNameNumber(GameObject& target) const {
+    std::string name = target.name();
+    bool isEnd = false;
+    checkNameNumber(name, isEnd);
+    target.setName(name);
 }
 
 void GameObjectManager::checkNameNumber(std::string& name, bool& isEnd, int number) const {

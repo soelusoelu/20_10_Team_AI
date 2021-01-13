@@ -1,5 +1,5 @@
 ﻿#include "PlayTimer.h"
-#include "../../../DebugLayer/Debug.h"
+#include "../../../Engine/DebugManager/DebugUtility/Debug.h"
 
 PlayTimer::PlayTimer() :
     CXAPOParametersBase(&xapoRegProp_, reinterpret_cast<BYTE*>(mParams), sizeof(PlayTimerParam), FALSE),
