@@ -43,6 +43,24 @@ void ComponentManager::onEnable(bool value) const {
     }
 }
 
+void ComponentManager::onCollisionEnter(Collider& other) const {
+    for (const auto& comp : mComponents) {
+        comp->onCollisionEnter(other);
+    }
+}
+
+void ComponentManager::onCollisionStay(Collider& other) const {
+    for (const auto& comp : mComponents) {
+        comp->onCollisionStay(other);
+    }
+}
+
+void ComponentManager::onCollisionExit(Collider& other) const {
+    for (const auto& comp : mComponents) {
+        comp->onCollisionExit(other);
+    }
+}
+
 const std::vector<std::shared_ptr<Component>>& ComponentManager::getAllComponents() const {
     return mComponents;
 }

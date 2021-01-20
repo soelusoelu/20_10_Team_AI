@@ -9,8 +9,6 @@
 #include "../Character/ICharacterManager.h"
 #include "../Other/HitPointComponent.h"
 #include "../../../Math/Math.h"
-#include "../DirectX/Device/Time.h"
-
 
 
 ASAI::ASAI(GameObject& obj):Component(obj)
@@ -40,7 +38,7 @@ void ASAI::Initialize()
 		routePoint = CalcPosition(routePhase);
 		routePhase++;
 	}
-	time.setLimitTime(1);
+
 }
 
 void ASAI::start()
@@ -52,6 +50,16 @@ void ASAI::start()
      }
 	//transform().setPosition(Vector3(-90, 0, -90));
 	collider=getComponent<AABBCollider>();
+}
+
+void ASAI::onCollisionStay(Collider& other) {
+    if (other.gameObject().tag() != gameObject().tag()) {
+        other.getComponent<HitPointComponent>()->takeDamage(10);
+    }
+}
+
+void ASAI::onCollisionExit(Collider& other) {
+
 }
 
 void ASAI::originalUpdate()
@@ -80,19 +88,10 @@ void ASAI::originalUpdate()
 		{
 			routePoint = GetNearEnemy();
 		}
-		std::list<std::shared_ptr<Collider>> cols = collider->onCollisionStay();
-		for (auto itr = cols.begin(); itr != cols.end(); ++itr)
-		{
-			const auto& col = (*itr);
-			if (col->gameObject().tag() != gameObject().tag()&&time.isTime())
-			{
-				col->getComponent<HitPointComponent>()->takeDamage(10);
-				time.reset();
-			}
-		}
-
-		time.update();
-
+		//if (!collider->onCollisionExit().empty())
+		//{
+		//	Initialize();
+		//}
 	}
 	
 }
