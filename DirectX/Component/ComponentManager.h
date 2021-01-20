@@ -6,6 +6,7 @@
 #include <vector>
 
 class Component;
+class Collider;
 
 class ComponentManager {
     using ComponentPtr = std::shared_ptr<Component>;
@@ -27,6 +28,12 @@ public:
 
     //所有するすべてのコンポーネントのonSetActiveを実行
     void onEnable(bool value) const;
+    //所有するすべてのコンポーネントのonCollisionEnterを実行
+    void onCollisionEnter(Collider& other) const;
+    //所有するすべてのコンポーネントのonCollisionStayを実行
+    void onCollisionStay(Collider& other) const;
+    //所有するすべてのコンポーネントのonCollisionExitを実行
+    void onCollisionExit(Collider& other) const;
 
     //全コンポーネントの取得
     const ComponentPtrArray& getAllComponents() const;

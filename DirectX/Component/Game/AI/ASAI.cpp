@@ -52,6 +52,16 @@ void ASAI::start()
 	collider=getComponent<AABBCollider>();
 }
 
+void ASAI::onCollisionStay(Collider& other) {
+    if (other.gameObject().tag() != gameObject().tag()) {
+        other.getComponent<HitPointComponent>()->takeDamage(10);
+    }
+}
+
+void ASAI::onCollisionExit(Collider& other) {
+
+}
+
 void ASAI::originalUpdate()
 {
 	if (routes.size() == 0/*||currentP.x!=goalP.x|| currentP.y != goalP.y*/
@@ -78,21 +88,10 @@ void ASAI::originalUpdate()
 		{
 			routePoint = GetNearEnemy();
 		}
-		std::list<std::shared_ptr<Collider>> cols = collider->onCollisionStay();
-		for (auto itr = cols.begin(); itr != cols.end(); ++itr)
-		{
-			const auto& col = (*itr);
-			if (col->gameObject().tag() != gameObject().tag())
-			{
-				col->getComponent<HitPointComponent>()->takeDamage(10);
-				//break;
-			}
-		}
-		if (!collider->onCollisionExit().empty())
-		{
-			Initialize();
-		}
-
+		//if (!collider->onCollisionExit().empty())
+		//{
+		//	Initialize();
+		//}
 	}
 	
 }

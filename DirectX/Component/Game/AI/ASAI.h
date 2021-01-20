@@ -16,6 +16,8 @@ public:
 	~ASAI();
 	void Initialize();
 	virtual void start()override;
+	virtual void onCollisionStay(Collider& other) override;
+	virtual void onCollisionExit(Collider& other) override;
 	void originalUpdate();
 
 	//Å‹ß‚Ì“G‚Ìî•ñ‚ğæ“¾‚·‚é
