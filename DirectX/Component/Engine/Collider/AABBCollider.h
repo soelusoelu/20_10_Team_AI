@@ -6,14 +6,16 @@
 #include "../../../Mesh/IMesh.h"
 #include "../../../Mesh/IMeshLoader.h"
 #include <array>
+#include <memory>
 #include <utility>
 
-class AABBCollider : public Collider {
+class AABBCollider : public Collider, public std::enable_shared_from_this<AABBCollider> {
 public:
     AABBCollider(GameObject& gameObject);
     ~AABBCollider();
     virtual void start() override;
     virtual void lateUpdate() override;
+    virtual void finalize() override;
     virtual void onEnable(bool value) override;
     virtual void loadProperties(const rapidjson::Value& inObj) override;
     virtual void saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const override;

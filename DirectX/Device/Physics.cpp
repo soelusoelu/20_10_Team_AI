@@ -2,7 +2,6 @@
 #include "../Collision/Collision.h"
 #include "../Component/ComponentManager.h"
 #include "../Component/Engine/Collider/AABBCollider.h"
-#include "../Component/Engine/Collider/Collider.h"
 #include <algorithm>
 
 Physics::Physics() {
@@ -36,20 +35,18 @@ void Physics::sweepAndPrune() {
 
     //min.xが小さい順にソート
     std::sort(mColliders.begin(), mColliders.end(), [&](const CollPtr& a, const CollPtr& b) {
-        auto circleA = std::dynamic_pointer_cast<AABBCollider>(a);
-        auto circleB = std::dynamic_pointer_cast<AABBCollider>(b);
-        return circleA->getAABB().min.x < circleB->getAABB().min.x;
+        return a->getAABB().min.x < b->getAABB().min.x;
     });
 
-    for (size_t i = 0; i < mColliders.size(); i++) {
-        auto aColl = std::dynamic_pointer_cast<AABBCollider>(mColliders[i]);
+    for (size_t i = 0; i < mColliders.size(); ++i) {
+        const auto& aColl = mColliders[i];
         if (!aColl->getEnable()) {
             continue;
         }
         const auto& a = aColl->getAABB();
 
-        for (size_t j = i + 1; j < mColliders.size(); j++) {
-            auto bColl = std::dynamic_pointer_cast<AABBCollider>(mColliders[j]);
+        for (size_t j = i + 1; j < mColliders.size(); ++j) {
+            const auto& bColl = mColliders[j];
             if (!bColl->getEnable()) {
                 continue;
             }

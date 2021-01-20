@@ -3,10 +3,10 @@
 #include <memory>
 #include <vector>
 
-class Collider;
+class AABBCollider;
 
 class Physics {
-    using CollPtr = std::shared_ptr<Collider>;
+    using CollPtr = std::shared_ptr<AABBCollider>;
     using CollPtrArray = std::vector<CollPtr>;
 
 public:

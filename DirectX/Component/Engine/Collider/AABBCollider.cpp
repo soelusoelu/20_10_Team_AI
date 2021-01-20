@@ -1,5 +1,6 @@
 ﻿#include "AABBCollider.h"
 #include "../Mesh/MeshComponent.h"
+#include "../../../Device/Physics.h"
 #include "../../../Engine/DebugManager/DebugLayer/Inspector/ImGuiWrapper.h"
 #include "../../../Engine/DebugManager/DebugUtility/Debug.h"
 #include "../../../Imgui/imgui.h"
@@ -34,6 +35,10 @@ void AABBCollider::start() {
     updateAABB();
     //最新のAABBの点を計算する
     updatePoints();
+
+    if (mPhysics) {
+        mPhysics->add(shared_from_this());
+    }
 }
 
 void AABBCollider::lateUpdate() {
@@ -50,6 +55,14 @@ void AABBCollider::lateUpdate() {
     //当たり判定を可視化する
     if (mIsRenderCollision) {
         renderCollision();
+    }
+}
+
+void AABBCollider::finalize() {
+    Collider::finalize();
+
+    if (mPhysics) {
+        mPhysics->remove(shared_from_this());
     }
 }
 

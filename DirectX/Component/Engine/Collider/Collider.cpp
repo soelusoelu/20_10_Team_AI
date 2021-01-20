@@ -1,5 +1,4 @@
 ﻿#include "Collider.h"
-#include "../../../Device/Physics.h"
 #include "../../../GameObject/GameObject.h"
 #include "../../../Imgui/imgui.h"
 #include <algorithm>
@@ -13,10 +12,7 @@ Collider::Collider(GameObject& gameObject) :
 Collider::~Collider() = default;
 
 void Collider::start() {
-    if (mPhysics) {
-        mPhysics->add(shared_from_this());
-        mEnable = true;
-    }
+    mEnable = true;
 }
 
 void Collider::lateUpdate() {
@@ -33,10 +29,6 @@ void Collider::lateUpdate() {
 void Collider::finalize() {
     mPreviousCollider.clear();
     mCurrentCollider.clear();
-
-    if (mPhysics) {
-        mPhysics->remove(shared_from_this());
-    }
 }
 
 void Collider::drawInspector() {

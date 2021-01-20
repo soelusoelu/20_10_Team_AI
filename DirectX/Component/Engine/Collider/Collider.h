@@ -7,7 +7,7 @@
 
 class Physics;
 
-class Collider : public Component, public std::enable_shared_from_this<Collider> {
+class Collider : public Component {
     using CollPtr = std::shared_ptr<Collider>;
     using CollPtrList = std::list<CollPtr>;
 
@@ -50,10 +50,10 @@ protected:
     bool mIsAutoUpdate;
     bool mEnable;
 
+    static inline Physics* mPhysics = nullptr;
+
 private:
     CollPtrList mPreviousCollider;
     CollPtrList mCurrentCollider;
-
-    static inline Physics* mPhysics = nullptr;
 };
 
