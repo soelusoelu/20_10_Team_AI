@@ -35,6 +35,10 @@ public:
     static void setPhysics(Physics* physics);
 
 private:
+    //衝突し続けているコライダーを通知する
+    void notifyCollisionStay() const;
+    //衝突しなくなったコライダーを通知する
+    void notifyCollisionExit() const;
     //衝突した瞬間か
     bool isCollisionEnter(const CollPtr& hit) const;
     //衝突し続けているか

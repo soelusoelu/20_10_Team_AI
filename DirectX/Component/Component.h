@@ -13,7 +13,6 @@
 class GameObject;
 class Collider;
 class Transform3D;
-class ComponentManager;
 
 class Component : public Object {
 public:

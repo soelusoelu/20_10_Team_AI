@@ -20,17 +20,11 @@ void Collider::start() {
 }
 
 void Collider::lateUpdate() {
-    for (const auto& curColl : mCurrentCollider) {
-        if (isCollisionStay(curColl)) {
-            gameObject().componentManager().onCollisionStay(*curColl);
-        }
-    }
-    for (const auto& preColl : mPreviousCollider) {
-        if (isCollisionExit(preColl)) {
-            gameObject().componentManager().onCollisionExit(*preColl);
-        }
-    }
+    //衝突し続けている/衝突しなくなった コライダーに通知を送る
+    notifyCollisionStay();
+    notifyCollisionExit();
 
+    //衝突したコライダーを移す
     mPreviousCollider.resize(mCurrentCollider.size());
     std::copy(mCurrentCollider.begin(), mCurrentCollider.end(), mPreviousCollider.begin());
     mCurrentCollider.clear();
@@ -83,6 +77,30 @@ void Collider::addHitCollider(const CollPtr& hit) {
 
 void Collider::setPhysics(Physics* physics) {
     mPhysics = physics;
+}
+
+void Collider::notifyCollisionStay() const {
+    for (const auto& curColl : mCurrentCollider) {
+        //1フレームの間に状態が変わってるかもしれないからチェック
+        if (!curColl->gameObject().getActive()) {
+            continue;
+        }
+        if (isCollisionStay(curColl)) {
+            gameObject().componentManager().onCollisionStay(*curColl);
+        }
+    }
+}
+
+void Collider::notifyCollisionExit() const {
+    for (const auto& preColl : mPreviousCollider) {
+        //1フレームの間に状態が変わってるかもしれないからチェック
+        if (!preColl->gameObject().getActive()) {
+            continue;
+        }
+        if (isCollisionExit(preColl)) {
+            gameObject().componentManager().onCollisionExit(*preColl);
+        }
+    }
 }
 
 bool Collider::isCollisionEnter(const CollPtr& hit) const {
