@@ -14,7 +14,6 @@ public:
     ~CharacterAction();
     virtual void start() override;
     virtual void update() override;
-    virtual void onEnable(bool value) override;
 
     //このクラスをアクティブ化する
     void enabled();

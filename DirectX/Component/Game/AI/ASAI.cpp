@@ -81,9 +81,10 @@ void ASAI::originalUpdate()
 		std::list<std::shared_ptr<Collider>> cols = collider->onCollisionStay();
 		for (auto itr = cols.begin(); itr != cols.end(); ++itr)
 		{
-			if (cols.front()->gameObject().tag() != gameObject().tag())
+			const auto& col = (*itr);
+			if (col->gameObject().tag() != gameObject().tag())
 			{
-				cols.front()->getComponent<HitPointComponent>()->takeDamage(10);
+				col->getComponent<HitPointComponent>()->takeDamage(10);
 				//break;
 			}
 		}

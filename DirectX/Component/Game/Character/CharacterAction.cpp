@@ -29,10 +29,6 @@ void CharacterAction::update() {
     mAI->originalUpdate();
 }
 
-void CharacterAction::onEnable(bool value) {
-    mIsActive = value;
-}
-
 void CharacterAction::enabled() {
     mIsActive = true;
 
