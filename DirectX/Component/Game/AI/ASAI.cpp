@@ -9,6 +9,8 @@
 #include "../Character/ICharacterManager.h"
 #include "../Other/HitPointComponent.h"
 #include "../../../Math/Math.h"
+#include "../DirectX/Device/Time.h"
+
 
 
 ASAI::ASAI(GameObject& obj):Component(obj)
@@ -38,7 +40,7 @@ void ASAI::Initialize()
 		routePoint = CalcPosition(routePhase);
 		routePhase++;
 	}
-
+	time.setLimitTime(1);
 }
 
 void ASAI::start()
@@ -82,16 +84,14 @@ void ASAI::originalUpdate()
 		for (auto itr = cols.begin(); itr != cols.end(); ++itr)
 		{
 			const auto& col = (*itr);
-			if (col->gameObject().tag() != gameObject().tag())
+			if (col->gameObject().tag() != gameObject().tag()&&time.isTime())
 			{
 				col->getComponent<HitPointComponent>()->takeDamage(10);
-				//break;
+				time.reset();
 			}
 		}
-		if (!collider->onCollisionExit().empty())
-		{
-			Initialize();
-		}
+
+		time.update();
 
 	}
 	
