@@ -6,6 +6,8 @@
 #include "../../Engine/Collider/AABBCollider.h"
 #include "../../../Math/Vector3.h"
 #include "../Character/ICharacterManager.h"
+#include "../DirectX/Device/Time.h"
+
 class CharacterCommonComponents;
 
 
@@ -34,6 +36,7 @@ private:
 	std::unique_ptr<ASCellManager> cellManager;
 	std::unique_ptr < ASCellManager> target;
 	std::vector<Position> routes;
+	Time time;
 	int routePhase=0;
 	float mapWidth = 110;
 	float mapHeight = 110;
