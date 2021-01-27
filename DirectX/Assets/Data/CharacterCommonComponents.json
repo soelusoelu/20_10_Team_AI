@@ -33,7 +33,7 @@
       "type": "AABBCollider",
       "properties": {}
     },
-        {
+    {
       "type": "HitPointComponent",
       "properties": {
         "HP": 100

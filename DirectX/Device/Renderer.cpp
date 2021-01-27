@@ -55,13 +55,21 @@ void Renderer::renderPointLine3D() const {
     auto& dx = MyDirectX::DirectX::instance();
     //ビューポートの設定
     dx.setViewport(Window::width(), Window::height());
-    //プリミティブ・トポロジーをセット
-    dx.setPrimitive(PrimitiveType::LINE_LIST);
     //半透明合成
     dx.blendState()->translucent();
     //デプステスト有効化
     dx.depthStencilState()->depthTest(true);
     dx.depthStencilState()->depthMask(true);
+}
+
+void Renderer::renderLine3D() const {
+    //プリミティブ・トポロジーをセット
+    MyDirectX::DirectX::instance().setPrimitive(PrimitiveType::LINE_LIST);
+}
+
+void Renderer::renderPoint3D() const {
+    //プリミティブ・トポロジーをセット
+    MyDirectX::DirectX::instance().setPrimitive(PrimitiveType::POINT_LIST);
 }
 
 void Renderer::renderSprite() const {

@@ -5,8 +5,6 @@
 #include "../../System/Texture/MeshRenderOnTexture.h"
 #include "../../Utility/FileUtil.h"
 #include "../../Utility/LevelLoader.h"
-#include <algorithm>
-#include <iterator>
 
 AssetsRenderTextureList::AssetsRenderTextureList()
     : mTextureSize(0)
@@ -59,7 +57,7 @@ void AssetsRenderTextureList::initialize() {
         createTexture(path);
     }
     //メッシュをテクスチャに描画する
-    drawMeshOnTexture();
+    //drawMeshOnTexture();
 }
 
 void AssetsRenderTextureList::loadProperties(const rapidjson::Value& inObj) {
@@ -81,22 +79,15 @@ void AssetsRenderTextureList::saveProperties(rapidjson::Document::AllocatorType&
     inObj.AddMember("assetsRenderTextureList", props, alloc);
 }
 
-void AssetsRenderTextureList::update() {
-    //描画していないメッシュがなければ終了
-    if (mNonDrawTextures.empty()) {
-        return;
-    }
-
-    //mNonDrawTexturesの要素をmTexturesに追加する
-    std::copy(mNonDrawTextures.begin(), mNonDrawTextures.end(), std::back_inserter(mTextures));
-    mNonDrawTextures.clear();
-}
-
-void AssetsRenderTextureList::drawMeshOnTexture() const {
+void AssetsRenderTextureList::drawMeshOnTexture() {
     //まだ描画していないメッシュをテクスチャに描画する
     for (const auto& tex : mNonDrawTextures) {
         tex->drawMesh();
+
+        mTextures.emplace_back(tex);
     }
+
+    mNonDrawTextures.clear();
 }
 
 void AssetsRenderTextureList::drawTexture(const Matrix4& proj) const {

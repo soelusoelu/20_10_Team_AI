@@ -104,7 +104,7 @@ bool AssetsPlacement::placeConditions() const {
 
     const auto& mouse = Input::mouse();
     //マウスの左ボタンを押していなければ終了
-    if (!mouse.getMouseButtonDown(MouseCode::CenterButton)) {
+    if (!mouse.getMouseButtonDown(MouseCode::WheelButton)) {
         return false;
     }
 

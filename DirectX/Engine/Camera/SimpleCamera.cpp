@@ -43,7 +43,7 @@ void SimpleCamera::setPosition(const Vector3& pos) {
     calcView();
 }
 
-Vector3 SimpleCamera::getPosition() const {
+const Vector3& SimpleCamera::getPosition() const {
     return mPosition;
 }
 
@@ -84,22 +84,18 @@ float SimpleCamera::getFarClip() const {
 }
 
 Vector3 SimpleCamera::screenToWorldPoint(const Vector2& position, float z) const {
-    //ビューポート、射影、ビュー、それぞれの逆行列を求める
-    auto invView = Matrix4::inverse(mView);
-    auto invProj = Matrix4::inverse(mProjection);
+    //ビューポートの逆行列を求める
+    auto viewport = Matrix4::identity;
+    viewport.m[0][0] = Window::width() / 2.f;
+    viewport.m[1][1] = -Window::height() / 2.f;
+    viewport.m[3][0] = Window::width() / 2.f;
+    viewport.m[3][1] = Window::height() / 2.f;
 
-    auto invViewport = Matrix4::identity;
-    invViewport.m[0][0] = Window::width() / 2.f;
-    invViewport.m[1][1] = -Window::height() / 2.f;
-    invViewport.m[3][0] = Window::width() / 2.f;
-    invViewport.m[3][1] = Window::height() / 2.f;
-    invViewport.inverse();
-
-    //ビューポート、射影、ビュー、それぞれの逆行列を掛ける
-    auto m = invViewport * invProj * invView;
+    //ビュー * 射影 * ビューポートの逆行列を求める
+    auto invMat = Matrix4::inverse(mView * mProjection * viewport);
 
     //スクリーン座標をワールド座標に変換
-    return Vector3::transformWithPerspDiv(Vector3(position, z), m);
+    return Vector3::transformWithPerspDiv(Vector3(position, z), invMat);
 }
 
 Ray SimpleCamera::screenToRay(const Vector2& position, float z) const {

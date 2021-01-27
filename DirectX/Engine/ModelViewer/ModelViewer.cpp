@@ -38,6 +38,7 @@ void ModelViewer::initialize(
     mAssetsTextureGetter = assetsTextureGetter;
 
     mMeshManager->initialize();
+    mModelViewCamera->initialize();
 
     callbackSelectAssetsTexture->callbackSelectTexture([&] { onSelectAssetsTexture(); });
 

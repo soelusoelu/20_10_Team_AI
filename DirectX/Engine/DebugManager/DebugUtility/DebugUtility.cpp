@@ -73,7 +73,9 @@ void DebugUtility::drawLine2D(EngineMode mode, const Renderer& renderer, Matrix4
 void DebugUtility::draw3D(EngineMode mode, const Renderer& renderer, const Matrix4& viewProj) const {
     if (mode == EngineMode::GAME) {
         renderer.renderPointLine3D();
+        renderer.renderPoint3D();
         mPointRenderer->draw(viewProj);
+        renderer.renderLine3D();
         mLineRenderer3D->draw(viewProj);
     }
 }

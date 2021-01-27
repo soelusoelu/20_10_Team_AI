@@ -12,20 +12,15 @@ public:
 
     explicit Matrix4(float inMat[4][4]);
 
-    //掛け算
     friend Matrix4 operator*(const Matrix4& a, const Matrix4& b);
-
-    //掛け合わせる
     Matrix4& operator*=(const Matrix4& right);
 
     //転置行列
     void transpose();
-
     static Matrix4 transpose(const Matrix4& src);
 
     //逆行列
     void inverse();
-
     static Matrix4 inverse(const Matrix4& right);
 
     //行列の平行移動成分を取得する
@@ -39,6 +34,9 @@ public:
 
     //行列のZ軸を取得する
     Vector3 getZAxis() const;
+
+    //行列からクォータニオンを取得する
+    Quaternion getQuaternion() const;
 
     //行列のスケール成分を取得する
     Vector3 getScale() const;

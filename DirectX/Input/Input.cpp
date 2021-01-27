@@ -1,14 +1,14 @@
 ﻿#include "Input.h"
-#include "InputUtility.h"
+#include "InputManager.h"
 
 IKeyboard& Input::keyboard() {
-    return InputUtility::keyboard();
+    return InputManager::keyboard();
 }
 
 IMouse& Input::mouse() {
-    return InputUtility::mouse();
+    return InputManager::mouse();
 }
 
 JoyPad& Input::joyPad() {
-    return InputUtility::joyPad();
+    return InputManager::joyPad();
 }

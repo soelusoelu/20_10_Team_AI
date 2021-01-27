@@ -55,7 +55,6 @@
     <ClCompile Include="GameObject\GameObjectManager.cpp" />
     <ClCompile Include="GameObject\GameObjectFactory.cpp" />
     <ClCompile Include="Math\Plane.cpp" />
-    <ClCompile Include="Input\InputUtility.cpp" />
     <ClCompile Include="Device\Subject.cpp" />
     <ClCompile Include="DirectX\BlendState.cpp" />
     <ClCompile Include="DirectX\Buffer.cpp" />
@@ -218,7 +217,6 @@
     <ClCompile Include="Component\Engine\Mesh\MeshOutLine.cpp" />
     <ClCompile Include="Component\Engine\Mesh\MeshRenderer.cpp" />
     <ClCompile Include="Component\Engine\Mesh\MeshShader.cpp" />
-    <ClCompile Include="Component\Engine\Mesh\ShadowMap.cpp" />
     <ClCompile Include="Component\Engine\Mesh\SkinMeshComponent.cpp" />
     <ClCompile Include="Component\Engine\Sound\ListenerComponent.cpp" />
     <ClCompile Include="Component\Engine\Sound\SoundComponent.cpp" />
@@ -280,6 +278,9 @@
     <ClCompile Include="Engine\EngineFuctionChanger.cpp" />
     <ClCompile Include="Engine\MapEditor\MapEditorMeshManager.cpp" />
     <ClCompile Include="Engine\MapEditor\AssetsPlacement.cpp" />
+    <ClCompile Include="Engine\Camera\EngineCamera.cpp" />
+    <ClCompile Include="Input\InputManager.cpp" />
+    <ClCompile Include="Mesh\Shadow\ShadowMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -539,7 +540,6 @@
     <ClInclude Include="Component\Engine\Mesh\MeshOutLine.h" />
     <ClInclude Include="Component\Engine\Mesh\MeshRenderer.h" />
     <ClInclude Include="Component\Engine\Mesh\MeshShader.h" />
-    <ClInclude Include="Component\Engine\Mesh\ShadowMap.h" />
     <ClInclude Include="Component\Engine\Mesh\SkinMeshComponent.h" />
     <ClInclude Include="Component\Engine\Sound\ListenerComponent.h" />
     <ClInclude Include="Component\Engine\Sound\SoundComponent.h" />
@@ -619,6 +619,10 @@
     <ClInclude Include="GameObject\IGameObjectAdder.h" />
     <ClInclude Include="Engine\ICallbackChangeEngineMode.h" />
     <ClInclude Include="Engine\IEngineModeGetter.h" />
+    <ClInclude Include="Engine\Camera\EngineCamera.h" />
+    <ClInclude Include="Input\InputManager.h" />
+    <ClInclude Include="Input\IMouseWheelScrollValueSetter.h" />
+    <ClInclude Include="Mesh\Shadow\ShadowMap.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />

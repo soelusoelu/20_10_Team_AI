@@ -20,9 +20,9 @@ bool Transform2D::computeWorldTransform() {
         mWorldTransform = Matrix4::createScale(Vector3(mSize, 1.f)); //テクスチャサイズに
         mWorldTransform *= Matrix4::createTranslation(Vector3(-mPivotPosition, 0.f)); //中心 + ピボットを原点に
 
-        mWorldTransform *= Matrix4::createScale(Vector3(getScale() * Window::getWindowCompensate(), 1.f));
+        mWorldTransform *= Matrix4::createScale(Vector3(getScale() * Window::getWindowCorrect(), 1.f));
         mWorldTransform *= Matrix4::createRotationZ(mRotation);
-        mWorldTransform *= Matrix4::createTranslation(Vector3(getPosition() * Window::getWindowCompensate(), 1.f));
+        mWorldTransform *= Matrix4::createTranslation(Vector3(getPosition() * Window::getWindowCorrect(), 1.f));
 
         mIsRecomputeTransform = false;
 

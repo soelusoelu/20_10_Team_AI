@@ -23,8 +23,12 @@ public:
     void renderMesh() const;
     //2Dライン処理
     void renderLine2D(Matrix4& proj) const;
-    //3Dポイント、ライン処理
+    //3Dポイント、ライン共通処理
     void renderPointLine3D() const;
+    //3Dライン処理
+    void renderLine3D() const;
+    //3Dポイント処理
+    void renderPoint3D() const;
     //スプライト描画共通処理
     void renderSprite() const;
     //2Dスプライト処理
@@ -35,6 +39,10 @@ public:
     void renderToDebug(Matrix4& proj) const;
     //ポイントライト処理
     void renderPointLight() const;
+
+private:
+    Renderer(const Renderer&) = delete;
+    Renderer& operator=(const Renderer&) = delete;
 
 private:
     std::unique_ptr<GBuffer> mGBuffer;

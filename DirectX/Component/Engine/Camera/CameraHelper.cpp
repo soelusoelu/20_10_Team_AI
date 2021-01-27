@@ -3,11 +3,28 @@
 
 Matrix4 CameraHelper::getViewMatrixTakingSphereInCamera(
     const Sphere& sphere,
-    float aspectYDivX,
+    int width,
+    int height,
     float fov,
     const Vector3& direction,
     const Vector3& up
 ) {
+    //カメラ位置を決定する
+    auto pos = getCameraPositionTakingSphereInCamera(sphere, width, height, fov, direction);
+
+    // ビュー行列作成
+    return Matrix4::createLookAt(pos, sphere.center, up);
+}
+
+Vector3 CameraHelper::getCameraPositionTakingSphereInCamera(
+    const Sphere& sphere,
+    int width,
+    int height,
+    float fov,
+    const Vector3& direction
+) {
+    float aspectYDivX = static_cast<float>(height) / static_cast<float>(width);
+
     //fovYとfovXの小さい方をθとして選択
     float theta = (aspectYDivX >= 1.f) ? fov * aspectYDivX : fov;
 
@@ -15,12 +32,5 @@ Matrix4 CameraHelper::getViewMatrixTakingSphereInCamera(
     float d = sphere.radius / Math::sin(theta / 2.f);
 
     //カメラ位置を決定する
-    auto pos = sphere.center - direction * d;
-
-    // ビュー行列作成
-    return Matrix4::createLookAt(pos, sphere.center, up);
-}
-
-Matrix4 CameraHelper::getViewMatrixTakingSphereInCamera(const Sphere& sphere, int width, int height, float fov, const Vector3& direction, const Vector3& up) {
-    return getViewMatrixTakingSphereInCamera(sphere, static_cast<float>(height) / static_cast<float>(width), fov, direction, up);
+    return sphere.center - direction * d;
 }

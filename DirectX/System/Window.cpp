@@ -12,15 +12,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     return gWindow->msgProc(hWnd, uMsg, wParam, lParam);
 }
 
-Window::Window() :
-    mhWnd(nullptr),
-    mWndClass(),
-    mTitle("") {
+Window::Window()
+    : mhWnd(nullptr)
+    , mWndClass()
+    , mMouseWheelScrollValueSetter(nullptr)
+    , mTitle("")
+{
 }
 
 Window::~Window() {
     //ウィンドウクラスを登録解除
     UnregisterClass(mWndClass.lpszClassName, mWndClass.hInstance);
+}
+
+void Window::initialize(IMouseWheelScrollValueSetter* setter) {
+    mMouseWheelScrollValueSetter = setter;
 }
 
 void Window::createWindow(HINSTANCE hInstance) {
@@ -86,6 +92,9 @@ LRESULT Window::msgProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam) {
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+    case WM_MOUSEWHEEL:
+        mMouseWheelScrollValueSetter->setWheelScrollValue(GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA);
+        break;
     }
 
     ImGui_ImplWin32_WndProcHandler(hWnd, iMsg, wParam, lParam);
@@ -128,11 +137,11 @@ Vector2 Window::windowToClientSize() {
     return mWindowToClientSize;
 }
 
-Vector2 Window::getWindowCompensate() {
-    Vector2 compen;
-    compen.x = static_cast<float>(mGameWidth) / static_cast<float>(mStandardWidth);
-    compen.y = static_cast<float>(mGameHeight) / static_cast<float>(mStandardHeight);
-    return compen;
+Vector2 Window::getWindowCorrect() {
+    return Vector2(
+        static_cast<float>(mGameWidth) / static_cast<float>(mStandardWidth),
+        static_cast<float>(mGameHeight) / static_cast<float>(mStandardHeight)
+    );
 }
 
 void Window::loadProperties(const rapidjson::Value& inObj) {
@@ -174,9 +183,9 @@ void Window::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson
 }
 
 void Window::updateWindowToClientSize() {
-    RECT wRect, cRect; //ウィンドウ全体の矩形、クライアント領域の矩形
-    int ww, wh;        //ウィンドウ全体の幅、高さ
-    int cw, ch;        //クライアント領域の幅、高さ //ウィンドウ全体の幅・高さを計算
+    RECT wRect{}, cRect{}; //ウィンドウ全体の矩形、クライアント領域の矩形
+    int ww = 0, wh = 0;        //ウィンドウ全体の幅、高さ
+    int cw = 0, ch = 0;        //クライアント領域の幅、高さ //ウィンドウ全体の幅・高さを計算
 
     //ウィンドウ全体の幅・高さを計算
     //GetWindowRect(mhWnd, &wRect);
