@@ -28,7 +28,7 @@ ShadowMap::~ShadowMap() = default;
 
 void ShadowMap::initialize() {
     mDepthTextureCreateShader = AssetsManager::instance().createShader("ShadowDepthTextureCreater.hlsl");
-    mRenderTexture = std::make_unique<RenderTexture>(Window::width(), Window::height(), Format::FORMAT_D32_FLOAT, Format::FORMAT_R16_UNORM);
+    mRenderTexture = std::make_unique<RenderTexture>(Window::width() * 4, Window::height() * 4, Format::FORMAT_D24_UNORM_S8_UINT, Format::FORMAT_R16_UNORM);
 
     //const auto& s = getComponent<SpriteComponent>();
     //const auto& tex = std::make_shared<Texture>(mRenderTexture->getShaderResourceView(), Vector2(Window::width(), Window::height()));
