@@ -74,7 +74,9 @@ void Map::receiveMapData(const std::string& mapName) {
 					&& zMin  < cy + cellSizeH && cy < zMax)
 				{
 					cells[j].canMove = false;
+					cells[j].height = fmaxf(cells[j].height, pHeight);
 				}
+
 			}
 		}
 

@@ -101,7 +101,7 @@ void ASCellManager::OpenNeighCells(ASCell* cell)
 {
 	for (int i = 0; i < cell->neighCells.size(); i++)
 	{
-		if ((cellStates[cell->neighCells[i]->posNum] == E_State::NONE&& cell->neighCells[i]->canMove)
+		if ((cellStates[cell->neighCells[i]->posNum] == E_State::NONE&& cell->neighCells[i]->height <= cell->height/*cell->neighCells[i]->canMove*/)
 			|| cell->neighCells[i]->position== goalCell->position)
 		{
 			//cell->neighCells[i]->state = E_State::OPEN;
@@ -110,7 +110,7 @@ void ASCellManager::OpenNeighCells(ASCell* cell)
 			SetCost(cell->neighCells[i],&cellSearches[cell->neighCells[i]->posNum]);
 			openedCells.push_back(cell->neighCells[i]);
 		}
-		else if (cell->neighCells[i]->canMove == false)
+		else if (/*cell->neighCells[i]->canMove == false*/cell->neighCells[i]->height <= cell->height)
 		{
 			avoidObstacle = true;
 		}

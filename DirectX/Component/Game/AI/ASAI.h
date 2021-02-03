@@ -3,14 +3,12 @@
 #include "ASCell.h"
 #include "ASCellManager.h"
 #include "../../Component.h"
-#include "../../Engine/Collider/AABBCollider.h"
 #include "../../../Math/Vector3.h"
 #include "../Character/ICharacterManager.h"
 #include "../DirectX/Device/Time.h"
 
 class CharacterCommonComponents;
-
-
+class AABBCollider;
 class ASAI :public Component
 {
 public:

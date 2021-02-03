@@ -3,7 +3,7 @@
 #include"../../../Math/Vector2.h"
 
 struct Position {
-	int x=0; int y=0;
+	int x = 0; int y = 0; int h = 0;
 	bool operator==(const Position p)const
 	{
 		if (x == p.x && y == p.y)return true;
@@ -18,6 +18,7 @@ struct ASCell
 	int cost = 1;//そのCell固有のコスト
 	bool canMove = true;//移動可能か不可能か
 	std::vector<ASCell*> neighCells;//隣接するCell
+	float height=0;
 };
 
 struct ASCellSearch

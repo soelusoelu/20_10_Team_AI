@@ -10,10 +10,10 @@
 #include "../Other/HitPointComponent.h"
 #include "../../../Math/Math.h"
 
+class CharacterCommonComponents;
 
 ASAI::ASAI(GameObject& obj):Component(obj)
 {
-
 }
 
 ASAI::~ASAI()
@@ -22,7 +22,7 @@ ASAI::~ASAI()
 
 void ASAI::Initialize()
 {
-	
+	time = Time(0.5);
 	Position start = VectorToPosition(transform().getPosition());
 	start.x = fmaxf(0,fminf( start.x, cellCountW - 1));
 	start.y = fmaxf(0, fminf(start.y,cellCountH-1));
@@ -30,6 +30,8 @@ void ASAI::Initialize()
 	goal = VectorToPosition(routePoint);
 	cells = manager->getMap()->GetCellsInfo();
 	cellManager = std::make_unique<ASCellManager>(cells,cellCountW, cellCountH, start, goal);
+	//cellManager = std::make_unique<ASCellManager>(cells, cellCountW, cellCountH, start, goal);
+
 	routes = cellManager->GetRoute();
 	routePhase = 0;
 	avoidObstacle = cellManager->avoidObstacle;
@@ -38,7 +40,6 @@ void ASAI::Initialize()
 		routePoint = CalcPosition(routePhase);
 		routePhase++;
 	}
-
 }
 
 void ASAI::start()
@@ -53,24 +54,36 @@ void ASAI::start()
 }
 
 void ASAI::onCollisionStay(Collider& other) {
-    if (other.gameObject().tag() != gameObject().tag()) {
-        other.getComponent<HitPointComponent>()->takeDamage(10);
+    if (other.gameObject().tag() != gameObject().tag()
+		&&time.isTime()) {
+		other.getComponent<HitPointComponent>()->takeDamage(10);
+		if (other.getComponent<HitPointComponent>()->getHP() <= 0)
+		{
+			Initialize();
+		}
+		time.reset();
     }
 }
 
 void ASAI::onCollisionExit(Collider& other) {
-
+	if (other.gameObject().tag() != gameObject().tag())
+	{
+		Initialize();
+	}
 }
 
 void ASAI::originalUpdate()
 {
+	//‚à‚µ‚à“G‚Ì‘¶Ý‚·‚éƒZƒ‹‚ª•ÏX‚³‚ê‚½‚çÄ’Tõ‚·‚é
+	Position enemyPos = VectorToPosition(GetNearEnemy());
 	if (routes.size() == 0/*||currentP.x!=goalP.x|| currentP.y != goalP.y*/
-		|| goal.x!= VectorToPosition(GetNearEnemy()).x
-		|| goal.y != VectorToPosition(GetNearEnemy()).y)
+		|| goal.x!= enemyPos.x
+		|| goal.y != enemyPos.y)
 	{
 		Initialize();
 	}
 	else
+	//“G‚É‚«‚í‚ß‚Ä‹ß‚¢ê‡‚Í’¼ÚÚ‹ßA‚»‚êˆÈŠO‚Íƒ‹[ƒg‚ð‚½‚Ç‚é
 	{
 		Vector3 v3 = routePoint - transform().getPosition();
 		float distance = v3.length();
@@ -93,7 +106,7 @@ void ASAI::originalUpdate()
 		//	Initialize();
 		//}
 	}
-	
+	time.update();
 }
 
 Vector3 ASAI::GetNearEnemy()
@@ -106,7 +119,7 @@ Vector3 ASAI::GetNearEnemy()
 		for (const CharacterPtr &character:manager->getCharacters())
 		{
 			const float d = Vector3().distance(transform().getPosition(), character.get()->transform().getPosition());
-			if (distance > d)
+			if (distance > d&&character.get()->getComponent<HitPointComponent>()->getHP()!=0)
 			{
 				distance = d;
 				v = character->transform().getPosition();
