@@ -97,12 +97,12 @@ void Transform3D::rotate(const Vector3& axis, float angle) {
     angle *= 0.5f;
     float sinAngle = Math::sin(angle);
 
-    Quaternion inc;
-    inc.x = axis.x * sinAngle;
-    inc.y = axis.y * sinAngle;
-    inc.z = axis.z * sinAngle;
-    inc.w = Math::cos(angle);
-
+    Quaternion inc(
+        axis.x * sinAngle,
+        axis.y * sinAngle,
+        axis.z * sinAngle,
+        Math::cos(angle)
+    );
     mRotation = Quaternion::concatenate(mRotation, inc);
 }
 

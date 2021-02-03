@@ -1,5 +1,6 @@
 ﻿#include "Quaternion.h"
-#include "Math.h"
+#include "MathUtility.h"
+#include "Matrix4.h"
 #include "Vector3.h"
 
 Quaternion::Quaternion() {
@@ -136,32 +137,46 @@ Quaternion Quaternion::slerp(const Quaternion& a, const Quaternion& b, float f) 
         scale1 = -scale1;
     }
 
-    Quaternion retVal;
-    retVal.x = scale0 * a.x + scale1 * b.x;
-    retVal.y = scale0 * a.y + scale1 * b.y;
-    retVal.z = scale0 * a.z + scale1 * b.z;
-    retVal.w = scale0 * a.w + scale1 * b.w;
+    Quaternion retVal(
+        scale0 * a.x + scale1 * b.x,
+        scale0 * a.y + scale1 * b.y,
+        scale0 * a.z + scale1 * b.z,
+        scale0 * a.w + scale1 * b.w
+    );
     retVal.normalize();
+
     return retVal;
 }
 
 Quaternion Quaternion::concatenate(const Quaternion& q, const Quaternion& p) {
-    Quaternion retVal;
-
-    // Vector component is:
-    // ps * qv + qs * pv + pv x qv
     Vector3 qv(q.x, q.y, q.z);
     Vector3 pv(p.x, p.y, p.z);
     Vector3 newVec = p.w * qv + q.w * pv + Vector3::cross(pv, qv);
-    retVal.x = newVec.x;
-    retVal.y = newVec.y;
-    retVal.z = newVec.z;
 
-    // Scalar component is:
-    // ps * qs - pv . qv
-    retVal.w = p.w * q.w - Vector3::dot(pv, qv);
+    return Quaternion(
+        //ベクトル部分 ps * qv + qs * pv + pv x qv
+        newVec.x,
+        newVec.y,
+        newVec.z,
+        //スカラー部分 ps * qs - pv . qv
+        p.w * q.w - Vector3::dot(pv, qv)
+    );
+}
 
-    return retVal;
+Quaternion Quaternion::lookRotation(const Vector3& forward, const Vector3& upwards) {
+    const auto& z = forward;
+    auto x = Vector3::normalize(Vector3::cross(upwards, z));
+    auto y = Vector3::normalize(Vector3::cross(z, x));
+
+    auto m = Matrix4::identity;
+    m.m[0][0] = x.x; m.m[0][1] = y.x; m.m[0][2] = z.x;
+    m.m[1][0] = x.y; m.m[1][1] = y.y; m.m[1][2] = z.y;
+    m.m[2][0] = x.z; m.m[2][1] = y.z; m.m[2][2] = z.z;
+    //m.m[0][0] = x.x; m.m[0][1] = x.y; m.m[0][2] = x.z;
+    //m.m[1][0] = y.x; m.m[1][1] = y.y; m.m[1][2] = y.z;
+    //m.m[2][0] = z.x; m.m[2][1] = z.y; m.m[2][2] = z.z;
+
+    return m.getQuaternion();
 }
 
 const Quaternion Quaternion::identity(0.f, 0.f, 0.f, 1.f);

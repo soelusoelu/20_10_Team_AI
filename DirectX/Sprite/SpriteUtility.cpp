@@ -50,7 +50,7 @@ bool SpriteUtility::clickSpriteDebug(const Sprite& sprite) {
 
 bool SpriteUtility::containsTexture(const Transform2D& transform, const Vector2& textureSize, const Vector2& targetPosition) {
     //ウィンドウ補正値を取得する
-    auto compen = Window::getWindowCompensate();
+    auto compen = Window::getWindowCorrect();
 
     //計算に必要な要素を取得する
     const auto& scale = transform.getScale();

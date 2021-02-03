@@ -17,12 +17,8 @@ void Vector2::set(float inX, float inY) {
     y = inY;
 }
 
-Vector2 Vector2::operator-() {
+Vector2 Vector2::operator-() const {
     return Vector2(-x, -y);
-}
-
-Vector2 operator-(const Vector2& vec) {
-    return Vector2(-vec.x, -vec.y);
 }
 
 Vector2 operator+(const Vector2& a, const Vector2& b) {
@@ -70,8 +66,8 @@ Vector2& Vector2::operator-=(const Vector2& right) {
     return *this;
 }
 
-bool Vector2::equal(const Vector2& right) const {
-    return (Math::equal(x, right.x) && Math::equal(y, right.y));
+bool Vector2::equal(const Vector2& left, const Vector2& right) {
+    return (Math::equal(left.x, right.x) && Math::equal(left.y, right.y));
 }
 
 float Vector2::lengthSq() const {

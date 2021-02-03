@@ -22,7 +22,7 @@ public:
     //位置を設定する
     void setPosition(const Vector3& pos);
     //位置を取得する
-    Vector3 getPosition() const;
+    const Vector3& getPosition() const;
     //視点を設定する
     void lookAt(const Vector3& position);
     //視点を取得する

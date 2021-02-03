@@ -165,6 +165,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Camera\EngineCamera.cpp" />
     <ClCompile Include="Engine\EngineFuctionChanger.cpp" />
     <ClCompile Include="Engine\ModelViewer\AnimationViewer.cpp" />
     <ClCompile Include="Engine\AssetsRenderer\AssetsRenderTexture.cpp" />
@@ -238,6 +239,7 @@
     <ClCompile Include="Collision\IntersectHelper.cpp" />
     <ClCompile Include="Engine\SceneMesh\SceneMeshSelector.cpp" />
     <ClCompile Include="Engine\MapEditor\MapEditorMeshManager.cpp" />
+    <ClCompile Include="Input\InputManager.cpp" />
     <ClCompile Include="Mesh\MeshCommonShaderSetter.cpp" />
     <ClCompile Include="Engine\SceneMesh\SceneMeshOperator.cpp" />
     <ClCompile Include="Engine\SceneMesh\SceneMeshDeleter.cpp" />
@@ -267,7 +269,7 @@
     <ClCompile Include="Component\Game\Character\SimpleCharacter.cpp" />
     <ClCompile Include="Component\Game\Character\OverlapPrevention.cpp" />
     <ClCompile Include="Component\Game\Character\PhaseChangeSaver.cpp" />
-    <ClCompile Include="Component\Engine\Mesh\ShadowMap.cpp" />
+    <ClCompile Include="Mesh\Shadow\ShadowMap.cpp" />
     <ClCompile Include="Component\Game\UI\NextStageSelect.cpp" />
     <ClCompile Include="System\Texture\RenderTexture.cpp" />
     <ClCompile Include="Sprite\SpriteUtility.cpp" />
@@ -339,7 +341,6 @@
     <ClCompile Include="GameObject\GameObjectManager.cpp" />
     <ClCompile Include="GameObject\GameObject.cpp" />
     <ClCompile Include="Component\Game\Scene\GamePlay.cpp" />
-    <ClCompile Include="Input\InputUtility.cpp" />
     <ClCompile Include="Light\LightManager.cpp" />
     <ClCompile Include="Math\Vector2.cpp" />
     <ClCompile Include="Math\Matrix3.cpp" />
@@ -425,6 +426,7 @@
     <ClCompile Include="Mesh\VertexNormalSmoother.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Camera\EngineCamera.h" />
     <ClInclude Include="Engine\EngineFuctionChanger.h" />
     <ClInclude Include="Engine\AssetsRenderer\ICallbackSelectAssetsTexture.h" />
     <ClInclude Include="Engine\EngineMode.h" />
@@ -519,6 +521,8 @@
     <ClInclude Include="Collision\IntersectHelper.h" />
     <ClInclude Include="Engine\SceneMesh\SceneMeshSelector.h" />
     <ClInclude Include="Engine\MapEditor\MapEditorMeshManager.h" />
+    <ClInclude Include="Input\IMouseWheelScrollValueSetter.h" />
+    <ClInclude Include="Input\InputManager.h" />
     <ClInclude Include="Mesh\IMeshAdder.h" />
     <ClInclude Include="Mesh\IMeshesGetter.h" />
     <ClInclude Include="Mesh\MeshCommonShaderSetter.h" />
@@ -563,7 +567,7 @@
     <ClInclude Include="Component\Game\Character\SimpleCharacter.h" />
     <ClInclude Include="Component\Game\Character\OverlapPrevention.h" />
     <ClInclude Include="Component\Game\Character\PhaseChangeSaver.h" />
-    <ClInclude Include="Component\Engine\Mesh\ShadowMap.h" />
+    <ClInclude Include="Mesh\Shadow\ShadowMap.h" />
     <ClInclude Include="Component\Game\UI\NextStageSelect.h" />
     <ClInclude Include="System\Texture\RenderTexture.h" />
     <ClInclude Include="Sprite\SpriteUtility.h" />

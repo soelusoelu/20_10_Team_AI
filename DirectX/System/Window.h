@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "SystemInclude.h"
+#include "../Input/IMouseWheelScrollValueSetter.h"
 #include "../Math/Math.h"
 #include <rapidjson/document.h>
 #include <string>
@@ -9,6 +10,7 @@ class Window {
 public:
     Window();
     ~Window();
+    void initialize(IMouseWheelScrollValueSetter* setter);
     void createWindow(HINSTANCE hInstance);
     LRESULT msgProc(HWND, UINT, WPARAM, LPARAM);
     HWND gethWnd() const;
@@ -21,7 +23,7 @@ public:
     static int debugHeight();
     static Vector2 windowToClientSize();
     //ゲームウィンドウをフルHDサイズに変える補正値を取得する
-    static Vector2 getWindowCompensate();
+    static Vector2 getWindowCorrect();
     void loadProperties(const rapidjson::Value& inObj);
     void saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const;
 
@@ -31,6 +33,7 @@ private:
 private:
     HWND mhWnd;
     WNDCLASSEX mWndClass; //ウィンドウクラスの設定
+    IMouseWheelScrollValueSetter* mMouseWheelScrollValueSetter;
     std::string mTitle;
     static inline int mGameWidth = 1080;
     static inline int mGameHeight = 720;

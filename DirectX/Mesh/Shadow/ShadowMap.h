@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "../../../System/Shader/ConstantBuffers.h"
+#include "../../System/Shader/ConstantBuffers.h"
 #include <rapidjson/document.h>
 #include <memory>
 

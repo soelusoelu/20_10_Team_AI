@@ -1,4 +1,5 @@
 ﻿#include "JoyPad.h"
+#include "InputManager.h"
 #include "InputUtility.h"
 #include "../Math/Math.h"
 #include "../System/GlobalFunction.h"
@@ -63,7 +64,7 @@ void JoyPad::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson
 
 BOOL CALLBACK enumJoysticksCallback(const DIDEVICEINSTANCE* pdidInstance, VOID* pContext) {
     // 「DirectInputデバイス」オブジェクトの作成
-    if (FAILED(InputUtility::mDirectInput->CreateDevice(pdidInstance->guidInstance, &JoyPad::mPadDevice, NULL))) {
+    if (FAILED(InputManager::mDirectInput->CreateDevice(pdidInstance->guidInstance, &JoyPad::mPadDevice, NULL))) {
         return DIENUM_CONTINUE;
     }
 
@@ -99,15 +100,15 @@ void JoyPad::update() {
 }
 
 bool JoyPad::getJoyDown(JoyCode joy) const {
-    return (mCurrentJoyState.rgbButtons[static_cast<int>(joy)] & 0x80 && !(mPreviousJoyState.rgbButtons[static_cast<int>(joy)] & 0x80));
+    return (mCurrentJoyState.rgbButtons[static_cast<int>(joy)] & InputUtility::VERSION && !(mPreviousJoyState.rgbButtons[static_cast<int>(joy)] & InputUtility::VERSION));
 }
 
 bool JoyPad::getJoy(JoyCode joy) const {
-    return (mCurrentJoyState.rgbButtons[static_cast<int>(joy)] & 0x80 && (mPreviousJoyState.rgbButtons[static_cast<int>(joy)] & 0x80));
+    return (mCurrentJoyState.rgbButtons[static_cast<int>(joy)] & InputUtility::VERSION && (mPreviousJoyState.rgbButtons[static_cast<int>(joy)] & InputUtility::VERSION));
 }
 
 bool JoyPad::getJoyUp(JoyCode joy) const {
-    return (!(mCurrentJoyState.rgbButtons[static_cast<int>(joy)] & 0x80) && mPreviousJoyState.rgbButtons[static_cast<int>(joy)] & 0x80);
+    return (!(mCurrentJoyState.rgbButtons[static_cast<int>(joy)] & InputUtility::VERSION) && mPreviousJoyState.rgbButtons[static_cast<int>(joy)] & InputUtility::VERSION);
 }
 
 Vector2 JoyPad::leftStick() const {

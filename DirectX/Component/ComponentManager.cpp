@@ -13,7 +13,7 @@ void ComponentManager::start() {
     }
 }
 
-void ComponentManager::update() const  {
+void ComponentManager::update() const {
     for (const auto& comp : mComponents) {
         comp->update();
     }

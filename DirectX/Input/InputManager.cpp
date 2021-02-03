@@ -1,16 +1,16 @@
-﻿#include "InputUtility.h"
+﻿#include "InputManager.h"
 #include "JoyPad.h"
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "../System/GlobalFunction.h"
 
-void InputUtility::create() {
+void InputManager::create() {
     mKeyboard = new Keyboard();
     mMouse = new Mouse();
     mJoyPad = new JoyPad();
 }
 
-bool InputUtility::initialize(const HWND& hWnd) {
+bool InputManager::initialize(const HWND& hWnd) {
     //「DirectInput」オブジェクトの作成
     if (FAILED(DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&mDirectInput, nullptr))) {
         return false;
@@ -23,37 +23,41 @@ bool InputUtility::initialize(const HWND& hWnd) {
     return true;
 }
 
-void InputUtility::loadProperties(const rapidjson::Value& inObj) {
+void InputManager::loadProperties(const rapidjson::Value& inObj) {
     mKeyboard->loadProperties(inObj);
     mJoyPad->loadProperties(inObj);
 }
 
-void InputUtility::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) {
+void InputManager::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) {
     mKeyboard->saveProperties(alloc, inObj);
     mJoyPad->saveProperties(alloc, inObj);
 }
 
-void InputUtility::finalize() {
+void InputManager::finalize() {
     safeRelease(mDirectInput);
     safeDelete(mKeyboard);
     safeDelete(mMouse);
     safeDelete(mJoyPad);
 }
 
-void InputUtility::update() {
+void InputManager::update() {
     mKeyboard->update();
     mMouse->update();
     mJoyPad->update();
 }
 
-Keyboard& InputUtility::keyboard() {
+void InputManager::lateUpdate() {
+    mMouse->lateUpdate();
+}
+
+Keyboard& InputManager::keyboard() {
     return *mKeyboard;
 }
 
-Mouse& InputUtility::mouse() {
+Mouse& InputManager::mouse() {
     return *mMouse;
 }
 
-JoyPad& InputUtility::joyPad() {
+JoyPad& InputManager::joyPad() {
     return *mJoyPad;
 }

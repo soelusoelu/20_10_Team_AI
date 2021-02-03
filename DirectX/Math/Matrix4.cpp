@@ -1,5 +1,5 @@
 ﻿#include "Matrix4.h"
-#include "Math.h"
+#include "MathUtility.h"
 #include "Quaternion.h"
 #include "Vector3.h"
 #include <memory>
@@ -246,6 +246,52 @@ Vector3 Matrix4::getYAxis() const {
 
 Vector3 Matrix4::getZAxis() const {
     return Vector3::normalize(Vector3(m[2][0], m[2][1], m[2][2]));
+}
+
+Quaternion Matrix4::getQuaternion() const {
+    //最大成分を検索
+    float elem[4] = {
+        m[0][0] - m[1][1] - m[2][2],
+        -m[0][0] + m[1][1] - m[2][2],
+        -m[0][0] - m[1][1] + m[2][2],
+        m[0][0] + m[1][1] + m[2][2]
+    }; // 0:x, 1:y, 2:z, 3:w
+
+    unsigned biggestIndex = 0;
+    for (unsigned i = 1; i < 4; ++i) {
+        if (elem[i] > elem[biggestIndex]) {
+            biggestIndex = i;
+        }
+    }
+
+    //最大要素の値を算出
+    float v = sqrtf(elem[biggestIndex] + 1.f) * 0.5f;
+    float mult = 0.25f / v;
+
+    Quaternion result;
+    if (biggestIndex == 0) {
+        result.x = v;
+        result.y = (m[0][1] + m[1][0]) * mult;
+        result.z = (m[2][0] + m[0][2]) * mult;
+        result.w = (m[1][2] - m[2][1]) * mult;
+    } else if (biggestIndex == 1) {
+        result.x = (m[0][1] + m[1][0]) * mult;
+        result.y = v;
+        result.z = (m[1][2] + m[2][1]) * mult;
+        result.w = (m[2][0] - m[0][2]) * mult;
+    } else if (biggestIndex == 2) {
+        result.x = (m[2][0] + m[0][2]) * mult;
+        result.y = (m[1][2] + m[2][1]) * mult;
+        result.z = v;
+        result.w = (m[0][1] - m[1][0]) * mult;
+    } else if (biggestIndex == 3) {
+        result.x = (m[1][2] - m[2][1]) * mult;
+        result.y = (m[2][0] - m[0][2]) * mult;
+        result.z = (m[0][1] - m[1][0]) * mult;
+        result.w = v;
+    }
+
+    return result;
 }
 
 Vector3 Matrix4::getScale() const {

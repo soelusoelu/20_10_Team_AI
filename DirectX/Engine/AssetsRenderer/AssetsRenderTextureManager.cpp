@@ -43,7 +43,6 @@ void AssetsRenderTextureManager::initialize() {
 void AssetsRenderTextureManager::update(EngineMode mode) {
     if (isProcessMode(mode)) {
         mSelector->selectTexture(mCurrentSelectTexture);
-        mTextureList->update();
         mTextureAdder->update();
         mDeleter->update();
     }

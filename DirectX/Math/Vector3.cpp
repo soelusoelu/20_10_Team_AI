@@ -1,6 +1,7 @@
 ﻿#include "Vector3.h"
-#include "Math.h"
+#include "MathUtility.h"
 #include "Matrix4.h"
+#include "Quaternion.h"
 #include "Vector2.h"
 
 Vector3::Vector3() :
@@ -173,23 +174,23 @@ Vector3 Vector3::lerp(const Vector3& a, const Vector3& b, float f) {
 }
 
 Vector3 Vector3::reflect(const Vector3& v, const Vector3& n) {
-    return v - 2.0f * Vector3::dot(v, n) * n;
+    return v - 2.f * Vector3::dot(v, n) * n;
 }
 
 Vector3 Vector3::transform(const Vector3& vec, const Matrix4& mat, float w) {
-    Vector3 retVal;
-    retVal.x = vec.x * mat.m[0][0] + vec.y * mat.m[1][0] + vec.z * mat.m[2][0] + w * mat.m[3][0];
-    retVal.y = vec.x * mat.m[0][1] + vec.y * mat.m[1][1] + vec.z * mat.m[2][1] + w * mat.m[3][1];
-    retVal.z = vec.x * mat.m[0][2] + vec.y * mat.m[1][2] + vec.z * mat.m[2][2] + w * mat.m[3][2];
-    //ignore w since we aren't returning a new value for it...
-    return retVal;
+    return Vector3(
+        vec.x * mat.m[0][0] + vec.y * mat.m[1][0] + vec.z * mat.m[2][0] + w * mat.m[3][0],
+        vec.x * mat.m[0][1] + vec.y * mat.m[1][1] + vec.z * mat.m[2][1] + w * mat.m[3][1],
+        vec.x * mat.m[0][2] + vec.y * mat.m[1][2] + vec.z * mat.m[2][2] + w * mat.m[3][2]
+    );
 }
 
 Vector3 Vector3::transformWithPerspDiv(const Vector3& vec, const Matrix4& mat, float w) {
-    Vector3 retVal;
-    retVal.x = vec.x * mat.m[0][0] + vec.y * mat.m[1][0] + vec.z * mat.m[2][0] + w * mat.m[3][0];
-    retVal.y = vec.x * mat.m[0][1] + vec.y * mat.m[1][1] + vec.z * mat.m[2][1] + w * mat.m[3][1];
-    retVal.z = vec.x * mat.m[0][2] + vec.y * mat.m[1][2] + vec.z * mat.m[2][2] + w * mat.m[3][2];
+    Vector3 retVal(
+        vec.x * mat.m[0][0] + vec.y * mat.m[1][0] + vec.z * mat.m[2][0] + w * mat.m[3][0],
+        vec.x * mat.m[0][1] + vec.y * mat.m[1][1] + vec.z * mat.m[2][1] + w * mat.m[3][1],
+        vec.x * mat.m[0][2] + vec.y * mat.m[1][2] + vec.z * mat.m[2][2] + w * mat.m[3][2]
+    );
     float transformedW = vec.x * mat.m[0][3] + vec.y * mat.m[1][3] + vec.z * mat.m[2][3] + w * mat.m[3][3];
     if (!Math::nearZero(Math::abs(transformedW))) {
         transformedW = 1.f / transformedW;
@@ -199,11 +200,9 @@ Vector3 Vector3::transformWithPerspDiv(const Vector3& vec, const Matrix4& mat, f
 }
 
 Vector3 Vector3::transform(const Vector3& v, const Quaternion& q) {
-    // v + 2.0*cross(q.xyz, cross(q.xyz,v) + q.w*v);
+    // v + 2.0 * cross(q.xyz, cross(q.xyz, v) + q.w * v);
     Vector3 qv(q.x, q.y, q.z);
-    Vector3 retVal = v;
-    retVal += 2.f * Vector3::cross(qv, Vector3::cross(qv, v) + q.w * v);
-    return retVal;
+    return (v + 2.f * Vector3::cross(qv, Vector3::cross(qv, v) + q.w * v));
 }
 
 const Vector3 Vector3::zero(0.f, 0.f, 0.f);

@@ -1,4 +1,5 @@
 ﻿#include "Keyboard.h"
+#include "InputUtility.h"
 #include "../System/GlobalFunction.h"
 #include "../Utility/LevelLoader.h"
 
@@ -16,15 +17,15 @@ Keyboard::~Keyboard() {
 }
 
 bool Keyboard::getKeyDown(KeyCode key) const {
-    return (mCurrentKeys[static_cast<BYTE>(key)] & 0x80 && !(mPreviousKeys[static_cast<BYTE>(key)] & 0x80));
+    return (mCurrentKeys[static_cast<BYTE>(key)] & InputUtility::VERSION && !(mPreviousKeys[static_cast<BYTE>(key)] & InputUtility::VERSION));
 }
 
 bool Keyboard::getKey(KeyCode key) const {
-    return (mCurrentKeys[static_cast<BYTE>(key)] & 0x80 && (mPreviousKeys[static_cast<BYTE>(key)] & 0x80));
+    return (mCurrentKeys[static_cast<BYTE>(key)] & InputUtility::VERSION && (mPreviousKeys[static_cast<BYTE>(key)] & InputUtility::VERSION));
 }
 
 bool Keyboard::getKeyUp(KeyCode key) const {
-    return (!(mCurrentKeys[static_cast<BYTE>(key)] & 0x80) && mPreviousKeys[static_cast<BYTE>(key)] & 0x80);
+    return (!(mCurrentKeys[static_cast<BYTE>(key)] & InputUtility::VERSION) && mPreviousKeys[static_cast<BYTE>(key)] & InputUtility::VERSION);
 }
 
 int Keyboard::horizontal() const {

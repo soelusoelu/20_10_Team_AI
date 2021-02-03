@@ -22,9 +22,8 @@ public:
     void initialize();
     void loadProperties(const rapidjson::Value& inObj);
     void saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) const;
-    void update();
     //メッシュをテクスチャに描画する
-    void drawMeshOnTexture() const;
+    void drawMeshOnTexture();
     //メッシュ描画済みテクスチャを描画する
     void drawTexture(const Matrix4& proj) const;
 
