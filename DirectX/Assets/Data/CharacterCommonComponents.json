@@ -27,7 +27,10 @@
     },
     {
       "type": "ASAI",
-      "properties": {}
+      "properties": {
+        "Damage": 10
+
+      }
     },
     {
       "type": "AABBCollider",

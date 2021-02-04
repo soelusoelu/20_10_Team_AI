@@ -9,6 +9,8 @@
 #include "../Character/ICharacterManager.h"
 #include "../Other/HitPointComponent.h"
 #include "../../../Math/Math.h"
+#include "../../../Utility/LevelLoader.h"
+
 
 class CharacterCommonComponents;
 
@@ -54,59 +56,96 @@ void ASAI::start()
 }
 
 void ASAI::onCollisionStay(Collider& other) {
-    if (other.gameObject().tag() != gameObject().tag()
-		&&time.isTime()) {
-		other.getComponent<HitPointComponent>()->takeDamage(10);
-		if (other.getComponent<HitPointComponent>()->getHP() <= 0)
-		{
-			Initialize();
+	if (other.gameObject().tag() != gameObject().tag()) {
+		if (time.isTime()) {
+			other.getComponent<HitPointComponent>()->takeDamage(10);
+			if (other.getComponent<HitPointComponent>()->getHP() <= 0)
+			{
+				Initialize();
+			}
+			time.reset();
 		}
-		time.reset();
-    }
+		else
+		{
+			time.update();
+		}
+	}
 }
 
 void ASAI::onCollisionExit(Collider& other) {
 	if (other.gameObject().tag() != gameObject().tag())
 	{
-		Initialize();
+		//Initialize();
 	}
+}
+
+void ASAI::loadProperties(const rapidjson::Value& inObj)
+{
+	JsonHelper::getInt(inObj, "Damage", &mDamage);
+}
+
+void ASAI::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const
+{
+	JsonHelper::setInt(alloc, inObj, "Damage", mDamage);
 }
 
 void ASAI::originalUpdate()
 {
-	//もしも敵の存在するセルが変更されたら再探索する
-	Position enemyPos = VectorToPosition(GetNearEnemy());
-	if (routes.size() == 0/*||currentP.x!=goalP.x|| currentP.y != goalP.y*/
-		|| goal.x!= enemyPos.x
-		|| goal.y != enemyPos.y)
+	//ダメージを受けたら吹っ飛ぶ
+	if (isDamaged)
 	{
+		transform().translate(fly*damagedTime.countDownTime());
+		damagedTime.update();
+		if (damagedTime.isTime())isDamaged = false;
 		Initialize();
 	}
 	else
-	//敵にきわめて近い場合は直接接近、それ以外はルートをたどる
+
 	{
-		Vector3 v3 = routePoint - transform().getPosition();
-		float distance = v3.length();
-		v3.normalize();
-		if (distance > 1)
+		int currenthp= getComponent<HitPointComponent>()->getHP();
+		if (previousHp != 0&&currenthp!=previousHp)
 		{
-			transform().translate(v3 / 2);
+			isDamaged = true;
+			fly=transform().getPosition()-GetNearEnemy();
+			fly.y = 0;
+			fly.normalize();
+			damagedTime.reset();
+			damagedTime.setLimitTime(1);
 		}
-		if (distance < 1 && routePhase < routes.size()&&avoidObstacle)
+		previousHp = currenthp;
+		//もしも敵の存在するセルが変更されたら再探索する
+		Position enemyPos = VectorToPosition(GetNearEnemy());
+		if (routes.size() == 0/*||currentP.x!=goalP.x|| currentP.y != goalP.y*/
+			|| goal.x != enemyPos.x
+			|| goal.y != enemyPos.y)
 		{
-			routePoint = CalcPosition(routePhase);
-			routePhase++;
+			Initialize();
 		}
-		if (!avoidObstacle)
+		else
+			//敵にきわめて近い場合は直接接近、それ以外はルートをたどる
 		{
-			routePoint = GetNearEnemy();
+			Vector3 v3 = routePoint - transform().getPosition();
+			float distance = v3.length();
+			v3.normalize();
+			if (distance > 1)
+			{
+				transform().translate(v3 / 2);
+			}
+			if (distance < 1 && routePhase < routes.size() && avoidObstacle)
+			{
+				routePoint = CalcPosition(routePhase);
+				routePhase++;
+			}
+			if (!avoidObstacle)
+			{
+				routePoint = GetNearEnemy();
+			}
+			//if (!collider->onCollisionExit().empty())
+			//{
+			//	Initialize();
+			//}
 		}
-		//if (!collider->onCollisionExit().empty())
-		//{
-		//	Initialize();
-		//}
 	}
-	time.update();
 }
 
 Vector3 ASAI::GetNearEnemy()

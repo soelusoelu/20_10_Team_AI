@@ -18,6 +18,9 @@ public:
 	virtual void start()override;
 	virtual void onCollisionStay(Collider& other) override;
 	virtual void onCollisionExit(Collider& other) override;
+	virtual void loadProperties(const rapidjson::Value& inObj) override;
+	virtual void saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value* inObj) const override;
+
 	void originalUpdate();
 
 	//Å‹ß‚Ì“G‚Ìî•ñ‚ğæ“¾‚·‚é
@@ -51,5 +54,14 @@ private:
 	Vector3* targetPos;
 	//std::vector<ASCell>&cells;
 	bool avoidObstacle;
+private:
+	int mDamage;
+
+private:
+	bool isDamaged=false;
+	int previousHp=0;
+	Vector3 fly;
+	Time damagedTime;
+
 };
 
