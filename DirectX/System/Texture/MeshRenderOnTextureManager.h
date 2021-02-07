@@ -18,7 +18,7 @@ public:
     //テクスチャを追加する
     void add(const MeshRenderOnTexturePtr& texture);
     //メッシュをテクスチャ上に描画する
-    void drawMeshOnTextures(const Matrix4& viewProj) const;
+    void drawMeshOnTextures() const;
     //メッシュ描画済みテクスチャを描画する
     void drawTextures(const Matrix4& proj) const;
     //保持してる全テクスチャを削除する

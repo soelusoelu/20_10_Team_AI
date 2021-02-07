@@ -1,9 +1,11 @@
 ﻿#include "CharacterCreateSpriteOperation.h"
 #include "CharacterCost.h"
+#include "../../Engine/Sprite/MeshRenderOnTextureComponent.h"
 #include "../../Engine/Sprite/SpriteComponent.h"
 #include "../../Engine/Text/Text.h"
 #include "../../../Device/Subject.h"
 #include "../../../Input/Input.h"
+#include "../../../Sprite/Sprite.h"
 #include "../../../Sprite/SpriteUtility.h"
 #include "../../../Transform/Transform2D.h"
 #include "../../../Utility/LevelLoader.h"
@@ -49,9 +51,9 @@ void CharacterCreateSpriteOperation::loadProperties(const rapidjson::Value& inOb
 void CharacterCreateSpriteOperation::initialize() {
     //スプライトの位置を調整する
     for (int i = 0; i < mSprites.size(); ++i) {
-        auto& s = mSprites[i].sprite;
-        auto& st = s->transform();
-        auto texSize = s->getTextureSize() * mSpriteScale;
+        auto& s = mSprites[i].sprite->getSprite();
+        auto& st = s.transform();
+        auto texSize = s.getTextureSize() * mSpriteScale;
         st.setScale(mSpriteScale);
         st.setPivot(mSpritePivot);
 
@@ -88,8 +90,8 @@ void CharacterCreateSpriteOperation::originalUpdate() {
 
 void CharacterCreateSpriteOperation::addSprite(const std::string& fileName) {
     SpriteInfo info{};
-    info.sprite = addComponent<SpriteComponent>("SpriteComponent");
-    info.sprite->setTextureFromFileName(fileName);
+    info.sprite = addComponent<MeshRenderOnTextureComponent>("MeshRenderOnTextureComponent");
+    info.sprite->changeMesh(fileName);
     info.isActive = true;
     mSprites.emplace_back(info);
 }
@@ -117,7 +119,7 @@ void CharacterCreateSpriteOperation::clickingLeftMouseButton(const Vector2& mous
     }
 
     //マウス位置がクリックしたスプライトの内にあるなら終了
-    if (SpriteUtility::contains(*mSprites[mClickedSpriteID].sprite, mousePos)) {
+    if (SpriteUtility::contains(mSprites[mClickedSpriteID].sprite->getSprite(), mousePos)) {
         return;
     }
 
@@ -138,7 +140,7 @@ bool CharacterCreateSpriteOperation::selectSprite(const Vector2& mousePos) {
         }
 
         //スプライトの中にマウスの座標が含まれているか
-        if (SpriteUtility::contains(*sprite.sprite, mousePos)) {
+        if (SpriteUtility::contains(sprite.sprite->getSprite(), mousePos)) {
             mClickedSpriteID = i;
             return true;
         }
@@ -156,11 +158,11 @@ void CharacterCreateSpriteOperation::onUpdateCost() {
         //キャラのコストが現在のコストより多ければ使用不可にする
         auto& sprite = mSprites[i];
         if (mCreater->getCharacterCreateInfo(i).cost > mCost->getCost()) {
-            sprite.sprite->setAlpha(mNonActiveAlpha);
+            sprite.sprite->getSprite().setAlpha(mNonActiveAlpha);
             sprite.isActive = false;
             mTexts[i]->setAlpha(mNonActiveAlpha);
         } else {
-            sprite.sprite->setAlpha(1.f);
+            sprite.sprite->getSprite().setAlpha(1.f);
             sprite.isActive = true;
             mTexts[i]->setAlpha(1.f);
         }

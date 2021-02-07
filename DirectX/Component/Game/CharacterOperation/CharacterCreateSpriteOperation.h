@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-class SpriteComponent;
+class MeshRenderOnTextureComponent;
 class CharacterCost;
 class Text;
 class Subject;
@@ -20,7 +20,7 @@ class CharacterCreateSpriteOperation : public Component {
     using TextPtrArray = std::vector<TextPtr>;
 
     struct SpriteInfo {
-        std::shared_ptr<SpriteComponent> sprite;
+        std::shared_ptr<MeshRenderOnTextureComponent> sprite;
         bool isActive; //残りのコストをオーバーしてるか
     };
 

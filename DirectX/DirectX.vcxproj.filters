@@ -627,6 +627,7 @@
     <ClInclude Include="Mesh\Shadow\ShadowMap.h" />
     <ClInclude Include="Component\Engine\Sprite\MeshRenderOnTextureComponent.h" />
     <ClInclude Include="System\Texture\MeshRenderOnTextureManager.h" />
+    <ClInclude Include="System\AssetsDirectoryPath.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />

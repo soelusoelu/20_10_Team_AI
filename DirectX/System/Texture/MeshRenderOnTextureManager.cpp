@@ -17,9 +17,9 @@ void MeshRenderOnTextureManager::add(const MeshRenderOnTexturePtr& texture) {
     mTextures.emplace_back(texture);
 }
 
-void MeshRenderOnTextureManager::drawMeshOnTextures(const Matrix4& viewProj) const {
+void MeshRenderOnTextureManager::drawMeshOnTextures() const {
     for (const auto& tex : mTextures) {
-        tex->drawMeshOnTexture(viewProj);
+        tex->drawMeshOnTexture();
     }
 }
 

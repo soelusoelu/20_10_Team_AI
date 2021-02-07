@@ -126,6 +126,7 @@ void SceneManager::update() {
         //各マネージャークラスを更新
         mMeshManager->update();
         mSpriteManager->update();
+        mMeshRenderOnTextureManager->update();
 
         //シーン移行
         const auto& next = mCurrentScene->getNext();
@@ -169,7 +170,7 @@ void SceneManager::draw() const {
         mMeshManager->draw(view, proj, mCamera->getPosition(), dirLight.getDirection(), dirLight.getLightColor());
 
         //メッシュをテクスチャに描画する
-        mMeshRenderOnTextureManager->drawMeshOnTextures(view * proj);
+        mMeshRenderOnTextureManager->drawMeshOnTextures();
     }
 
 #ifdef _DEBUG

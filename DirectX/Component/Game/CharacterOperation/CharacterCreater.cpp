@@ -69,14 +69,11 @@ void CharacterCreater::receiveExternalData(const rapidjson::Value& inObj) {
 
         auto& chara = mCharactersInfo[i];
         chara.fileName = name;
-        std::string mesh;
-        if (JsonHelper::getString(charaObj, "mesh", &mesh)) {
+        if (std::string mesh; JsonHelper::getString(charaObj, "mesh", &mesh)) {
             //メッシュを事前に読み込んでおく
             AssetsManager::instance().loadMesh(mesh);
-        }
-        if (JsonHelper::getString(charaObj, "sprite", &chara.spriteFileName)) {
             //スプライトを追加する
-            mSpriteOperator->addSprite(chara.spriteFileName);
+            mSpriteOperator->addSprite(mesh);
         }
         JsonHelper::getInt(charaObj, "cost", &chara.cost);
     }

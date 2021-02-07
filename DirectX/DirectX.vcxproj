@@ -526,6 +526,7 @@
     <ClInclude Include="Input\IMouseWheelScrollValueSetter.h" />
     <ClInclude Include="Input\InputManager.h" />
     <ClInclude Include="Component\Engine\Sprite\MeshRenderOnTextureComponent.h" />
+    <ClInclude Include="System\AssetsDirectoryPath.h" />
     <ClInclude Include="System\Texture\MeshRenderOnTextureManager.h" />
     <ClInclude Include="Mesh\IMeshAdder.h" />
     <ClInclude Include="Mesh\IMeshesGetter.h" />

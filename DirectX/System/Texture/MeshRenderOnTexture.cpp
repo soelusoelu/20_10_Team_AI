@@ -57,9 +57,13 @@ void MeshRenderOnTexture::draw(const Matrix4& proj) const {
     mRenderTexture->drawEndTexture();
 }
 
-void MeshRenderOnTexture::changeMesh(const std::string& filePath) {
+void MeshRenderOnTexture::changeMeshFromFilePath(const std::string& filePath) {
     mFilePath = filePath;
     mMesh = AssetsManager::instance().createMeshFromFilePath(filePath);
+}
+
+void MeshRenderOnTexture::changeMesh(const std::string& fileName, const std::string& directoryPath) {
+    changeMeshFromFilePath(directoryPath + fileName);
 }
 
 void MeshRenderOnTexture::setPositionForTexture(const Vector2& pos) {
@@ -74,12 +78,12 @@ void MeshRenderOnTexture::setSizeForTexture(const Vector2& size) {
     mSprite->computeWorldTransform();
 }
 
-const IMesh& MeshRenderOnTexture::getMesh() const {
-    return *mMesh;
+Sprite& MeshRenderOnTexture::getSprite() const {
+    return *mSprite;
 }
 
-const Sprite& MeshRenderOnTexture::getSprite() const {
-    return *mSprite;
+const IMesh& MeshRenderOnTexture::getMesh() const {
+    return *mMesh;
 }
 
 const std::string& MeshRenderOnTexture::getFilePath() const {

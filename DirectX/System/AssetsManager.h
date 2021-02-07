@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "AssetsDirectoryPath.h"
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -20,21 +21,21 @@ public:
     void finalize();
 
     //テクスチャを読み込む
-    void loadTexture(const std::string& fileName, const std::string& directoryPath = "Assets\\Texture\\");
+    void loadTexture(const std::string& fileName, const std::string& directoryPath = AssetsDirectoryPath::TEXTURE_PATH);
     //ファイルパスからテクスチャを取得する
-    std::shared_ptr<TextureFromFile> createTexture(const std::string& fileName, const std::string& directoryPath = "Assets\\Texture\\");
+    std::shared_ptr<TextureFromFile> createTexture(const std::string& fileName, const std::string& directoryPath = AssetsDirectoryPath::TEXTURE_PATH);
 
     //メッシュを読み込む
-    void loadMesh(const std::string& fileName, const std::string& directoryPath = "Assets\\Model\\");
+    void loadMesh(const std::string& fileName, const std::string& directoryPath = AssetsDirectoryPath::MODEL_PATH);
     //メッシュを読み込む
     void loadMeshFromFilePath(const std::string& filePath);
     //ファイルパスからメッシュを取得する
-    std::shared_ptr<Mesh> createMesh(const std::string& fileName, const std::string& directoryPath = "Assets\\Model\\");
+    std::shared_ptr<Mesh> createMesh(const std::string& fileName, const std::string& directoryPath = AssetsDirectoryPath::MODEL_PATH);
     //ファイルパスからメッシュを取得する
     std::shared_ptr<Mesh> createMeshFromFilePath(const std::string& filePath);
 
     //ファイルパスからシェーダーを取得する
-    std::shared_ptr<Shader> createShader(const std::string& fileName, const std::string& directoryPath = "Shader\\");
+    std::shared_ptr<Shader> createShader(const std::string& fileName, const std::string& directoryPath = AssetsDirectoryPath::SHADER_PATH);
 
 private:
     AssetsManager(const AssetsManager&) = delete;

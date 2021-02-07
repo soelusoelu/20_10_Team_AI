@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "../AssetsDirectoryPath.h"
 #include "../../Math/Math.h"
 #include "../../Mesh/IMesh.h"
 #include <memory>
@@ -21,15 +22,16 @@ public:
     //メッシュ描画済みテクスチャを描画する
     void draw(const Matrix4& proj) const;
     //描画するメッシュを変更する
-    void changeMesh(const std::string& filePath);
+    void changeMeshFromFilePath(const std::string& filePath);
+    void changeMesh(const std::string& fileName, const std::string& directoryPath = AssetsDirectoryPath::MODEL_PATH);
     //テクスチャの位置を設定する
     void setPositionForTexture(const Vector2& pos);
     //テクスチャのサイズを設定する
     void setSizeForTexture(const Vector2& size);
+    //スプライトを取得する
+    Sprite& getSprite() const;
     //メッシュを取得する
     const IMesh& getMesh() const;
-    //スプライトを取得する
-    const Sprite& getSprite() const;
     //ファイルパスを取得する
     const std::string& getFilePath() const;
     //テクスチャの横幅を取得する
