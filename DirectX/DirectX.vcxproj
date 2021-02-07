@@ -240,6 +240,8 @@
     <ClCompile Include="Engine\SceneMesh\SceneMeshSelector.cpp" />
     <ClCompile Include="Engine\MapEditor\MapEditorMeshManager.cpp" />
     <ClCompile Include="Input\InputManager.cpp" />
+    <ClCompile Include="Component\Engine\Sprite\MeshRenderOnTextureComponent.cpp" />
+    <ClCompile Include="System\Texture\MeshRenderOnTextureManager.cpp" />
     <ClCompile Include="Mesh\MeshCommonShaderSetter.cpp" />
     <ClCompile Include="Engine\SceneMesh\SceneMeshOperator.cpp" />
     <ClCompile Include="Engine\SceneMesh\SceneMeshDeleter.cpp" />
@@ -523,6 +525,8 @@
     <ClInclude Include="Engine\MapEditor\MapEditorMeshManager.h" />
     <ClInclude Include="Input\IMouseWheelScrollValueSetter.h" />
     <ClInclude Include="Input\InputManager.h" />
+    <ClInclude Include="Component\Engine\Sprite\MeshRenderOnTextureComponent.h" />
+    <ClInclude Include="System\Texture\MeshRenderOnTextureManager.h" />
     <ClInclude Include="Mesh\IMeshAdder.h" />
     <ClInclude Include="Mesh\IMeshesGetter.h" />
     <ClInclude Include="Mesh\MeshCommonShaderSetter.h" />

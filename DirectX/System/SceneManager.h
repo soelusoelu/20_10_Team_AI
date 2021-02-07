@@ -18,6 +18,7 @@ class MeshManager;
 class Physics;
 class SpriteManager;
 class LightManager;
+class MeshRenderOnTextureManager;
 class DrawString;
 
 class SceneManager : public ICallbackChangeEngineMode, public IEngineModeGetter {
@@ -56,6 +57,7 @@ private:
     std::unique_ptr<SpriteManager> mSpriteManager;
     std::unique_ptr<Physics> mPhysics;
     std::unique_ptr<LightManager> mLightManager;
+    std::unique_ptr<MeshRenderOnTextureManager> mMeshRenderOnTextureManager;
     DrawString* mTextDrawer;
     std::string mBeginScene;
     std::string mReleaseScene;

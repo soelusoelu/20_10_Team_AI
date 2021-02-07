@@ -16,6 +16,8 @@ MeshRenderOnTexture::MeshRenderOnTexture(const std::string& filePath, int width,
     , mMesh(AssetsManager::instance().createMeshFromFilePath(filePath))
     , mMeshShader(AssetsManager::instance().createShader("SimpleMeshTexture.hlsl"))
     , mFilePath(filePath)
+    , mWidth(width)
+    , mHeight(height)
 {
     const auto& tex = std::make_shared<Texture>(mRenderTexture->getShaderResourceView(), Vector2(width, height));
     mSprite->setTexture(tex);
@@ -55,8 +57,20 @@ void MeshRenderOnTexture::draw(const Matrix4& proj) const {
     mRenderTexture->drawEndTexture();
 }
 
+void MeshRenderOnTexture::changeMesh(const std::string& filePath) {
+    mFilePath = filePath;
+    mMesh = AssetsManager::instance().createMeshFromFilePath(filePath);
+}
+
 void MeshRenderOnTexture::setPositionForTexture(const Vector2& pos) {
     mSprite->transform().setPosition(pos);
+    mSprite->computeWorldTransform();
+}
+
+void MeshRenderOnTexture::setSizeForTexture(const Vector2& size) {
+    mWidth = static_cast<int>(size.x + 0.5f);
+    mHeight = static_cast<int>(size.y + 0.5f);
+    mSprite->transform().setSize(size);
     mSprite->computeWorldTransform();
 }
 
@@ -70,4 +84,12 @@ const Sprite& MeshRenderOnTexture::getSprite() const {
 
 const std::string& MeshRenderOnTexture::getFilePath() const {
     return mFilePath;
+}
+
+int MeshRenderOnTexture::getWidth() const {
+    return mWidth;
+}
+
+int MeshRenderOnTexture::getHeight() const {
+    return mHeight;
 }

@@ -1,6 +1,7 @@
 ﻿#include "SceneManager.h"
 #include "Game.h"
 #include "GlobalFunction.h"
+#include "Texture/MeshRenderOnTextureManager.h"
 #include "../Component/ComponentManager.h"
 #include "../Component/Engine/Camera/Camera.h"
 #include "../Component/Engine/Light/DirectionalLight.h"
@@ -36,6 +37,7 @@ SceneManager::SceneManager()
     , mSpriteManager(std::make_unique<SpriteManager>())
     , mPhysics(std::make_unique<Physics>())
     , mLightManager(std::make_unique<LightManager>())
+    , mMeshRenderOnTextureManager(std::make_unique<MeshRenderOnTextureManager>())
     , mTextDrawer(new DrawString())
     , mBeginScene()
     , mReleaseScene()
@@ -140,6 +142,9 @@ void SceneManager::update() {
 }
 
 void SceneManager::draw() const {
+    const auto& view = mCamera->getView();
+    const auto& proj = mCamera->getProjection();
+
 #pragma region 遅延シェーディング
     //各テクスチャ上にレンダリング
     //mRenderer->renderToTexture();
@@ -161,7 +166,10 @@ void SceneManager::draw() const {
     if (isGameMode()) {
         //メッシュの描画
         const auto& dirLight = mLightManager->getDirectionalLight();
-        mMeshManager->draw(mCamera->getView(), mCamera->getProjection(), mCamera->getPosition(), dirLight.getDirection(), dirLight.getLightColor());
+        mMeshManager->draw(view, proj, mCamera->getPosition(), dirLight.getDirection(), dirLight.getLightColor());
+
+        //メッシュをテクスチャに描画する
+        mMeshRenderOnTextureManager->drawMeshOnTextures(view * proj);
     }
 
 #ifdef _DEBUG
@@ -174,22 +182,26 @@ void SceneManager::draw() const {
     mRenderer->renderSprite3D();
 
     if (isGameMode()) {
-        mSpriteManager->draw3Ds(mCamera->getView(), mCamera->getProjection());
+        //3Dスプライトを描画する
+        mSpriteManager->draw3Ds(view, proj);
     }
 
     //2Dスプライト
-    auto proj = Matrix4::identity;
-    mRenderer->renderSprite2D(proj);
+    auto proj2D = Matrix4::identity;
+    mRenderer->renderSprite2D(proj2D);
 
     if (isGameMode()) {
         //2Dスプライト描画
-        mSpriteManager->drawComponents(proj);
+        mSpriteManager->drawComponents(proj2D);
         //テキスト描画
-        mTextDrawer->drawAll(proj);
+        mTextDrawer->drawAll(proj2D);
+
+        //メッシュ描画済みテクスチャを描画する
+        mMeshRenderOnTextureManager->drawTextures(proj2D);
     }
 
 #ifdef _DEBUG
-    mEngineManager->draw(mMode, *mRenderer, proj);
+    mEngineManager->draw(mMode, *mRenderer, proj2D);
 #endif // _DEBUG
 }
 

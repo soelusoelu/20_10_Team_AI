@@ -281,6 +281,8 @@
     <ClCompile Include="Engine\Camera\EngineCamera.cpp" />
     <ClCompile Include="Input\InputManager.cpp" />
     <ClCompile Include="Mesh\Shadow\ShadowMap.cpp" />
+    <ClCompile Include="Component\Engine\Sprite\MeshRenderOnTextureComponent.cpp" />
+    <ClCompile Include="System\Texture\MeshRenderOnTextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component\ComponentManager.h" />
@@ -623,6 +625,8 @@
     <ClInclude Include="Input\InputManager.h" />
     <ClInclude Include="Input\IMouseWheelScrollValueSetter.h" />
     <ClInclude Include="Mesh\Shadow\ShadowMap.h" />
+    <ClInclude Include="Component\Engine\Sprite\MeshRenderOnTextureComponent.h" />
+    <ClInclude Include="System\Texture\MeshRenderOnTextureManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\MeshCommonHeader.hlsli" />
