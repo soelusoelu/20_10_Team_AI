@@ -28,7 +28,9 @@ void EngineFunctionManager::loadProperties(const rapidjson::Value& inObj) {
     mDebugManager->loadProperties(inObj);
     mPause->loadProperties(inObj);
     mFunctionChanger->loadProperties(inObj);
+    mMapEditor->loadProperties(inObj);
     mAssetsRenderTextureManager->loadProperties(inObj);
+    mModelViewer->loadProperties(inObj);
 }
 
 void EngineFunctionManager::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) {

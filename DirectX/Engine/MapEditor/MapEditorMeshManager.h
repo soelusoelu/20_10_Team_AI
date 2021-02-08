@@ -18,7 +18,6 @@ public:
     MapEditorMeshManager();
     ~MapEditorMeshManager();
     void loadProperties(const rapidjson::Value& inObj);
-    void saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj);
 
     void initialize(
         IInspectorTargetSetter* inspector,

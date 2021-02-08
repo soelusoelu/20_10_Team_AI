@@ -38,6 +38,7 @@ private:
     std::shared_ptr<Shader> mDepthTextureCreateShader;
     std::unique_ptr<RenderTexture> mRenderTexture;
     ShadowConstantBuffer mShadowConstBuffer;
+    int mShadowTextureSize;
     float mLightDistance;
     float mNearClip;
     float mFarClip;

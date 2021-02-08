@@ -20,10 +20,6 @@ void MapEditorMeshManager::loadProperties(const rapidjson::Value& inObj) {
     mMeshManager->loadProperties(inObj);
 }
 
-void MapEditorMeshManager::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) {
-    mMeshManager->saveProperties(alloc, inObj);
-}
-
 void MapEditorMeshManager::initialize(
     IInspectorTargetSetter* inspector,
     const ICurrentSelectTextureGetter* textureGetter

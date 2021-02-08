@@ -52,7 +52,7 @@ void Window::createWindow(HINSTANCE hInstance) {
 #ifdef _DEBUG
     wrc = { 0, 0, mDebugWidth, mDebugHeight };
 #else
-    wrc = { 0, 0, mWidth, mHeight };
+    wrc = { 0, 0, mGameWidth, mGameHeight };
 #endif // _DEBUG
     AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false); //自動でサイズ補正
 
@@ -76,8 +76,13 @@ void Window::createWindow(HINSTANCE hInstance) {
     //デバッグ時は最大表示
     ShowWindow(mhWnd, SW_MAXIMIZE);
 #else
-    //リリース時はウィンドウサイズで表示
-    ShowWindow(mhWnd, SW_SHOW);
+    //リリース時は1920 * 1080の場合最大表示
+    //それ以外の場合ウィンドウサイズで表示
+    if (mGameWidth == mStandardWidth && mGameHeight == mStandardHeight) {
+        ShowWindow(mhWnd, SW_MAXIMIZE);
+    } else {
+        ShowWindow(mhWnd, SW_SHOW);
+    }
 #endif // _DEBUG
 
     UpdateWindow(mhWnd);

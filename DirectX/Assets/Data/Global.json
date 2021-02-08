@@ -92,6 +92,7 @@
             "spriteButtonFilePath": "System/add_mesh.png"
         },
         "shadowMap": {
+            "shadowTextureSize": 8192,
             "lightDistance": 270.0,
             "nearClip": 10.0,
             "farClip": 300.0

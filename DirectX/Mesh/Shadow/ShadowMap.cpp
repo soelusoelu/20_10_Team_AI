@@ -18,6 +18,7 @@
 ShadowMap::ShadowMap()
     : mDepthTextureCreateShader(nullptr)
     , mRenderTexture(nullptr)
+    , mShadowTextureSize(0)
     , mLightDistance(0.f)
     , mNearClip(0.f)
     , mFarClip(0.f)
@@ -28,7 +29,7 @@ ShadowMap::~ShadowMap() = default;
 
 void ShadowMap::initialize() {
     mDepthTextureCreateShader = AssetsManager::instance().createShader("ShadowDepthTextureCreater.hlsl");
-    mRenderTexture = std::make_unique<RenderTexture>(Window::width() * 4, Window::height() * 4, Format::FORMAT_D24_UNORM_S8_UINT, Format::FORMAT_R16_UNORM);
+    mRenderTexture = std::make_unique<RenderTexture>(mShadowTextureSize, mShadowTextureSize, Format::FORMAT_D24_UNORM_S8_UINT, Format::FORMAT_R16_UNORM);
 
     //const auto& s = getComponent<SpriteComponent>();
     //const auto& tex = std::make_shared<Texture>(mRenderTexture->getShaderResourceView(), Vector2(Window::width(), Window::height()));
@@ -40,6 +41,7 @@ void ShadowMap::initialize() {
 void ShadowMap::loadProperties(const rapidjson::Value& inObj) {
     const auto& obj = inObj["shadowMap"];
     if (obj.IsObject()) {
+        JsonHelper::getInt(obj, "shadowTextureSize", &mShadowTextureSize);
         JsonHelper::getFloat(obj, "lightDistance", &mLightDistance);
         JsonHelper::getFloat(obj, "nearClip", &mNearClip);
         JsonHelper::getFloat(obj, "farClip", &mFarClip);
@@ -48,6 +50,7 @@ void ShadowMap::loadProperties(const rapidjson::Value& inObj) {
 
 void ShadowMap::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) {
     rapidjson::Value props(rapidjson::kObjectType);
+    JsonHelper::setInt(alloc, &props, "shadowTextureSize", mShadowTextureSize);
     JsonHelper::setFloat(alloc, &props, "lightDistance", mLightDistance);
     JsonHelper::setFloat(alloc, &props, "nearClip", mNearClip);
     JsonHelper::setFloat(alloc, &props, "farClip", mFarClip);

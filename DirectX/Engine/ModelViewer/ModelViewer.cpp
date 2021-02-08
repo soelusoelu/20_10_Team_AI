@@ -25,10 +25,6 @@ void ModelViewer::loadProperties(const rapidjson::Value& inObj) {
     mMeshManager->loadProperties(inObj);
 }
 
-void ModelViewer::saveProperties(rapidjson::Document::AllocatorType& alloc, rapidjson::Value& inObj) {
-    mMeshManager->saveProperties(alloc, inObj);
-}
-
 void ModelViewer::initialize(
     const IEngineModeGetter* engineModeGetter,
     const ICurrentSelectTextureGetter* assetsTextureGetter,
