@@ -100,6 +100,7 @@ void SceneManager::initialize(const IFpsGetter* fpsGetter) {
 #ifdef _DEBUG
     choiceBeginScene();
 #else
+    onChangeGameMode();
     createScene(mReleaseScene);
 #endif // _DEBUG
 }
@@ -133,7 +134,7 @@ void SceneManager::update() {
         if (!next.empty()) {
             change();
             //次のシーンに渡す値を避難させとく
-            const auto& toNextValues = mCurrentScene->getValuePassToNextScene();
+            auto toNextValues = mCurrentScene->getValuePassToNextScene();
             //シーン遷移
             createScene(next);
             //新しいシーンに前のシーンの値を渡す

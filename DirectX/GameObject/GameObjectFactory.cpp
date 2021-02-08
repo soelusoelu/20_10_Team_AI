@@ -26,6 +26,7 @@
 #include "../Component/Engine/Scene/MapEditor.h"
 #include "../Component/Engine/Sound/ListenerComponent.h"
 #include "../Component/Engine/Sound/SoundComponent.h"
+#include "../Component/Engine/Sprite/MeshRenderOnTextureComponent.h"
 #include "../Component/Engine/Sprite/Sprite3D.h"
 #include "../Component/Engine/Sprite/SpriteButtonComponent.h"
 #include "../Component/Engine/Sprite/SpriteComponent.h"
@@ -123,6 +124,7 @@ GameObjectFactory::GameObjectFactory() {
     ADD_COMPONENT(ListenerComponent);
     ADD_COMPONENT(SoundComponent);
 
+    ADD_COMPONENT(MeshRenderOnTextureComponent);
     ADD_COMPONENT(Sprite3D);
     ADD_COMPONENT(SpriteButtonComponent);
     ADD_COMPONENT(SpriteComponent);
