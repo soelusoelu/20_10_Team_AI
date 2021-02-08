@@ -18,7 +18,7 @@ SpriteComponent::~SpriteComponent() = default;
 
 void SpriteComponent::awake() {
     addToManager();
-    setActive(gameObject().getActive());
+    //setActive(gameObject().getActive());
 }
 
 void SpriteComponent::lateUpdate() {

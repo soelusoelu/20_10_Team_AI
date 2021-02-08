@@ -25,6 +25,15 @@
         "position": [ 960.0, 0.0 ],
         "pivot": "CenterTop"
       }
+    },
+    {
+      "type": "SpriteComponent",
+      "properties": {
+        "drawOrder": 10,
+        "fileName": "sousa_setumei2.png",
+        "isActive": false,
+        "scale": [ 1.0, 1.0619 ]
+      }
     }
   ]
 }

@@ -16,6 +16,7 @@ StageSelect::StageSelect(GameObject& gameObject)
     , mScale(Vector2::zero)
     , mPivot(Pivot::NONE)
     , mSelectingAlpha(0.f)
+    , mHasDrawOperateSprite(false)
 {
 }
 
@@ -38,27 +39,48 @@ void StageSelect::awake() {
         text->setNumber(i + 1);
         text->setPosition(pos + Vector2::down * currentSize.y / 2.f);
         text->setPivot(Pivot::CENTER);
+        mTextNums.emplace_back(text);
     }
 }
 
 void StageSelect::update() {
     const auto& mouse = Input::mouse();
 
-    //スプライトを選択する
-    selectSprite(mouse.getMousePosition());
+    if (mHasDrawOperateSprite) {
+        if (mouse.getMouseButtonDown(MouseCode::LeftButton)) {
+            next("GamePlay");
+        }
+    } else {
+        //スプライトを選択する
+        selectSprite(mouse.getMousePosition());
 
-    //マウスクリックしていないならここで終了
-    if (!mouse.getMouseButtonDown(MouseCode::LeftButton)) {
-        return;
-    }
-    //無効な番号なら終了
-    if (mSelectingNo == INVALID_NO) {
-        return;
-    }
+        //マウスクリックしていないならここで終了
+        if (!mouse.getMouseButtonDown(MouseCode::LeftButton)) {
+            return;
+        }
 
-    //選んだステージ番号を渡す
-    addValuePassToNextScene("StageNo", mSelectingNo + 1);
-    next("GamePlay");
+        //無効な番号なら終了
+        if (mSelectingNo == INVALID_NO) {
+            return;
+        }
+
+        //選んだステージ番号を渡す
+        addValuePassToNextScene("StageNo", mSelectingNo + 1);
+        if (mSelectingNo == 0) {
+            mHasDrawOperateSprite = true;
+            auto sprites = getComponents<SpriteComponent>();
+            for (const auto& sprite : sprites) {
+                sprite->setActive(false);
+            }
+            sprites.back()->setActive(true);
+            for (const auto& text : mTextNums) {
+                text->setActive(false);
+            }
+            return;
+        }
+
+        next("GamePlay");
+    }
 }
 
 void StageSelect::loadProperties(const rapidjson::Value& inObj) {
