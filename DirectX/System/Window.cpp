@@ -59,7 +59,7 @@ void Window::createWindow(HINSTANCE hInstance) {
     //ウィンドウの作成
     mhWnd = CreateWindow(
         mWndClass.lpszClassName,    //クラス名
-        wcharTitle.c_str(),         //タイトルバーの文字
+        L"AI戦争",         //タイトルバーの文字
         WS_OVERLAPPEDWINDOW,        //標準的なウィンドウスタイル
         CW_USEDEFAULT,              //表示X座標(OSに任せる)
         CW_USEDEFAULT,              //表示Y座標(OSに任せる)

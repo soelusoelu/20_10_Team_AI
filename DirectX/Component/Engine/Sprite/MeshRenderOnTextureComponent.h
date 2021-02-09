@@ -19,6 +19,7 @@ public:
     virtual void start() override;
     virtual void update() override;
     virtual void finalize() override;
+    virtual void onEnable(bool value) override;
     virtual void loadProperties(const rapidjson::Value& inObj) override;
 
     //メッシュをテクスチャ上に描画する

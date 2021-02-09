@@ -1,5 +1,6 @@
 ﻿#include "MeshRenderOnTextureManager.h"
 #include "../../Component/Engine/Sprite/MeshRenderOnTextureComponent.h"
+#include "../../Sprite/Sprite.h"
 
 MeshRenderOnTextureManager::MeshRenderOnTextureManager() {
     MeshRenderOnTextureComponent::setMeshRenderOnTextureManager(this);
@@ -19,12 +20,22 @@ void MeshRenderOnTextureManager::add(const MeshRenderOnTexturePtr& texture) {
 
 void MeshRenderOnTextureManager::drawMeshOnTextures() const {
     for (const auto& tex : mTextures) {
+        const auto& sprite = tex->getSprite();
+        if (!sprite.getActive() || sprite.isDead()) {
+            continue;
+        }
+
         tex->drawMeshOnTexture();
     }
 }
 
 void MeshRenderOnTextureManager::drawTextures(const Matrix4& proj) const {
     for (const auto& tex : mTextures) {
+        const auto& sprite = tex->getSprite();
+        if (!sprite.getActive() || sprite.isDead()) {
+            continue;
+        }
+
         tex->draw(proj);
     }
 }

@@ -38,6 +38,10 @@ void MeshRenderOnTextureComponent::finalize() {
     destroy();
 }
 
+void MeshRenderOnTextureComponent::onEnable(bool value) {
+    mMeshRenderOnTexture->getSprite().setActive(value);
+}
+
 void MeshRenderOnTextureComponent::loadProperties(const rapidjson::Value& inObj) {
     if (std::string path; JsonHelper::getString(inObj, "filePath", &path)) {
         int width = DEFAULT_SPRITE_WIDTH;
