@@ -5,6 +5,7 @@
 #include "../../../Mesh/IAnimation.h"
 #include "../../../Mesh/IMesh.h"
 #include "../../../Mesh/IMeshDrawer.h"
+#include "../../../System/AssetsDirectoryPath.h"
 #include <memory>
 #include <string>
 #include <vector>
@@ -24,8 +25,8 @@ public:
     virtual void drawInspector() override;
 
     //メッシュを作成する
-    void createMesh(const std::string& filePath);
-    void createMesh(const std::string& fileName, const std::string& directoryPath);
+    void createMeshFromFilePath(const std::string& filePath);
+    void createMesh(const std::string& fileName, const std::string& directoryPath = AssetsDirectoryPath::MODEL_PATH);
 
     //描画できる状態か
     bool isDraw() const;

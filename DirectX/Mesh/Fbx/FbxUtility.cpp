@@ -28,9 +28,9 @@ Vector2 FbxUtility::fbxVector2ToVector2(const FbxVector2& src) {
     return dst;
 }
 
-Vector3 FbxUtility::fbxVector4ToVector3(const FbxVector4& src) {
+Vector3 FbxUtility::fbxVector4ToVector3(const FbxVector4& src, bool inverseX) {
     Vector3 dst;
-    dst.x = static_cast<float>(src[0]);
+    dst.x = static_cast<float>((inverseX) ? -src[0] : src[0]);
     dst.y = static_cast<float>(src[1]);
     dst.z = static_cast<float>(src[2]);
 

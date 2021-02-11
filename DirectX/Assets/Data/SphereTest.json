@@ -8,7 +8,7 @@
     {
       "type": "MeshComponent",
       "properties": {
-        "fileName": "Shape/Sphere.obj"
+        "fileName": "Shape\\Sphere.obj"
       }
     },
     {

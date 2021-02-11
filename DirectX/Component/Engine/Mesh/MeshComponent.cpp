@@ -66,7 +66,7 @@ void MeshComponent::drawInspector() {
     ImGui::Text("FileName: %s", (mDirectoryPath + mFileName).c_str());
 }
 
-void MeshComponent::createMesh(const std::string& filePath) {
+void MeshComponent::createMeshFromFilePath(const std::string& filePath) {
     createMesh(FileUtil::getFileNameFromDirectry(filePath), FileUtil::getDirectryFromFilePath(filePath));
 }
 

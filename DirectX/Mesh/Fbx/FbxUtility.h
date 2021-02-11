@@ -21,7 +21,9 @@ Vector2 fbxVector2ToVector2(
 );
 
 //FbxVector4からVector3へ変換する
+//inverseXがtrueのときX成分を反転する
 Vector3 fbxVector4ToVector3(
-    const FbxVector4& src
+    const FbxVector4& src,
+    bool inverseX = false
 );
 };

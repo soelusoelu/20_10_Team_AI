@@ -1,14 +1,14 @@
 {
   "SphereTest": {
-    "mesh": "Shape/Sphere.fbx",
+    "mesh": "Shape\\Sphere.fbx",
     "cost": 10
   },
   "BoxTest": {
-    "mesh": "Shape/box.fbx",
+    "mesh": "Shape\\box.fbx",
     "cost": 20
   },
   "SimpleCharacter": {
-    "mesh": "Practice/test.fbx",
+    "mesh": "Practice\\test.fbx",
     "cost": 30
   }
 }

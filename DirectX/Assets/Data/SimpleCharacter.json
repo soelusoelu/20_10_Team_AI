@@ -7,7 +7,7 @@
     {
       "type": "MeshComponent",
       "properties": {
-        "fileName": "Practice/test.fbx"
+        "fileName": "Practice\\test.fbx"
       }
     },
     {
