@@ -14,7 +14,7 @@ std::shared_ptr<GameObject> MeshGameObjectCreater::createMeshGameObject(
     //ゲームオブジェクトにメッシュをアタッチする
     auto newMesh = Component::addComponent<MeshComponent>(*newGameObject, "MeshComponent");
     //メッシュを生成する
-    newMesh->createMesh(meshFilePath);
+    newMesh->createMeshFromFilePath(meshFilePath);
 
     return newGameObject;
 }
@@ -37,7 +37,7 @@ std::shared_ptr<GameObject> MeshGameObjectCreater::createMeshGameObject(
     //ゲームオブジェクトにメッシュをアタッチする
     auto newMesh = Component::addComponent<MeshComponent>(*newGameObject, "MeshComponent");
     //メッシュを生成する
-    newMesh->createMesh(meshFilePath);
+    newMesh->createMeshFromFilePath(meshFilePath);
     //メッシュマネージャーに登録する
     meshAdder->add(newMesh->getComponent<MeshRenderer>(), handleShadow);
 

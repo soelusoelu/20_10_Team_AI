@@ -62,7 +62,7 @@ void AssetsPlacement::placeAsset(
 
     //ゲームオブジェクトにメッシュをアタッチする
     auto newMesh = Component::addComponent<MeshComponent>(*newGameObject, "MeshComponent");
-    newMesh->createMesh(filePath);
+    newMesh->createMeshFromFilePath(filePath);
     //メッシュマネージャーに登録する
     mMeshAdder->add(newMesh->getComponent<MeshRenderer>(), true);
 

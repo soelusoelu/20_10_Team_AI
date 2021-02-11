@@ -5,6 +5,7 @@
 #include "../../../../Imgui/imgui.h"
 #include "../../../../Imgui/imgui_impl_dx11.h"
 #include "../../../../Imgui/imgui_impl_win32.h"
+#include "../../../../Input/Input.h"
 #include "../../../../System/Window.h"
 #include "../../../../Transform/Transform3D.h"
 #include "../../../../Utility/LevelLoader.h"
@@ -40,6 +41,9 @@ void ImGuiInspector::drawInspect() const {
         return;
     }
 
+    //マウス位置を補正する
+    const auto& mousePos = Input::mouse().getMousePosition();
+    ImGui::GetIO().MousePos = ImVec2(mousePos.x, mousePos.y);
     //ウィンドウ位置を固定
     ImGui::SetNextWindowPos(ImVec2(mInspectorPositionX, 0.f), ImGuiCond_Always);
     //ウィンドウサイズを固定

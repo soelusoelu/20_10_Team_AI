@@ -98,7 +98,7 @@ void ModelViewer::onSelectAssetsTexture() {
 
     const auto& newTarget = std::make_shared<GameObject>();
     const auto& newMesh = Component::addComponent<MeshComponent>(*newTarget, "MeshComponent");
-    newMesh->createMesh(mAssetsTextureGetter->getCurrentSelectTexture().getTexture().getFilePath());
+    newMesh->createMeshFromFilePath(mAssetsTextureGetter->getCurrentSelectTexture().getTexture().getFilePath());
     const auto& meshRenderer = newMesh->getComponent<MeshRenderer>();
 
     setTarget(newTarget, meshRenderer);
